@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# IDEs
+.clang-format
+.vscode/
+archives/
+
+# GDB
+*/**/.gdb_history
