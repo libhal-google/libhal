@@ -8,14 +8,16 @@ cmake_minimum_required(VERSION 3.1...3.21)
 # Listing the version is nice here since it sets lots of useful variables
 project(
   libembeddedhal
-  VERSION 1.0
+  VERSION 0.0.1
   LANGUAGES CXX)
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
 
 # If you set any CMAKE_ variables, that can go here.
 # (But usually don't do this, except maybe for C++ standard)
 
 # Find packages go here.
-find_package(ut REQUIRED)
 
 # You should usually split this into folders, but this is a simple example
 
@@ -27,6 +29,8 @@ add_library(libembeddedhal
             libembeddedhal/full_scale.test.cpp
             libembeddedhal/full_scale.hpp)
 
+target_link_libraries(libembeddedhal PRIVATE CONAN_PKG::boost-ext-ut)
+
 # Link each target with other targets or add options, etc.
 target_compile_features(libembeddedhal PUBLIC cxx_std_20)
 set_target_properties(libembeddedhal PROPERTIES CXX_EXTENSIONS OFF)
@@ -37,4 +41,7 @@ add_executable(libembeddedhal.test.exe libembeddedhal/full_scale.test.cpp)
 # Make sure you link your targets with this command. It can also link libraries
 # and even flags, so linking a target that does not exist will not give a
 # configure-time error.
-target_link_libraries(libembeddedhal.test.exe PRIVATE libembeddedhal boost::ut)
+target_link_libraries(libembeddedhal.test.exe
+                      PRIVATE
+                      libembeddedhal
+                      CONAN_PKG::boost-ext-ut)

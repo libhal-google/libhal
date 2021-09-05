@@ -1,6 +1,7 @@
 #include "full_scale.hpp"
 
 #include <cstdio>
+#include <boost/ut.hpp>
 
 template<size_t bit_width>
 void print_bits_conversions()
@@ -48,6 +49,9 @@ int main()
   puts("\n=========== 4-bit ===========\n");
 
   print_bits_conversions<4>();
+
+  using namespace boost::ut;
+  expect(1_i == 2);
 
   return 0;
 }
