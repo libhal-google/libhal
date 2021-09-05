@@ -2,9 +2,9 @@
 
 #include <algorithm>
 #include <cinttypes>
+#include <climits>
 #include <cstddef>
 #include <limits>
-#include <climits>
 #include <type_traits>
 
 namespace embed {
@@ -60,8 +60,7 @@ public:
 };
 
 template<size_t bit_field_width>
-static consteval uint32_t
-generate_field_of_ones()
+static consteval uint32_t generate_field_of_ones()
 {
   uint32_t result = 0;
   for (int i = 0; i < bit_field_width; i++) {
@@ -71,8 +70,7 @@ generate_field_of_ones()
 }
 
 template<typename T, size_t source_width, typename U>
-constexpr static T
-increase_bit_depth(U p_value)
+constexpr static T increase_bit_depth(U p_value)
 {
   constexpr size_t output_bit_width = sizeof(T) * CHAR_BIT;
 
@@ -156,4 +154,4 @@ public:
 private:
   T m_value = 0;
 };
-}
+} // namespace embed

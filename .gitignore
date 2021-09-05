@@ -32,9 +32,11 @@
 *.app
 
 # IDEs
-.clang-format
 .vscode/
 archives/
 
 # GDB
 */**/.gdb_history
+
+# Artifacts
+build/

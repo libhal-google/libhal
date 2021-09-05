@@ -1,0 +1,5 @@
+[requires]
+boost-ext-ut/1.1.8
+
+[generators]
+cmake

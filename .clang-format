@@ -1,0 +1,5 @@
+BasedOnStyle: Mozilla
+Language: Cpp
+UseTab: Never
+AlwaysBreakAfterReturnType: None
+AlwaysBreakAfterDefinitionReturnType: None

@@ -3,8 +3,7 @@
 #include <cstdio>
 
 template<size_t bit_width>
-void
-print_bits_conversions()
+void print_bits_conversions()
 {
   embed::full_scale<uint32_t> value;
   for (uint32_t i = 0; i < (1 << bit_width) + 2; i++) {
@@ -14,8 +13,7 @@ print_bits_conversions()
 }
 
 template<size_t bit_width>
-void
-print_signed_bits_conversions()
+void print_signed_bits_conversions()
 {
   embed::full_scale<int32_t> value;
   constexpr int32_t max_value = 1 << (bit_width - 1);
@@ -25,8 +23,7 @@ print_signed_bits_conversions()
   }
 }
 
-void
-print_nums()
+void print_nums()
 {
   for (int16_t i = -256; i != +256; i++) {
     static constexpr auto mask = embed::generate_field_of_ones<9>();
@@ -34,8 +31,7 @@ print_nums()
   }
 }
 
-int
-main()
+int main()
 {
   puts("\n=========== 2-bit ===========\n");
 
