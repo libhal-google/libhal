@@ -1,6 +1,19 @@
 #pragma once
 
 namespace embed {
+/// Used for defining static_asserts that should always fail, but only if the
+/// static_assert line is hit via `if constexpr` control block.
+/// Prefer to NOT use this directly but to use `invalid_option` instead
+template <auto... options>
+struct invalid_option_t : std::false_type
+{
+};
+
+/// Helper definition to simplify the usage of invalid_option_t.
+/// @tparam options
+template <auto... options>
+inline constexpr bool invalid_option = invalid_option_t<options...>::value;
+
 /// An empty settings structure used to indicate that a driver or interface does
 /// not have generic settings.
 struct no_settings
@@ -27,15 +40,13 @@ public:
     return success;
   }
 
-  [[nodiscard]] settings_t& settings() const { return m_settings; }
+  [[nodiscard]] settings_t& settings() { return m_settings; }
   [[nodiscard]] const settings_t& initialized_settings() const
   {
     return m_settings;
   }
   [[nodiscard]] bool is_initialized() const { return m_initialized; }
   void reset() { m_initialized = false; }
-
-  // TODO: add virtual destructor
 
 protected:
   virtual bool driver_initialize() = 0;

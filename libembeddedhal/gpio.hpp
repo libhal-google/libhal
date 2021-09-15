@@ -12,7 +12,7 @@ enum class pin_resistor
   /// No pull up. This will cause the pin to float. This may be desirable if the
   /// pin has an external resistor attached or if the signal is sensitive to
   /// external devices like resistors.
-  none,
+  none = 0,
   /// Pull the pin down to devices GND. This will ensure that the voltage read
   /// by the pin when there is no signal on the pin is LOW (or false).
   pull_down,
@@ -27,20 +27,22 @@ struct input_pin_settings
   pin_resistor resistor = pin_resistor::pull_up;
 };
 
-class input_pin : public driver<input_pin_settings>
-{
-public:
-  virtual bool level() const = 0;
-};
-
-// ====================================================
-// Output Pin
-// ====================================================
 struct output_pin_settings
 {
   bool starting_level = true;
   bool open_drain = false;
-  bool use_internal_pullup = true;
+  pin_resistor resistor = pin_resistor::pull_up;
+};
+
+struct interrupt_pin_settings
+{
+  pin_resistor resistor = pin_resistor::pull_up;
+};
+
+class input_pin : public driver<input_pin_settings>
+{
+public:
+  virtual bool level() const = 0;
 };
 
 class output_pin : public driver<output_pin_settings>
@@ -50,15 +52,10 @@ public:
   virtual bool level() const = 0;
 };
 
-struct interrupt_pin_settings
-{
-  pin_resistor resistor = pin_resistor::pull_up;
-};
-
 class interrupt_pin : public driver<interrupt_pin_settings>
 {
 public:
-  enum class trigger
+  enum class trigger_edge
   {
     falling = 0,
     rising = 1,
@@ -67,7 +64,7 @@ public:
 
   virtual bool level() const = 0;
   virtual void attach_interrupt(std::function<void(void)> p_callback,
-                                trigger p_trigger) = 0;
+                                trigger_edge p_trigger) = 0;
   virtual void detach_interrupt() = 0;
 };
 } // namespace embed

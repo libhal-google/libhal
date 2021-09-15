@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cinttypes>
 #include <climits>
+#include <concepts>
 #include <cstddef>
 #include <limits>
 #include <type_traits>
@@ -146,12 +147,18 @@ public:
     return *this;
   }
 
-  operator T&() { return m_value; }
-  operator T() const { return m_value; }
-
   T value() { return m_value; }
 
 private:
   T m_value = 0;
 };
+
+template<std::unsigned_integral T, std::unsigned_integral U>
+auto operator*(U value, full_scale<T> scale)
+{
+  std::uintmax_t arith_container = value;
+  arith_container = arith_container * scale.value();
+  arith_container = arith_container / std::numeric_limits<T>::max();
+  return static_cast<U>(arith_container);
+}
 } // namespace embed

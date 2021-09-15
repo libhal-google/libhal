@@ -6,10 +6,7 @@ cmake_minimum_required(VERSION 3.1...3.21)
 
 # This is your project statement. You should always list languages;
 # Listing the version is nice here since it sets lots of useful variables
-project(
-  libembeddedhal
-  VERSION 0.0.1
-  LANGUAGES CXX)
+project(libembeddedhal VERSION 0.0.1 LANGUAGES CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
@@ -25,14 +22,15 @@ conan_basic_setup(TARGETS)
 # Other common choices are STATIC, SHARED, and MODULE
 # Including header files here helps IDEs but is not required.
 # Output libname matches target name, with the usual extensions on your system
-add_library(libembeddedhal
-            libembeddedhal/full_scale.test.cpp
-            libembeddedhal/full_scale.hpp)
+add_library(libembeddedhal INTERFACE)
 
-target_link_libraries(libembeddedhal PRIVATE CONAN_PKG::boost-ext-ut)
+target_include_directories(libembeddedhal
+                           INTERFACE
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                           $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>)
 
 # Link each target with other targets or add options, etc.
-target_compile_features(libembeddedhal PUBLIC cxx_std_20)
+target_compile_features(libembeddedhal INTERFACE cxx_std_20)
 set_target_properties(libembeddedhal PROPERTIES CXX_EXTENSIONS OFF)
 
 # Adding something we can run - Output name matches target name
@@ -45,3 +43,9 @@ target_link_libraries(libembeddedhal.test.exe
                       PRIVATE
                       libembeddedhal
                       CONAN_PKG::boost-ext-ut)
+
+set(CMAKE_EXPORT_PACKAGE_REGISTRY ON)
+export(TARGETS libembeddedhal
+       NAMESPACE libembeddedhal::
+       FILE "${CMAKE_CURRENT_BINARY_DIR}/libembeddedhal-config.cmake")
+export(PACKAGE libembeddedhal)
