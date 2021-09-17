@@ -1,18 +1,25 @@
 #pragma once
 
+#include <type_traits>
+
 namespace embed {
 /// Used for defining static_asserts that should always fail, but only if the
 /// static_assert line is hit via `if constexpr` control block.
 /// Prefer to NOT use this directly but to use `invalid_option` instead
-template <auto... options>
+template<auto... options>
 struct invalid_option_t : std::false_type
-{
-};
+{};
 
 /// Helper definition to simplify the usage of invalid_option_t.
 /// @tparam options
-template <auto... options>
+template<auto... options>
 inline constexpr bool invalid_option = invalid_option_t<options...>::value;
+
+template<typename enum_type>
+auto value(enum_type enum_value)
+{
+  return static_cast<std::underlying_type_t<enum_type>>(enum_value);
+}
 
 /// An empty settings structure used to indicate that a driver or interface does
 /// not have generic settings.

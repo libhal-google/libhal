@@ -1,7 +1,6 @@
 #pragma once
 
 #include "driver.hpp"
-#include "inactive.hpp"
 
 #include <chrono>
 #include <cinttypes>

@@ -3,7 +3,7 @@
 #include <cinttypes>
 
 #include "driver.hpp"
-#include "full_scale.hpp"
+#include "utility/full_scale.hpp"
 
 namespace embed {
 class dac : public driver<>
