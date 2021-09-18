@@ -14,7 +14,7 @@ struct serial_settings
   /// Defines the available stop bits options
   enum class stop_bits : uint8_t
   {
-    one,
+    one = 0,
     two,
   };
 
