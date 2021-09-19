@@ -34,7 +34,8 @@ target_compile_features(libembeddedhal INTERFACE cxx_std_20)
 set_target_properties(libembeddedhal PROPERTIES CXX_EXTENSIONS OFF)
 
 # Adding something we can run - Output name matches target name
-add_executable(libembeddedhal.test.exe libembeddedhal/full_scale.test.cpp)
+add_executable(libembeddedhal.test.exe
+libembeddedhal/utility/full_scale.test.cpp)
 
 # Make sure you link your targets with this command. It can also link libraries
 # and even flags, so linking a target that does not exist will not give a
