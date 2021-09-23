@@ -3,7 +3,7 @@ from conan.tools.cmake import CMakeToolchain, CMake
 from conan.tools.layout import cmake_layout
 
 
-class LibEmbeddedHalConan(ConanFile):
+class libembeddedhal_conan(ConanFile):
     name = "libembeddedhal"
     version = "0.0.1"
     license = "Apache License Version 2.0"
@@ -13,20 +13,14 @@ class LibEmbeddedHalConan(ConanFile):
     topics = ("peripherals", "hardware")
     exports_sources = "CMakeLists.txt", "libembeddedhal/*"
     no_copy_source = True
-    generators = "cmake_find_package"
-
-    def config_options(self):
-        pass
-
-    def generate(self):
-        tc = CMakeToolchain(self)
-        tc.generate()
-
-    def package_info(self):
-        self.cpp_info.includedirs = ["."]
+    settings = "os", "compiler", "build_type", "arch"
+    generators = "cmake_find_package_multi"
 
     def package(self):
         self.copy("*.hpp")
 
     def package_id(self):
         self.info.header_only()
+
+    def package_info(self):
+        self.cpp_info.includedirs = ["."]
