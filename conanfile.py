@@ -1,6 +1,4 @@
 from conans import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMake
-from conan.tools.layout import cmake_layout
 
 
 class libembeddedhal_conan(ConanFile):
@@ -13,8 +11,6 @@ class libembeddedhal_conan(ConanFile):
     topics = ("peripherals", "hardware")
     exports_sources = "CMakeLists.txt", "libembeddedhal/*"
     no_copy_source = True
-    settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake_find_package_multi"
 
     def package(self):
         self.copy("*.hpp")

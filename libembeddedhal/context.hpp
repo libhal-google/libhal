@@ -5,11 +5,13 @@
 namespace embed {
 #if !defined(PLATFORM)
 #define PLATFORM_STRING "test"
+#warning "No platform specified, defaulting to 'test' platform"
 #else
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 #define PLATFORM_STRING STR(PLATFORM)
 #endif
+
 
 constexpr const std::string_view platform_string = PLATFORM_STRING;
 
