@@ -46,7 +46,7 @@ public:
   virtual void write(std::span<const std::byte> p_data) = 0;
 
   [[nodiscard]] virtual size_t bytes_available() = 0;
-  virtual void read(std::span<std::byte> p_data) = 0;
+  virtual std::span<std::byte> read(std::span<std::byte> p_data) = 0;
   virtual void flush() = 0;
 };
 } // namespace embed

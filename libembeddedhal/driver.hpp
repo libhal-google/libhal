@@ -1,6 +1,8 @@
 #pragma once
 
 #include <type_traits>
+// This is included for convience purposes
+#include "utility/enum.hpp"
 
 namespace embed {
 /// Used for defining static_asserts that should always fail, but only if the
@@ -14,12 +16,6 @@ struct invalid_option_t : std::false_type
 /// @tparam options
 template<auto... options>
 inline constexpr bool invalid_option = invalid_option_t<options...>::value;
-
-template<typename enum_type>
-auto value(enum_type enum_value)
-{
-  return static_cast<std::underlying_type_t<enum_type>>(enum_value);
-}
 
 /// An empty settings structure used to indicate that a driver or interface does
 /// not have generic settings.

@@ -12,7 +12,6 @@ namespace embed {
 #define PLATFORM_STRING STR(PLATFORM)
 #endif
 
-
 constexpr const std::string_view platform_string = PLATFORM_STRING;
 
 constexpr bool is_platform(std::string_view p_platform)
