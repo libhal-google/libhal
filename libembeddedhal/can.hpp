@@ -15,6 +15,7 @@ struct can_settings
 
 class can : public driver<can_settings>
 {
+public:
   struct message
   {
     uint32_t id;
@@ -23,9 +24,20 @@ class can : public driver<can_settings>
     bool is_remote_request = false;
   };
 
-  virtual void send(const message& message) = 0;
+  virtual void send(const message& p_message) = 0;
   virtual message receive() = 0;
   virtual bool has_data() = 0;
-  virtual void attach_interrupt(std::function<void(can&)> recieve_handler) = 0;
+
+  /**
+   * @brief Will attach an interrupt to this can driver such that, when a
+   *     message is received, it will call the handler supplied
+   *
+   * @param p_receive_handler - Handler to be called when a message is received.
+   *     If this is set to nullptr, then this function shall disable the can
+   *     interrupt or replace the interrupt with a function that does nothing,
+   *     but still clears the interrupt service routine.
+   */
+  virtual void attach_interrupt(
+    std::function<void(can&)> p_receive_handler) = 0;
 };
 }
