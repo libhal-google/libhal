@@ -9,7 +9,7 @@ class libembeddedhal_conan(ConanFile):
     url = "https://github.com/SJSU-Dev2/libembeddedhal"
     description = "A collection of interfaces and abstractions for embedded peripherals and devices using modern C++"
     topics = ("peripherals", "hardware")
-    exports_sources = "CMakeLists.txt", "libembeddedhal/*"
+    exports_sources = "CMakeLists.txt", "include/*"
     no_copy_source = True
 
     def package(self):
@@ -17,6 +17,3 @@ class libembeddedhal_conan(ConanFile):
 
     def package_id(self):
         self.info.header_only()
-
-    def package_info(self):
-        self.cpp_info.includedirs = ["."]
