@@ -20,7 +20,7 @@ public:
   {
     uint32_t id;
     uint8_t length = 0;
-    std::array<uint8_t, 8> payload;
+    std::array<uint8_t, 8> payload{0};
     bool is_remote_request = false;
   };
 
