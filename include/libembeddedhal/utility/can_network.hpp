@@ -47,7 +47,7 @@ public:
     /// Return a CAN message, but only do so if the CAN message of this node is
     /// not currently be modified by another thread that is using the update()
     /// method.
-    can::message secure_get()
+    can::message_t secure_get()
     {
       // Continuously check if the received CAN message is valid. NOTE: that, in
       // general, the looping logic for this function almost never occurs as
@@ -57,7 +57,7 @@ public:
         const auto read_message_start = access_counter.load();
 
         // Copy the contents of the mesage into the kCanMessage variable.
-        const can::message kCanMessage = data;
+        const can::message_t kCanMessage = data;
 
         // Finally, atomically copy the access_counter again such that the value
         // between the start and finish can be compared.
@@ -81,7 +81,7 @@ public:
     /// can_network class.
     ///
     /// @param new_data - New CAN message to store
-    void update(const can::message& new_data)
+    void update(const can::message_t& new_data)
     {
       // Atomic increment of the access counter to notify any threads that are
       // using GetMesage() that the value of this node is changing.
@@ -101,7 +101,7 @@ public:
     }
 
     /// Holds the latest received can message;
-    can::message data = {};
+    can::message_t data = {};
 
     /// Used to indicate when the data field is being accessed
     std::atomic<int> access_counter = 0;
@@ -140,7 +140,7 @@ public:
   /// @return node_t* - reference to the CANBUS network node_t which can be used
   /// at anytime to retreive the latest received message from the CANBUS that is
   /// associated with the set ID.
-  [[nodiscard]] node_t* register_message_id(uint32_t id)
+  [[nodiscard]] node_t* register_message_id(can::id_t id)
   {
     node_t empty_node;
 

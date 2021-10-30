@@ -16,16 +16,19 @@ struct can_settings
 class can : public driver<can_settings>
 {
 public:
-  struct message
+  // Can message ID type trait
+  using id_t = uint32_t;
+
+  struct message_t
   {
-    uint32_t id;
+    id_t id;
     uint8_t length = 0;
     std::array<uint8_t, 8> payload{0};
     bool is_remote_request = false;
   };
 
-  virtual void send(const message& p_message) = 0;
-  virtual message receive() = 0;
+  virtual void send(const message_t& p_message) = 0;
+  virtual message_t receive() = 0;
   virtual bool has_data() = 0;
 
   /**
