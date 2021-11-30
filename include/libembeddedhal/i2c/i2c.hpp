@@ -1,7 +1,7 @@
 #pragma once
 
-#include "driver.hpp"
-#include "utility/full_scale.hpp"
+#include "../driver.hpp"
+#include "../full_scale.hpp"
 
 #include <cinttypes>
 #include <cstddef>

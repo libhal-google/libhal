@@ -2,8 +2,8 @@
 
 #include <cinttypes>
 
-#include "driver.hpp"
-#include "utility/full_scale.hpp"
+#include "../driver.hpp"
+#include "../full_scale.hpp"
 
 namespace embed {
 class adc : public driver<>

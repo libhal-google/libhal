@@ -2,7 +2,7 @@
 
 #include <type_traits>
 // This is included for convience purposes
-#include "utility/enum.hpp"
+#include "enum.hpp"
 
 namespace embed {
 /// Used for defining static_asserts that should always fail, but only if the

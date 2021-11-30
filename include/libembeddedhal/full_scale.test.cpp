@@ -1,4 +1,4 @@
-#include "full_scale.hpp"
+#include "../full_scale.hpp"
 
 #include <boost/ut.hpp>
 #include <cstdio>
