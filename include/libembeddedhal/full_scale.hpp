@@ -9,7 +9,12 @@
 #include <type_traits>
 
 namespace embed {
-
+/**
+ * @brief
+ *
+ * @tparam bit_width
+ * @tparam int_t
+ */
 template<uint8_t bit_width, typename int_t>
 class bit_limits
 {
@@ -28,8 +33,16 @@ public:
   static_assert(bit_width != 0, "The bit_width cannot be 0.");
 
   /// @return constexpr int_t - returns the maximum value available for an
-  /// integer of `bit_width` size and that can be stored within `int_t`.
-  /// The final value of the function depends also on the sign of the int type.
+  /// integer of `bit_width` size and that can be stored within `int_t`. The
+  /// final value of the function depends also on the sign of the int type.
+
+  /**
+   * @brief Get the maximum value available for an integer of `bit_width` size
+   * and that can be stored within `int_t`. The final value of the function
+   * depends also on the sign of the int type.
+   *
+   * @return constexpr int_t maximum value
+   */
   static constexpr int_t max()
   {
     if constexpr (bit_width == 64) {
@@ -43,10 +56,13 @@ public:
     }
   }
 
-  /// @return constexpr int_t - returns the minimum value available for an
-  /// integer of `bit_width` size and that can be stored within `int_t`.
-  /// The final value of the function depends also on the sign of the int type.
-  /// Unsigned ints simply return zero.
+  /**
+   * @brief Get the minimum value available for an integer of `bit_width` size
+   * and that can be stored within `int_t`. The final value of the function
+   * depends also on the sign of the int type. Unsigned ints simply return zero.
+   *
+   * @return constexpr int_t minimum value
+   */
   static constexpr int_t min()
   {
     if constexpr (bit_width == 64) {
@@ -60,6 +76,12 @@ public:
   }
 };
 
+/**
+ * @brief Generate a mask of 1s at compiletime
+ *
+ * @tparam bit_field_width number of 1s in the mask
+ * @return consteval uint32_t mask with 1s at the LSB
+ */
 template<size_t bit_field_width>
 static consteval uint32_t generate_field_of_ones()
 {
@@ -70,13 +92,22 @@ static consteval uint32_t generate_field_of_ones()
   return result;
 }
 
+/**
+ * @brief
+ *
+ * @tparam T
+ * @tparam source_width
+ * @tparam U
+ * @param p_value
+ * @return constexpr T
+ */
 template<typename T, size_t source_width, typename U>
 constexpr static T increase_bit_depth(U p_value)
 {
   constexpr size_t output_bit_width = sizeof(T) * CHAR_BIT;
 
-  /// Disallow anything other than intergral types. This also disallows floats
-  /// as this type seaks to eliminate their use as much as possible.
+  // Disallow anything other than integral types. This also disallows floats
+  // as this type seeks to eliminate their use as much as possible.
   static_assert(std::is_integral_v<T>,
                 "Full scale can only be an unsigned integral type .");
 
@@ -104,6 +135,12 @@ constexpr static T increase_bit_depth(U p_value)
   return result;
 }
 
+/**
+ * @brief
+ *
+ * @tparam T
+ * @tparam bit_width
+ */
 template<typename T, size_t bit_width>
 struct bit_depth
 {
@@ -118,16 +155,23 @@ struct bit_depth
   }
 };
 
+/**
+ * @brief
+ *
+ * @tparam T
+ */
 template<typename T>
 class full_scale
 {
 public:
-  /// Disallow anything other than intergral types. This also disallows floats
-  /// as this type seaks to eliminate their use as much as possible.
+  // Disallow anything other than integral types. This also disallows floats
+  // as this type seeks to eliminate their use as much as possible.
   static_assert(std::is_integral_v<T>,
                 "Full scale can only be an unsigned integral type .");
-
-  /// Calculate the number
+  /**
+   * @brief Calculate the number
+   *
+   */
   static constexpr size_t bit_width = sizeof(T) * CHAR_BIT;
 
   constexpr full_scale()
@@ -153,6 +197,15 @@ private:
   T m_value = 0;
 };
 
+/**
+ * @brief
+ *
+ * @tparam T
+ * @tparam U
+ * @param value
+ * @param scale
+ * @return auto
+ */
 template<std::unsigned_integral T, std::unsigned_integral U>
 auto operator*(U value, full_scale<T> scale)
 {
