@@ -8,25 +8,51 @@
 #include <span>
 
 namespace embed {
-
-/// Generic settings for a standard SPI peripheral
+/**
+ * @brief Generic settings for a standard SPI device.
+ *
+ */
 struct spi_settings
 {
-  /// Serial clock frequency
+  /**
+   * @brief Serial clock frequency
+   *
+   */
   uint32_t clock_rate_hz = 100'000;
-  /// The polarity of the pins when the signal is idle
+  /**
+   * @brief The polarity of the pins when the signal is idle
+   *
+   */
   bool clock_idles_high = false;
-  /// The phase of the clock signal when communicating
+  /**
+   * @brief The phase of the clock signal when communicating
+   *
+   */
   bool data_valid_on_trailing_edge = false;
 };
 
-/// An abstract interface for hardware that implements the Serial Peripheral
-/// Interface (SPI) communication protocol.
+/**
+ * @brief Serial peripheral interface (SPI) communication protocol hardware
+ * abstract interface
+ *
+ */
 class spi : public driver<spi_settings>
 {
 public:
+  /**
+   * @brief Determines if a transfer is currently ongoing.
+   *
+   * @return true transfer is currently ongoing
+   * @return false device is idle and available for a transaction
+   */
   [[nodiscard]] virtual bool busy() = 0;
-  virtual void transfer(std::span<std::byte> p_data_out,
+  /**
+   * @brief
+   *
+   * @param p_data_out
+   * @param p_data_in
+   */
+  virtual void transfer(std::span<const std::byte> p_data_out,
                         std::span<std::byte> p_data_in) = 0;
 };
 } // namespace embed
