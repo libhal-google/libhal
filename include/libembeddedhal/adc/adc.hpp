@@ -27,14 +27,10 @@ class adc : public driver<>
    * application developer to understand how a particular ADC will effect their
    * application.
    *
-   * @return full_scale<uint32_t> This value acts a precentage scale from where
-   * 0 represents the lowest possible voltage reading the ADC can return and
-   * UINT32T_MAX representing the maximum. It is up to the application developer
-   * to know what the low and high voltage ranges are for the ADC and scale this
-   * value to the correct voltage as needed. As an example, if the low end for
-   * the ADC is 0V and the high is 3.3V and the input voltage is 1.65V (or
-   * half 3.3V), then the full scale value will return 2147483647 or (2^32 - 1)
-   * / 2.
+   * @return full_scale<uint32_t> Return the value of the ADC as a full_scale
+   * value. Typical implemenation:
+   * `return embed::bit_depth<uint32_t, 12>(adc_value);`.
+   *
    */
   virtual full_scale<uint32_t> read() = 0;
 };

@@ -160,6 +160,7 @@ constexpr static T increase_bit_depth(U p_value)
  *
  * @tparam T the underlying type of the value
  * @tparam bit_width the number of bits of the value
+ *
  */
 template<std::integral T, size_t bit_width>
 class bit_depth
