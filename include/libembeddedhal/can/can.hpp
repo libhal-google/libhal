@@ -14,7 +14,6 @@ namespace embed {
  */
 struct can_settings
 {
-  /// Bus clock rate
   uint32_t clock_rate_hz = 100'000;
 };
 
