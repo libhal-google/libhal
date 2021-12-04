@@ -7,22 +7,25 @@
 
 namespace embed {
 /**
- * @brief Analog to Digital Converter (ADC) hardware abstraction interface. Use
- * this interface for devices and peripherals that can convert analog voltage
- * signals into a digital number.
+ * @brief Analog to Digital Converter (ADC) hardware abstraction interface.
+ *
+ * Use this interface for devices and peripherals that can convert analog
+ * voltage signals into a digital number.
  *
  */
 class adc : public driver<>
 {
   /**
-   * @brief Read a sample from the analog to digital converter. This function
-   * makes no assumptions about how the conversation is made via the ADC.
-   * Conversions could be performed at each call of this function. Conversions
-   * can be ongoing by hardware and this function returns the latest sample or
-   * the first sample from a queue. The conversation can also occur over a
-   * communication protocol like SPI or I2C which could effect the time it takes
-   * for this function to return. It is the responsibility of the application
-   * developer to understand how a particular ADC will effect their application.
+   * @brief Read a sample from the analog to digital converter.
+   *
+   * This function makes no assumptions about how the conversation is made via
+   * the ADC. Conversions could be performed at each call of this function.
+   * Conversions can be ongoing by hardware and this function returns the latest
+   * sample or the first sample from a queue. The conversation can also occur
+   * over a communication protocol like SPI or I2C which could effect the time
+   * it takes for this function to return. It is the responsibility of the
+   * application developer to understand how a particular ADC will effect their
+   * application.
    *
    * @return full_scale<uint32_t> This value acts a precentage scale from where
    * 0 represents the lowest possible voltage reading the ADC can return and

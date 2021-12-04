@@ -40,3 +40,8 @@ archives/
 
 # Artifacts
 build/
+docs/doxygen/
+docs/doxygen_warn.log
+docs/content/api/
+docs/public/
+tools/

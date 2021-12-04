@@ -6,8 +6,10 @@
 
 namespace embed {
 /**
- * @brief Set of possible pin mode resistor settings. See each enumeration to
- * get more details about when and how these should be used.
+ * @brief Set of possible pin mode resistor settings.
+ *
+ * See each enumeration to get more details about when and how these should be
+ * used.
  *
  */
 enum class pin_resistor
@@ -88,8 +90,9 @@ struct interrupt_pin_settings
 };
 
 /**
- * @brief Digital input pin hardware abstraction. Use this to read a pin and
- * determine if the voltage on it is HIGH or LOW.
+ * @brief Digital input pin hardware abstraction.
+ *
+ * Use this to read a pin and determine if the voltage on it is HIGH or LOW.
  *
  */
 class input_pin : public driver<input_pin_settings>
@@ -104,8 +107,10 @@ public:
   virtual bool level() const = 0;
 };
 /**
- * @brief Digital output pin hardware abstraction. Use this to drive a pin HIGH
- * or LOW in order to send a control signal or turn off or on an LED.
+ * @brief Digital output pin hardware abstraction.
+ *
+ * Use this to drive a pin HIGH or LOW in order to send a control signal or turn
+ * off or on an LED.
  *
  */
 class output_pin : public driver<output_pin_settings>
@@ -129,10 +134,12 @@ public:
   virtual bool level() const = 0;
 };
 /**
- * @brief Digital interrupt pin hardware abstraction. Use this to trigger an
- * interrupt service routine (ISR) when a pin detects a falling edge (when the
- * pin's voltage transitions from HIGH to LOW), a rising edge (when the pin's
- * voltage transitions from LOW to HIGH), or any transition of state on the pin.
+ * @brief Digital interrupt pin hardware abstraction.
+ *
+ * Use this to trigger an interrupt service routine (ISR) when a pin detects a
+ * falling edge (when the pin's voltage transitions from HIGH to LOW), a rising
+ * edge (when the pin's voltage transitions from LOW to HIGH), or any transition
+ * of state on the pin.
  *
  */
 class interrupt_pin : public driver<interrupt_pin_settings>

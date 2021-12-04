@@ -12,28 +12,58 @@
 
 namespace embed {
 /// can_network is a canbus message receiver handler and
+
+/**
+ * @brief Manage, store, and organize messages received on the can bus.
+ *
+ * Drivers use this can bus peripheral manager rather than can directly. This is
+ * to ensure that the correct can messages are filtered to the correct driver.
+ *
+ * To understand the importance of using this class over can direction consider
+ * protocols like UART and I2C. UART is asynchronous and communicates with a
+ * single device. Messages may come at an arbitrary time, but their origin is
+ * always known. Typically a single device driver holds control over a UART
+ * peripheral. I2C is a multi device us but the controller is always the
+ * initiator of the communication. Once an i2c controller successfully starts a
+ * conversation with another device on the bus, the response should always come
+ * from that device. CAN has this problem where messages can come in at any time
+ * from any device on the bus, making writting a driver that accepts the can
+ * interface directly impossible as there would be no way to coordinate which
+ * driver gets what data when the can interface has only a singular receive
+ * method.
+ *
+ * Can Network provides a means for routing messages based on ID to can device
+ * drivers.
+ *
+ */
 class can_network : public embed::driver<>
 {
 public:
-  /// The node stored in the can_network map. Holds the latest CAN message and
-  /// contains methods for updating and retreiving can messages in a thread-safe
-  /// manner that does not invoke OS locks.
-  ///
-  /// Updating the CAN message data is completely lock free. Retrieving
-  /// data is NOT lock free, but instead uses atomics to poll for when the
-  /// update() function has completed in some other thread. This asymmetry in
-  /// locking is to reduce latency for write case rather than than read case.
-  /// Storing a CAN message is typically done via an interrupt service routine
-  /// or a thread that MUST NOT block in anyway or the system can lock up. Where
-  /// as reading data typically is done by a userspace thread which can
-  /// typically wait a few cycles to get its data.
+  /**
+   * @brief A can network node stores the can messages in a lock free way.
+   *
+   * Updating the can message data is completely lock free. Retrieving data uses
+   * atomics to poll for when the update() function has completed. This
+   * asymmetry in locking is to reduce write time, which is usually
+   * done in an interrupt context, rather than than read time, which is
+   * performed by a driver in a thread or main thread.
+   *
+   */
   class node_t
   {
   public:
-    /// Default constructor
+    /**
+     * @brief Construct a new node t object
+     *
+     */
     node_t() noexcept {}
 
-    /// Node assignment operator
+    /**
+     * @brief Node assignment operator
+     *
+     * @param node the node copy
+     * @return node_t& reference to this object
+     */
     node_t& operator=(const node_t& node) noexcept
     {
       data = node.data;
@@ -41,12 +71,18 @@ public:
       return *this;
     }
 
-    /// Copy constructor
+    /**
+     * @brief Construct a new node t object
+     *
+     * @param node the object to copy
+     */
     node_t(const node_t& node) noexcept { *this = node; }
 
-    /// Return a CAN message, but only do so if the CAN message of this node is
-    /// not currently be modified by another thread that is using the update()
-    /// method.
+    /**
+     * @brief Get this node's can message
+     *
+     * @return can::message_t
+     */
     can::message_t secure_get()
     {
       // Continuously check if the received CAN message is valid. NOTE: that, in
@@ -77,10 +113,14 @@ public:
   private:
     friend can_network;
 
-    /// updates the can message in a lock-free way. Can only be accessed by the
-    /// can_network class.
-    ///
-    /// @param new_data - New CAN message to store
+    /**
+     * @brief Update can message
+     *
+     * This update is performed in a lock-free way and can only be accessed by
+     * the can_network class.
+     *
+     * @param new_data New can message to store
+     */
     void update(const can::message_t& new_data)
     {
       // Atomic increment of the access counter to notify any threads that are
@@ -100,15 +140,19 @@ public:
       access_counter++;
     }
 
-    /// Holds the latest received can message;
+    /// Holds the latest received can message
     can::message_t data = {};
 
     /// Used to indicate when the data field is being accessed
     std::atomic<int> access_counter = 0;
   };
 
-  /// @param can - CAN peripheral to manage the network of.
-  /// @param memory_resource - pointer to a memory resource.
+  /**
+   * @brief Construct a new can network object
+   *
+   * @param p_can can peripheral to manage the network of
+   * @param p_memory_resource memory resource used for storing can messages
+   */
   can_network(can& p_can, std::pmr::memory_resource& p_memory_resource) noexcept
     : m_can(p_can)
     , m_messages(&p_memory_resource)
@@ -123,23 +167,28 @@ public:
     return true;
   }
 
-  /// In order for a CAN message with an associated ID to be stored in the
-  /// can_network, it must be declared using this method. For example if you
-  /// expect to get the following IDs 0x140, 0x7AA, and 0x561 from the CAN bus,
-  /// then this method must be called as such:
-  ///
-  /// ```
-  ///    node_t * motor_node       = can_network.register_message_id(0x140);
-  ///    node_t * encoder_node     = can_network.register_message_id(0x561);
-  ///    node_t * temperature_node = can_network.register_message_id(0x7AA);
-  /// ```
-  ///
-  /// @param id - Associated ID of messages to be stored.
-  /// @throw std::bad_alloc if this static storage allocated for this object is
-  /// not enough to hold
-  /// @return node_t* - reference to the CANBUS network node_t which can be used
-  /// at anytime to retreive the latest received message from the CANBUS that is
-  /// associated with the set ID.
+  /**
+   * @brief Assocate a can id with a node in the can network.
+   *
+   * To store can message with an associated ID in the can_network, it must be
+   * declared using this method. For example if you expect to get the following
+   * IDs 0x140, 0x7AA, and 0x561 from the CAN bus, then this method must be
+   * called as such:
+   *
+   * ```C++
+   * node_t* motor_node = can_network.register_message_id(0x140);
+   * node_t* encoder_node = can_network.register_message_id(0x561);
+   * node_t* temperature_node = can_network.register_message_id(0x7AA);
+   * ```
+   *
+   * @param id - Associated ID of messages to be stored.
+   * @throw std::bad_alloc if this static storage allocated for this object is
+   * not enough to hold
+   * @return node_t* - reference to the CANBUS network node_t which can be used
+   * at anytime to retreive the latest received message from the CANBUS that is
+   * associated with the set ID.
+   *
+   */
   [[nodiscard]] node_t* register_message_id(can::id_t id)
   {
     node_t empty_node;
@@ -155,20 +204,36 @@ public:
     return &m_messages[id];
   }
 
-  /// Manually call the receive handler. This is useful for unit testing and for
-  /// CANBUS peripherals that do NOT have a receive message interrupt routine.
-  /// In the later case, a software (potentially a thread) can perform the
-  /// receive call manually to extract messages from the CAN peripheral FIFO.
-  /// This method cannot guarantee that data is not lost if the FIFO fills up.
+  /**
+   * @brief Manually call the receive handler.
+   *
+   * This is useful for unit testing and for CANBUS peripherals that do NOT have
+   * a receive message interrupt routine. In the later case, a software
+   * (potentially a thread) can perform the receive call manually to extract
+   * messages from the CAN peripheral FIFO. This method cannot guarantee that
+   * data is not lost if the FIFO fills up.
+   *
+   */
   void manually_call_receive_handler() { receive_handler(m_can); }
 
-  /// Return the CAN peripheral object which can be used to initialize,
-  /// configure, and enable the peripheral as well as transmit messages.
-  /// Access to this object, if a can_network
+  /**
+   * @brief get a reference to the can peripheral driver
+   *
+   * Can be used to initialize, configure, and enable the peripheral as well as
+   * transmit messages.
+   *
+   * @return can& reference to the can peripheral driver
+   */
   can& bus() { return m_can; }
 
-  /// Meant for testing purposes or when direct inspection of the map is useful
-  /// in userspace. Should not be used in by libraries.
+  /**
+   * @brief Get the Internal Map object
+   *
+   * Meant for testing purposes or when direct inspection of the map is useful
+   * in userspace. Should not be used in by libraries.
+   *
+   * @return const auto& map of all of the messages in the network.
+   */
   const auto& GetInternalMap() { return m_messages; }
 
 private:

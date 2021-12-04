@@ -110,9 +110,18 @@ public:
   }
 
 protected:
+  /**
+   * @brief Implementation of driver initialize by the inherited driver
+   *
+   * @return true driver initialized successfully
+   * @return false driver initialization failed
+   */
   virtual bool driver_initialize() = 0;
+  /// Mutable settings
   settings_t m_settings{};
+  /// Saved version of the settings at initialization
   settings_t m_initialized_settings{};
+  /// Determines if the driver has been initialized
   bool m_initialized = false;
 };
 } // namespace embed

@@ -32,6 +32,12 @@ jobs:
             working-directory: docs
             doxyfile-path: 'doxygen.conf'
 
+      - name: Read out any doxygen warnings
+        if: always()
+        working-directory: docs
+        run: cat doxygen_warn.log
+
+
       - name: Run doxybook2
         working-directory: docs
         run: ../doxybook2/bin/doxybook2 --input doxygen/xml --output content/api --config doxybook2/config.json  --templates doxybook2

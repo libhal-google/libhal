@@ -21,7 +21,7 @@ using sleep_function = std::function<void(std::chrono::nanoseconds)>;
 using uptime_function = std::function<std::chrono::nanoseconds(void)>;
 
 /**
- * @brief internal clock
+ * @brief structure containing internal clock variables and functions
  *
  */
 struct global_clocks

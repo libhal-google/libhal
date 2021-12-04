@@ -79,10 +79,11 @@ struct serial_settings
 };
 
 /**
- * @brief Serial communication protocol hardware abstract interface. Use this
- * interface for hardware that implements a serial protocol like UART, USART,
- * RS232, RS485 and many others that use a similar communication protocol but
- * may use different voltage schemes.
+ * @brief Serial communication protocol hardware abstract interface.
+ *
+ * Use this interface for hardware that implements a serial protocol like UART,
+ * USART, RS232, RS485 and many others that use a similar communication protocol
+ * but may use different voltage schemes.
  *
  * Due to the asynchronous nature of serial communication protocols, all
  * implementations of serial devices MUST buffer received bytes using DMA or

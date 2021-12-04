@@ -10,9 +10,11 @@
 
 namespace embed {
 /**
- * @brief Timer hardware abstraction interface. Use this interface for devices
- * and peripherals that have timer like capabilities, such that, when a timer's
- * time has expired, an event/interrupt/signal is generated.
+ * @brief Timer hardware abstraction interface.
+ *
+ * Use this interface for devices and peripherals that have timer like
+ * capabilities, such that, when a timer's time has expired, an
+ * event/interrupt/signal is generated.
  *
  */
 class timer : public driver<>
