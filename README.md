@@ -1,5 +1,7 @@
 # libembeddedhal
 
+![libembeddedhal logo](docs/chip.svg | width=200)
+
 A collection of interfaces and abstractions for embedded peripherals and devices
 using modern C++
 
