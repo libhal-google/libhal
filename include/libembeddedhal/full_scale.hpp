@@ -163,7 +163,7 @@ constexpr static T increase_bit_depth(U p_value)
  *
  */
 template<std::integral T, size_t bit_width>
-class bit_depth
+struct bit_depth
 {
   /**
    * @brief construct bit_depth object
@@ -180,7 +180,6 @@ class bit_depth
                        bit_limits<bit_width, T>::max());
   }
 
-private:
   T value = 0;
 };
 
@@ -270,7 +269,7 @@ template<std::unsigned_integral T, std::unsigned_integral U>
 auto operator*(U p_value, full_scale<T> p_scale)
 {
   std::uintmax_t arith_container = value;
-  arith_container = arith_container * scale.value();
+  arith_container = arith_container * p_scale.value();
   arith_container = arith_container / std::numeric_limits<T>::max();
   return static_cast<U>(arith_container);
 }
