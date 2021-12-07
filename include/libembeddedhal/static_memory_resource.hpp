@@ -42,39 +42,39 @@ public:
    * @return constexpr std::size_t - the total number of bytes that this
    * allocator can allocate before throwing a std::bad_alloc exception.
    */
-  constexpr std::size_t capacity() noexcept const { return BufferSize; }
+  constexpr std::size_t capacity() const noexcept { return BufferSize; }
   /**
    * @return std::size_t number of bytes that have already been allocated.
    */
-  std::size_t memory_used() noexcept const
+  std::size_t memory_used() const noexcept
   {
     return m_unallocated_memory - m_buffer.data();
   }
   /**
    * @return int Bytes that have yet to be allocated from this allocator.
    */
-  int memory_available() noexcept const { return capacity() - memory_used(); }
+  int memory_available() const noexcept { return capacity() - memory_used(); }
 
 protected:
   /**
    * @brief Implemenation of the do_allocate() method for
    * std::pmr::memory_resource
    *
-   * @param bytes number of bytes to allocate
-   * @param alignment alignment limit for the allocation
+   * @param p_bytes number of bytes to allocate
+   * @param p_alignment alignment limit for the allocation
    * @return void* address of the newly allocated buffer
    */
-  void* do_allocate(std::size_t bytes, std::size_t alignment) override
+  void* do_allocate(std::size_t p_bytes, std::size_t p_alignment) override
   {
     // Request a pointer to unallocated memory from the
     // monotonic_m_bufferresource buffer.
-    void* allocated_address = m_resource.allocate(bytes, alignment);
+    void* allocated_address = m_resource.allocate(p_bytes, p_alignment);
 
     // If the above call has not thrown a std::bad_alloc exception, then the
     // allocated address must contain a valid address from buffer. To get the
     // location of the unallocated memory, simply add the number of bytes to
     // allocate_address variable.
-    m_unallocated_memory = static_cast<std::byte*>(allocated_address) + bytes;
+    m_unallocated_memory = static_cast<std::byte*>(allocated_address) + p_bytes;
 
     return allocated_address;
   }
@@ -82,28 +82,28 @@ protected:
    * @brief Implemenation of the do_deallocate() method for
    * std::pmr::memory_resource
    *
-   * @param address address of space to be deallocated
-   * @param bytes number of bytes to allocate
-   * @param alignment alignment limit for the allocation
+   * @param p_address address of space to be deallocated
+   * @param p_bytes number of bytes to allocate
+   * @param p_alignment alignment limit for the allocation
    */
-  void do_deallocate(void* address,
-                     std::size_t bytes,
-                     std::size_t alignment) override
+  void do_deallocate(void* p_address,
+                     std::size_t p_bytes,
+                     std::size_t p_alignment) override
   {
-    return m_resource.deallocate(address, bytes, alignment);
+    return m_resource.deallocate(p_address, p_bytes, p_alignment);
   }
   /**
    * @brief Implemenation of the do_is_equal() method for
    * std::pmr::memory_resource
    *
-   * @param other another memory resource to
+   * @param p_other another memory resource to
    * @return true are equal
    * @return false are not equal
    */
   bool do_is_equal(
-    const std::pmr::memory_resource& other) const noexcept override
+    const std::pmr::memory_resource& p_other) const noexcept override
   {
-    return m_resource.is_equal(other);
+    return m_resource.is_equal(p_other);
   }
 
 private:

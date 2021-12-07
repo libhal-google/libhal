@@ -218,12 +218,19 @@ public:
    *
    * @tparam U type of the bit depth object
    * @tparam bit_width the bit width of the object
-   * @param p_value the bit depth object
+   * @param p_value the value at a specific bit resolution to scale up to a full
+   * scale value
    * @return constexpr full_scale<T>& reference to this object
    */
   template<typename U, size_t bit_width>
   constexpr full_scale<T>& operator=(bit_depth<U, bit_width> p_value)
   {
+    static_assert(
+      (std::is_signed_v<T> && std::is_signed_v<U>) ||
+        (std::is_unsigned_v<T> && std::is_unsigned_v<U>),
+      "The full scale arithemetic type and bit depth type must both be "
+      "unsigned or signed. They cannot be mixed between each other.");
+
     m_value = increase_bit_depth<T, bit_width, U>(p_value.value);
     return *this;
   }
@@ -269,7 +276,7 @@ private:
 template<std::unsigned_integral T, std::unsigned_integral U>
 auto operator*(U p_value, full_scale<T> p_scale)
 {
-  std::uintmax_t arith_container = value;
+  std::uintmax_t arith_container = p_value;
   arith_container = arith_container * p_scale.value();
   arith_container = arith_container / std::numeric_limits<T>::max();
   return static_cast<U>(arith_container);
