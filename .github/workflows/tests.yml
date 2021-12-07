@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - main  # Set a branch to deploy
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Install CMake
+        run: pip install cmake
+
+      - name: Install conan
+        run: pip install conan
+
+      - name: Install g++-10
+        run: sudo apt install g++-10
+
+      - name: Local Conan Install
+        run: conan create .
+
+      - name: CMake Build
+        working-directory: tests
+        run: CXX=g++-10 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build Tests
+        working-directory: tests/build
+        run: make
+
+      - name: Run Tests
+        working-directory: tests/build
+        run: ./bin/test
