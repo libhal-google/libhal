@@ -55,4 +55,4 @@ constexpr bool is_a_test()
           platform_string.starts_with("unittest") ||
           platform_string.starts_with("test"));
 }
-}
+}  // namespace embed

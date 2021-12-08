@@ -111,4 +111,4 @@ private:
   std::byte* m_unallocated_memory;
   std::pmr::monotonic_buffer_resource m_resource;
 };
-} // namespace embed
+}  // namespace embed

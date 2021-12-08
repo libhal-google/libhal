@@ -65,4 +65,4 @@ public:
                         std::span<std::byte> p_data_in,
                         std::byte p_write_value = std::byte{ 0xFF }) = 0;
 };
-} // namespace embed
+}  // namespace embed

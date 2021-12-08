@@ -61,22 +61,22 @@ public:
     /**
      * @brief Node assignment operator
      *
-     * @param node the node copy
+     * @param p_node the node copy
      * @return node_t& reference to this object
      */
-    node_t& operator=(const node_t& node) noexcept
+    node_t& operator=(const node_t& p_node) noexcept
     {
-      data = node.data;
-      access_counter.store(access_counter.load());
+      m_data = p_node.m_data;
+      m_access_counter.store(m_access_counter.load());
       return *this;
     }
 
     /**
      * @brief Construct a new node t object
      *
-     * @param node the object to copy
+     * @param p_node the object to copy
      */
-    node_t(const node_t& node) noexcept { *this = node; }
+    node_t(const node_t& p_node) noexcept { *this = p_node; }
 
     /**
      * @brief Get this node's can message
@@ -90,14 +90,14 @@ public:
       // copies from RAM/cache are fast between receive_handler and GetMessage()
       while (true) {
         // First, atomically copy the access_counter to a variable.
-        const auto read_message_start = access_counter.load();
+        const auto read_message_start = m_access_counter.load();
 
         // Copy the contents of the mesage into the kCanMessage variable.
-        const can::message_t kCanMessage = data;
+        const can::message_t kCanMessage = m_data;
 
         // Finally, atomically copy the access_counter again such that the value
         // between the start and finish can be compared.
-        const auto read_message_finish = access_counter.load();
+        const auto read_message_finish = m_access_counter.load();
 
         // If and only if these two values are the same, meaning that the
         // receive_handler isn't currently modifying the node_t's data,
@@ -119,16 +119,16 @@ public:
      * This update is performed in a lock-free way and can only be accessed by
      * the can_network class.
      *
-     * @param new_data New can message to store
+     * @param p_new_data New can message to store
      */
-    void update(const can::message_t& new_data)
+    void update(const can::message_t& p_new_data)
     {
       // Atomic increment of the access counter to notify any threads that are
       // using GetMesage() that the value of this node is changing.
-      access_counter++;
+      m_access_counter++;
 
       // Copy the contents of the new message into the map.
-      data = new_data;
+      m_data = p_new_data;
 
       // Another atomic increment of the access counter to notify any thread
       // using GetMessage() that the value of this node has finished changing.
@@ -137,14 +137,14 @@ public:
       // it has not changed. If it has changed, then GetMessage() should
       // continue polling the map node until access_counter is the same between
       // copies.
-      access_counter++;
+      m_access_counter++;
     }
 
     /// Holds the latest received can message
-    can::message_t data = {};
+    can::message_t m_data = {};
 
     /// Used to indicate when the data field is being accessed
-    std::atomic<int> access_counter = 0;
+    std::atomic<int> m_access_counter = 0;
   };
 
   /**
@@ -181,7 +181,7 @@ public:
    * node_t* temperature_node = can_network.register_message_id(0x7AA);
    * ```
    *
-   * @param id - Associated ID of messages to be stored.
+   * @param p_id - Associated ID of messages to be stored.
    * @throw std::bad_alloc if this static storage allocated for this object is
    * not enough to hold
    * @return node_t* - reference to the CANBUS network node_t which can be used
@@ -189,7 +189,7 @@ public:
    * associated with the set ID.
    *
    */
-  [[nodiscard]] node_t* register_message_id(can::id_t id)
+  [[nodiscard]] node_t* register_message_id(can::id_t p_id)
   {
     node_t empty_node;
 
@@ -198,10 +198,10 @@ public:
     // receive_handler() and GetMessage() are performed. receive_handler()
     // will ignore messages with IDs that are not already keys within the map.
     // GetMessage() will throw an exception.
-    m_messages.emplace(std::make_pair(id, empty_node));
+    m_messages.emplace(std::make_pair(p_id, empty_node));
 
     // Return reference to the newly made node_t.
-    return &m_messages[id];
+    return &m_messages[p_id];
   }
 
   /**
@@ -234,7 +234,7 @@ public:
    *
    * @return const auto& map of all of the messages in the network.
    */
-  const auto& GetInternalMap() { return m_messages; }
+  const auto& get_internal_map() { return m_messages; }
 
 private:
   void receive_handler(can& p_can)
@@ -245,7 +245,7 @@ private:
     }
 
     // Pop the latest can message off the queue.
-    const auto kMessage = p_can.receive();
+    const auto message = p_can.receive();
 
     // Check if the map already has a value for this ID. This acts as the last
     // stage of the CAN filter for the CANBUS Network module. If the key
@@ -256,16 +256,16 @@ private:
     // Map lookups can be costly, especially in a interrupt context, so only
     // needing to hash/lookup the ID once is preferred. To prevent multiple
     // lookups, an iterator is stored into the message_node variable.
-    auto message_node = m_messages.find(kMessage.id);
+    auto message_node = m_messages.find(message.id);
 
     // If the ID has an associated value in the map, then the node std::pair<>
     // is returned, otherwise, the ::end() node is returned.
     if (message_node != m_messages.end()) {
-      message_node->second.update(kMessage);
+      message_node->second.update(message);
     }
   }
 
   can& m_can;
   std::pmr::unordered_map<uint32_t, node_t> m_messages;
 };
-} // namespace embed
+}  // namespace embed

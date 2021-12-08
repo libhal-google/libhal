@@ -1,0 +1,51 @@
+name: lint
+
+on:
+  push:
+    branches:
+      - main  # Set a branch to deploy
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: 📥 Install clang-format
+        shell: bash
+        run: sudo apt install clang-format-10
+
+      - name: 📥 Install cspell
+        shell: bash
+        run: sudo npm install -g cspell
+
+      - name: 📥 Install libclang-11-dev (for name style check)
+        shell: bash
+        run: sudo apt install libclang-11-dev
+
+      - name: 📥 Install pip package 'clang' & 'pyyaml' (for ncc)
+        shell: bash
+        run: python3 -m pip install clang pyyaml
+
+      - name: 📃 Naming Convention Check
+        shell: bash
+        if: always()
+        run: |
+              git clone https://github.com/nithinn/ncc.git ncc
+              ./ncc/ncc.py --recurse --path include \
+              --style .naming.style | tee ncc.stderr
+              [ ! -s ncc.stderr ]
+
+      - name: 🧹 Format Check
+        shell: bash
+        if: always()
+        run: clang-format --dry-run --Werror include/**/*.hpp
+
+      - name: 🔤 Check Spelling
+        shell: bash
+        if: always()
+        run: cspell include/**/*.hpp

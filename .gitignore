@@ -45,3 +45,6 @@ docs/doxygen_warn.log
 docs/content/api/
 docs/public/
 tools/
+
+# lint artifacts
+ncc.stderr
