@@ -77,4 +77,4 @@ public:
    */
   virtual uint64_t count() = 0;
 };
-} // namespace embed
+}  // namespace embed

@@ -34,4 +34,4 @@ class adc : public driver<>
    */
   virtual full_scale<uint32_t> read() = 0;
 };
-} // namespace embed
+}  // namespace embed

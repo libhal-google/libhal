@@ -70,4 +70,4 @@ public:
    */
   [[nodiscard]] virtual bool busy() = 0;
 };
-} // namespace embed
+}  // namespace embed

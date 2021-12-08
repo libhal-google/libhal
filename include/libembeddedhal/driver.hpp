@@ -124,4 +124,4 @@ protected:
   /// Determines if the driver has been initialized
   bool m_initialized = false;
 };
-} // namespace embed
+}  // namespace embed

@@ -195,4 +195,4 @@ public:
    */
   virtual void detach_interrupt() = 0;
 };
-} // namespace embed
+}  // namespace embed

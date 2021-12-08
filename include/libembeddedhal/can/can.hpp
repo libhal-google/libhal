@@ -76,6 +76,6 @@ public:
    * to disable receive interrupts.
    */
   virtual void attach_interrupt(
-    std::function<void(can&)> p_receive_handler) = 0;
+    std::function<void(can& p_can)> p_receive_handler) = 0;
 };
-}
+}  // namespace embed

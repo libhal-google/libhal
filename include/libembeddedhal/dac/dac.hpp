@@ -20,11 +20,11 @@ public:
    * @brief Generate a voltage between a defined LOW and HIGH voltage.
    *
    * The LOW and HIGH voltage are generally configured by a reference voltage
-   * (usually denoted Vref) connected to the device. Generally though, the low
+   * (usually denoted V_ref) connected to the device. Generally though, the low
    * voltage is 0V and the high voltage reference is VCC.
    *
-   * @param value precentage scale from LOW to HIGH
+   * @param p_value precentage scale from LOW to HIGH
    */
-  virtual void write(full_scale<uint32_t> value) = 0;
+  virtual void write(full_scale<uint32_t> p_value) = 0;
 };
-} // namespace embed
+}  // namespace embed

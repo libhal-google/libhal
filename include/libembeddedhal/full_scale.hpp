@@ -180,6 +180,7 @@ struct bit_depth
                        bit_limits<bit_width, T>::max());
   }
 
+  /// Value of the data at the bit width
   T value = 0;
 };
 
@@ -273,4 +274,4 @@ auto operator*(U p_value, full_scale<T> p_scale)
   arith_container = arith_container / std::numeric_limits<T>::max();
   return static_cast<U>(arith_container);
 }
-} // namespace embed
+}  // namespace embed
