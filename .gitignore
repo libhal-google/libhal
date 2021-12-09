@@ -43,6 +43,7 @@ build/
 docs/doxygen/
 docs/doxygen_warn.log
 docs/content/api/
+!docs/content/api/_index.md
 docs/public/
 tools/
 

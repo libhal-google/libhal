@@ -1,8 +1,8 @@
 +++
+chapter = true
 title = "Welcome"
-weight = 5
 +++
 
-# Welcome to libembeddedhal!
+# Welcome!
 
 TBD
