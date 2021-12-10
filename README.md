@@ -13,6 +13,8 @@ using modern C++
 
 ## 🏗️ WARNING IN DEVELOPMENT 🚧
 
+## [📖 Full Documentation & Guides](https://sjsu-dev2.github.io/libembeddedhal)
+
 ## Development
 
 ### Prerequisites
@@ -67,11 +69,11 @@ In general what you do for build for cmake is to do the following at the root of
 one of the repos:
 
 ```bash
-mkdir build
+cd tests
+CXX=g++-11 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
 cd build
-conan install .. -s build_type=Debug
-cmake .. -DCMAKE_BUILD_TYPE=Debug
 make
+./bin/tests
 ```
 
 To explain the steps:
