@@ -101,10 +101,10 @@ public:
   /**
    * @brief Read the state of the input pin
    *
-   * @return true indicates a HIGH voltage
-   * @return false indicates a LOW voltage
+   * @return boost::leaf::result<bool> - true indicates HIGH voltage and false
+   * indicates LOW voltage
    */
-  virtual bool level() const = 0;
+  virtual boost::leaf::result<bool> level() const = 0;
 };
 /**
  * @brief Digital output pin hardware abstraction.
@@ -119,19 +119,20 @@ public:
   /**
    * @brief Set the state of the pin
    *
-   * @param p_high if true then the pin state is set to HIGH voltage. If false,
-   * the pin state is set to LOW voltage.
+   * @param p_high - if true then the pin state is set to HIGH voltage. If
+   * false, the pin state is set to LOW voltage.
+   * @return boost::leaf::result<void>
    */
-  virtual void level(bool p_high) = 0;
+  virtual boost::leaf::result<void> level(bool p_high) = 0;
   /**
    * @brief Read the state of the input pin. Implementations must read the pin
    * state from hardware and will not simply cache the results from running
    * level(bool).
    *
-   * @return true indicates a HIGH voltage
-   * @return false indicates a LOW voltage
+   * @return boost::leaf::result<bool> - true indicates HIGH voltage and false
+   * indicates LOW voltage
    */
-  virtual bool level() const = 0;
+  virtual boost::leaf::result<bool> level() const = 0;
 };
 /**
  * @brief Digital interrupt pin hardware abstraction.
@@ -172,10 +173,9 @@ public:
   /**
    * @brief Return the voltage level of the pin
    *
-   * @return true HIGH voltage
-   * @return false LOW voltage
+   * @return boost::leaf::result<void>
    */
-  virtual bool level() const = 0;
+  virtual boost::leaf::result<bool> level() const = 0;
   /**
    * @brief Enable interrupts for this pin. Pass in the callback to be executed
    * when the trigger condition is met. This function can be called multiple
@@ -186,13 +186,16 @@ public:
    * @param p_callback function to execute when the trigger condition is met
    * @param p_trigger the trigger condition that will signal the system to run
    * the callback.
+   * @return boost::leaf::result<void>
    */
-  virtual void attach_interrupt(std::function<void(void)> p_callback,
-                                trigger_edge p_trigger) = 0;
+  virtual boost::leaf::result<void> attach_interrupt(
+    std::function<void(void)> p_callback,
+    trigger_edge p_trigger) = 0;
   /**
    * @brief Disable interrupts for this pin
    *
+   * @return boost::leaf::result<void>
    */
-  virtual void detach_interrupt() = 0;
+  virtual boost::leaf::result<void> detach_interrupt() = 0;
 };
 }  // namespace embed

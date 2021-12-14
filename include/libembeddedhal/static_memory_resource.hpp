@@ -24,7 +24,7 @@ namespace embed {
  *    static_memory_resource<1024> memory_resource;
  *    std::pmr::unordered_map<int, const char*> id_name_map(&memory_resource);
  *
- * @tparam BufferSize number of bytes to statically allocate for the memory
+ * @tparam BufferSize - number of bytes to statically allocate for the memory
  * resource.
  */
 template<size_t BufferSize>
@@ -44,14 +44,14 @@ public:
    */
   constexpr std::size_t capacity() const noexcept { return BufferSize; }
   /**
-   * @return std::size_t number of bytes that have already been allocated.
+   * @return std::size_t - number of bytes that have already been allocated.
    */
   std::size_t memory_used() const noexcept
   {
     return m_unallocated_memory - m_buffer.data();
   }
   /**
-   * @return int Bytes that have yet to be allocated from this allocator.
+   * @return int - Bytes that have yet to be allocated from this allocator.
    */
   int memory_available() const noexcept { return capacity() - memory_used(); }
 
@@ -60,9 +60,9 @@ protected:
    * @brief Implemenation of the do_allocate() method for
    * std::pmr::memory_resource
    *
-   * @param p_bytes number of bytes to allocate
-   * @param p_alignment alignment limit for the allocation
-   * @return void* address of the newly allocated buffer
+   * @param p_bytes - number of bytes to allocate
+   * @param p_alignment - alignment limit for the allocation
+   * @return void* - address of the newly allocated buffer
    */
   void* do_allocate(std::size_t p_bytes, std::size_t p_alignment) override
   {
@@ -82,9 +82,9 @@ protected:
    * @brief Implemenation of the do_deallocate() method for
    * std::pmr::memory_resource
    *
-   * @param p_address address of space to be deallocated
-   * @param p_bytes number of bytes to allocate
-   * @param p_alignment alignment limit for the allocation
+   * @param p_address - address of space to be deallocated
+   * @param p_bytes - number of bytes to allocate
+   * @param p_alignment - alignment limit for the allocation
    */
   void do_deallocate(void* p_address,
                      std::size_t p_bytes,
@@ -96,9 +96,9 @@ protected:
    * @brief Implemenation of the do_is_equal() method for
    * std::pmr::memory_resource
    *
-   * @param p_other another memory resource to
-   * @return true are equal
-   * @return false are not equal
+   * @param p_other - another memory resource to
+   * @return true - are equal
+   * @return false - are not equal
    */
   bool do_is_equal(
     const std::pmr::memory_resource& p_other) const noexcept override

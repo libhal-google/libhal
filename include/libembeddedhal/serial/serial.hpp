@@ -82,7 +82,7 @@ struct serial_settings
  * @brief Serial communication protocol hardware abstract interface.
  *
  * Use this interface for hardware that implements a serial protocol like UART,
- * RS232, RS485 and many others that use a similar communication protocol but 
+ * RS232, RS485 and many others that use a similar communication protocol but
  * may use different voltage schemes.
  *
  * Due to the asynchronous nature of serial communication protocols, all
@@ -115,47 +115,53 @@ public:
    * is the greater byte. If you wanted to send a 9-bit frame with value 0x14A,
    * the first byte must be 0x4A and the next 0x01.
    *
-   * @param p_data data to be transmitted over the serial port transmitter line
+   * @param p_data - data to be transmitted over the serial port transmitter
+   * line
+   * @return boost::leaf::result<void> - any errors that occured during this
+   * operation.
    */
-  virtual void write(std::span<const std::byte> p_data) = 0;
+  virtual boost::leaf::result<void> write(
+    std::span<const std::byte> p_data) = 0;
   /**
    * @brief Determines if the write operation is currently on going.
    *
-   * @return true serial transmitter is currently writing data to the port
-   * @return false serial transmitter is idle and  available to write data
+   * @return boost::leaf::result<bool> - serial transmitter is currently writing
+   * data to the port
    */
-  [[nodiscard]] virtual bool busy() = 0;
+  [[nodiscard]] virtual boost::leaf::result<bool> busy() = 0;
   /**
    * @brief The number of bytes that have been buffered. For frames less than
    * 8-bits, each byte holds a frame. For frames above 8-bits the number of
    * bytes returned indicates the number of bytes a buffer needs to be to return
    * all of the data held in the buffer.
    *
-   * @return size_t number of buffered by the serial driver and are available to
-   * be read by the read() function.
+   * @return boost::leaf::result<size_t> - number of buffered by the serial
+   * driver and are available to be read by the read() function.
    */
-  [[nodiscard]] virtual size_t bytes_available() = 0;
+  [[nodiscard]] virtual boost::leaf::result<size_t> bytes_available() = 0;
   /**
    * @brief Read the bytes received over the ports receiver line and stored in
    * the serial implementations buffer. The number of bytes read will subtract
    * the number of bytes available until it reaches zero.
    *
-   * @param p_data Buffer to read bytes back from. If the length of this buffer
-   * is greater than the value returned by bytes_available() then buffer is
-   * filled up to the length returned by bytes_available(). The rest of the
+   * @param p_data - Buffer to read bytes back from. If the length of this
+   * buffer is greater than the value returned by bytes_available() then buffer
+   * is filled up to the length returned by bytes_available(). The rest of the
    * buffer is left untouched.
-   * @return std::span<const std::byte> provides a means to get the length of
-   * bytes read into the buffer p_data. The address will ALWAYS be the same as
-   * p_data and the length will be equal to the number of bytes read from the
-   * buffer.
+   * @return boost::leaf::result<std::span<const std::byte>> - provides a means
+   * to get the length of bytes read into the buffer p_data. The address will
+   * ALWAYS be the same as p_data and the length will be equal to the number of
+   * bytes read from the buffer.
    */
-  virtual std::span<const std::byte> read(std::span<std::byte> p_data) = 0;
+  virtual boost::leaf::result<std::span<const std::byte>> read(
+    std::span<std::byte> p_data) = 0;
   /**
    * @brief Set bytes_available() to zero and clear any received data stored in
    * hardware registers. This operation must be faster than simply running
    * read() until bytes_available() is empty.
    *
+   * @return boost::leaf::result<void>
    */
-  virtual void flush() = 0;
+  virtual boost::leaf::result<void> flush() = 0;
 };
 }  // namespace embed

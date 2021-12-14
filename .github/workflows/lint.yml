@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  deploy:
+  lint:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -37,6 +37,7 @@ jobs:
         run: |
               git clone https://github.com/nithinn/ncc.git ncc
               ./ncc/ncc.py --recurse --path include \
+              --exclude include/libembeddedhal/internal/third_party/* \
               --style .naming.style | tee ncc.stderr
               [ ! -s ncc.stderr ]
 

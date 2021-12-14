@@ -46,35 +46,39 @@ public:
   /**
    * @brief Determine if the counter is currently running
    *
-   * @return true counter is currently running
-   * @return false counter is currently stopped
+   * @return boost::leaf::result<bool> - true if the counter is currently
+   * running.
    */
-  virtual bool is_running() = 0;
+  virtual boost::leaf::result<bool> is_running() = 0;
   /**
    * @brief Control the state of the counter
    *
-   * @param p_control new state for the counter
+   * @param p_control - new state for the counter
+   * @return boost::leaf::result<void>
    */
-  virtual void control(controls p_control) = 0;
+  virtual boost::leaf::result<void> control(controls p_control) = 0;
   /**
    * @brief Period for each count of the timer. For example a period of 1ms and
    * a count of 500 would mean that 500ms has elapse since the counter has been
    * started.
    *
-   * @param p_period the amount of time each count should be.
+   * @param p_period - the amount of time in nanoseconds each count should be
+   * @return boost::leaf::result<void>
    */
-  virtual void period(std::chrono::nanoseconds p_period) = 0;
+  virtual boost::leaf::result<void> period(
+    std::chrono::nanoseconds p_period) = 0;
   /**
    * @brief Get the current period for the counter
    *
-   * @return std::chrono::nanoseconds
+   * @return boost::leaf::result<std::chrono::nanoseconds> - the period of time
+   * for each count.
    */
-  virtual std::chrono::nanoseconds period() = 0;
+  virtual boost::leaf::result<std::chrono::nanoseconds> period() = 0;
   /**
    * @brief Get the count of the counter
    *
-   * @return uint64_t current count
+   * @return boost::leaf::result<uint64_t> - the current count
    */
-  virtual uint64_t count() = 0;
+  virtual boost::leaf::result<uint64_t> count() = 0;
 };
 }  // namespace embed

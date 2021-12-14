@@ -150,21 +150,20 @@ public:
   /**
    * @brief Construct a new can network object
    *
-   * @param p_can can peripheral to manage the network of
-   * @param p_memory_resource memory resource used for storing can messages
+   * @param p_can - can peripheral to manage the network of
+   * @param p_memory_resource - memory resource used for storing can messages
    */
   can_network(can& p_can, std::pmr::memory_resource& p_memory_resource) noexcept
     : m_can(p_can)
     , m_messages(&p_memory_resource)
   {}
 
-  bool driver_initialize() override
+  boost::leaf::result<void> driver_initialize() override
   {
-    if (!m_can.initialize()) {
-      return false;
-    }
-    m_can.attach_interrupt([this](can& p_can) { receive_handler(p_can); });
-    return true;
+    BOOST_LEAF_CHECK(m_can.initialize());
+    auto handler = [this](can& p_can) { receive_handler(p_can); };
+    BOOST_LEAF_CHECK(m_can.attach_interrupt(handler));
+    return {};
   }
 
   /**

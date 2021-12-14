@@ -73,8 +73,8 @@ public:
 /**
  * @brief Generate a mask of 1s at compiletime
  *
- * @tparam bit_field_width number of 1s in the mask
- * @return consteval uint32_t mask with 1s at the LSB
+ * @tparam bit_field_width - number of 1s in the mask
+ * @return consteval uint32_t - mask with 1s at the LSB
  */
 template<size_t bit_field_width>
 static consteval uint32_t generate_field_of_ones()
@@ -120,11 +120,11 @@ static consteval uint32_t generate_field_of_ones()
  * A precent difference well below 1% makes this a viable solution for most
  * applications.
  *
- * @tparam T integral type to bring the resolution of U up to.
- * @tparam source_width the bit resolution of the input value
- * @tparam U integral type of the input value
- * @param p_value the value to be scaled
- * @return constexpr T p_value but with resolution scaled up to type T
+ * @tparam T - integral type to bring the resolution of U up to.
+ * @tparam source_width - the bit resolution of the input value
+ * @tparam U - integral type of the input value
+ * @param p_value - the value to be scaled
+ * @return constexpr T - p_value but with resolution scaled up to type T
  */
 template<std::integral T, size_t source_width, std::integral U>
 constexpr static T increase_bit_depth(U p_value)
@@ -158,8 +158,8 @@ constexpr static T increase_bit_depth(U p_value)
 /**
  * @brief A type based on bit width that contains a value
  *
- * @tparam T the underlying type of the value
- * @tparam bit_width the number of bits of the value
+ * @tparam T - the underlying type of the value
+ * @tparam bit_width - the number of bits of the value
  *
  */
 template<std::integral T, size_t bit_width>
@@ -168,7 +168,7 @@ struct bit_depth
   /**
    * @brief construct bit_depth object
    *
-   * @param p_value a integral value within the size of the bit_width. If the
+   * @param p_value - a integral value within the size of the bit_width. If the
    * object is outside the bounds of the bit width, it is clamped.
    *
    */
@@ -188,7 +188,7 @@ struct bit_depth
  * @brief A bit resolution erased representation of a precentage value using
  * only integral arithmetic
  *
- * @tparam T the integral type to represent the percentage value (typically
+ * @tparam T - the integral type to represent the percentage value (typically
  * uint32_t or int32_t)
  */
 template<typename T>
@@ -216,11 +216,11 @@ public:
   /**
    * @brief Construct a full_scale based on the bit_depth value
    *
-   * @tparam U type of the bit depth object
-   * @tparam bit_width the bit width of the object
-   * @param p_value the value at a specific bit resolution to scale up to a full
-   * scale value
-   * @return constexpr full_scale<T>& reference to this object
+   * @tparam U - type of the bit depth object
+   * @tparam bit_width - the bit width of the object
+   * @param p_value - the value at a specific bit resolution to scale up to a
+   * full scale value
+   * @return constexpr full_scale<T>& - reference to this object
    */
   template<typename U, size_t bit_width>
   constexpr full_scale<T>& operator=(bit_depth<U, bit_width> p_value)
@@ -238,9 +238,9 @@ public:
   /**
    * @brief Construct a full_scale based on the bit_depth value
    *
-   * @tparam U type of the bit depth object
-   * @tparam bit_width the bit width of the object
-   * @param p_value the bit depth object
+   * @tparam U - type of the bit depth object
+   * @tparam bit_width - the bit width of the object
+   * @param p_value - the bit depth object
    */
   template<typename U, size_t bit_width>
   constexpr full_scale(bit_depth<U, bit_width> p_value)
@@ -251,7 +251,7 @@ public:
   /**
    * @brief Get internal integral value
    *
-   * @return T full scale value
+   * @return T - full scale value
    */
   T value() { return m_value; }
 
@@ -267,11 +267,11 @@ private:
  * following operation: `100 * full_scale_50_percent` is equivalent to
  * `100 * 0.5f`.
  *
- * @tparam T underlying type of the full scale value
- * @tparam U type of the integral value to be scaled
- * @param p_value value to be scaled
- * @param p_scale value scalar
- * @return auto the scaled down result of p_value * p_scale.
+ * @tparam T - underlying type of the full scale value
+ * @tparam U - type of the integral value to be scaled
+ * @param p_value - value to be scaled
+ * @param p_scale - value scalar
+ * @return auto - the scaled down result of p_value * p_scale.
  */
 template<std::unsigned_integral T, std::unsigned_integral U>
 auto operator*(U p_value, full_scale<T> p_scale)
