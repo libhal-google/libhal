@@ -1,18 +1,27 @@
 #pragma once
 
+#include <type_traits>
+
 namespace embed {
 /**
- * @brief Helper function to convert an enum to its integral value.
+ * @brief concept for enumeration types
  *
- * @tparam enum_type the underlying type of the enumeration. Do not supply this
- * value, it is inferred by the enum_value passed to the function.
- * @param p_enum_value the enumeration you want to convert into an integral
- * value
- * @return constexpr auto return the integral value of the enum.
+ * @tparam T - enum type
  */
-template<typename enum_type>
-constexpr auto value(enum_type p_enum_value)
+template<typename T>
+concept enumeration = std::is_enum_v<T>;
+
+/**
+ * @brief Helper function to convert an enum to its integral value
+ *
+ * @param p_enum_value - the enumeration you want to convert into an integral
+ * value
+ * @return constexpr auto - return the integral value of the enum with the same
+ * type as the enumeration.
+ */
+constexpr auto value(enumeration auto p_enum_value)
 {
-  return static_cast<std::underlying_type_t<enum_type>>(p_enum_value);
+  return static_cast<std::underlying_type_t<decltype(p_enum_value)>>(
+    p_enum_value);
 }
 }  // namespace embed

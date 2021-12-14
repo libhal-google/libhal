@@ -23,8 +23,9 @@ public:
    * (usually denoted V_ref) connected to the device. Generally though, the low
    * voltage is 0V and the high voltage reference is VCC.
    *
-   * @param p_value precentage scale from LOW to HIGH
+   * @param p_value - precentage scale from LOW to HIGH
+   * @return boost::leaf::result<void>
    */
-  virtual void write(full_scale<uint32_t> p_value) = 0;
+  virtual boost::leaf::result<void> write(full_scale<uint32_t> p_value) = 0;
 };
 }  // namespace embed

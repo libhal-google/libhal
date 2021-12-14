@@ -31,7 +31,7 @@ public:
    * @brief Default uptime timer that simply counts each time it is called. This
    * should almost never be used.
    *
-   * @return time_increment fake uptime
+   * @return time_increment - fake uptime
    */
   static time_increment incremental_uptime()
   {
@@ -44,7 +44,7 @@ public:
    * @brief Default sleep function that simply counts until it reaches a
    * designated number.
    *
-   * @param p_loop_count number of iterations to loop for to mimick sleeping
+   * @param p_loop_count - number of iterations to loop for to mimick sleeping
    */
   static void loop_sleep(time_increment p_loop_count)
   {
@@ -69,7 +69,7 @@ public:
 /**
  * @brief Delay execution of the program by a predefined time
  *
- * @param p_delay the amount of time to delay execution by
+ * @param p_delay - the amount of time to delay execution by
  */
 static auto sleep_for(time_increment p_delay)
 {
@@ -82,7 +82,7 @@ static auto sleep_for(time_increment p_delay)
 /**
  * @brief Get the current system uptime
  *
- * @return auto the global uptime
+ * @return auto - the global uptime
  */
 static auto uptime()
 {
@@ -96,7 +96,7 @@ static auto uptime()
 /**
  * @brief Set the global sleep object
  *
- * @param p_sleep_function the function to handle sleeping
+ * @param p_sleep_function - the function to handle sleeping
  */
 static void set_global_sleep(sleep_function p_sleep_function)
 {
@@ -105,7 +105,7 @@ static void set_global_sleep(sleep_function p_sleep_function)
 /**
  * @brief Set the global uptime object
  *
- * @param p_uptime_function the function to return the current system uptime
+ * @param p_uptime_function - the function to return the current system uptime
  */
 static void set_global_uptime(uptime_function p_uptime_function)
 {

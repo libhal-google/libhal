@@ -1,6 +1,8 @@
 #pragma once
 
 #include "enum.hpp"
+#include "error.hpp"
+
 #include <type_traits>
 
 namespace embed {
@@ -37,7 +39,7 @@ struct no_settings
  * @brief The basis class for all peripheral, device and system drivers in
  * libembeddedhal
  *
- * @tparam settings_t generic settings for the driver. For example, generic
+ * @tparam - settings_t generic settings for the driver. For example, generic
  * settings for a uart driver would have baud rate, stop bits and parity. This
  * is expected of all UART devices and as such is part of the systems API.
  */
@@ -53,24 +55,17 @@ public:
    * committed and saved into another settings structure. This settings can be
    * looked up and inspected by the application.
    *
-   * @return true - initialization of the driver was successful
-   * @return false - initialization of the driver failed. See the error()
-   * function for details about exactly what failed.
+   * @return boost::leaf::result<void> - returns an error if initialization of
+   * the driver failed.
    */
-  [[nodiscard]] bool initialize()
+  boost::leaf::result<void> initialize()
   {
-    bool success = false;
+    BOOST_LEAF_CHECK(driver_initialize());
 
-    if (!m_initialized) {
-      success = driver_initialize();
-      if (success) {
-        m_initialized_settings = m_settings;
-        m_initialized = true;
-        success = true;
-      }
-    }
+    m_initialized_settings = m_settings;
+    m_initialized = true;
 
-    return success;
+    return {};
   }
   /**
    * @brief Reset the driver in order to run initialize again. This is helpful
@@ -116,7 +111,7 @@ protected:
    * @return true driver initialized successfully
    * @return false driver initialization failed
    */
-  virtual bool driver_initialize() = 0;
+  virtual boost::leaf::result<void> driver_initialize() = 0;
   /// Mutable settings
   settings_t m_settings{};
   /// Saved version of the settings at initialization

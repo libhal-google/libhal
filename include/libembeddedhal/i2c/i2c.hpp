@@ -58,16 +58,18 @@ public:
    * nullptr with length zero in order to skip writting.
    * @param p_data_in buffer to store read data from the addressed device. Set
    * to nullptr with length 0 in order to skip reading.
+   * @return boost::leaf::result<void>
    */
-  virtual void transaction(std::byte p_address,
-                           std::span<const std::byte> p_data_out,
-                           std::span<std::byte> p_data_in) = 0;
+  virtual boost::leaf::result<void> transaction(
+    std::byte p_address,
+    std::span<const std::byte> p_data_out,
+    std::span<std::byte> p_data_in) = 0;
   /**
    * @brief Determines if the i2c transaction is ongoing
    *
-   * @return true transaction is currently ongoing
-   * @return false device is idle and available for a transaction
+   * @return boost::leaf::result<bool> - true if a transaction is currently
+   * ongoing, false if otherwise.
    */
-  [[nodiscard]] virtual bool busy() = 0;
+  virtual boost::leaf::result<bool> busy() = 0;
 };
 }  // namespace embed

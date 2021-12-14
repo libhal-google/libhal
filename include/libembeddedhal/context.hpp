@@ -34,9 +34,9 @@ constexpr const std::string_view platform_string = PLATFORM_STRING;
  *
  *    embed::is_platform("lpc40");
  *
- * @param p_platform platform string pattern to check against
- * @return true matches the platform string
- * @return false does not matches the platform string
+ * @param p_platform - platform string pattern to check against
+ * @return true - matches the platform string
+ * @return false - does not matches the platform string
  */
 constexpr bool is_platform(std::string_view p_platform)
 {
@@ -46,8 +46,8 @@ constexpr bool is_platform(std::string_view p_platform)
 /**
  * @brief Determines if the application is a test
  *
- * @return true this application is a test
- * @return false this application is not a test
+ * @return true - this application is a test
+ * @return false - this application is not a test
  */
 constexpr bool is_a_test()
 {

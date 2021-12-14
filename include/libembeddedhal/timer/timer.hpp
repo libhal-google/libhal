@@ -69,31 +69,32 @@ public:
   /**
    * @brief Determine if the timer is currently running
    *
-   * @return true timer is currently running
-   * @return false timer is currently stopped
+   * @return boost::leaf::result<bool> - true if timer is currently running
    */
-  virtual bool is_running() = 0;
+  virtual boost::leaf::result<bool> is_running() = 0;
   /**
    * @brief Control the state of the timer
    *
-   * @param p_control new state for the timer
+   * @param p_control - new state for the timer
+   * @return boost::leaf::result<void>
    */
-  virtual void control(controls p_control) = 0;
+  virtual boost::leaf::result<void> control(controls p_control) = 0;
   /**
    * @brief Setup the timer and attach an interrupt to it
    *
    * When called this will, stop and reset the timer. To start the timer,
    * `control(controls::start)` must be called.
    *
-   * @param p_callback callback function to be called when the timer expires
-   * @param p_interval the amount of time before the timer expires
-   * @param p_type the type of timer this is
-   * @return true successfully set all parameters
-   * @return false not all parameters could be met such as an interval smaller
-   * than is capable by hardware or an unsupported timer type.
+   * @param p_callback - callback function to be called when the timer expires
+   * @param p_interval - the amount of time before the timer expires
+   * @param p_type - the type of timer this is
+   * @return boost::leaf::result<void> - returns an error if not all parameters
+   * could be met such as an interval smaller than is capable by hardware or an
+   * unsupported timer type
    */
-  virtual bool attach_interrupt(std::function<void(void)> p_callback,
-                                std::chrono::nanoseconds p_interval,
-                                type p_type = type::continuous) = 0;
+  virtual boost::leaf::result<void> attach_interrupt(
+    std::function<void(void)> p_callback,
+    std::chrono::nanoseconds p_interval,
+    type p_type = type::continuous) = 0;
 };
 }  // namespace embed

@@ -37,8 +37,8 @@ public:
   /**
    * @brief Construct a new static callable object
    *
-   * @param p_callback when the static callback function is called, it will call
-   * this callback
+   * @param p_callback - when the static callback function is called, it will
+   * call this callback
    */
   static_callable(std::function<return_t(args_t... p_args)> p_callback)
   {
@@ -48,7 +48,7 @@ public:
   /**
    * @brief Get the static function's address
    *
-   * @return auto* static function's address
+   * @return auto* - static function's address
    */
   auto* get_handler() { return &handler; }
 
@@ -58,8 +58,8 @@ private:
    * the function that can be used as entries in an interrupt vector tables or
    * passed as a function pointer to C API.
    *
-   * @param p_args list of arguments
-   * @return return_t the return type of the callback
+   * @param p_args - list of arguments
+   * @return return_t - the return type of the callback
    */
   static return_t handler(args_t... p_args) { return callback(p_args...); }
 
