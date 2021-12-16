@@ -54,7 +54,8 @@ public:
    * @brief Control the state of the counter
    *
    * @param p_control - new state for the counter
-   * @return boost::leaf::result<void>
+   * @return boost::leaf::result<void> - any errors that occured during this
+   * operation.
    */
   virtual boost::leaf::result<void> control(controls p_control) = 0;
   /**
@@ -63,7 +64,8 @@ public:
    * started.
    *
    * @param p_period - the amount of time in nanoseconds each count should be
-   * @return boost::leaf::result<void>
+   * @return boost::leaf::result<void> - any errors that occured during this
+   * operation.
    */
   virtual boost::leaf::result<void> period(
     std::chrono::nanoseconds p_period) = 0;

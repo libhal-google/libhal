@@ -160,7 +160,8 @@ public:
    * hardware registers. This operation must be faster than simply running
    * read() until bytes_available() is empty.
    *
-   * @return boost::leaf::result<void>
+   * @return boost::leaf::result<void> - any errors that occured during this
+   * operation.
    */
   virtual boost::leaf::result<void> flush() = 0;
 };

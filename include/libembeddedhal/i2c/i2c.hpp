@@ -58,7 +58,8 @@ public:
    * nullptr with length zero in order to skip writting.
    * @param p_data_in buffer to store read data from the addressed device. Set
    * to nullptr with length 0 in order to skip reading.
-   * @return boost::leaf::result<void>
+   * @return boost::leaf::result<void> - any errors that occured during this
+   * operation.
    */
   virtual boost::leaf::result<void> transaction(
     std::byte p_address,
