@@ -24,7 +24,8 @@ public:
    * voltage is 0V and the high voltage reference is VCC.
    *
    * @param p_value - precentage scale from LOW to HIGH
-   * @return boost::leaf::result<void>
+   * @return boost::leaf::result<void> - any errors that occured during this
+   * operation.
    */
   virtual boost::leaf::result<void> write(full_scale<uint32_t> p_value) = 0;
 };
