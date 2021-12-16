@@ -9,28 +9,74 @@
 [![tests](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml)
 
 A collection of interfaces and abstractions for embedded peripherals and devices
-using modern C++
+using modern C++ best practices.
 
-## 🏗️ WARNING IN DEVELOPMENT 🚧
+## 🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧
 
 ## [📖 Full Documentation & Guides](https://sjsu-dev2.github.io/libembeddedhal)
 
 ## Development
 
-### Prerequisites
+### Installing Prerequisites
 
-1. Python3
-2. CMake
-3. Conan
-4. Target g++ with C++20 support
+1. [Install Homebrew (Mac OS only)](https://brew.sh/)
+1. [Git Download Page](https://git-scm.com/downloads)
+1. [Python3 Download Page](https://www.python.org/downloads/)
+1. Install g++:
+    - Mac: `brew install gcc`
+    - Ubuntu/Debian: `sudo apt install g++`
+    - Windows: [install msys2](https://www.msys2.org/#installation)
+1. Install CMake: `pip install cmake`
+1. Conan: `pip install conan`
 
-#### Installing Prerequisites
+## Unit tests
 
-- **Python3**: See https://www.python.org/downloads/
-- **CMake**: `pip install cmake`
-- **Conan**: `pip install conan`
-- **Target (ARM) g++**: See https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads
-    - On Ubuntu/Debian simply run `sudo apt install arm-none-eabi-gcc`
+The commands to build and run the tests are as follows from the root of the
+repo:
+
+```bash
+conan create .
+cd tests
+CXX=g++-11 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
+cd build
+make
+./bin/tests
+```
+
+### Explaining the steps:
+
+1. First step is generating a conan package and installing it into your local conan
+cache. This allows build systems like CMake to find and use the project like it
+would a typical library.
+1. Next we simply enter the test directory
+1. For CMake:
+  1. We ensure that the compiler used for building is is g++11, so we CXX=g++-11
+  1. We set the build directory to `build` using the `-B` flag
+  1. We set the location of the source to the current directory with `-S .`
+  1. We set the build type to DEBUG mode to turn off optimizations. This is
+     helpful for stepping through test code as well as ensuring that the test
+     code works as intended without too much interference from the optimizer
+     optimizing code out.
+  1. Enter the build directory
+  1. Run make to actually build the test executable
+  1. Run the test executable
+
+### Installing ARM toolchain
+
+libembeddedhal is platform and architecture agnostic but if you do plan to build
+application for ARM Cortex M class microcontrollers then you will want to follow
+these steps:
+
+- Ubuntu/Debian: `sudo apt install arm-none-eabi-gcc`
+- Mac: `brew install --cask gcc-arm-embedded`
+- Windows: Installer found here: [GNU Arm Embedded Toolchain Downloads](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads)
+- Or you can download the prebuilt binaries for your platform and manually
+  add them to your systems PATH variable, if you do not, or cannot install
+  it globally.
+
+## Developing on projects in the ecosystem
+<details>
+  <summary>Click to expand</summary>
 
 ### Cloning the projects
 
@@ -97,3 +143,5 @@ file in order modify the code but
 
 Each time you make a change to a library, you need to run `conan create` on its
 directory.
+
+</details>
