@@ -39,13 +39,8 @@ class spi : public driver<spi_settings>
 {
 public:
   /**
-   * @brief Determines if a transfer is currently ongoing.
-   *
-   * @return boost::leaf::result<bool> - transfer is currently ongoing
-   */
-  [[nodiscard]] virtual boost::leaf::result<bool> busy() = 0;
-  /**
-   * @brief Send and receieve bytes from the spi bus.
+   * @brief Send and receieve data between a selected device on the spi bus.
+   * This function will block until the entire transfer is finished.
    *
    * @param p_data_out - buffer to write data to the bus. If this is set to
    * null/empty then writing is ignored and the p_write_value will be written to
@@ -58,7 +53,7 @@ public:
    * dropped.
    * @param p_write_value - filler data to be placed on the bus when the
    * p_data_out buffer has been exhausted.
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> transfer(

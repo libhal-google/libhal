@@ -4,6 +4,7 @@
 
 #include <cinttypes>
 #include <cstddef>
+#include <optional>
 #include <span>
 
 namespace embed {
@@ -99,12 +100,73 @@ class serial : public driver<serial_settings>
 {
 public:
   /**
-   * @brief Write data on the transmitter line of the port. The exact
-   * implementation for this can be polling, interrupt driven or DMA driven.
-   * There is no guarantee on exactly how a write operation will operate, thus
-   * the busy() function must polled called after this returns to determine if
-   * the write operation has finished. Attempting to call write() when
-   * tranmission is busy is undefined behavior.
+   * @brief Error indicating that packets were lost during reception. This
+   * occurs when the buffer is overrun and reaches the end of the circular
+   * buffer. This error is returned when calling bytes_available().
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - This sort of error is very context heavy. If the packet lengths are short
+   *   and numerous and with a consistent format, then the application may be
+   *   able to pull out all but the last few packets of data from the buffer and
+   *   treat the ones at the end as lost packets.
+   *
+   * - In most other cases where data lost was crucial, then the whole buffer
+   *   may need to be flushed and the data recieved again.
+   *
+   * - A way to fix this is to enlarge the recieve buffer. This can be done with
+   *   dynamic memory allocation, but generally, its better to simply increase
+   *   the buffer size by updating the application rather than growing with
+   *   need.
+   *
+   */
+  struct packets_lost
+  {
+    /// The number of packets dropped. This value is optional because some
+    /// drivers cannot provide a number for the number of packets dropped.
+    std::optional<size_t> packets_dropped;
+    /// The number of bytes the serial port has buffered up.
+    size_t bytes_available;
+  };
+
+  /**
+   * @brief Error type indicating that a frame error occured during reception.
+   * This error is returned when calling bytes_available().
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - In general, the exact nature of a specific frame error is not knowable.
+   *   The number of bytes that are effected could be 1 or more, thus the only
+   *   real way to handle this is to flush recieve buffer and attempt reception
+   *   again. Note that the read function should still work to read out which
+   *   ever bytes were received and this can be used/logged in order for
+   *   developers to get insight into where the error occured and how to fix it.
+   *
+   */
+  struct frame_error
+  {
+    /// The number of bytes the serial port has buffered up.
+    size_t bytes_available;
+  };
+  /**
+   * @brief Error type indicating that a parity error occured during reception.
+   * This error is returned when calling bytes_available().
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - The nature of this error is almost exactly the same as frame_error. See
+   *   frame_error's description on how to handle this.
+   *
+   */
+  struct parity_error
+  {
+    /// The number of bytes the serial port has buffered up.
+    size_t bytes_available;
+  };
+
+  /**
+   * @brief Write data on the transmitter line of the port. This function will
+   * block until the entire transfer is finished.
    *
    * Data frames are not compact when frame size is less than 8 bits. Meaning
    * that, if you want to send three 5-bit frames, then you will need to use a
@@ -115,20 +177,16 @@ public:
    * is the greater byte. If you wanted to send a 9-bit frame with value 0x14A,
    * the first byte must be 0x4A and the next 0x01.
    *
+   * serial ports will report `transmit_error` will an error occurs. Any other
+   * reported error will bubble up come from
+   *
    * @param p_data - data to be transmitted over the serial port transmitter
    * line
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> write(
     std::span<const std::byte> p_data) = 0;
-  /**
-   * @brief Determines if the write operation is currently on going.
-   *
-   * @return boost::leaf::result<bool> - serial transmitter is currently writing
-   * data to the port
-   */
-  [[nodiscard]] virtual boost::leaf::result<bool> busy() = 0;
   /**
    * @brief The number of bytes that have been buffered. For frames less than
    * 8-bits, each byte holds a frame. For frames above 8-bits the number of
@@ -160,7 +218,7 @@ public:
    * hardware registers. This operation must be faster than simply running
    * read() until bytes_available() is empty.
    *
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> flush() = 0;

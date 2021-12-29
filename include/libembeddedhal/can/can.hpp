@@ -50,7 +50,7 @@ public:
    *
    * @param p_message - the message to be sent
    *
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> send(const message_t& p_message) = 0;
@@ -77,7 +77,7 @@ public:
    *
    * @param p_receive_handler - can message reception callback. Set to nullptr
    * to disable receive interrupts.
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> attach_interrupt(

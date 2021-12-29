@@ -6,6 +6,7 @@
 #include <cinttypes>
 #include <cstddef>
 #include <span>
+#include <system_error>
 
 namespace embed {
 /**
@@ -30,8 +31,56 @@ class i2c : public driver<i2c_settings>
 {
 public:
   /**
+   * @brief Error type indicating that the i2c transaction resulted in a NACK,
+   * meaning "not acknowledge". NACKs occur when an address has been placed on
+   * the i2c bus and no device connected to the bus returned an acknowledge
+   * signal.
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - In cases where the program is scanning for available addresses, this
+   *   error is expected behaviour. This is less of an error to handle but an
+   *   expected return status.
+   *
+   * - If a driver has a set of possible addresses that it can use, and for that
+   *   driver it makes sense to attempt to search for the valid address, then a
+   *   handler can keep performing transactions until a valid address is found
+   *   and then store that address.
+   *
+   * - In the case where the address is consistently NACK'ed but the driver
+   *   expects a specific address, this is typically not handlable and indicates
+   *   that the application or driver is incorrect in the device address.
+   *
+   * - In the case where NACK's are spurious, then this may indicate that the
+   *   i2c line is faulty or the device is misbehaving. This is not fixable in
+   *   the application. But in some cases, if a software solution is required,
+   *   the driver or application can simply retry again until a valid response
+   *   is returned, but results may vary and are very specific to the devices
+   *   and context of the situation.
+   *
+   */
+  struct address_not_acknowledged
+  {};
+  /**
+   * @brief Error type indicating that the i2c lines were put into an invalid
+   * state during the transaction due to interference, misconfiguration of the
+   * i2c peripheral or the addressed device or something else.
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - In the event of this type of error, state the addressed device undefined.
+   *   In the case of data reception, the data coming from the addressed device
+   *   should be considered invalid. Any deeper handling will require deep
+   *   context regarding the addressed device the transaction taking place.
+   *
+   */
+  struct bus_error
+  {};
+
+  /**
    * @brief perform an i2c transaction with another device on the bus. The type
-   * of transaction depends on values of input parameters.
+   * of transaction depends on values of input parameters. This function will
+   * block until the entire transfer is finished.
    *
    * Performing Write, Read and Write-Then-Read transactions depends on which
    * span for data_out and data_in are set to null.
@@ -45,9 +94,11 @@ public:
    * - For write-then-read transactions, pass a buffer for both p_data_in
    * p_data_out.
    *
-   * Implementations of transaction can be synchronous, interrupt driven or DMA
-   * driven. Calling transaction while a current transaction is ongoing is
-   * undefined behavior. To prevent this, poll busy() until it returns false.
+   * In the event of arbitration loss, this function will wait for the bus to
+   * become free and try again. Arbitration loss means that during the address
+   * phase of a transaction 1 or more i2c bus controllers attempted to perform
+   * an transaction and one of the i2c bus controllers, that isn't this one won
+   * out.
    *
    * @param p_address 7-bit address of the device you want to communicate with.
    * To perform a transaction with a 10-bit address, this parameter must be the
@@ -58,19 +109,12 @@ public:
    * nullptr with length zero in order to skip writting.
    * @param p_data_in buffer to store read data from the addressed device. Set
    * to nullptr with length 0 in order to skip reading.
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> transaction(
     std::byte p_address,
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in) = 0;
-  /**
-   * @brief Determines if the i2c transaction is ongoing
-   *
-   * @return boost::leaf::result<bool> - true if a transaction is currently
-   * ongoing, false if otherwise.
-   */
-  virtual boost::leaf::result<bool> busy() = 0;
 };
 }  // namespace embed

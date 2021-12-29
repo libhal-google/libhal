@@ -76,7 +76,7 @@ public:
    * @brief Control the state of the timer
    *
    * @param p_control - new state for the timer
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> control(controls p_control) = 0;

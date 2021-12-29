@@ -19,7 +19,7 @@ class pwm : public driver<>
    * peripheral.
    *
    * @param p_frequency_hz - frequency of the pwm channel in hertz
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> frequency(uint32_t p_frequency_hz) = 0;
@@ -34,7 +34,7 @@ class pwm : public driver<>
    * @brief Set the duty cycle percentage
    *
    * @param p_duty_cycle - set the duty cycle of the pwm.
-   * @return boost::leaf::result<void> - any errors that occured during this
+   * @return boost::leaf::result<void> - any error that occured during this
    * operation.
    */
   virtual boost::leaf::result<void> duty_cycle(
