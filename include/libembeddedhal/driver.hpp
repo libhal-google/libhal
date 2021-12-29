@@ -48,6 +48,15 @@ class driver
 {
 public:
   /**
+   * @brief An association error type for all drivers that inherit from this
+   * class. It is used to disambiguate errors coming from a libembeddedhal
+   * embed::driver vs those coming from other libraries.
+   *
+   */
+  struct error
+  {};
+
+  /**
    * @brief Initialize the driver, apply the setting as defined in the
    * settings_t structure and enable it. Calling this function after it has
    * already been initialized will return false. In order to run initialization
@@ -60,7 +69,7 @@ public:
    */
   boost::leaf::result<void> initialize()
   {
-    BOOST_LEAF_CHECK(driver_initialize());
+    EMBED_CHECK(driver_initialize());
 
     m_initialized_settings = m_settings;
     m_initialized = true;
