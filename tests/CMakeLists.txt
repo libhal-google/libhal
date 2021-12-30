@@ -26,7 +26,7 @@ conan_cmake_run(REQUIRES boost-ext-ut/1.1.8
                 BUILD missing)
 
 add_executable(${PROJECT_NAME}
-    context.test.cpp
+    can/network.test.cpp
     driver.test.cpp
     enum.test.cpp
     full_scale.test.cpp
@@ -35,9 +35,11 @@ add_executable(${PROJECT_NAME}
     time.test.cpp
     main.cpp)
 
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET default)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(${PROJECT_NAME} PRIVATE -DPLATFORM=test)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     CONAN_PKG::libembeddedhal
     CONAN_PKG::boost-ext-ut)

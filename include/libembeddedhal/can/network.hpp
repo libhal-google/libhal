@@ -11,8 +11,6 @@
 #include "../driver.hpp"
 
 namespace embed {
-/// can_network is a canbus message receiver handler and
-
 /**
  * @brief Manage, store, and organize messages received on the can bus.
  *
@@ -160,9 +158,10 @@ public:
 
   boost::leaf::result<void> driver_initialize() override
   {
-    BOOST_LEAF_CHECK(m_can.initialize());
+    auto on_error = embed::error::setup();
+    EMBED_CHECK(m_can.initialize());
     auto handler = [this](can& p_can) { receive_handler(p_can); };
-    BOOST_LEAF_CHECK(m_can.attach_interrupt(handler));
+    EMBED_CHECK(m_can.attach_interrupt(handler));
     return {};
   }
 
