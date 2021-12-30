@@ -48,15 +48,6 @@ class driver
 {
 public:
   /**
-   * @brief An association error type for all drivers that inherit from this
-   * class. It is used to disambiguate errors coming from a libembeddedhal
-   * embed::driver vs those coming from other libraries.
-   *
-   */
-  struct error
-  {};
-
-  /**
    * @brief Initialize the driver, apply the setting as defined in the
    * settings_t structure and enable it. Calling this function after it has
    * already been initialized will return false. In order to run initialization
@@ -69,6 +60,7 @@ public:
    */
   boost::leaf::result<void> initialize()
   {
+    auto on_error = embed::error::setup();
     EMBED_CHECK(driver_initialize());
 
     m_initialized_settings = m_settings;
@@ -82,14 +74,14 @@ public:
    * first initialized, like baud rate for serial or pull resistor for a pin.
    *
    */
-  void reset() { m_initialized = false; }
+  void reset() noexcept { m_initialized = false; }
   /**
    * @brief Determine if the driver has been initialized
    *
    * @return true the driver is initialized
    * @return false the driver has not been initialized or has been reset
    */
-  [[nodiscard]] bool is_initialized() const { return m_initialized; }
+  [[nodiscard]] bool is_initialized() const noexcept { return m_initialized; }
   /**
    * @brief Get access to uncommitted driver settings.
    *
@@ -97,7 +89,7 @@ public:
    * initialize runs successful, the uncommitted settings will be saved to the
    * initialize_settings().
    */
-  [[nodiscard]] settings_t& settings() { return m_settings; }
+  [[nodiscard]] settings_t& settings() noexcept { return m_settings; }
   /**
    * @brief Get access to the settings that were used in the latest
    * initialization. These settings only get updated when a successful
@@ -108,7 +100,7 @@ public:
    * structure should be ignored as they may not represent the current of the
    * driver.
    */
-  [[nodiscard]] const settings_t& initialized_settings() const
+  [[nodiscard]] const settings_t& initialized_settings() const noexcept
   {
     return m_settings;
   }
