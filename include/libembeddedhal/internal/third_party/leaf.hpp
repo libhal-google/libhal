@@ -1125,9 +1125,9 @@ namespace boost { namespace leaf {
 
 struct e_source_location
 {
-    char const * const file;
-    int const line;
-    char const * const function;
+    char const * file;
+    int line;
+    char const * function;
 
     template <class CharT, class Traits>
     friend std::basic_ostream<CharT, Traits> & operator<<( std::basic_ostream<CharT, Traits> & os, e_source_location const & x )
@@ -3394,7 +3394,7 @@ namespace leaf_detail
         {
             return 0;
         }
-        
+
         template <class SlotsTuple>
         BOOST_LEAF_CONSTEXPR static E * peek( SlotsTuple &, error_id const & ) noexcept
         {
