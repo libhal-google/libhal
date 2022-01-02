@@ -26,25 +26,6 @@ struct universal
 {};
 
 /**
- * @brief Holds the source location of where an error has occurred or the stack
- * trace path in which an error had occurred. Contains a field for file name,
- * line number and function name.
- *
- */
-struct source_location
-{
-  /// File name of the function in which an error occurred or the call stack
-  /// that called the offending function.
-  char const* file;
-  /// Line number of the function in which an error occurred or the call stack
-  /// that called the offending function.
-  int line;
-  /// Function name of the function in which an error occurred or the call stack
-  /// that called the offending function.
-  char const* function;
-};
-
-/**
  * @brief A structure to hold stack strace source location entries. The size of
  * this class can be changed by changing the
  * embed::config::stacktrace_depth_limit value in the libembeddedhal.tweak.hpp
@@ -63,7 +44,8 @@ public:
    */
   auto get() const
   {
-    return std::span<const source_location>(m_list.begin(), m_count);
+    return std::span<const boost::leaf::e_source_location>(m_list.begin(),
+                                                           m_count);
   }
 
   /**
@@ -71,7 +53,7 @@ public:
    *
    * @param p_source_location - source location to be added to the list
    */
-  void append(source_location p_source_location)
+  void append(boost::leaf::e_source_location p_source_location)
   {
     if constexpr (config::get_stacktrace_on_error) {
       if (m_count < m_list.size()) {
@@ -82,7 +64,8 @@ public:
   }
 
 private:
-  std::array<source_location, config::stacktrace_depth_limit> m_list{};
+  std::array<boost::leaf::e_source_location, config::stacktrace_depth_limit>
+    m_list{};
   size_t m_count = 0;
 };
 
@@ -115,15 +98,14 @@ private:
  * functions frame.
  */
 auto setup(
-  std::string_view&& p_function_name =
-    std::source_location::current().function_name(),
-  std::string_view&& p_file_name = std::source_location::current().file_name(),
+  const char* p_function_name = std::source_location::current().function_name(),
+  const char* p_file_name = std::source_location::current().file_name(),
   int p_line_number = std::source_location::current().line())
 {
   // Default strings for file and function that will be reassigned to the actual
   // strings, if their corresponding config options are set to true.
-  std::string_view file = "";
-  std::string_view function = "";
+  const char* file = "";
+  const char* function = "";
   int line = -1;
 
   // The two following `if constexpr` will ensure that the compiler optimizes
@@ -148,11 +130,11 @@ auto setup(
   // that called this function. When an error occurs, that function name will be
   // appended to the end of the stacktrace's list of functions.
   return boost::leaf::on_error(universal{},
-                               [file, function, line](stacktrace& trace) {
-                                 trace.append(source_location{
-                                   .file = file.data(),
+                               [file, function, line](stacktrace& p_trace) {
+                                 p_trace.append(boost::leaf::e_source_location{
+                                   .file = file,
                                    .line = line,
-                                   .function = function.data(),
+                                   .function = function,
                                  });
                                });
 }
