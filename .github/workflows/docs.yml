@@ -1,10 +1,17 @@
 name: docs
 
 on:
+  workflow_call:
+    inputs:
+      library:
+        required: true
+        type: string
+  pull_request:
   push:
     branches:
-      - main  # Set a branch to deploy
-  pull_request:
+      - main
+  schedule:
+    - cron: '0 12 * * 0'
 
 jobs:
   docs:
@@ -12,14 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true
+          fetch-depth: 0
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
-          # extended: true
 
       - name: Download doxybook2
         run: wget https://github.com/matusnovak/doxybook2/releases/download/v1.4.0/doxybook2-linux-amd64-v1.4.0.zip

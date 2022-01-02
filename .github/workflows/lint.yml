@@ -1,10 +1,17 @@
 name: lint
 
 on:
+  workflow_call:
+    inputs:
+      library:
+        required: true
+        type: string
+  pull_request:
   push:
     branches:
-      - main  # Set a branch to deploy
-  pull_request:
+      - main
+  schedule:
+    - cron: '0 12 * * 0'
 
 jobs:
   lint:
@@ -12,8 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true
+          fetch-depth: 0
 
       - name: 📥 Install clang-format
         shell: bash
@@ -31,20 +38,33 @@ jobs:
         shell: bash
         run: python3 -m pip install clang pyyaml
 
+      # Because inputs.library is required for workflow_calls, if this value is
+      # blank it means that the workflow was ran in libembeddedhal and not
+      # remotely.
+      - name: Cloning .naming.style from libembeddedhal
+        if: ${{ inputs.library != '' }}
+        run: wget https://raw.githubusercontent.com/SJSU-Dev2/libembeddedhal/main/.naming.style -O .naming.style
+
       - name: 📃 Naming Convention Check
         shell: bash
         if: always()
         run: |
               git clone https://github.com/nithinn/ncc.git ncc
               ./ncc/ncc.py --recurse --path include \
-              --exclude include/libembeddedhal/internal/third_party/* \
+              --exclude */third_party/* \
               --style .naming.style | tee ncc.stderr
               [ ! -s ncc.stderr ]
+
+      - name: Cloning .clang-format from libembeddedhal
+        if: ${{ inputs.library != '' }}
+        run: wget https://raw.githubusercontent.com/SJSU-Dev2/libembeddedhal/main/.clang-format -O .clang-format
 
       - name: 🧹 Format Check
         shell: bash
         if: always()
-        run: clang-format --dry-run --Werror include/**/*.hpp
+        run: |
+             clang-format --dry-run --Werror \
+             $(find include -name "*.hpp" -not -path "*/third_party/*")
 
       - name: 🔤 Check Spelling
         shell: bash
