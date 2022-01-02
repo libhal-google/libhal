@@ -17,10 +17,6 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES libembeddedhal/0.0.1
-                BASIC_SETUP CMAKE_TARGETS
-                BUILD missing)
-
 conan_cmake_run(REQUIRES boost-ext-ut/1.1.8
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
@@ -36,10 +32,11 @@ add_executable(${PROJECT_NAME}
     main.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET default)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    CONAN_PKG::libembeddedhal
     CONAN_PKG::boost-ext-ut)

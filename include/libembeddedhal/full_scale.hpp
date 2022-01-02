@@ -146,7 +146,7 @@ constexpr static T increase_bit_depth(U p_value)
   T result = static_cast<T>(p_value) << width_difference;
 
   if (p_value > 0) {
-    for (int i = final_source_width; i < final_width_difference;
+    for (size_t i = final_source_width; i < final_width_difference;
          i += final_source_width) {
       result |= (result >> i);
     }

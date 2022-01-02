@@ -171,7 +171,7 @@ auto setup(
  * function return int of value 0.
  */
 template<typename T>
-constexpr auto&& get_return_value(boost::leaf::result<T>& p_result)
+constexpr auto get_return_value(boost::leaf::result<T>& p_result)
 {
   if constexpr (std::is_void_v<T>) {
     return 0;
