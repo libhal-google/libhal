@@ -1,10 +1,17 @@
 name: tests
 
 on:
+  workflow_call:
+    inputs:
+      library:
+        required: true
+        type: string
+  pull_request:
   push:
     branches:
-      - main  # Set a branch to deploy
-  pull_request:
+      - main
+  schedule:
+    - cron: '0 12 * * 0'
 
 jobs:
   tests:
@@ -12,8 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true
+          fetch-depth: 0
 
       - name: Install CMake
         run: pip install cmake
