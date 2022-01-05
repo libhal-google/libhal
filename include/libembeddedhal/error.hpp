@@ -97,7 +97,7 @@ private:
  * @return auto - error handler for when an error is emitted on the calling
  * functions frame.
  */
-auto setup(
+inline auto setup(
   const char* p_function_name = std::source_location::current().function_name(),
   const char* p_file_name = std::source_location::current().file_name(),
   int p_line_number = std::source_location::current().line())
