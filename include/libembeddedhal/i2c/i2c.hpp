@@ -61,6 +61,7 @@ public:
    */
   struct address_not_acknowledged
   {};
+
   /**
    * @brief Error type indicating that the i2c lines were put into an invalid
    * state during the transaction due to interference, misconfiguration of the

@@ -6,6 +6,7 @@
 #include <cinttypes>
 #include <cstddef>
 #include <functional>
+#include <optional>
 
 namespace embed {
 /**
@@ -20,82 +21,93 @@ class timer : public driver<>
 {
 public:
   /**
-   * @brief Set of controls for a timer.
+   * @brief Error type indicating that the desired time delay is not achievable
+   * with this timer.
+   *
+   * Usually this occurs if the time delay is too small relative to the driving
+   * frequency of the timer and along with any prescalars before the counting
+   * register.
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - In cases where the program is scanning for the fastest delay, this is to
+   *   be expected. The error will report the minimum possible delay which can
+   *   then be assigned. Same for the maximum possible delay.
+   *
+   * - In most other cases, this is usually a bug in the code and cannot be
+   *   handled in code and should be treated as such. Drivers using a timer, if
+   *   they need an exact nunber will not be usable with this timer if it throws
+   *   this error, which will either require another timer that can perform this
+   *   work be used or increasing the clock rate fed into the timer in order to
+   *   increase its frequency range.
    *
    */
-  enum class controls
+  struct delay_too_small
   {
-    /**
-     * @brief Control value to start the timer
-     *
-     */
-    start,
-    /**
-     * @brief Control value to stop a timer
-     *
-     */
-    stop,
-    /**
-     * @brief Control value to reset a timer. The timer shall remain in a
-     * running or stopped state after this call. So an ongoing timer will
-     * continue to count but will have its counter reset to zero if this control
-     * is used. If a timer is stopped, then it shall be reset to zero, and stay
-     * stopped.
-     *
-     */
-    reset,
+    /// The invalid delay given to the schedule function
+    std::chrono::nanoseconds invalid;
+    /// The minimum possible delay allowed.
+    std::chrono::nanoseconds minimum;
   };
 
   /**
-   * @brief Type of timer
+   * @brief Error type indicating that the desired delay time is above what can
+   * be achieved by the timer.
+   *
+   * Usually occurs when the driving frequency, prescalar values and the size of
+   * the timer registers are too small for the delay for a particular timer.
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - Usually this is a bug in the program. One way to resolve this in the
+   *   application is to drive down the input frequency to the timer in order to
+   *   make each count longer.
    *
    */
-  enum class type
+  struct delay_too_large
   {
-    /**
-     * @brief Once the timer's time has been reached an interrupt will fire and
-     * the timer will be stopped.
-     *
-     */
-    oneshot,
-    /**
-     * @brief Once the timer's time has been reached an interrupt will fire and
-     * the timer will be reset and will begin counting again.
-     *
-     */
-    continuous,
+    /// The invalid delay given to the schedule function
+    std::chrono::nanoseconds invalid;
+    /// The maximum possible delay allowed.
+    std::chrono::nanoseconds maximum;
   };
 
   /**
    * @brief Determine if the timer is currently running
    *
    * @return boost::leaf::result<bool> - true if timer is currently running
+   * @return boost::leaf::result<bool> - driver specific error, if any.
    */
   virtual boost::leaf::result<bool> is_running() = 0;
+
   /**
-   * @brief Control the state of the timer
+   * @brief Stops a scheduled event from happening.
    *
-   * @param p_control - new state for the timer
-   * @return boost::leaf::result<void> - any error that occured during this
-   * operation.
+   * Does nothing if the timer is not currently running.
+   *
+   * Note that there must be sufficient time between the this call finishing and
+   * the scheduled event's termination. If this call is too close to when the
+   * schedule event expires, this function may not complete before the hardware
+   * calls the callback.
+   *
+   * @return boost::leaf::result<void> - driver specific error, if any.
    */
-  virtual boost::leaf::result<void> control(controls p_control) = 0;
+  virtual boost::leaf::result<void> clear() = 0;
+
   /**
-   * @brief Setup the timer and attach an interrupt to it
+   * @brief Schedule an callback to be called at a designated time/interval
    *
-   * When called this will, stop and reset the timer. To start the timer,
-   * `control(controls::start)` must be called.
+   * If this is called and the timer has already scheduled an event (in other
+   * words, is_running() returns true), then the previous scheduled event will
+   * be cleared and the new scheduled event will be started.
    *
    * @param p_callback - callback function to be called when the timer expires
-   * @param p_interval - the amount of time before the timer expires
-   * @param p_type - the type of timer this is
-   * @return boost::leaf::result<void> - returns an error if not all parameters
-   * could be met such as an interval smaller than is capable by hardware or an
-   * unsupported timer type
+   * @param p_delay - the amount of time before the timer expires
+   * @return boost::leaf::result<void> - returns `delay_too_small` or
+   * `delay_too_large` if p_interval cannot be reached.
    */
-  virtual boost::leaf::result<void> attach_interrupt(
+  virtual boost::leaf::result<void> schedule(
     std::function<void(void)> p_callback,
-    std::chrono::nanoseconds p_interval,
-    type p_type = type::continuous) = 0;
+    std::chrono::nanoseconds p_delay) = 0;
 };
 }  // namespace embed
