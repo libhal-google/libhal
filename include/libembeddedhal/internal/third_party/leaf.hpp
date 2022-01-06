@@ -3,8 +3,8 @@
 
 // LEAF single header distribution. Do not edit.
 
-// Generated from https://github.com/boostorg/leaf on December 14, 2021,
-// Git hash e4e922255770004f3fd6e3489bedda2380556f89.
+// Generated from https://github.com/boostorg/leaf on January 06, 2022,
+// Git hash 8563ed0874acfa965e3dad203d92fb7708eb762b.
 
 // Latest version: https://boostorg.github.io/leaf/leaf.hpp
 
@@ -38,6 +38,940 @@
 #ifndef BOOST_LEAF_ERROR_HPP_INCLUDED
 #define BOOST_LEAF_ERROR_HPP_INCLUDED
 
+// >>> #include <boost/leaf/detail/optional.hpp>
+#line 1 "boost/leaf/detail/optional.hpp"
+#ifndef BOOST_LEAF_DETAIL_OPTIONAL_HPP_INCLUDED
+#define BOOST_LEAF_DETAIL_OPTIONAL_HPP_INCLUDED
+
+// >>> #include <boost/leaf/config.hpp>
+#line 1 "boost/leaf/config.hpp"
+#ifndef BOOST_LEAF_CONFIG_HPP_INCLUDED
+#define BOOST_LEAF_CONFIG_HPP_INCLUDED
+
+// The following is based on Boost Config.
+
+// (C) Copyright John Maddock 2001 - 2003.
+// (C) Copyright Martin Wille 2003.
+// (C) Copyright Guillaume Melquiond 2003.
+
+#ifdef BOOST_LEAF_TLS_FREERTOS
+
+#	ifndef BOOST_LEAF_EMBEDDED
+#		define BOOST_LEAF_EMBEDDED
+#	endif
+
+#endif
+
+#ifdef BOOST_LEAF_EMBEDDED
+
+#	ifndef BOOST_LEAF_NO_EXCEPTIONS
+#		define BOOST_LEAF_NO_EXCEPTIONS
+#	endif
+
+#	ifndef BOOST_LEAF_DIAGNOSTICS
+#		define BOOST_LEAF_DIAGNOSTICS 0
+#	endif
+
+#	ifndef BOOST_LEAF_USE_STD_SYSTEM_ERROR
+#		define BOOST_LEAF_USE_STD_SYSTEM_ERROR 0
+#	endif
+
+#	ifndef BOOST_LEAF_USE_STD_STRING
+#		define BOOST_LEAF_USE_STD_STRING 0
+#	endif
+
+#endif
+
+#ifndef BOOST_LEAF_DIAGNOSTICS
+#   define BOOST_LEAF_DIAGNOSTICS 1
+#endif
+
+#ifndef BOOST_LEAF_USE_STD_SYSTEM_ERROR
+#	define BOOST_LEAF_USE_STD_SYSTEM_ERROR 1
+#endif
+
+#ifndef BOOST_LEAF_USE_STD_STRING
+#	define BOOST_LEAF_USE_STD_STRING 1
+#endif
+
+#if BOOST_LEAF_DIAGNOSTICS!=0 && BOOST_LEAF_DIAGNOSTICS!=1
+#   error BOOST_LEAF_DIAGNOSTICS must be 0 or 1.
+#endif
+
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR!=0 && BOOST_LEAF_USE_STD_SYSTEM_ERROR!=1
+#   error BOOST_LEAF_USE_STD_SYSTEM_ERROR must be 0 or 1.
+#endif
+
+#if BOOST_LEAF_USE_STD_STRING!=0 && BOOST_LEAF_USE_STD_STRING!=1
+#   error BOOST_LEAF_USE_STD_STRING must be 0 or 1.
+#endif
+
+#if BOOST_LEAF_DIAGNOSTICS && !BOOST_LEAF_USE_STD_STRING
+#	error BOOST_LEAF_DIAGNOSTICS requires the use of std::string
+#endif
+
+// Configure BOOST_LEAF_NO_EXCEPTIONS, unless already #defined
+#ifndef BOOST_LEAF_NO_EXCEPTIONS
+
+#   if defined(__clang__) && !defined(__ibmxl__)
+//  Clang C++ emulates GCC, so it has to appear early.
+
+#       if !__has_feature(cxx_exceptions)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__DMC__)
+//  Digital Mars C++
+
+#       if !defined(_CPPUNWIND)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__GNUC__) && !defined(__ibmxl__)
+//  GNU C++:
+
+#       if !defined(__EXCEPTIONS)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__KCC)
+//  Kai C++
+
+#       if !defined(_EXCEPTIONS)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__CODEGEARC__)
+//  CodeGear - must be checked for before Borland
+
+#       if !defined(_CPPUNWIND) && !defined(__EXCEPTIONS)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__BORLANDC__)
+//  Borland
+
+#       if !defined(_CPPUNWIND) && !defined(__EXCEPTIONS)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__MWERKS__)
+//  Metrowerks CodeWarrior
+
+#       if !__option(exceptions)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__IBMCPP__) && defined(__COMPILER_VER__) && defined(__MVS__)
+//  IBM z/OS XL C/C++
+
+#       if !defined(_CPPUNWIND) && !defined(__EXCEPTIONS)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(__ibmxl__)
+//  IBM XL C/C++ for Linux (Little Endian)
+
+#       if !__has_feature(cxx_exceptions)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+
+#   elif defined(_MSC_VER)
+//  Microsoft Visual C++
+//
+//  Must remain the last #elif since some other vendors (Metrowerks, for
+//  example) also #define _MSC_VER
+
+#       if !defined(_CPPUNWIND)
+#           define BOOST_LEAF_NO_EXCEPTIONS
+#       endif
+#   endif
+
+#endif
+
+#ifdef BOOST_NORETURN
+#   define BOOST_LEAF_NORETURN BOOST_NORETURN
+#else
+#   if defined(_MSC_VER)
+#       define BOOST_LEAF_NORETURN __declspec(noreturn)
+#   elif defined(__GNUC__)
+#       define BOOST_LEAF_NORETURN __attribute__ ((__noreturn__))
+#   elif defined(__has_attribute) && defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x5130)
+#       if __has_attribute(noreturn)
+#           define BOOST_LEAF_NORETURN [[noreturn]]
+#       endif
+#   elif defined(__has_cpp_attribute)
+#       if __has_cpp_attribute(noreturn)
+#           define BOOST_LEAF_NORETURN [[noreturn]]
+#       endif
+#   endif
+#endif
+#if !defined(BOOST_LEAF_NORETURN)
+#  define BOOST_LEAF_NORETURN
+#endif
+
+#ifdef _MSC_VER
+#   define BOOST_LEAF_ALWAYS_INLINE __forceinline
+#else
+#   define BOOST_LEAF_ALWAYS_INLINE __attribute__((always_inline)) inline
+#endif
+
+#ifndef BOOST_LEAF_NODISCARD
+#   if __cplusplus >= 201703L
+#       define BOOST_LEAF_NODISCARD [[nodiscard]]
+#   else
+#       define BOOST_LEAF_NODISCARD
+#   endif
+#endif
+
+#ifndef BOOST_LEAF_CONSTEXPR
+#   if __cplusplus > 201402L
+#       define BOOST_LEAF_CONSTEXPR constexpr
+#   else
+#       define BOOST_LEAF_CONSTEXPR
+#   endif
+#endif
+
+#ifndef BOOST_LEAF_ASSERT
+#   ifdef BOOST_ASSERT
+#       define BOOST_LEAF_ASSERT BOOST_ASSERT
+#   else
+#       include <cassert>
+#       define BOOST_LEAF_ASSERT assert
+#   endif
+#endif
+
+#ifndef BOOST_LEAF_NO_EXCEPTIONS
+#   include <exception>
+#   if (defined(__cpp_lib_uncaught_exceptions) && __cpp_lib_uncaught_exceptions >= 201411L) || (defined(_MSC_VER) && _MSC_VER >= 1900)
+#       define BOOST_LEAF_STD_UNCAUGHT_EXCEPTIONS 1
+#   else
+#       define BOOST_LEAF_STD_UNCAUGHT_EXCEPTIONS 0
+#   endif
+#endif
+
+#ifdef __GNUC__
+#	define BOOST_LEAF_SYMBOL_VISIBLE __attribute__((__visibility__("default")))
+#else
+#	define BOOST_LEAF_SYMBOL_VISIBLE
+#endif
+
+// Configure TLS access
+// >>> #include <boost/leaf/config/tls.hpp>
+#line 1 "boost/leaf/config/tls.hpp"
+#ifndef BOOST_LEAF_CONFIG_TLS_HPP_INCLUDED
+#define BOOST_LEAF_CONFIG_TLS_HPP_INCLUDED
+
+#if defined(BOOST_LEAF_TLS_FREERTOS)
+// >>> #   include <boost/leaf/config/tls_freertos.hpp>
+#line 1 "boost/leaf/config/tls_freertos.hpp"
+#ifndef BOOST_LEAF_CONFIG_TLS_FREERTOS_HPP_INCLUDED
+#define BOOST_LEAF_CONFIG_TLS_FREERTOS_HPP_INCLUDED
+
+// LEAF requires thread local storage support for pointers and for uin32_t values.
+
+// This header implements thread local storage for pointers and for uint32_t
+// values via the FreeRTOS API, as an alternative to the default implementation
+// (found in tls_cpp11.hpp) which relies on C++11 thread_local support.
+
+// See https://www.freertos.org/thread-local-storage-pointers.html.
+
+#include <task.h>
+
+#ifndef BOOST_LEAF_TLS_ARRAY
+#   define BOOST_LEAF_TLS_ARRAY
+#endif
+
+#ifndef BOOST_LEAF_TLS_INDEX_TYPE
+#   define BOOST_LEAF_TLS_INDEX_TYPE BaseType_t
+#endif
+
+#ifndef BOOST_LEAF_TLS_ARRAY_SIZE
+#   define BOOST_LEAF_TLS_ARRAY_SIZE configNUM_THREAD_LOCAL_STORAGE_POINTERS
+#endif
+
+static_assert(
+    BOOST_LEAF_TLS_ARRAY_SIZE <= configNUM_THREAD_LOCAL_STORAGE_POINTERS,
+        "Bad BOOST_LEAF_TLS_ARRAY_SIZE");
+
+namespace boost { namespace leaf {
+
+namespace tls
+{
+    inline void * read_void_ptr( int tls_index ) noexcept
+    {
+        return pvTaskGetThreadLocalStoragePointer(0, tls_index);
+    }
+
+    inline void write_void_ptr( int tls_index, void * p ) noexcept
+    {
+        vTaskSetThreadLocalStoragePointer(0, tls_index, p);
+    }
+}
+
+} }
+
+#endif
+// <<< #   include <boost/leaf/config/tls_freertos.hpp>
+#line 11 "boost/leaf/config/tls.hpp"
+#endif
+
+#if defined BOOST_LEAF_TLS_ARRAY
+// >>> #	include <boost/leaf/config/tls_array.hpp>
+#line 1 "boost/leaf/config/tls_array.hpp"
+#ifndef BOOST_LEAF_CONFIG_TLS_ARRAY_HPP_INCLUDED
+#define BOOST_LEAF_CONFIG_TLS_ARRAY_HPP_INCLUDED
+
+// LEAF requires thread local storage support for pointers and for uin32_t values.
+
+// This header implements thread local storage for pointers and for uint32_t
+// values for platforms that support thread local pointers by index.
+
+#ifndef BOOST_LEAF_TLS_INDEX_TYPE
+#   define BOOST_LEAF_TLS_INDEX_TYPE int
+#endif
+
+#ifndef BOOST_LEAF_TLS_ARRAY_START_INDEX
+#   define BOOST_LEAF_TLS_ARRAY_START_INDEX 0
+#endif
+
+static_assert(BOOST_LEAF_TLS_ARRAY_START_INDEX >= 0,
+    "Bad BOOST_LEAF_TLS_ARRAY_START_INDEX");
+
+#ifdef BOOST_LEAF_TLS_ARRAY_SIZE
+static_assert(BOOST_LEAF_TLS_ARRAY_SIZE > 0,
+    "Bad BOOST_LEAF_TLS_ARRAY_SIZE");
+static_assert(BOOST_LEAF_TLS_ARRAY_START_INDEX < BOOST_LEAF_TLS_ARRAY_SIZE,
+    "Bad BOOST_LEAF_TLS_ARRAY_START_INDEX");
+#endif
+
+#include <atomic>
+#include <cstdint>
+
+namespace boost { namespace leaf {
+
+namespace tls
+{
+    // The TLS support defined in this header requires the following two
+    // functions to be defined elsewhere:
+    void * read_void_ptr( int tls_index ) noexcept;
+    void write_void_ptr( int tls_index, void * ) noexcept;
+}
+
+} }
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    using atomic_unsigned_int = std::atomic<unsigned int>;
+}
+
+namespace tls
+{
+    template <class=void>
+    class BOOST_LEAF_SYMBOL_VISIBLE index_counter
+    {
+        static BOOST_LEAF_TLS_INDEX_TYPE c;
+
+    public:
+
+        template <class T>
+        static BOOST_LEAF_TLS_INDEX_TYPE get_index() noexcept
+        {
+            BOOST_LEAF_TLS_INDEX_TYPE idx = c++;
+#ifdef BOOST_LEAF_TLS_ARRAY_SIZE
+            BOOST_LEAF_ASSERT(idx < BOOST_LEAF_TLS_ARRAY_SIZE);
+#endif
+            // Set breakpoint here to inspect TLS index assignment.
+            return idx; 
+        }
+    };
+
+    template <class T>
+    BOOST_LEAF_TLS_INDEX_TYPE index_counter<T>::c = BOOST_LEAF_TLS_ARRAY_START_INDEX;
+
+    template <class T>
+    struct BOOST_LEAF_SYMBOL_VISIBLE index
+    {
+        static BOOST_LEAF_TLS_INDEX_TYPE const idx;
+    };
+
+    template <class T>
+    BOOST_LEAF_TLS_INDEX_TYPE const index<T>::idx = index_counter<>::get_index<T>();
+
+    template <class T>
+    T * read_ptr() noexcept
+    {
+        int const tls_index = index<T>::idx;
+        BOOST_LEAF_ASSERT(tls_index >= BOOST_LEAF_TLS_ARRAY_START_INDEX);
+#ifdef BOOST_LEAF_TLS_ARRAY_SIZE
+        BOOST_LEAF_ASSERT(tls_index < BOOST_LEAF_TLS_ARRAY_SIZE);
+#endif
+        return reinterpret_cast<T *>(read_void_ptr(tls_index));
+    }
+
+    template <class T>
+    void write_ptr( T * p ) noexcept
+    {
+        int const tls_index = index<T>::idx;
+        BOOST_LEAF_ASSERT(tls_index >= BOOST_LEAF_TLS_ARRAY_START_INDEX);
+#ifdef BOOST_LEAF_TLS_ARRAY_SIZE
+        BOOST_LEAF_ASSERT(tls_index < BOOST_LEAF_TLS_ARRAY_SIZE);
+#endif
+        write_void_ptr(tls_index, p);
+        BOOST_LEAF_ASSERT(read_void_ptr(tls_index) == p);
+    }
+
+    template <class Tag>
+    std::uint32_t read_uint32() noexcept
+    {
+        Tag * p = read_ptr<Tag>();
+        return (std::intptr_t)(void *)p;
+    }
+
+    template <class Tag>
+    void write_uint32( std::uint32_t x ) noexcept
+    {
+        write_ptr<Tag>((Tag *)x);
+    }
+
+    template <class Tag>
+    void uint32_increment() noexcept
+    {
+        write_uint32<Tag>(read_uint32<Tag>() + 1);
+    }
+
+    template <class Tag>
+    void uint32_decrement() noexcept
+    {
+        write_uint32<Tag>(read_uint32<Tag>() - 1);
+    }
+}
+
+} }
+
+#endif
+// <<< #	include <boost/leaf/config/tls_array.hpp>
+#line 15 "boost/leaf/config/tls.hpp"
+#elif defined(BOOST_LEAF_NO_THREADS)
+// >>> #   include <boost/leaf/config/tls_globals.hpp>
+#line 1 "boost/leaf/config/tls_globals.hpp"
+#ifndef BOOST_LEAF_CONFIG_TLS_GLOBALS_HPP_INCLUDED
+#define BOOST_LEAF_CONFIG_TLS_GLOBALS_HPP_INCLUDED
+
+// LEAF requires thread local storage support for pointers and for uin32_t values.
+
+// This header implements "thread local" storage for pointers and for uint32_t
+// values using globals, which is suitable for single thread environments.
+
+#include <cstdint>
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    using atomic_unsigned_int = unsigned int;
+}
+
+namespace tls
+{
+    template <class T>
+    struct BOOST_LEAF_SYMBOL_VISIBLE ptr
+    {
+        static T * p;
+    };
+
+    template <class T>
+    T * ptr<T>::p;
+
+    template <class T>
+    T * read_ptr() noexcept
+    {
+        return ptr<T>::p;
+    }
+
+    template <class T>
+    void write_ptr( T * p ) noexcept
+    {
+        ptr<T>::p = p;
+    }
+
+    template <class Tag>
+    struct BOOST_LEAF_SYMBOL_VISIBLE tagged_uint32
+    {
+        static std::uint32_t x;
+    };
+
+    template <class Tag>
+    std::uint32_t tagged_uint32<Tag>::x;
+
+    template <class Tag>
+    std::uint32_t read_uint32() noexcept
+    {
+        return tagged_uint32<Tag>::x;
+    }
+
+    template <class Tag>
+    void write_uint32( std::uint32_t x ) noexcept
+    {
+        tagged_uint32<Tag>::x = x;
+    }
+
+    template <class Tag>
+    void uint32_increment() noexcept
+    {
+        ++tagged_uint32<Tag>::x;
+    }
+
+    template <class Tag>
+    void uint32_decrement() noexcept
+    {
+        --tagged_uint32<Tag>::x;
+    }
+}
+
+} }
+
+#endif
+// <<< #   include <boost/leaf/config/tls_globals.hpp>
+#line 17 "boost/leaf/config/tls.hpp"
+#else
+// >>> #   include <boost/leaf/config/tls_cpp11.hpp>
+#line 1 "boost/leaf/config/tls_cpp11.hpp"
+#ifndef BOOST_LEAF_CONFIG_TLS_CPP11_HPP_INCLUDED
+#define BOOST_LEAF_CONFIG_TLS_CPP11_HPP_INCLUDED
+
+// LEAF requires thread local storage support for pointers and for uin32_t values.
+
+// This header implements thread local storage for pointers and for uint32_t
+// values using the C++11 built-in thread_local storage class specifier.
+
+#include <cstdint>
+#include <atomic>
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    using atomic_unsigned_int = std::atomic<unsigned int>;
+}
+
+namespace tls
+{
+    template <class T>
+    struct BOOST_LEAF_SYMBOL_VISIBLE ptr
+    {
+        static thread_local T * p;
+    };
+
+    template <class T>
+    thread_local T * ptr<T>::p;
+
+    template <class T>
+    T * read_ptr() noexcept
+    {
+        return ptr<T>::p;
+    }
+
+    template <class T>
+    void write_ptr( T * p ) noexcept
+    {
+        ptr<T>::p = p;
+    }
+
+    template <class Tag>
+    struct BOOST_LEAF_SYMBOL_VISIBLE tagged_uint32
+    {
+        static thread_local std::uint32_t x;
+    };
+
+    template <class Tag>
+    thread_local std::uint32_t tagged_uint32<Tag>::x;
+
+    template <class Tag>
+    std::uint32_t read_uint32() noexcept
+    {
+        return tagged_uint32<Tag>::x;
+    }
+
+    template <class Tag>
+    void write_uint32( std::uint32_t x ) noexcept
+    {
+        tagged_uint32<Tag>::x = x;
+    }
+
+    template <class Tag>
+    void uint32_increment() noexcept
+    {
+        ++tagged_uint32<Tag>::x;
+    }
+
+    template <class Tag>
+    void uint32_decrement() noexcept
+    {
+        --tagged_uint32<Tag>::x;
+    }
+}
+
+} }
+
+#endif
+// <<< #   include <boost/leaf/config/tls_cpp11.hpp>
+#line 19 "boost/leaf/config/tls.hpp"
+#endif
+
+#endif
+// <<< #include <boost/leaf/config/tls.hpp>
+#line 251 "boost/leaf/config.hpp"
+
+#endif
+// <<< #include <boost/leaf/config.hpp>
+#line 20 "boost/leaf/detail/optional.hpp"
+#include <utility>
+#include <new>
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    template <class T>
+    class optional
+    {
+        int key_;
+        union { T value_; };
+
+    public:
+
+        typedef T value_type;
+
+        BOOST_LEAF_CONSTEXPR optional() noexcept:
+            key_(0)
+        {
+        }
+
+        BOOST_LEAF_CONSTEXPR optional( optional const & x ):
+            key_(x.key_)
+        {
+            if( x.key_ )
+                (void) new (&value_) T( x.value_ );
+        }
+
+        BOOST_LEAF_CONSTEXPR optional( optional && x ) noexcept:
+            key_(x.key_)
+        {
+            if( x.key_ )
+            {
+                (void) new (&value_) T( std::move(x.value_) );
+                x.reset();
+            }
+        }
+
+        BOOST_LEAF_CONSTEXPR optional( int key, T const & v ):
+            key_(key),
+            value_(v)
+        {
+            BOOST_LEAF_ASSERT(!empty());
+        }
+
+        BOOST_LEAF_CONSTEXPR optional( int key, T && v ) noexcept:
+            key_(key),
+            value_(std::move(v))
+        {
+            BOOST_LEAF_ASSERT(!empty());
+        }
+
+        BOOST_LEAF_CONSTEXPR optional & operator=( optional const & x )
+        {
+            reset();
+            if( int key = x.key() )
+            {
+                put(key, x.value_);
+                key_ = key;
+            }
+            return *this;
+        }
+
+        BOOST_LEAF_CONSTEXPR optional & operator=( optional && x ) noexcept
+        {
+            reset();
+            if( int key = x.key() )
+            {
+                put(key, std::move(x.value_));
+                x.reset();
+            }
+            return *this;
+        }
+
+        ~optional() noexcept
+        {
+            reset();
+        }
+
+        BOOST_LEAF_CONSTEXPR bool empty() const noexcept
+        {
+            return key_==0;
+        }
+
+        BOOST_LEAF_CONSTEXPR int key() const noexcept
+        {
+            return key_;
+        }
+
+        BOOST_LEAF_CONSTEXPR void reset() noexcept
+        {
+            if( key_ )
+            {
+                value_.~T();
+                key_=0;
+            }
+        }
+
+        BOOST_LEAF_CONSTEXPR T & put( int key, T const & v )
+        {
+            BOOST_LEAF_ASSERT(key);
+            reset();
+            (void) new(&value_) T(v);
+            key_=key;
+            return value_;
+        }
+
+        BOOST_LEAF_CONSTEXPR T & put( int key, T && v ) noexcept
+        {
+            BOOST_LEAF_ASSERT(key);
+            reset();
+            (void) new(&value_) T(std::move(v));
+            key_=key;
+            return value_;
+        }
+
+        BOOST_LEAF_CONSTEXPR T const * has_value(int key) const noexcept
+        {
+            BOOST_LEAF_ASSERT(key);
+            return key_==key ? &value_ : 0;
+        }
+
+        BOOST_LEAF_CONSTEXPR T * has_value(int key) noexcept
+        {
+            BOOST_LEAF_ASSERT(key);
+            return key_==key ? &value_ : 0;
+        }
+
+        BOOST_LEAF_CONSTEXPR T const & value(int key) const & noexcept
+        {
+            BOOST_LEAF_ASSERT(has_value(key) != 0);
+            return value_;
+        }
+
+        BOOST_LEAF_CONSTEXPR T & value(int key) & noexcept
+        {
+            BOOST_LEAF_ASSERT(has_value(key) != 0);
+            return value_;
+        }
+
+        BOOST_LEAF_CONSTEXPR T const && value(int key) const && noexcept
+        {
+            BOOST_LEAF_ASSERT(has_value(key) != 0);
+            return value_;
+        }
+
+        BOOST_LEAF_CONSTEXPR T value(int key) && noexcept
+        {
+            BOOST_LEAF_ASSERT(has_value(key) != 0);
+            T tmp(std::move(value_));
+            reset();
+            return tmp;
+        }
+    };
+
+}
+
+} }
+
+#endif
+// <<< #include <boost/leaf/detail/optional.hpp>
+#line 20 "boost/leaf/error.hpp"
+// >>> #include <boost/leaf/detail/demangle.hpp>
+#line 1 "boost/leaf/detail/demangle.hpp"
+#ifndef BOOST_LEAF_DETAIL_DEMANGLE_HPP_INCLUDED
+#define BOOST_LEAF_DETAIL_DEMANGLE_HPP_INCLUDED
+
+// core::demangle
+//
+// Copyright 2014 Peter Dimov
+// Copyright 2014 Andrey Semashev
+//
+// Distributed under the Boost Software License, Version 1.0.
+// See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt
+
+#include <cstring>
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    template <int N>
+    BOOST_LEAF_CONSTEXPR inline char const * check_prefix( char const * t, char const (&prefix)[N] )
+    {
+        return std::strncmp(t,prefix,sizeof(prefix)-1)==0 ? t+sizeof(prefix)-1 : t;
+    }
+}
+
+template <class Name>
+inline char const * type()
+{
+    using leaf_detail::check_prefix;
+char const * t =
+#ifdef __FUNCSIG__
+    __FUNCSIG__;
+#else
+    __PRETTY_FUNCTION__;
+#endif
+#if defined(__clang__)
+    BOOST_LEAF_ASSERT(check_prefix(t,"const char *boost::leaf::type() ")==t+32);
+    return t+32;
+#elif defined(__GNUC__)
+    BOOST_LEAF_ASSERT(check_prefix(t,"const char* boost::leaf::type() ")==t+32);
+    return t+32;
+#else
+    char const * clang_style = check_prefix(t,"const char *boost::leaf::type() ");
+    if( clang_style!=t )
+        return clang_style;
+    char const * gcc_style = check_prefix(t,"const char* boost::leaf::type() ");
+    if( gcc_style!=t )
+        return gcc_style;
+#endif
+    return t;
+}
+
+} }
+
+#if defined(__has_include) && ((__GNUC__ + 0) >= 5)
+#   if __has_include(<cxxabi.h>)
+#       define BOOST_LEAF_HAS_CXXABI_H
+#   endif
+#elif defined(__GLIBCXX__) || defined(__GLIBCPP__)
+#   define BOOST_LEAF_HAS_CXXABI_H
+#endif
+
+#if defined( BOOST_LEAF_HAS_CXXABI_H )
+#   include <cxxabi.h>
+// For some architectures (mips, mips64, x86, x86_64) cxxabi.h in Android NDK is implemented by gabi++ library
+// (https://android.googlesource.com/platform/ndk/+/master/sources/cxx-stl/gabi++/), which does not implement
+// abi::__cxa_demangle(). We detect this implementation by checking the include guard here.
+#   if defined( __GABIXX_CXXABI_H__ )
+#       undef BOOST_LEAF_HAS_CXXABI_H
+#   else
+#       include <cstddef>
+#   endif
+#endif
+
+#if BOOST_LEAF_USE_STD_STRING
+
+#include <string>
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    inline char const * demangle_alloc( char const * name ) noexcept;
+    inline void demangle_free( char const * name ) noexcept;
+
+    class scoped_demangled_name
+    {
+    private:
+
+        char const * m_p;
+
+    public:
+
+        explicit scoped_demangled_name( char const * name ) noexcept :
+            m_p( demangle_alloc( name ) )
+        {
+        }
+
+        ~scoped_demangled_name() noexcept
+        {
+            demangle_free( m_p );
+        }
+
+        char const * get() const noexcept
+        {
+            return m_p;
+        }
+
+        scoped_demangled_name( scoped_demangled_name const& ) = delete;
+        scoped_demangled_name& operator= ( scoped_demangled_name const& ) = delete;
+    };
+
+#ifdef BOOST_LEAF_HAS_CXXABI_H
+
+    inline char const * demangle_alloc( char const * name ) noexcept
+    {
+        int status = 0;
+        std::size_t size = 0;
+        return abi::__cxa_demangle( name, NULL, &size, &status );
+    }
+
+    inline void demangle_free( char const * name ) noexcept
+    {
+        std::free( const_cast< char* >( name ) );
+    }
+
+    inline std::string demangle( char const * name )
+    {
+        scoped_demangled_name demangled_name( name );
+        char const * p = demangled_name.get();
+        if( !p )
+            p = name;
+        return p;
+    }
+
+#else
+
+    inline char const * demangle_alloc( char const * name ) noexcept
+    {
+        return name;
+    }
+
+    inline void demangle_free( char const * ) noexcept
+    {
+    }
+
+    inline char const * demangle( char const * name )
+    {
+        return name;
+    }
+
+#endif
+}
+
+} }
+
+#else
+
+namespace boost { namespace leaf {
+
+namespace leaf_detail
+{
+    inline char const * demangle( char const * name )
+    {
+        return name;
+    }
+}
+
+} }
+
+#endif
+
+#ifdef BOOST_LEAF_HAS_CXXABI_H
+#   undef BOOST_LEAF_HAS_CXXABI_H
+#endif
+
+#endif
+// <<< #include <boost/leaf/detail/demangle.hpp>
+#line 21 "boost/leaf/error.hpp"
 // >>> #include <boost/leaf/detail/function_traits.hpp>
 #line 1 "boost/leaf/detail/function_traits.hpp"
 #ifndef BOOST_LEAF_DETAIL_FUNCTION_TRAITS_HPP_INCLUDED
@@ -441,390 +1375,23 @@ namespace leaf_detail
 
 #endif
 // <<< #include <boost/leaf/detail/function_traits.hpp>
-#line 20 "boost/leaf/error.hpp"
-// >>> #include <boost/leaf/detail/print.hpp>
+#line 22 "boost/leaf/error.hpp"
+#include <type_traits>
+#include <memory>
+#include <iosfwd>
+
+#if BOOST_LEAF_DIAGNOSTICS
+// >>> #   include <boost/leaf/detail/print.hpp>
 #line 1 "boost/leaf/detail/print.hpp"
 #ifndef BOOST_LEAF_DETAIL_PRINT_HPP_INCLUDED
 #define BOOST_LEAF_DETAIL_PRINT_HPP_INCLUDED
 
-// >>> #include <boost/leaf/detail/optional.hpp>
-#line 1 "boost/leaf/detail/optional.hpp"
-#ifndef BOOST_LEAF_DETAIL_OPTIONAL_HPP_INCLUDED
-#define BOOST_LEAF_DETAIL_OPTIONAL_HPP_INCLUDED
-
-// >>> #include <boost/leaf/detail/config.hpp>
-#line 1 "boost/leaf/detail/config.hpp"
-#ifndef BOOST_LEAF_CONFIG_HPP_INCLUDED
-#define BOOST_LEAF_CONFIG_HPP_INCLUDED
-
-// The following is based on Boost Config.
-
-// (C) Copyright John Maddock 2001 - 2003.
-// (C) Copyright Martin Wille 2003.
-// (C) Copyright Guillaume Melquiond 2003.
-
-// Configure BOOST_LEAF_NO_EXCEPTIONS, unless already #defined
-#ifndef BOOST_LEAF_NO_EXCEPTIONS
-
-#   if defined(__clang__) && !defined(__ibmxl__)
-//  Clang C++ emulates GCC, so it has to appear early.
-
-#       if !__has_feature(cxx_exceptions)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__DMC__)
-//  Digital Mars C++
-
-#       if !defined(_CPPUNWIND)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__GNUC__) && !defined(__ibmxl__)
-//  GNU C++:
-
-#       if !defined(__EXCEPTIONS)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__KCC)
-//  Kai C++
-
-#       if !defined(_EXCEPTIONS)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__CODEGEARC__)
-//  CodeGear - must be checked for before Borland
-
-#       if !defined(_CPPUNWIND) && !defined(__EXCEPTIONS)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__BORLANDC__)
-//  Borland
-
-#       if !defined(_CPPUNWIND) && !defined(__EXCEPTIONS)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__MWERKS__)
-//  Metrowerks CodeWarrior
-
-#       if !__option(exceptions)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__IBMCPP__) && defined(__COMPILER_VER__) && defined(__MVS__)
-//  IBM z/OS XL C/C++
-
-#       if !defined(_CPPUNWIND) && !defined(__EXCEPTIONS)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(__ibmxl__)
-//  IBM XL C/C++ for Linux (Little Endian)
-
-#       if !__has_feature(cxx_exceptions)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-
-#   elif defined(_MSC_VER)
-//  Microsoft Visual C++
-//
-//  Must remain the last #elif since some other vendors (Metrowerks, for
-//  example) also #define _MSC_VER
-
-#       if !defined(_CPPUNWIND)
-#           define BOOST_LEAF_NO_EXCEPTIONS
-#       endif
-#   endif
-
-#endif
-
-#ifdef BOOST_NORETURN
-#   define BOOST_LEAF_NORETURN BOOST_NORETURN
-#else
-#   if defined(_MSC_VER)
-#       define BOOST_LEAF_NORETURN __declspec(noreturn)
-#   elif defined(__GNUC__)
-#       define BOOST_LEAF_NORETURN __attribute__ ((__noreturn__))
-#   elif defined(__has_attribute) && defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x5130)
-#       if __has_attribute(noreturn)
-#           define BOOST_LEAF_NORETURN [[noreturn]]
-#       endif
-#   elif defined(__has_cpp_attribute)
-#       if __has_cpp_attribute(noreturn)
-#           define BOOST_LEAF_NORETURN [[noreturn]]
-#       endif
-#   endif
-#endif
-#if !defined(BOOST_LEAF_NORETURN)
-#  define BOOST_LEAF_NORETURN
-#endif
-
-#ifndef BOOST_LEAF_DIAGNOSTICS
-#   define BOOST_LEAF_DIAGNOSTICS 1
-#endif
-
-#if BOOST_LEAF_DIAGNOSTICS!=0 && BOOST_LEAF_DIAGNOSTICS!=1
-#   error BOOST_LEAF_DIAGNOSTICS must be 0 or 1.
-#endif
-
-#ifdef _MSC_VER
-#   define BOOST_LEAF_ALWAYS_INLINE __forceinline
-#else
-#   define BOOST_LEAF_ALWAYS_INLINE __attribute__((always_inline)) inline
-#endif
-
-#ifndef BOOST_LEAF_NODISCARD
-#   if __cplusplus >= 201703L
-#       define BOOST_LEAF_NODISCARD [[nodiscard]]
-#   else
-#       define BOOST_LEAF_NODISCARD
-#   endif
-#endif
-
-#ifndef BOOST_LEAF_CONSTEXPR
-#   if __cplusplus > 201402L
-#       define BOOST_LEAF_CONSTEXPR constexpr
-#   else
-#       define BOOST_LEAF_CONSTEXPR
-#   endif
-#endif
-
-#ifndef BOOST_LEAF_ASSERT
-#   ifdef BOOST_ASSERT
-#       define BOOST_LEAF_ASSERT BOOST_ASSERT
-#   else
-#       include <cassert>
-#       define BOOST_LEAF_ASSERT assert
-#   endif
-#endif
-
-#ifndef BOOST_LEAF_NO_EXCEPTIONS
-#   include <exception>
-#   if (defined(__cpp_lib_uncaught_exceptions) && __cpp_lib_uncaught_exceptions >= 201411L) || (defined(_MSC_VER) && _MSC_VER >= 1900)
-#       define BOOST_LEAF_STD_UNCAUGHT_EXCEPTIONS 1
-#   else
-#       define BOOST_LEAF_STD_UNCAUGHT_EXCEPTIONS 0
-#   endif
-#endif
-
-#ifdef __GNUC__
-#	define BOOST_LEAF_SYMBOL_VISIBLE __attribute__((__visibility__("default")))
-#else
-#	define BOOST_LEAF_SYMBOL_VISIBLE
-#endif
-
-#endif
-// <<< #include <boost/leaf/detail/config.hpp>
-#line 20 "boost/leaf/detail/optional.hpp"
-#include <utility>
-#include <new>
-
-namespace boost { namespace leaf {
-
-namespace leaf_detail
-{
-    template <class T>
-    class optional
-    {
-        int key_;
-        union { T value_; };
-
-    public:
-
-        typedef T value_type;
-
-        BOOST_LEAF_CONSTEXPR optional() noexcept:
-            key_(0)
-        {
-        }
-
-        BOOST_LEAF_CONSTEXPR optional( optional const & x ):
-            key_(x.key_)
-        {
-            if( x.key_ )
-                (void) new (&value_) T( x.value_ );
-        }
-
-        BOOST_LEAF_CONSTEXPR optional( optional && x ) noexcept:
-            key_(x.key_)
-        {
-            if( x.key_ )
-            {
-                (void) new (&value_) T( std::move(x.value_) );
-                x.reset();
-            }
-        }
-
-        BOOST_LEAF_CONSTEXPR optional( int key, T const & v ):
-            key_(key),
-            value_(v)
-        {
-            BOOST_LEAF_ASSERT(!empty());
-        }
-
-        BOOST_LEAF_CONSTEXPR optional( int key, T && v ) noexcept:
-            key_(key),
-            value_(std::move(v))
-        {
-            BOOST_LEAF_ASSERT(!empty());
-        }
-
-        BOOST_LEAF_CONSTEXPR optional & operator=( optional const & x )
-        {
-            reset();
-            if( int key = x.key() )
-            {
-                put(key, x.value_);
-                key_ = key;
-            }
-            return *this;
-        }
-
-        BOOST_LEAF_CONSTEXPR optional & operator=( optional && x ) noexcept
-        {
-            reset();
-            if( int key = x.key() )
-            {
-                put(key, std::move(x.value_));
-                x.reset();
-            }
-            return *this;
-        }
-
-        ~optional() noexcept
-        {
-            reset();
-        }
-
-        BOOST_LEAF_CONSTEXPR bool empty() const noexcept
-        {
-            return key_==0;
-        }
-
-        BOOST_LEAF_CONSTEXPR int key() const noexcept
-        {
-            return key_;
-        }
-
-        BOOST_LEAF_CONSTEXPR void reset() noexcept
-        {
-            if( key_ )
-            {
-                value_.~T();
-                key_=0;
-            }
-        }
-
-        BOOST_LEAF_CONSTEXPR T & put( int key, T const & v )
-        {
-            BOOST_LEAF_ASSERT(key);
-            reset();
-            (void) new(&value_) T(v);
-            key_=key;
-            return value_;
-        }
-
-        BOOST_LEAF_CONSTEXPR T & put( int key, T && v ) noexcept
-        {
-            BOOST_LEAF_ASSERT(key);
-            reset();
-            (void) new(&value_) T(std::move(v));
-            key_=key;
-            return value_;
-        }
-
-        BOOST_LEAF_CONSTEXPR T const * has_value(int key) const noexcept
-        {
-            BOOST_LEAF_ASSERT(key);
-            return key_==key ? &value_ : 0;
-        }
-
-        BOOST_LEAF_CONSTEXPR T * has_value(int key) noexcept
-        {
-            BOOST_LEAF_ASSERT(key);
-            return key_==key ? &value_ : 0;
-        }
-
-        BOOST_LEAF_CONSTEXPR T const & value(int key) const & noexcept
-        {
-            BOOST_LEAF_ASSERT(has_value(key) != 0);
-            return value_;
-        }
-
-        BOOST_LEAF_CONSTEXPR T & value(int key) & noexcept
-        {
-            BOOST_LEAF_ASSERT(has_value(key) != 0);
-            return value_;
-        }
-
-        BOOST_LEAF_CONSTEXPR T const && value(int key) const && noexcept
-        {
-            BOOST_LEAF_ASSERT(has_value(key) != 0);
-            return value_;
-        }
-
-        BOOST_LEAF_CONSTEXPR T value(int key) && noexcept
-        {
-            BOOST_LEAF_ASSERT(has_value(key) != 0);
-            T tmp(std::move(value_));
-            reset();
-            return tmp;
-        }
-    };
-
-}
-
-} }
-
-#endif
-// <<< #include <boost/leaf/detail/optional.hpp>
-#line 20 "boost/leaf/detail/print.hpp"
 #include <type_traits>
 #include <exception>
 #include <iosfwd>
 #include <cstring>
 
 namespace boost { namespace leaf {
-
-namespace leaf_detail
-{
-    template <int N>
-    BOOST_LEAF_CONSTEXPR inline char const * check_prefix( char const * t, char const (&prefix)[N] )
-    {
-        return std::strncmp(t,prefix,sizeof(prefix)-1)==0 ? t+sizeof(prefix)-1 : t;
-    }
-}
-
-template <class Name>
-inline char const * type()
-{
-    using leaf_detail::check_prefix;
-char const * t =
-#ifdef __FUNCSIG__
-    __FUNCSIG__;
-#else
-    __PRETTY_FUNCTION__;
-#endif
-#if defined(__clang__)
-    BOOST_LEAF_ASSERT(check_prefix(t,"const char *boost::leaf::type() ")==t+32);
-    return t+32;
-#elif defined(__GNUC__)
-    BOOST_LEAF_ASSERT(check_prefix(t,"const char* boost::leaf::type() ")==t+32);
-    return t+32;
-#else
-    char const * clang_style = check_prefix(t,"const char *boost::leaf::type() ");
-    if( clang_style!=t )
-        return clang_style;
-    char const * gcc_style = check_prefix(t,"const char* boost::leaf::type() ");
-    if( gcc_style!=t )
-        return gcc_style;
-#endif
-    return t;
-}
 
 namespace leaf_detail
 {
@@ -848,14 +1415,21 @@ namespace leaf_detail
     {
     };
 
-    template <class Wrapper, bool WrapperPrintable=is_printable<Wrapper>::value, bool ValuePrintable=has_printable_member_value<Wrapper>::value, bool IsException=std::is_base_of<std::exception,Wrapper>::value, bool IsEnum=std::is_enum<Wrapper>::value>
+    template <
+        class Wrapper,
+        bool WrapperPrintable = is_printable<Wrapper>::value,
+        bool ValuePrintable = has_printable_member_value<Wrapper>::value,
+        bool IsException = std::is_base_of<std::exception,Wrapper>::value,
+        bool IsEnum = std::is_enum<Wrapper>::value>
     struct diagnostic;
 
     template <class Wrapper, bool ValuePrintable, bool IsException, bool IsEnum>
     struct diagnostic<Wrapper, true, ValuePrintable, IsException, IsEnum>
     {
         static constexpr bool is_invisible = false;
-        static void print( std::ostream & os, Wrapper const & x )
+
+        template <class CharT, class Traits>
+        static void print( std::basic_ostream<CharT, Traits> & os, Wrapper const & x )
         {
             os << x;
         }
@@ -865,7 +1439,9 @@ namespace leaf_detail
     struct diagnostic<Wrapper, false, true, IsException, IsEnum>
     {
         static constexpr bool is_invisible = false;
-        static void print( std::ostream & os, Wrapper const & x )
+
+        template <class CharT, class Traits>
+        static void print( std::basic_ostream<CharT, Traits> & os, Wrapper const & x )
         {
             os << type<Wrapper>() << ": " << x.value;
         }
@@ -875,7 +1451,9 @@ namespace leaf_detail
     struct diagnostic<Wrapper, false, false, true, IsEnum>
     {
         static constexpr bool is_invisible = false;
-        static void print( std::ostream & os, Wrapper const & ex )
+
+        template <class CharT, class Traits>
+        static void print( std::basic_ostream<CharT, Traits> & os, Wrapper const & ex )
         {
             os << type<Wrapper>() << ": std::exception::what(): " << ex.what();
         }
@@ -885,7 +1463,9 @@ namespace leaf_detail
     struct diagnostic<Wrapper, false, false, false, false>
     {
         static constexpr bool is_invisible = false;
-        static void print( std::ostream & os, Wrapper const & )
+
+        template <class CharT, class Traits>
+        static void print( std::basic_ostream<CharT, Traits> & os, Wrapper const & )
         {
             os << type<Wrapper>() << ": {Non-Printable}";
         }
@@ -895,37 +1475,38 @@ namespace leaf_detail
     struct diagnostic<Wrapper, false, false, false, true>
     {
         static constexpr bool is_invisible = false;
-        static void print( std::ostream & os, Wrapper const & w )
+
+        template <class CharT, class Traits>
+        static void print( std::basic_ostream<CharT, Traits> & os, Wrapper const & w )
         {
             os << type<Wrapper>() << ": " << static_cast<typename std::underlying_type<Wrapper>::type>(w);
         }
     };
 
-#ifndef BOOST_LEAF_NO_EXCEPTIONS
     template <>
     struct diagnostic<std::exception_ptr, false, false, false>
     {
         static constexpr bool is_invisible = true;
-        BOOST_LEAF_CONSTEXPR static void print( std::ostream &, std::exception_ptr const & )
+
+        template <class CharT, class Traits>
+        BOOST_LEAF_CONSTEXPR static void print( std::basic_ostream<CharT, Traits> &, std::exception_ptr const & )
         {
         }
     };
-#endif
 }
 
 } }
 
 #endif
-// <<< #include <boost/leaf/detail/print.hpp>
-#line 21 "boost/leaf/error.hpp"
-#include <system_error>
-#include <type_traits>
-#include <memory>
-#include <string>
-
-#if BOOST_LEAF_DIAGNOSTICS
+// <<< #   include <boost/leaf/detail/print.hpp>
+#line 28 "boost/leaf/error.hpp"
+#   include <string>
 #   include <sstream>
 #   include <set>
+#endif
+
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
+#   include <system_error>
 #endif
 
 #define BOOST_LEAF_TOKEN_PASTE(x, y) x ## y
@@ -958,6 +1539,9 @@ class error_id;
 
 namespace leaf_detail
 {
+    struct BOOST_LEAF_SYMBOL_VISIBLE tls_tag_unexpected_enabled_counter;
+    struct BOOST_LEAF_SYMBOL_VISIBLE tls_tag_id_factory_current_id;
+
     struct inject_loc
     {
         char const * const file;
@@ -1006,30 +1590,6 @@ BOOST_LEAF_NORETURN void throw_exception( T const & e )
 
 #endif
 
-#ifdef BOOST_LEAF_NO_THREADS
-
-#   define BOOST_LEAF_THREAD_LOCAL
-namespace boost { namespace leaf {
-    namespace leaf_detail
-    {
-        using atomic_unsigned_int = unsigned int;
-    }
-} }
-
-#else
-
-#   include <atomic>
-#   include <thread>
-#   define BOOST_LEAF_THREAD_LOCAL BOOST_LEAF_SYMBOL_VISIBLE thread_local
-namespace boost { namespace leaf {
-    namespace leaf_detail
-    {
-        using atomic_unsigned_int = std::atomic<unsigned int>;
-    }
-} }
-
-#endif
-
 namespace boost { namespace leaf {
 
 #if BOOST_LEAF_DIAGNOSTICS
@@ -1067,7 +1627,9 @@ namespace leaf_detail
     struct diagnostic<e_unexpected_count, false, false>
     {
         static constexpr bool is_invisible = true;
-        BOOST_LEAF_CONSTEXPR static void print(std::ostream &, e_unexpected_count const &) noexcept { }
+
+        template <class CharT, class Traits>
+        BOOST_LEAF_CONSTEXPR static void print( std::basic_ostream<CharT, Traits> &, e_unexpected_count const &) noexcept { }
     };
 
     class BOOST_LEAF_SYMBOL_VISIBLE e_unexpected_info
@@ -1104,17 +1666,11 @@ namespace leaf_detail
     struct diagnostic<e_unexpected_info, false, false>
     {
         static constexpr bool is_invisible = true;
-        BOOST_LEAF_CONSTEXPR static void print(std::ostream &, e_unexpected_info const &) noexcept { }
+
+        template <class CharT, class Traits>
+        BOOST_LEAF_CONSTEXPR static void print( std::basic_ostream<CharT, Traits> &, e_unexpected_info const &) noexcept { }
     };
 
-    template <class=void>
-    struct BOOST_LEAF_SYMBOL_VISIBLE tl_unexpected_enabled
-    {
-        static BOOST_LEAF_THREAD_LOCAL int counter;
-    };
-
-    template <class T>
-    BOOST_LEAF_THREAD_LOCAL int tl_unexpected_enabled<T>::counter;
 }
 
 #endif
@@ -1123,7 +1679,7 @@ namespace leaf_detail
 
 namespace boost { namespace leaf {
 
-struct e_source_location
+struct BOOST_LEAF_SYMBOL_VISIBLE e_source_location
 {
     char const * file;
     int line;
@@ -1139,54 +1695,38 @@ struct e_source_location
 namespace leaf_detail
 {
     template <class E>
-    class slot;
-
-    template <class E>
-    struct BOOST_LEAF_SYMBOL_VISIBLE tl_slot_ptr
-    {
-        static BOOST_LEAF_THREAD_LOCAL slot<E> * p;
-    };
-
-    template <class E>
-    BOOST_LEAF_THREAD_LOCAL slot<E> * tl_slot_ptr<E>::p;
-
-    template <class E>
-    class slot:
+    class BOOST_LEAF_SYMBOL_VISIBLE slot:
         optional<E>
     {
         slot( slot const & ) = delete;
         slot & operator=( slot const & ) = delete;
 
         using impl = optional<E>;
-        slot<E> * * top_;
         slot<E> * prev_;
 
     public:
 
         BOOST_LEAF_CONSTEXPR slot() noexcept:
-            top_(0)
+            prev_(0)
         {
         }
 
         BOOST_LEAF_CONSTEXPR slot( slot && x ) noexcept:
             optional<E>(std::move(x)),
-            top_(0)
+            prev_(0)
         {
-            BOOST_LEAF_ASSERT(x.top_==0);
+            BOOST_LEAF_ASSERT(x.prev_==0);
         }
 
         BOOST_LEAF_CONSTEXPR void activate() noexcept
         {
-            BOOST_LEAF_ASSERT(top_==0 || *top_!=this);
-            top_ = &tl_slot_ptr<E>::p;
-            prev_ = *top_;
-            *top_ = this;
+            prev_ = tls::read_ptr<slot<E>>();
+            tls::write_ptr<slot<E>>(this);
         }
 
         BOOST_LEAF_CONSTEXPR void deactivate() noexcept
         {
-            BOOST_LEAF_ASSERT(top_!=0 && *top_==this);
-            *top_ = prev_;
+            tls::write_ptr<slot<E>>(prev_);
         }
 
         BOOST_LEAF_CONSTEXPR void propagate() noexcept;
@@ -1194,6 +1734,7 @@ namespace leaf_detail
         template <class CharT, class Traits>
         void print( std::basic_ostream<CharT, Traits> & os, int key_to_print ) const
         {
+#if BOOST_LEAF_DIAGNOSTICS
             if( !diagnostic<E>::is_invisible )
                 if( int k = this->key() )
                 {
@@ -1207,6 +1748,7 @@ namespace leaf_detail
                     diagnostic<E>::print(os, value(k));
                     (os << '\n').flush();
                 }
+#endif
         }
 
         using impl::put;
@@ -1219,7 +1761,7 @@ namespace leaf_detail
     template <class E>
     BOOST_LEAF_CONSTEXPR inline void load_unexpected_count( int err_id ) noexcept
     {
-        if( slot<e_unexpected_count> * sl = tl_slot_ptr<e_unexpected_count>::p )
+        if( slot<e_unexpected_count> * sl = tls::read_ptr<slot<e_unexpected_count>>() )
             if( e_unexpected_count * unx = sl->has_value(err_id) )
                 ++unx->count;
             else
@@ -1229,7 +1771,7 @@ namespace leaf_detail
     template <class E>
     BOOST_LEAF_CONSTEXPR inline void load_unexpected_info( int err_id, E && e ) noexcept
     {
-        if( slot<e_unexpected_info> * sl = tl_slot_ptr<e_unexpected_info>::p )
+        if( slot<e_unexpected_info> * sl = tls::read_ptr<slot<e_unexpected_info>>() )
             if( e_unexpected_info * unx = sl->has_value(err_id) )
                 unx->add(std::forward<E>(e));
             else
@@ -1248,7 +1790,6 @@ namespace leaf_detail
     template <class E>
     BOOST_LEAF_CONSTEXPR inline void slot<E>::propagate() noexcept
     {
-        BOOST_LEAF_ASSERT(top_!=0 && (*top_==prev_ || *top_==this));
         if( prev_ )
         {
             impl & that_ = *prev_;
@@ -1261,7 +1802,7 @@ namespace leaf_detail
 #if BOOST_LEAF_DIAGNOSTICS
         else
         {
-            int c = tl_unexpected_enabled<>::counter;
+            int c = tls::read_uint32<tls_tag_unexpected_enabled_counter>();
             BOOST_LEAF_ASSERT(c>=0);
             if( c )
                 if( int err_id = impl::key() )
@@ -1277,12 +1818,12 @@ namespace leaf_detail
         static_assert(!std::is_same<typename std::decay<E>::type, error_id>::value, "Error objects of type error_id are not allowed");
         using T = typename std::decay<E>::type;
         BOOST_LEAF_ASSERT((err_id&3)==1);
-        if( slot<T> * p = tl_slot_ptr<T>::p )
+        if( slot<T> * p = tls::read_ptr<slot<T>>() )
             (void) p->put(err_id, std::forward<E>(e));
 #if BOOST_LEAF_DIAGNOSTICS
         else
         {
-            int c = tl_unexpected_enabled<>::counter;
+            int c = tls::read_uint32<tls_tag_unexpected_enabled_counter>();
             BOOST_LEAF_ASSERT(c>=0);
             if( c )
                 load_unexpected(err_id, std::forward<E>(e));
@@ -1298,7 +1839,7 @@ namespace leaf_detail
         using E = typename std::decay<fn_arg_type<F,0>>::type;
         static_assert(!std::is_pointer<E>::value, "Error objects of pointer types are not allowed");
         BOOST_LEAF_ASSERT((err_id&3)==1);
-        if( auto sl = tl_slot_ptr<E>::p )
+        if( auto sl = tls::read_ptr<slot<E>>() )
             if( auto v = sl->has_value(err_id) )
                 (void) std::forward<F>(f)(*v);
             else
@@ -1313,7 +1854,6 @@ namespace leaf_detail
     struct BOOST_LEAF_SYMBOL_VISIBLE id_factory
     {
         static atomic_unsigned_int counter;
-        static BOOST_LEAF_THREAD_LOCAL unsigned current_id;
 
         BOOST_LEAF_CONSTEXPR static unsigned generate_next_id() noexcept
         {
@@ -1326,12 +1866,9 @@ namespace leaf_detail
     template <class T>
     atomic_unsigned_int id_factory<T>::counter(-3);
 
-    template <class T>
-    BOOST_LEAF_THREAD_LOCAL unsigned id_factory<T>::current_id(0);
-
     inline int current_id() noexcept
     {
-        auto id = id_factory<>::current_id;
+        auto id = tls::read_uint32<tls_tag_id_factory_current_id>();
         BOOST_LEAF_ASSERT(id==0 || (id&3)==1);
         return id;
     }
@@ -1339,7 +1876,8 @@ namespace leaf_detail
     inline int new_id() noexcept
     {
         auto id = id_factory<>::generate_next_id();
-        return id_factory<>::current_id = id;
+        tls::write_uint32<tls_tag_id_factory_current_id>(id);
+        return id;
     }
 }
 
@@ -1379,6 +1917,7 @@ namespace leaf_detail
     };
 }
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
 namespace leaf_detail
 {
     class leaf_category final: public std::error_category
@@ -1428,6 +1967,7 @@ inline bool is_error_id( std::error_code const & ec ) noexcept
     BOOST_LEAF_ASSERT(!res || !ec.value() || ((ec.value()&3)==1));
     return res;
 }
+#endif
 
 namespace leaf_detail
 {
@@ -1453,6 +1993,7 @@ public:
     {
     }
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
     error_id( std::error_code const & ec ) noexcept:
         value_(leaf_detail::import_error_code(ec))
     {
@@ -1464,6 +2005,12 @@ public:
         value_(leaf_detail::import_error_code(e))
     {
     }
+
+    std::error_code to_error_code() const noexcept
+    {
+        return std::error_code(value_, leaf_detail::get_error_category<>::cat);
+    }
+#endif
 
     BOOST_LEAF_CONSTEXPR error_id load() const noexcept
     {
@@ -1479,11 +2026,6 @@ public:
             (void) unused;
         }
         return *this;
-    }
-
-    std::error_code to_error_code() const noexcept
-    {
-        return std::error_code(value_, leaf_detail::get_error_category<>::cat);
     }
 
     BOOST_LEAF_CONSTEXPR int value() const noexcept
@@ -1572,7 +2114,7 @@ public:
     virtual void deactivate() noexcept = 0;
     virtual void propagate() noexcept = 0;
     virtual bool is_active() const noexcept = 0;
-    virtual void print( std::ostream & ) const = 0;
+    inline virtual void print( std::ostream & ) const { };
     error_id captured_id_;
 };
 
@@ -1644,8 +2186,6 @@ struct is_result_type<R const>: is_result_type<R>
 };
 
 } }
-
-#undef BOOST_LEAF_THREAD_LOCAL
 
 #endif
 // <<< #include <boost/leaf/error.hpp>
@@ -1795,6 +2335,64 @@ inline leaf_detail::exception<std::exception> exception() noexcept
     return leaf_detail::exception<std::exception>(leaf::new_error());
 }
 
+#ifndef BOOST_LEAF_NO_EXCEPTIONS
+
+template <class T>
+class result;
+
+namespace leaf_detail
+{
+    inline error_id catch_exceptions_helper( std::exception const & ex, leaf_detail_mp11::mp_list<> )
+    {
+        return leaf::new_error(std::current_exception());
+    }
+
+    template <class Ex1, class... Ex>
+    inline error_id catch_exceptions_helper( std::exception const & ex, leaf_detail_mp11::mp_list<Ex1,Ex...> )
+    {
+        if( Ex1 const * p = dynamic_cast<Ex1 const *>(&ex) )
+            return catch_exceptions_helper(ex, leaf_detail_mp11::mp_list<Ex...>{ }).load(*p);
+        else
+            return catch_exceptions_helper(ex, leaf_detail_mp11::mp_list<Ex...>{ });
+    }
+
+    template <class T>
+    struct deduce_exception_to_result_return_type_impl
+    {
+        using type = result<T>;
+    };
+
+    template <class T>
+    struct deduce_exception_to_result_return_type_impl<result<T>>
+    {
+        using type = result<T>;
+    };
+
+    template <class T>
+    using deduce_exception_to_result_return_type = typename deduce_exception_to_result_return_type_impl<T>::type;
+}
+
+template <class... Ex, class F>
+inline
+leaf_detail::deduce_exception_to_result_return_type<leaf_detail::fn_return_type<F>>
+exception_to_result( F && f ) noexcept
+{
+    try
+    {
+        return std::forward<F>(f)();
+    }
+    catch( std::exception const & ex )
+    {
+        return leaf_detail::catch_exceptions_helper(ex, leaf_detail_mp11::mp_list<Ex...>());
+    }
+    catch(...)
+    {
+        return leaf::new_error(std::current_exception());
+    }
+}
+
+#endif
+
 } }
 
 #endif
@@ -1893,7 +2491,7 @@ namespace leaf_detail
     public:
 
         BOOST_LEAF_CONSTEXPR preloaded_item( E && e ):
-            s_(tl_slot_ptr<decay_E>::p),
+            s_(tls::read_ptr<slot<decay_E>>()),
             e_(std::forward<E>(e))
         {
         }
@@ -1909,7 +2507,7 @@ namespace leaf_detail
 #if BOOST_LEAF_DIAGNOSTICS
             else
             {
-                int c = tl_unexpected_enabled<>::counter;
+                int c = tls::read_uint32<tls_tag_unexpected_enabled_counter>();
                 BOOST_LEAF_ASSERT(c>=0);
                 if( c )
                     load_unexpected(err_id, std::move(e_));
@@ -1928,7 +2526,7 @@ namespace leaf_detail
     public:
 
         BOOST_LEAF_CONSTEXPR deferred_item( F && f ) noexcept:
-            s_(tl_slot_ptr<E>::p),
+            s_(tls::read_ptr<slot<E>>()),
             f_(std::forward<F>(f))
         {
         }
@@ -1944,7 +2542,7 @@ namespace leaf_detail
 #if BOOST_LEAF_DIAGNOSTICS
             else
             {
-                int c = tl_unexpected_enabled<>::counter;
+                int c = tls::read_uint32<tls_tag_unexpected_enabled_counter>();
                 BOOST_LEAF_ASSERT(c>=0);
                 if( c )
                     load_unexpected(err_id, std::forward<E>(f_()));
@@ -1966,7 +2564,7 @@ namespace leaf_detail
     public:
 
         BOOST_LEAF_CONSTEXPR accumulating_item( F && f ) noexcept:
-            s_(tl_slot_ptr<E>::p),
+            s_(tls::read_ptr<slot<E>>()),
             f_(std::forward<F>(f))
         {
         }
@@ -2143,7 +2741,7 @@ namespace leaf_detail
         {
             BOOST_LEAF_ASSERT(ctx_->captured_id_);
             auto active_context = activate_context(*ctx_);
-            id_factory<>::current_id = ctx_->captured_id_.value();
+            tls::write_uint32<tls_tag_id_factory_current_id>(ctx_->captured_id_.value());
             std::rethrow_exception(ex_);
         }
 
@@ -2268,64 +2866,6 @@ future_get( Future & fut )
     return future_get_impl(is_result_tag<decltype(std::declval<Future>().get())>(), fut);
 }
 
-#ifndef BOOST_LEAF_NO_EXCEPTIONS
-
-template <class T>
-class result;
-
-namespace leaf_detail
-{
-    inline error_id catch_exceptions_helper( std::exception const & ex, leaf_detail_mp11::mp_list<> )
-    {
-        return leaf::new_error(std::current_exception());
-    }
-
-    template <class Ex1, class... Ex>
-    inline error_id catch_exceptions_helper( std::exception const & ex, leaf_detail_mp11::mp_list<Ex1,Ex...> )
-    {
-        if( Ex1 const * p = dynamic_cast<Ex1 const *>(&ex) )
-            return catch_exceptions_helper(ex, leaf_detail_mp11::mp_list<Ex...>{ }).load(*p);
-        else
-            return catch_exceptions_helper(ex, leaf_detail_mp11::mp_list<Ex...>{ });
-    }
-
-    template <class T>
-    struct deduce_exception_to_result_return_type_impl
-    {
-        using type = result<T>;
-    };
-
-    template <class T>
-    struct deduce_exception_to_result_return_type_impl<result<T>>
-    {
-        using type = result<T>;
-    };
-
-    template <class T>
-    using deduce_exception_to_result_return_type = typename deduce_exception_to_result_return_type_impl<T>::type;
-}
-
-template <class... Ex, class F>
-inline
-leaf_detail::deduce_exception_to_result_return_type<leaf_detail::fn_return_type<F>>
-exception_to_result( F && f ) noexcept
-{
-    try
-    {
-        return std::forward<F>(f)();
-    }
-    catch( std::exception const & ex )
-    {
-        return leaf_detail::catch_exceptions_helper(ex, leaf_detail_mp11::mp_list<Ex...>());
-    }
-    catch(...)
-    {
-        return leaf::new_error(std::current_exception());
-    }
-}
-
-#endif
-
 } }
 
 #endif
@@ -2334,7 +2874,10 @@ exception_to_result( F && f ) noexcept
 #ifndef BOOST_LEAF_COMMON_HPP_INCLUDED
 #define BOOST_LEAF_COMMON_HPP_INCLUDED
 
-#include <string>
+#include <iosfwd>
+#if BOOST_LEAF_USE_STD_STRING
+#   include <string>
+#endif
 #include <cerrno>
 #ifdef _WIN32
 #   include <Windows.h>
@@ -2351,7 +2894,22 @@ namespace boost { namespace leaf {
 
 struct BOOST_LEAF_SYMBOL_VISIBLE e_api_function { char const * value; };
 
-struct BOOST_LEAF_SYMBOL_VISIBLE e_file_name { std::string value; };
+#if BOOST_LEAF_USE_STD_STRING
+
+struct BOOST_LEAF_SYMBOL_VISIBLE e_file_name
+{
+    std::string value;
+};
+
+#else
+
+struct BOOST_LEAF_SYMBOL_VISIBLE e_file_name
+{
+    constexpr static char const * const value = "<unavailable>";
+    BOOST_LEAF_CONSTEXPR explicit e_file_name( char const * ) { }
+};
+
+#endif
 
 struct BOOST_LEAF_SYMBOL_VISIBLE e_errno
 {
@@ -2424,6 +2982,9 @@ namespace windows
 #ifndef BOOST_LEAF_CONTEXT_HPP_INCLUDED
 #define BOOST_LEAF_CONTEXT_HPP_INCLUDED
 
+#if !defined(BOOST_LEAF_NO_THREADS) && !defined(NDEBUG)
+# include <thread>
+#endif
 
 namespace boost { namespace leaf {
 
@@ -2590,7 +3151,8 @@ namespace leaf_detail
             tuple_for_each<I-1,Tuple>::propagate_captured(tup, err_id);
         }
 
-        static void print( std::ostream & os, void const * tup, int key_to_print )
+        template <class CharT, class Traits>
+        static void print( std::basic_ostream<CharT, Traits> & os, void const * tup, int key_to_print )
         {
             BOOST_LEAF_ASSERT(tup != 0);
             tuple_for_each<I-1,Tuple>::print(os, tup, key_to_print);
@@ -2605,7 +3167,8 @@ namespace leaf_detail
         BOOST_LEAF_CONSTEXPR static void deactivate( Tuple & ) noexcept { }
         BOOST_LEAF_CONSTEXPR static void propagate( Tuple & tup ) noexcept { }
         BOOST_LEAF_CONSTEXPR static void propagate_captured( Tuple & tup, int ) noexcept { }
-        static void print( std::ostream &, void const *, int ) { }
+        template <class CharT, class Traits>
+        BOOST_LEAF_CONSTEXPR static void print( std::basic_ostream<CharT, Traits> &, void const *, int ) { }
     };
 }
 
@@ -2730,7 +3293,7 @@ public:
         tuple_for_each<std::tuple_size<Tup>::value,Tup>::activate(tup_);
 #if BOOST_LEAF_DIAGNOSTICS
         if( unexpected_requested<Tup>::value )
-            ++tl_unexpected_enabled<>::counter;
+            tls::uint32_increment<tls_tag_unexpected_enabled_counter>();
 #endif
 #if !defined(BOOST_LEAF_NO_THREADS) && !defined(NDEBUG)
         thread_id_ = std::this_thread::get_id();
@@ -2749,7 +3312,7 @@ public:
 #endif
 #if BOOST_LEAF_DIAGNOSTICS
         if( unexpected_requested<Tup>::value )
-            --tl_unexpected_enabled<>::counter;
+            tls::uint32_decrement<tls_tag_unexpected_enabled_counter>();
 #endif
         tuple_for_each<std::tuple_size<Tup>::value,Tup>::deactivate(tup_);
     }
@@ -2764,7 +3327,8 @@ public:
         return is_active_;
     }
 
-    void print( std::ostream & os ) const
+    template <class CharT, class Traits>
+    void print( std::basic_ostream<CharT, Traits> & os ) const
     {
         leaf_detail::tuple_for_each<std::tuple_size<Tup>::value,Tup>::print(os, &tup_, 0);
     }
@@ -2822,7 +3386,9 @@ namespace leaf_detail
         void deactivate() noexcept final override { Ctx::deactivate(); }
         void propagate() noexcept final override { Ctx::propagate(); }
         bool is_active() const noexcept final override { return Ctx::is_active(); }
+#if BOOST_LEAF_DIAGNOSTICS
         void print( std::ostream & os ) const final override { return Ctx::print(os); }
+#endif
     };
 }
 
@@ -2861,146 +3427,27 @@ inline context_ptr make_shared_context( H && ... ) noexcept
 #ifndef BOOST_LEAF_HANDLE_ERRORS_HPP_INCLUDED
 #define BOOST_LEAF_HANDLE_ERRORS_HPP_INCLUDED
 
-// >>> #include <boost/leaf/detail/demangle.hpp>
-#line 1 "boost/leaf/detail/demangle.hpp"
-#ifndef BOOST_LEAF_DETAIL_DEMANGLE_HPP_INCLUDED
-#define BOOST_LEAF_DETAIL_DEMANGLE_HPP_INCLUDED
-
-// core::demangle
-//
-// Copyright 2014 Peter Dimov
-// Copyright 2014 Andrey Semashev
-//
-// Distributed under the Boost Software License, Version 1.0.
-// See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt
-
-#include <string>
-
-#if defined(__has_include) && ((__GNUC__ + 0) >= 5)
-#   if __has_include(<cxxabi.h>)
-#       define BOOST_LEAF_HAS_CXXABI_H
-#   endif
-#elif defined(__GLIBCXX__) || defined(__GLIBCPP__)
-#   define BOOST_LEAF_HAS_CXXABI_H
-#endif
-
-#if defined( BOOST_LEAF_HAS_CXXABI_H )
-#   include <cxxabi.h>
-// For some architectures (mips, mips64, x86, x86_64) cxxabi.h in Android NDK is implemented by gabi++ library
-// (https://android.googlesource.com/platform/ndk/+/master/sources/cxx-stl/gabi++/), which does not implement
-// abi::__cxa_demangle(). We detect this implementation by checking the include guard here.
-#   if defined( __GABIXX_CXXABI_H__ )
-#       undef BOOST_LEAF_HAS_CXXABI_H
-#   else
-#       include <cstddef>
-#   endif
-#endif
-
-namespace boost { namespace leaf {
-
-namespace leaf_detail
-{
-    inline char const * demangle_alloc( char const * name ) noexcept;
-    inline void demangle_free( char const * name ) noexcept;
-
-    class scoped_demangled_name
-    {
-    private:
-
-        char const * m_p;
-
-    public:
-
-        explicit scoped_demangled_name( char const * name ) noexcept :
-            m_p( demangle_alloc( name ) )
-        {
-        }
-
-        ~scoped_demangled_name() noexcept
-        {
-            demangle_free( m_p );
-        }
-
-        char const * get() const noexcept
-        {
-            return m_p;
-        }
-
-        scoped_demangled_name( scoped_demangled_name const& ) = delete;
-        scoped_demangled_name& operator= ( scoped_demangled_name const& ) = delete;
-    };
-
-#if defined( BOOST_LEAF_HAS_CXXABI_H )
-
-    inline char const * demangle_alloc( char const * name ) noexcept
-    {
-        int status = 0;
-        std::size_t size = 0;
-        return abi::__cxa_demangle( name, NULL, &size, &status );
-    }
-
-    inline void demangle_free( char const * name ) noexcept
-    {
-        std::free( const_cast< char* >( name ) );
-    }
-
-    inline std::string demangle( char const * name )
-    {
-        scoped_demangled_name demangled_name( name );
-        char const * p = demangled_name.get();
-        if( !p )
-            p = name;
-        return p;
-    }
-
-#else
-
-    inline char const * demangle_alloc( char const * name ) noexcept
-    {
-        return name;
-    }
-
-    inline void demangle_free( char const * ) noexcept
-    {
-    }
-
-    inline char const * demangle( char const * name )
-    {
-        return name;
-    }
-
-#endif
-}
-
-} }
-
-#ifdef BOOST_LEAF_HAS_CXXABI_H
-#   undef BOOST_LEAF_HAS_CXXABI_H
-#endif
-
-#endif
-// <<< #include <boost/leaf/detail/demangle.hpp>
-#line 21 "boost/leaf/handle_errors.hpp"
 
 #ifndef BOOST_LEAF_NO_EXCEPTIONS
 #endif
 
 namespace boost { namespace leaf {
 
-class error_info
+class BOOST_LEAF_SYMBOL_VISIBLE error_info
 {
     error_info & operator=( error_info const & ) = delete;
 
 #ifndef BOOST_LEAF_NO_EXCEPTIONS
     static error_id unpack_error_id( std::exception const * ex ) noexcept
     {
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
         if( std::system_error const * se = dynamic_cast<std::system_error const *>(ex) )
             if( is_error_id(se->code()) )
                 return leaf_detail::make_error_id(se->code().value());
         if( std::error_code const * ec = dynamic_cast<std::error_code const *>(ex) )
             if( is_error_id(*ec) )
                 return leaf_detail::make_error_id(ec->value());
+#endif
         if( error_id const * err_id = dynamic_cast<error_id const *>(ex) )
             return *err_id;
         return current_error();
@@ -3072,7 +3519,7 @@ public:
 
 #if BOOST_LEAF_DIAGNOSTICS
 
-class diagnostic_info: public error_info
+class BOOST_LEAF_SYMBOL_VISIBLE diagnostic_info: public error_info
 {
     leaf_detail::e_unexpected_count const * e_uc_;
     void const * tup_;
@@ -3130,7 +3577,7 @@ namespace leaf_detail
 
 #else
 
-class diagnostic_info: public error_info
+class BOOST_LEAF_SYMBOL_VISIBLE diagnostic_info: public error_info
 {
 protected:
 
@@ -3179,7 +3626,7 @@ namespace leaf_detail
 
 #if BOOST_LEAF_DIAGNOSTICS
 
-class verbose_diagnostic_info: public error_info
+class BOOST_LEAF_SYMBOL_VISIBLE verbose_diagnostic_info: public error_info
 {
     leaf_detail::e_unexpected_info const * e_ui_;
     void const * tup_;
@@ -3237,7 +3684,7 @@ namespace leaf_detail
 
 #else
 
-class verbose_diagnostic_info: public error_info
+class BOOST_LEAF_SYMBOL_VISIBLE verbose_diagnostic_info: public error_info
 {
 protected:
 
@@ -3333,6 +3780,7 @@ namespace leaf_detail
         }
     };
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
     template <>
     struct peek_exception<std::error_code const, true>
     {
@@ -3362,6 +3810,7 @@ namespace leaf_detail
                 return 0;
         }
     };
+#endif
 
     template <class E>
     struct peek_exception<E, true>
@@ -3394,7 +3843,7 @@ namespace leaf_detail
         {
             return 0;
         }
-
+        
         template <class SlotsTuple>
         BOOST_LEAF_CONSTEXPR static E * peek( SlotsTuple &, error_id const & ) noexcept
         {
@@ -3931,6 +4380,7 @@ namespace leaf_detail
     }
 }
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
 template <class E, class Enum = E>
 struct condition
 {
@@ -3951,6 +4401,7 @@ BOOST_LEAF_CONSTEXPR inline bool category( std::error_code const & ec )
     return &ec.category() == &std::error_code(ErrorCodeEnum{}).category();
 }
 #endif
+#endif
 
 namespace leaf_detail
 {
@@ -3960,6 +4411,7 @@ namespace leaf_detail
         using type = T;
     };
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
     template <class Enum>
     struct match_enum_type<condition<Enum, Enum>>
     {
@@ -3971,6 +4423,7 @@ namespace leaf_detail
     {
         static_assert(sizeof(Enum) == 0, "leaf::condition<E, Enum> should be used with leaf::match_value<>, not with leaf::match<>");
     };
+#endif
 }
 
 template <class E, BOOST_LEAF_MATCH_ARGS(match_enum_type<E>, V1, V)>
@@ -3986,6 +4439,7 @@ struct match
     }
 };
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
 template <class Enum, BOOST_LEAF_MATCH_ARGS(BOOST_LEAF_ESC(match_enum_type<condition<Enum, Enum>>), V1, V)>
 struct match<condition<Enum, Enum>, V1, V...>
 {
@@ -3997,6 +4451,7 @@ struct match<condition<Enum, Enum>, V1, V...>
         return leaf_detail::cmp_value_pack(e, V1, V...);
     }
 };
+#endif
 
 template <class E, BOOST_LEAF_MATCH_ARGS(match_enum_type<E>, V1, V)>
 struct is_predicate<match<E, V1, V...>>: std::true_type
@@ -4011,6 +4466,7 @@ namespace leaf_detail
         using type = typename std::remove_reference<decltype(std::declval<E>().value)>::type;
     };
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
     template <class E, class Enum>
     struct match_value_enum_type<condition<E, Enum>>
     {
@@ -4022,6 +4478,7 @@ namespace leaf_detail
     {
         static_assert(sizeof(Enum)==0, "leaf::condition<Enum> should be used with leaf::match<>, not with leaf::match_value<>");
     };
+#endif
 }
 
 template <class E, BOOST_LEAF_MATCH_ARGS(match_value_enum_type<E>, V1, V)>
@@ -4036,6 +4493,7 @@ struct match_value
     }
 };
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
 template <class E, class Enum, BOOST_LEAF_MATCH_ARGS(BOOST_LEAF_ESC(match_value_enum_type<condition<E, Enum>>), V1, V)>
 struct match_value<condition<E, Enum>, V1, V...>
 {
@@ -4047,6 +4505,7 @@ struct match_value<condition<E, Enum>, V1, V...>
         return leaf_detail::cmp_value_pack(e.value, V1, V...);
     }
 };
+#endif
 
 template <class E, BOOST_LEAF_MATCH_ARGS(match_value_enum_type<E>, V1, V)>
 struct is_predicate<match_value<E, V1, V...>>: std::true_type
@@ -4160,6 +4619,9 @@ struct is_predicate<catch_<Ex...>>: std::true_type
 #define BOOST_LEAF_RESULT_HPP_INCLUDED
 
 #include <climits>
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+#   include <cstdlib>
+#endif
 
 namespace boost { namespace leaf {
 
@@ -4193,6 +4655,16 @@ namespace leaf_detail
         using value_ref = T &;
         using value_rv_cref = T const &&;
         using value_rv_ref = T &&;
+
+        static value_type_const * cptr( type const & v ) noexcept
+        {
+            return &v;
+        }
+
+        static value_type * ptr( type & v ) noexcept
+        {
+            return &v;
+        }
     };
 
     template <class T>
@@ -4205,6 +4677,16 @@ namespace leaf_detail
         using value_cref = T &;
         using value_rv_ref = T &;
         using value_rv_cref = T &;
+
+        static value_type_const * cptr( type const & v ) noexcept
+        {
+            return &v.get();
+        }
+
+        static value_type * ptr( type const & v ) noexcept
+        {
+            return &v.get();
+        }
     };
 
     class result_discriminant
@@ -4237,6 +4719,9 @@ namespace leaf_detail
         explicit result_discriminant( kind_ctx_ptr ) noexcept:
             state_(ctx_ptr)
         {
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+        std::abort(); // Attempted capture but capture support is disabled
+#endif
         }
 
         kind_t kind() const noexcept
@@ -4281,7 +4766,11 @@ class result
             case result_discriminant::val:
                 return result<U>(error_id());
             case result_discriminant::ctx_ptr:
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+                BOOST_LEAF_ASSERT(false); // Possible ODR violation.
+#else
                 return result<U>(std::move(r_.ctx_));
+#endif
             default:
                 return result<U>(std::move(r_.what_));
             }
@@ -4294,11 +4783,15 @@ class result
             case result_discriminant::val:
                 return error_id();
             case result_discriminant::ctx_ptr:
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+                BOOST_LEAF_ASSERT(false); // Possible ODR violation.
+#else
             {
                 error_id captured_id = r_.ctx_->propagate_captured_errors();
-                leaf_detail::id_factory<>::current_id = captured_id.value();
+                tls::write_uint32<leaf_detail::tls_tag_id_factory_current_id>(captured_id.value());
                 return captured_id;
             }
+#endif
             default:
                 return r_.what_.get_error_id();
             }
@@ -4316,7 +4809,9 @@ class result
     union
     {
         stored_type stored_;
+#ifndef BOOST_LEAF_DISABLE_CAPTURE
         context_ptr ctx_;
+#endif
     };
 
     result_discriminant what_;
@@ -4329,8 +4824,12 @@ class result
             stored_.~stored_type();
             break;
         case result_discriminant::ctx_ptr:
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+            BOOST_LEAF_ASSERT(false); // Possible ODR violation.
+#else
             BOOST_LEAF_ASSERT(!ctx_ || ctx_->captured_id_);
             ctx_.~context_ptr();
+#endif
         default:
             break;
         }
@@ -4346,8 +4845,12 @@ class result
             (void) new(&stored_) stored_type(std::move(x.stored_));
             break;
         case result_discriminant::ctx_ptr:
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+            BOOST_LEAF_ASSERT(false); // Possible ODR violation.
+#else
             BOOST_LEAF_ASSERT(!x.ctx_ || x.ctx_->captured_id_);
             (void) new(&ctx_) context_ptr(std::move(x.ctx_));
+#endif
         default:
             break;
         }
@@ -4363,14 +4866,19 @@ class result
     error_id get_error_id() const noexcept
     {
         BOOST_LEAF_ASSERT(what_.kind()!=result_discriminant::val);
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+        BOOST_LEAF_ASSERT(what_.kind()!=result_discriminant::ctx_ptr); // Possible ODR violation.
+        return what_.get_error_id();
+#else
         return what_.kind()==result_discriminant::ctx_ptr ? ctx_->captured_id_ : what_.get_error_id();
+#endif
     }
 
 protected:
 
     void enforce_value_state() const
     {
-        if( what_.kind() != result_discriminant::val )
+        if( !has_value() )
             ::boost::leaf::throw_exception(bad_result(get_error_id()));
     }
 
@@ -4441,6 +4949,7 @@ public:
 
 #endif
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
     result( std::error_code const & ec ) noexcept:
         what_(error_id(ec))
     {
@@ -4451,12 +4960,20 @@ public:
         what_(error_id(e))
     {
     }
+#endif
 
+#ifdef BOOST_LEAF_DISABLE_CAPTURE
+    result( context_ptr && ) noexcept:
+        what_(result_discriminant::kind_ctx_ptr{})
+    {
+    }
+#else
     result( context_ptr && ctx ) noexcept:
         ctx_(std::move(ctx)),
         what_(result_discriminant::kind_ctx_ptr{})
     {
     }
+#endif
 
     ~result() noexcept
     {
@@ -4478,9 +4995,19 @@ public:
         return *this;
     }
 
-    explicit operator bool() const noexcept
+    bool has_value() const noexcept
     {
         return what_.kind() == result_discriminant::val;
+    }
+
+    bool has_error() const noexcept
+    {
+        return !has_value();
+    }
+
+    explicit operator bool() const noexcept
+    {
+        return has_value();
     }
 
     value_cref value() const &
@@ -4507,34 +5034,34 @@ public:
         return std::move(stored_);
     }
 
-    value_cref operator*() const &
+    value_type_const * operator->() const noexcept
     {
-        return value();
+        return has_value() ? leaf_detail::stored<T>::cptr(stored_) : 0;
     }
 
-    value_ref operator*() &
+    value_type * operator->() noexcept
     {
-        return value();
+        return has_value() ? leaf_detail::stored<T>::ptr(stored_) : 0;
     }
 
-    value_rv_cref operator*() const &&
+    value_cref operator*() const & noexcept
     {
-        return std::move(*this).value();
+        return *operator->();
     }
 
-    value_rv_ref operator*() &&
+    value_ref operator*() & noexcept
     {
-        return std::move(*this).value();
+        return *operator->();
     }
 
-    value_type_const * operator->() const
+    value_rv_cref operator*() const && noexcept
     {
-        return &value();
+        return std::move(*operator->());
     }
 
-    value_type * operator->()
+    value_rv_ref operator*() && noexcept
     {
-        return &value();
+        return std::move(*operator->());
     }
 
     error_result error() noexcept
@@ -4588,6 +5115,7 @@ public:
     {
     }
 
+#if BOOST_LEAF_USE_STD_SYSTEM_ERROR
     result( std::error_code const & ec ) noexcept:
         base(ec)
     {
@@ -4598,6 +5126,7 @@ public:
         base(e)
     {
     }
+#endif
 
     result( context_ptr && ctx ) noexcept:
         base(std::move(ctx))
