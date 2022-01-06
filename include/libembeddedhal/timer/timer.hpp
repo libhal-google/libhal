@@ -3,10 +3,7 @@
 #include "../driver.hpp"
 
 #include <chrono>
-#include <cinttypes>
-#include <cstddef>
 #include <functional>
-#include <optional>
 
 namespace embed {
 /**
