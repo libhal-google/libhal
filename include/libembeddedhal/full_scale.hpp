@@ -8,6 +8,8 @@
 #include <limits>
 #include <type_traits>
 
+#include "math.hpp"
+
 namespace embed {
 /**
  * @brief
@@ -249,11 +251,34 @@ public:
   }
 
   /**
+   * @brief Construct a full_scale based on a floating point precentage value.
+   *
+   * @param p_ratio - floating point ratio value. For signed numbers this is
+   * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
+   * to 1.0.
+   */
+  constexpr full_scale(std::floating_point auto p_ratio)
+  {
+    using float_t = decltype(p_ratio);
+
+    constexpr auto max_integer = std::numeric_limits<T>::max();
+    constexpr float_t universal_max = 1.0;
+    constexpr float_t unsigned_min = 0.0;
+    constexpr float_t signed_min = -1.0;
+
+    if constexpr (std::is_unsigned_v<decltype(p_ratio)>) {
+      m_value = std::clamp(p_ratio, unsigned_min, universal_max) * max_integer;
+    } else {
+      m_value = std::clamp(p_ratio, signed_min, universal_max) * max_integer;
+    }
+  }
+
+  /**
    * @brief Get internal integral value
    *
    * @return T - full scale value
    */
-  T value() { return m_value; }
+  constexpr T value() { return m_value; }
 
 private:
   T m_value = 0;
@@ -273,12 +298,28 @@ private:
  * @param p_scale - value scalar
  * @return auto - the scaled down result of p_value * p_scale.
  */
-template<std::unsigned_integral T, std::unsigned_integral U>
-auto operator*(U p_value, full_scale<T> p_scale)
+template<std::unsigned_integral T, std::integral U>
+constexpr auto operator*(U p_value, full_scale<T> p_scale)
 {
   std::uintmax_t arith_container = p_value;
   arith_container = arith_container * p_scale.value();
-  arith_container = arith_container / std::numeric_limits<T>::max();
+  arith_container = rounding_division(
+    arith_container, std::uintmax_t{ std::numeric_limits<T>::max() });
   return static_cast<U>(arith_container);
+}
+
+/**
+ * @brief Same as `operator*(U p_value, full_scale<T> p_scale)`
+ *
+ * @tparam T - see other operator*
+ * @tparam U - see other operator*
+ * @param p_scale - see other operator*
+ * @param p_value - see other operator*
+ * @return constexpr auto - see other operator*
+ */
+template<std::unsigned_integral T, std::integral U>
+constexpr auto operator*(full_scale<T> p_scale, U p_value)
+{
+  return p_value * p_scale;
 }
 }  // namespace embed
