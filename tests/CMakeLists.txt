@@ -23,6 +23,7 @@ conan_cmake_run(REQUIRES boost-ext-ut/1.1.8
 
 add_executable(${PROJECT_NAME}
     can/network.test.cpp
+    frequency.test.cpp
     driver.test.cpp
     enum.test.cpp
     full_scale.test.cpp
