@@ -54,7 +54,7 @@ boost::ut::suite driver_test = []() {
     [](dummy_error const&,
        embed::error::stacktrace const* trace,
        boost::leaf::e_source_location const* location) {
-      puts("Error: dummy_error{} occured! Logging this to stdout!");
+      puts("Error: dummy_error{} occurred! Logging this to stdout!");
       print_trace(trace);
       if (location) {
         printf(
