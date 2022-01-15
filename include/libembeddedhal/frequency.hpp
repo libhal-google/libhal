@@ -312,6 +312,9 @@ private:
   int_t m_cycles_per_second;
 };
 
+/// Default clock rate for serial communication protocols
+constexpr frequency default_clock_rate = frequency(100'000);
+
 namespace literals {
 /**
  * @brief user defined literals for making frequencies: 1337_Hz

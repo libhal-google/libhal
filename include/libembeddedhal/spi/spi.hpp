@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../driver.hpp"
+#include "../frequency.hpp"
 
 #include <cinttypes>
 #include <cstddef>
@@ -13,20 +14,11 @@ namespace embed {
  */
 struct spi_settings
 {
-  /**
-   * @brief Serial clock frequency
-   *
-   */
-  uint32_t clock_rate_hz = 100'000;
-  /**
-   * @brief The polarity of the pins when the signal is idle
-   *
-   */
+  /// Serial clock frequency
+  frequency clock_rate = default_clock_rate;
+  /// The polarity of the pins when the signal is idle
   bool clock_idles_high = false;
-  /**
-   * @brief The phase of the clock signal when communicating
-   *
-   */
+  /// The phase of the clock signal when communicating
   bool data_valid_on_trailing_edge = false;
 };
 

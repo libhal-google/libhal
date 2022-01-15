@@ -1,12 +1,13 @@
 #pragma once
 
-#include "../driver.hpp"
-#include "../full_scale.hpp"
-
 #include <cinttypes>
 #include <cstddef>
 #include <span>
 #include <system_error>
+
+#include "../driver.hpp"
+#include "../frequency.hpp"
+#include "../full_scale.hpp"
 
 namespace embed {
 /**
@@ -15,11 +16,8 @@ namespace embed {
  */
 struct i2c_settings
 {
-  /**
-   * @brief The serial clock rate in hertz.
-   *
-   */
-  uint32_t clock_rate_hz = 100'000;
+  /// @brief The serial clock rate in hertz.
+  frequency clock_rate = default_clock_rate;
 };
 
 /**
