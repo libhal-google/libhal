@@ -13,6 +13,13 @@ std::ostream& operator<<(std::ostream& os, const duty_cycle& p_duty)
   return (os << "duty_cycle { high: " << p_duty.high << ","
              << " low: " << p_duty.low << " }");
 }
+// template<typename Rep, typename Period>
+// std::ostream& operator<<(std::ostream& os, const std::chrono::duration<Rep,
+// Period>& p_duty)
+// {
+//   return (os << "duty_cycle { high: " << p_duty.high << ","
+//              << " low: " << p_duty.low << " }");
+// }
 
 boost::ut::suite frequency_user_defined_literals_test = []() {
   using namespace boost::ut;
@@ -60,7 +67,7 @@ boost::ut::suite frequency_divider_test = []() {
   expect(that % 0 == (1234_Hz / 54_MHz));
 };
 
-boost::ut::suite frequency_within_test = []() {
+boost::ut::suite frequency_cycles_per_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
   using namespace embed::literals;
@@ -78,6 +85,20 @@ boost::ut::suite frequency_within_test = []() {
   expect(that % 0 == (1_MHz).cycles_per(100ns));
   expect(that % 0 == (100_Hz).cycles_per(1ms));
   expect(that % 0 == (100_kHz).cycles_per(2us));
+};
+
+boost::ut::suite frequency_duration_from_cycles = []() {
+  using namespace boost::ut;
+  using namespace std::literals;
+  using namespace embed::literals;
+
+  expect(1400us == (1_MHz).duration_from_cycles(1400));
+  expect(2380929ns == (14_MHz).duration_from_cycles(33333));
+  expect(10'250ms == (1_kHz).duration_from_cycles(10'250));
+  expect(12'000'000ns == (1000_MHz).duration_from_cycles(12'000'000));
+  expect(0ns == (1000_MHz).duration_from_cycles(0));
+  expect(std::chrono::duration<frequency::int_t, std::pico>(1) ==
+         (1'000'000_MHz).duration_from_cycles<frequency::int_t, std::pico>(1));
 };
 
 boost::ut::suite frequency_plus_minus_operator = []() {
