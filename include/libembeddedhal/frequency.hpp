@@ -146,6 +146,34 @@ public:
   }
 
   /**
+   * @brief Calculate the time duration based on the frequency and a number of
+   * cycles.
+   *
+   * @tparam Rep - type of the duration
+   * @tparam Period - ratio of the time duration relative to 1 second
+   * @param p_cycles - number of cycles within the time duration
+   * @return std::chrono::duration<Rep, Period> - time duration based on this
+   * frequency and the number of cycles.
+   */
+  template<typename Rep = std::chrono::nanoseconds::rep,
+           typename Period = std::chrono::nanoseconds::period>
+  std::chrono::duration<Rep, Period> duration_from_cycles(int_t p_cycles)
+  {
+    // Full Equation (based on the equation in cycles_per()):
+    // =========================================================================
+    //
+    //                /    cycles * ratio_den    \_
+    //   |period| =  | ---------------------------|
+    //                \ frequency_hz * ratio_num /
+    //
+    int_t numerator = p_cycles * Period::den;
+    int_t denominator = Period::num * m_cycles_per_second;
+    int_t duration = rounding_division(numerator, denominator);
+
+    return std::chrono::duration<Rep, Period>(duration);
+  }
+
+  /**
    * @brief Calculate a duty cycle based on a time duration, the full_scale<T>
    * and this driving frequency. Typically used for PWM or clock lines with
    * controllable duty cycles for serial communication.
