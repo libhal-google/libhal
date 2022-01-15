@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../driver.hpp"
+#include "../frequency.hpp"
 #include "../full_scale.hpp"
 
 #include <cinttypes>
@@ -18,23 +19,23 @@ class pwm : public driver<>
    * effect of changing the frequency of all of the channels on the same pwm
    * peripheral.
    *
-   * @param p_frequency_hz - frequency of the pwm channel in hertz
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @param p_frequency - frequency of the pwm channel in hertz
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> frequency(uint32_t p_frequency_hz) = 0;
+  virtual boost::leaf::result<void> frequency(embed::frequency p_frequency) = 0;
   /**
    * @brief Get the operating frequency of the pwm channel
    *
-   * @return boost::leaf::result<uint32_t> - frequency of the pwm channel in
-   * hertz
+   * @return boost::leaf::result<embed::frequency> - frequency of the pwm
+   * channel in hertz
    */
-  virtual boost::leaf::result<uint32_t> frequency() = 0;
+  virtual boost::leaf::result<embed::frequency> frequency() = 0;
   /**
    * @brief Set the duty cycle percentage
    *
    * @param p_duty_cycle - set the duty cycle of the pwm.
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> duty_cycle(

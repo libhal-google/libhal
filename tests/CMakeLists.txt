@@ -22,15 +22,31 @@ conan_cmake_run(REQUIRES boost-ext-ut/1.1.8
                 BUILD missing)
 
 add_executable(${PROJECT_NAME}
+    can/can.test.cpp
     can/network.test.cpp
-    frequency.test.cpp
-    driver.test.cpp
+    pwm/pwm.test.cpp
     enum.test.cpp
-    full_scale.test.cpp
-    static_callable.test.cpp
-    static_memory_resource.test.cpp
+    driver.test.cpp
+    timer/timer.test.cpp
+    i2c/i2c.test.cpp
     time.test.cpp
-    main.cpp)
+    static_callable.test.cpp
+    imu/accelerometer.test.cpp
+    imu/gyroscope.test.cpp
+    imu/compass.test.cpp
+    spi/spi.test.cpp
+    adc/adc.test.cpp
+    frequency.test.cpp
+    rtc/rtc.test.cpp
+    main.test.cpp
+    display/pixel_display.test.cpp
+    display/text_display.test.cpp
+    dac/dac.test.cpp
+    counter/counter.test.cpp
+    full_scale.test.cpp
+    gpio/gpio.test.cpp
+    static_memory_resource.test.cpp
+    serial/serial.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>

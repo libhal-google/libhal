@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../driver.hpp"
-
 #include <array>
 #include <chrono>
 #include <cinttypes>
 #include <functional>
+
+#include "../driver.hpp"
+#include "../frequency.hpp"
 
 namespace embed {
 /**
@@ -15,7 +16,7 @@ namespace embed {
 struct can_settings
 {
   /// Bus clock rate
-  uint32_t clock_rate_hz = 100'000;
+  frequency clock_rate = default_clock_rate;
 };
 
 /**
