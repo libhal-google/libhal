@@ -46,8 +46,9 @@ public:
    *   and then store that address.
    *
    * - In the case where the address is consistently NACK'ed but the driver
-   *   expects a specific address, this is typically not handlable and indicates
-   *   that the application or driver is incorrect in the device address.
+   *   expects a specific address, this is typically not handleable and
+   *   indicates that the application or driver is incorrect in the device
+   *   address.
    *
    * - In the case where NACK's are spurious, then this may indicate that the
    *   i2c line is faulty or the device is misbehaving. This is not fixable in
@@ -108,7 +109,7 @@ public:
    * nullptr with length zero in order to skip writting.
    * @param p_data_in buffer to store read data from the addressed device. Set
    * to nullptr with length 0 in order to skip reading.
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> transaction(
