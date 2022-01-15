@@ -121,7 +121,7 @@ public:
    *
    * @param p_high - if true then the pin state is set to HIGH voltage. If
    * false, the pin state is set to LOW voltage.
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> level(bool p_high) = 0;
@@ -174,7 +174,7 @@ public:
   /**
    * @brief Return the voltage level of the pin
    *
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<bool> level() const = 0;
@@ -188,7 +188,7 @@ public:
    * @param p_callback function to execute when the trigger condition is met
    * @param p_trigger the trigger condition that will signal the system to run
    * the callback.
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> attach_interrupt(
@@ -197,7 +197,7 @@ public:
   /**
    * @brief Disable interrupts for this pin
    *
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> detach_interrupt() = 0;

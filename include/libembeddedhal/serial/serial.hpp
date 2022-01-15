@@ -130,7 +130,7 @@ public:
   };
 
   /**
-   * @brief Error type indicating that a frame error occured during reception.
+   * @brief Error type indicating that a frame error occurred during reception.
    * This error is returned when calling bytes_available().
    *
    * <b>How to handle these errors:</b>
@@ -140,7 +140,7 @@ public:
    *   real way to handle this is to flush recieve buffer and attempt reception
    *   again. Note that the read function should still work to read out which
    *   ever bytes were received and this can be used/logged in order for
-   *   developers to get insight into where the error occured and how to fix it.
+   *   developers to get insight into where the error occurred and how to fix it.
    *
    */
   struct frame_error
@@ -149,7 +149,7 @@ public:
     size_t bytes_available;
   };
   /**
-   * @brief Error type indicating that a parity error occured during reception.
+   * @brief Error type indicating that a parity error occurred during reception.
    * This error is returned when calling bytes_available().
    *
    * <b>How to handle these errors:</b>
@@ -182,7 +182,7 @@ public:
    *
    * @param p_data - data to be transmitted over the serial port transmitter
    * line
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> write(
@@ -218,7 +218,7 @@ public:
    * hardware registers. This operation must be faster than simply running
    * read() until bytes_available() is empty.
    *
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> flush() = 0;

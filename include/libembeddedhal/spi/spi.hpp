@@ -45,7 +45,7 @@ public:
    * dropped.
    * @param p_write_value - filler data to be placed on the bus when the
    * p_data_out buffer has been exhausted.
-   * @return boost::leaf::result<void> - any error that occured during this
+   * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> transfer(
