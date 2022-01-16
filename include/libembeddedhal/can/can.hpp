@@ -29,10 +29,7 @@ public:
   /// Can message ID type trait
   using id_t = uint32_t;
 
-  /**
-   * @brief Attributes of a can message
-   *
-   */
+  /// Structure of a CAN message
   struct message_t
   {
     /// ID of the message
@@ -74,14 +71,14 @@ public:
   virtual boost::leaf::result<message_t> receive() = 0;
 
   /**
-   * @brief Setup driver to execute callback when a can message is received
+   * @brief Setup driver to execute callback when a can message is received.
    *
-   * @param p_receive_handler - can message reception callback. Set to nullptr
-   * to disable receive interrupts.
+   * @param p_receive_handler - this handler will be called when the can device
+   * receives a message. Set to nullptr to disable receive interrupts.
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> attach_interrupt(
-    std::function<void(can& p_can)> p_receive_handler) = 0;
+    std::function<void(const message_t& p_message)> p_receive_handler) = 0;
 };
 }  // namespace embed
