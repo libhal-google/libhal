@@ -137,10 +137,11 @@ public:
    *
    * - In general, the exact nature of a specific frame error is not knowable.
    *   The number of bytes that are effected could be 1 or more, thus the only
-   *   real way to handle this is to flush recieve buffer and attempt reception
+   *   real way to handle this is to flush receive buffer and attempt reception
    *   again. Note that the read function should still work to read out which
    *   ever bytes were received and this can be used/logged in order for
-   *   developers to get insight into where the error occurred and how to fix it.
+   *   developers to get insight into where the error occurred and how to fix
+   * it.
    *
    */
   struct frame_error
