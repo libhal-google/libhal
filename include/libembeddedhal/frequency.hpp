@@ -6,8 +6,8 @@
 #include <limits>
 #include <ratio>
 
-#include "full_scale.hpp"
 #include "math.hpp"
+#include "percent.hpp"
 
 namespace embed {
 /**
@@ -47,20 +47,18 @@ public:
   using int_t = std::int64_t;
 
   /**
-   * @brief Generate a duty_cycle object based on the full_scale<T> value and
+   * @brief Generate a duty_cycle object based on the percent value and
    * the input count value. The count value is split based on the ratio within
-   * full_scale<T>
+   * percent
    *
-   * @tparam T - the integral type of full_scale<T>
    * @param p_cycles - the number of cycles to be split into a duty cycle
    * @param p_precent - the target duty cycle percentage
    * @return constexpr duty_cycle - the duty cycle cycle counts
    */
-  template<std::integral T>
   static constexpr duty_cycle calculate_duty_cycle(int_t p_cycles,
-                                                   full_scale<T> p_precent)
+                                                   percent p_precent)
   {
-    // Scale down value based on the integer percentage value in full_scale<T>
+    // Scale down value based on the integer percentage value in percent
     int_t high = p_cycles * p_precent;
     // p_cycles will always be larger than or equal to high
     int_t low = p_cycles - high;
@@ -157,7 +155,7 @@ public:
    */
   template<typename Rep = std::chrono::nanoseconds::rep,
            typename Period = std::chrono::nanoseconds::period>
-  std::chrono::duration<Rep, Period> duration_from_cycles(int_t p_cycles)
+  std::chrono::duration<Rep, Period> duration_from_cycles(int_t p_cycles) const
   {
     // Full Equation (based on the equation in cycles_per()):
     // =========================================================================
@@ -174,38 +172,37 @@ public:
   }
 
   /**
-   * @brief Calculate a duty cycle based on a time duration, the full_scale<T>
+   * @brief Calculate a duty cycle based on a time duration, the percent
    * and this driving frequency. Typically used for PWM or clock lines with
    * controllable duty cycles for serial communication.
    *
-   * @tparam T - containing type of the full_scale<T>
+   * @tparam T - containing type of the percent
    * @tparam Rep - containing type of the duration
    * @tparam Period - ratio of the time duration relative to 1 second
    * @param p_duration - target time duration to reach
    * @param p_precent - ratio of the duty cycle high time
    * @return constexpr duty_cycle
    */
-  template<std::integral T, typename Rep, typename Period>
+  template<typename Rep, typename Period>
   constexpr duty_cycle calculate_duty_cycle(
     std::chrono::duration<Rep, Period> p_duration,
-    full_scale<T> p_precent) const
+    percent p_precent) const
   {
     return calculate_duty_cycle(cycles_per(p_duration), p_precent);
   }
 
   /**
-   * @brief Calculate a duty cycle based on a target, the full_scale<T>
+   * @brief Calculate a duty cycle based on a target, the percent
    * and this driving frequency. Typically used for PWM or clock lines with
    * controllable duty cycles for serial communication.
    *
-   * @tparam T - containing type of the full_scale<T>
+   * @tparam T - containing type of the percent
    * @param p_target - target frequency to reach
    * @param p_precent - ratio of the duty cycle high time
    * @return constexpr duty_cycle
    */
-  template<std::integral T>
   constexpr duty_cycle calculate_duty_cycle(frequency p_target,
-                                            full_scale<T> p_precent) const
+                                            percent p_precent) const
   {
     return calculate_duty_cycle(divider(p_target), p_precent);
   }

@@ -3,7 +3,7 @@
 #include <cinttypes>
 
 #include "../driver.hpp"
-#include "../full_scale.hpp"
+#include "../percent.hpp"
 
 namespace embed {
 /**
@@ -27,6 +27,6 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> write(full_scale<uint32_t> p_value) = 0;
+  virtual boost::leaf::result<void> write(percent p_value) = 0;
 };
 }  // namespace embed

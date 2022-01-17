@@ -3,7 +3,7 @@
 #include <cinttypes>
 
 #include "../driver.hpp"
-#include "../full_scale.hpp"
+#include "../percent.hpp"
 
 namespace embed {
 /**
@@ -27,11 +27,11 @@ class adc : public driver<>
    * application developer to understand how a particular ADC will effect their
    * application.
    *
-   * @return boost::leaf::result<full_scale<uint32_t>> - Return the value of the
+   * @return boost::leaf::result<percent> - Return the value of the
    * ADC as a full_scale value. Typical implemenation for a 12-bit adc would
    * look like: `return embed::bit_depth<uint32_t, 12>(adc_value);`.
    *
    */
-  virtual boost::leaf::result<full_scale<uint32_t>> read() = 0;
+  virtual boost::leaf::result<percent> read() = 0;
 };
 }  // namespace embed

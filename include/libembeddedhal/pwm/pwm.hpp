@@ -2,7 +2,7 @@
 
 #include "../driver.hpp"
 #include "../frequency.hpp"
-#include "../full_scale.hpp"
+#include "../percent.hpp"
 
 #include <cinttypes>
 
@@ -38,13 +38,12 @@ class pwm : public driver<>
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> duty_cycle(
-    full_scale<uint32_t> p_duty_cycle) = 0;
+  virtual boost::leaf::result<void> duty_cycle(percent p_duty_cycle) = 0;
   /**
    * @brief Get the duty cycle percentage
    *
-   * @return boost::leaf::result<full_scale<uint32_t>> - duty cycle
+   * @return boost::leaf::result<percent> - duty cycle
    */
-  virtual full_scale<uint32_t> duty_cycle() = 0;
+  virtual percent duty_cycle() = 0;
 };
 }  // namespace embed
