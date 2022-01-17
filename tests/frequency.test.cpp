@@ -135,33 +135,33 @@ boost::ut::suite frequency_duty_cycle_test = []() {
   using namespace embed::literals;
 
   expect(eq(duty_cycle{ 280000, 0 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(1.00))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(1.00))));
   expect(eq(duty_cycle{ 277200, 2800 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.99))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.99))));
   expect(eq(duty_cycle{ 238000, 42000 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.85))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.85))));
   expect(eq(duty_cycle{ 126000, 154000 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.45))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.45))));
   expect(eq(duty_cycle{ 70'000, 210'000 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.25))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.25))));
   expect(eq(duty_cycle{ 14000, 266000 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.05))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.05))));
   expect(eq(duty_cycle{ 2800, 277200 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.01))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.01))));
   expect(eq(duty_cycle{ 0, 280000 },
-            (14_MHz).calculate_duty_cycle(20ms, full_scale<uint32_t>(0.00))));
+            (14_MHz).calculate_duty_cycle(20ms, percent(0.00))));
 
   expect(eq(duty_cycle{ 2800, 0 },
-            (56_MHz).calculate_duty_cycle(20_kHz, full_scale<uint32_t>(1.00))));
+            (56_MHz).calculate_duty_cycle(20_kHz, percent(1.00))));
   expect(eq(duty_cycle{ 2240, 560 },
-            (56_MHz).calculate_duty_cycle(20_kHz, full_scale<uint32_t>(0.80))));
+            (56_MHz).calculate_duty_cycle(20_kHz, percent(0.80))));
   expect(eq(duty_cycle{ 1540, 1260 },
-            (56_MHz).calculate_duty_cycle(20_kHz, full_scale<uint32_t>(0.55))));
+            (56_MHz).calculate_duty_cycle(20_kHz, percent(0.55))));
   expect(eq(duty_cycle{ 924, 1876 },
-            (56_MHz).calculate_duty_cycle(20_kHz, full_scale<uint32_t>(0.33))));
+            (56_MHz).calculate_duty_cycle(20_kHz, percent(0.33))));
   expect(eq(duty_cycle{ 336, 2464 },
-            (56_MHz).calculate_duty_cycle(20_kHz, full_scale<uint32_t>(0.12))));
+            (56_MHz).calculate_duty_cycle(20_kHz, percent(0.12))));
   expect(eq(duty_cycle{ 0, 2800 },
-            (56_MHz).calculate_duty_cycle(20_kHz, full_scale<uint32_t>(0.00))));
+            (56_MHz).calculate_duty_cycle(20_kHz, percent(0.00))));
 };
 }  // namespace embed

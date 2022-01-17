@@ -43,7 +43,7 @@ add_executable(${PROJECT_NAME}
     display/text_display.test.cpp
     dac/dac.test.cpp
     counter/counter.test.cpp
-    full_scale.test.cpp
+    percent.test.cpp
     gpio/gpio.test.cpp
     static_memory_resource.test.cpp
     serial/serial.test.cpp)

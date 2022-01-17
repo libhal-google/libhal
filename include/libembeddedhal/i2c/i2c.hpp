@@ -7,7 +7,7 @@
 
 #include "../driver.hpp"
 #include "../frequency.hpp"
-#include "../full_scale.hpp"
+#include "../percent.hpp"
 
 namespace embed {
 /**
