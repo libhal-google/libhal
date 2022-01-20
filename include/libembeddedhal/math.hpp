@@ -4,33 +4,6 @@
 
 namespace embed {
 /**
- * @brief Perform integer division and round the value up if the next decimal
- * place is greater than or equal to 0.5.
- *
- * @tparam T - integral type of the two operands
- * @param p_numerator - the value to be divided
- * @param p_denominator - the value to divide the numerator against
- * @return constexpr T - rounded quotent between numerator and denominator.
- * Returns 0 if the denominator is greater than the numerator.
- */
-template<std::integral T>
-constexpr T rounding_division(T p_numerator, T p_denominator)
-{
-  if (p_numerator < p_denominator) {
-    return 0;
-  }
-
-  const T remainder = p_numerator % p_denominator;
-  const T half_denominator = (p_denominator / 2);
-  T quotient = p_numerator / p_denominator;
-  // Round if remainder is greater than half of the denominator
-  if (half_denominator != 0 && remainder >= half_denominator) {
-    quotient++;
-  }
-  return quotient;
-}
-
-/**
  * @brief Generic absolute value function that works for integer types. This is
  * preferred over the C API for rounding numbers such as abs(), labs() and
  * llabs(). This function relieves the need in template code to check the type
@@ -45,6 +18,40 @@ constexpr auto absolute_value(std::integral auto p_value)
     return p_value;
   } else {
     return p_value * -1;
+  }
+}
+
+/**
+ * @brief Perform integer division and round the value up if the next decimal
+ * place is greater than or equal to 0.5.
+ *
+ * @tparam T - integral type of the two operands
+ * @param p_numerator - the value to be divided
+ * @param p_denominator - the value to divide the numerator against
+ * @return constexpr T - rounded quotent between numerator and denominator.
+ * Returns 0 if the denominator is greater than the numerator.
+ */
+template<std::integral T>
+constexpr T rounding_division(T p_numerator, T p_denominator)
+{
+  bool num_sign = p_numerator > 0;
+  bool den_sign = p_denominator > 0;
+
+  auto numerator = absolute_value(p_numerator);
+  auto denominator = absolute_value(p_denominator);
+
+  const T remainder = numerator % denominator;
+  const T half_denominator = (denominator / 2);
+  T quotient = numerator / denominator;
+  // Round if remainder is greater than half of the denominator
+  if (half_denominator != 0 && remainder >= half_denominator) {
+    quotient++;
+  }
+
+  if (num_sign == den_sign) {
+    return quotient;
+  } else {
+    return -quotient;
   }
 }
 }  // namespace embed

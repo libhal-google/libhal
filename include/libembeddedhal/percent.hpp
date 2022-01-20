@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <charconv>
 #include <cinttypes>
 #include <climits>
 #include <concepts>
@@ -9,6 +10,7 @@
 #include <type_traits>
 
 #include "math.hpp"
+#include "to_array.hpp"
 
 namespace embed {
 /**
@@ -126,7 +128,7 @@ public:
    */
   static constexpr overflow_t raw_min()
   {
-    return std::numeric_limits<int_t>::min();
+    return std::numeric_limits<int_t>::min() + overflow_t{ 1 };
   }
 
   /**
@@ -166,18 +168,11 @@ public:
   constexpr percent& operator=(std::floating_point auto p_ratio)
   {
     using float_t = decltype(p_ratio);
-    constexpr float_t universal_max = 1.0;
-    constexpr float_t unsigned_min = 0.0;
-    constexpr float_t signed_min = -1.0;
-    float_t clamped_float = 0.0f;
 
-    if constexpr (std::is_unsigned_v<decltype(p_ratio)>) {
-      clamped_float = std::clamp(p_ratio, unsigned_min, universal_max);
-    } else {
-      clamped_float = std::clamp(p_ratio, signed_min, universal_max);
-    }
-
-    m_value = static_cast<int_t>(clamped_float * raw_max());
+    constexpr float_t max = 1.0;
+    constexpr float_t min = -1.0;
+    p_ratio = std::clamp(p_ratio, min, max);
+    m_value = static_cast<int_t>(p_ratio * raw_max());
 
     return *this;
   }
@@ -243,10 +238,11 @@ public:
   constexpr auto raw_value() const { return m_value; }
 
   /**
-   * @brief
+   * @brief Convert percent to a floating point representation
    *
-   * @tparam T
-   * @return constexpr T
+   * @tparam T - floating point type
+   * @return constexpr T - float representation of the precentage between 0.0f
+   * and 1.0f.
    */
   template<std::floating_point T>
   constexpr T to() const
@@ -305,6 +301,85 @@ public:
   friend constexpr auto operator*(percent p_scale, T p_value)
   {
     return p_value * p_scale;
+  }
+
+  /**
+   * @brief convert this percentage value into a string from -1.0 to +1.0
+   *
+   * Strings are computed using integer arithmetic only.
+   *
+   * The format of the string will follow these rules:
+   *   - Will always have a leading + or - sign
+   *   - Will always be 13 characters where the last character is the '\0'
+   *   - Will start with either a '1' or a '0' character
+   *
+   * Example string:
+   *
+   *   - +1.000000000
+   *   - +0.250000000
+   *   - +0.125000000
+   *   - -0.333333333
+   *   - -0.111111111
+   *   - -0.666666667
+   *
+   * @return auto - string representation of the percent.
+   */
+  auto to_string() const
+  {
+    constexpr int_t fixed_percent_scalar = 1000000000;
+    // Based on the number of characters needed to hold "fixed_percent_scalar"
+    // as well as a '.' and a '-' sign
+    constexpr size_t scalar_length = 12;
+
+    if (raw_value() >= raw_max() - 2) {
+      return to_array<scalar_length>("+1.000000000");
+    } else if (raw_value() <= raw_min() + 2) {
+      return to_array<scalar_length>("-1.000000000");
+    }
+
+    // Make a copy of the percent value
+    percent absolute_percent = *this;
+    // Check and save if the number is negative
+    bool negative = absolute_percent.raw_value() < 0;
+    // If negative absolute, make the percent positive
+    if (negative) {
+      absolute_percent.m_value = absolute_percent.raw_value() * -1;
+    }
+
+    // +1 for a '\0' at the end
+    std::array<char, scalar_length + 1> buffer{ '\0' };
+    // +2 for a '.' and a '\0' character at the end
+    std::array<char, scalar_length + 1> percent_string{ '\0' };
+
+    // Scale "fixed_percent_scalar" by the absolute_percent value
+    int_t decimal_percent = absolute_percent * fixed_percent_scalar;
+
+    // Convert to characters
+    auto char_conversion_result =
+      std::to_chars(buffer.begin(), buffer.end(), decimal_percent);
+
+    size_t string_length = char_conversion_result.ptr - buffer.data();
+    size_t leading_zeros = scalar_length - string_length;
+
+    // Add the leading +/- sign
+    percent_string[0] = (negative) ? '-' : '+';
+
+    // Add the '0' and '.'. We know that the value must be below 1.0 and above
+    // -1.0 because if the values were 1.0 or -1.0 then we would have returned
+    // them at the start of the function.
+    percent_string[1] = '0';
+    percent_string[2] = '.';
+
+    // Add any leading zeros into the percent string array
+    for (size_t i = 3; i < leading_zeros; i++) {
+      percent_string[i] = '0';
+    }
+    // Now copy the contents of the character buffer into the percent string
+    // offset by the number of leading zeros.
+    std::copy_n(
+      buffer.begin(), string_length, percent_string.begin() + leading_zeros);
+
+    return percent_string;
   }
 
 private:

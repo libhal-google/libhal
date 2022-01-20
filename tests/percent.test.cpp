@@ -259,4 +259,109 @@ boost::ut::suite percent_signed_test = []() {
     // Exercise
   };
 };
+
+boost::ut::suite percent_to_string_test = []() {
+  using namespace boost::ut;
+
+  percent value;
+  std::string_view expected_string;
+  decltype(value.to_string()) string;
+
+  auto get_actual_string = [&]() -> std::string_view {
+    string = value.to_string();
+    return std::string_view(string.data(), string.size() - 1);
+  };
+
+  // Check positive boundary
+  value = +1.000000000;
+  expect(get_actual_string() == std::string_view{ "+1.000000000" });
+
+  // Check zero
+  value = +0.000000000;
+  expect(get_actual_string() == std::string_view{ "+0.000000000" });
+
+  // Check negative boundary
+  value = -1.000000000;
+  expect(get_actual_string() == std::string_view{ "-1.000000000" });
+
+  // Check various positive numbers
+  value = +0.999999998;
+  expect(get_actual_string() == std::string_view{ "+0.999999998" });
+
+  value = +0.999999995;
+  expect(get_actual_string() == std::string_view{ "+0.999999995" });
+
+  value = +0.500000000;
+  expect(get_actual_string() == std::string_view{ "+0.500000000" });
+
+  value = +0.444000000;
+  expect(get_actual_string() == std::string_view{ "+0.444000000" });
+
+  value = +0.234000000;
+  expect(get_actual_string() == std::string_view{ "+0.234000000" });
+
+  value = +0.000000005;
+  expect(get_actual_string() == std::string_view{ "+0.000000005" });
+
+  value = +0.000000002;
+  expect(get_actual_string() == std::string_view{ "+0.000000002" });
+
+  value = +0.000333000;
+  expect(get_actual_string() == std::string_view{ "+0.000333000" });
+
+  // Test various negative numbers
+  value = -0.999999998;
+  expect(get_actual_string() == std::string_view{ "-0.999999998" });
+
+  value = -0.999999995;
+  expect(get_actual_string() == std::string_view{ "-0.999999995" });
+
+  value = -0.500000000;
+  expect(get_actual_string() == std::string_view{ "-0.500000000" });
+
+  value = -0.444000000;
+  expect(get_actual_string() == std::string_view{ "-0.444000000" });
+
+  value = -0.234000000;
+  expect(get_actual_string() == std::string_view{ "-0.234000000" });
+
+  value = -0.000000005;
+  expect(get_actual_string() == std::string_view{ "-0.000000005" });
+
+  value = -0.000000002;
+  expect(get_actual_string() == std::string_view{ "-0.000000002" });
+
+  value = -0.000333000;
+  expect(get_actual_string() == std::string_view{ "-0.000333000" });
+
+  // Edge cases
+
+  // Percentage is effectively zero
+  value = percent::from_ratio(1, 2147483647);
+  expect(get_actual_string() == std::string_view{ "+0.000000000" });
+
+  value = percent::from_ratio(-1, 2147483647);
+  expect(get_actual_string() == std::string_view{ "-0.000000000" });
+
+  // Percentage is effectively 1
+  value = percent::from_ratio(2, 2147483647);
+  expect(get_actual_string() == std::string_view{ "+0.000000001" });
+
+  value = percent::from_ratio(-2, 2147483647);
+  expect(get_actual_string() == std::string_view{ "-0.000000001" });
+
+  // Percentage is effectively 100%
+  value = percent::from_ratio(2147483645, 2147483647);
+  expect(get_actual_string() == std::string_view{ "+1.000000000" });
+
+  value = percent::from_ratio(-2147483645, 2147483647);
+  expect(get_actual_string() == std::string_view{ "-1.000000000" });
+
+  // Percentage is effectively 99.9...%
+  value = percent::from_ratio(2147483644, 2147483647);
+  expect(get_actual_string() == std::string_view{ "+0.999999999" });
+  // Percentage is effectively 99.9...%
+  value = percent::from_ratio(-2147483644, 2147483647);
+  expect(get_actual_string() == std::string_view{ "-0.999999999" });
+};
 }  // namespace embed
