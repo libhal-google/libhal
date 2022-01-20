@@ -17,19 +17,19 @@ using namespace defaults;
 #include <libembeddedhal.tweaks.hpp>
 #endif
 
-namespace embed::config {
+namespace embed {
 /**
  * @brief Determines if the current application was built for a specific
  * platform. For example:
  *
- *    embed::config::is_platform("lpc4078");
+ *    embed::is_platform("lpc4078");
  *
  * Will return true if the PLATFORM macro defined at compile time was equal to
  * lpc4078. If the developer wants to be less specific, let say, to just
  * determine if the platform is in the lpc40xx family then the following example
  * will work.
  *
- *    embed::config::is_platform("lpc40");
+ *    embed::is_platform("lpc40");
  *
  * @param p_platform - platform string pattern to check against
  * @return true - matches the platform string
@@ -37,7 +37,7 @@ namespace embed::config {
  */
 constexpr bool is_platform(std::string_view p_platform)
 {
-  return platform.starts_with(p_platform);
+  return config::platform.starts_with(p_platform);
 }
 
 /**
@@ -48,7 +48,8 @@ constexpr bool is_platform(std::string_view p_platform)
  */
 constexpr bool is_a_test()
 {
-  return (platform.starts_with("unit_test") ||
-          platform.starts_with("unittest") || platform.starts_with("test"));
+  return (config::platform.starts_with("unit_test") ||
+          config::platform.starts_with("unittest") ||
+          config::platform.starts_with("test"));
 }
-};  // namespace embed::config
+};  // namespace embed
