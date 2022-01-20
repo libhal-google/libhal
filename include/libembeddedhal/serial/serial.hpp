@@ -8,74 +8,38 @@
 #include <span>
 
 namespace embed {
-/**
- * @brief Generic settings for a standard serial device.
- *
- */
+/// Generic settings for a standard serial device.
 struct serial_settings
 {
-  /**
-   * @brief Set of available stop bits options
-   *
-   */
+  /// Set of available stop bits options
   enum class stop_bits : uint8_t
   {
     one = 0,
     two,
   };
 
-  /**
-   * @brief Set of parity bit options
-   *
-   */
+  /// Set of parity bit options
   enum class parity : uint8_t
   {
-    /**
-     * @brief Disable parity bit as part of the frame
-     *
-     */
+    /// Disable parity bit as part of the frame
     none = 0,
-    /**
-     * @brief Enable parity and set 1 (HIGH) when the number of bits is odd
-     *
-     */
+    /// Enable parity and set 1 (HIGH) when the number of bits is odd
     odd,
-    /**
-     * @brief Enable parity and set 1 (HIGH) when the number of bits is even
-     *
-     */
+    /// Enable parity and set 1 (HIGH) when the number of bits is even
     even,
-    /**
-     * @brief Enable parity bit and always return 1 (HIGH) for ever frame
-     *
-     */
+    /// Enable parity bit and always return 1 (HIGH) for ever frame
     forced1,
-    /**
-     * @brief Enable parity bit and always return 0 (LOW) for ever frame
-     *
-     */
+    /// Enable parity bit and always return 0 (LOW) for ever frame
     forced0,
   };
 
-  /**
-   * @brief The operating speed of the baud rate (in units of bits per second)
-   *
-   */
+  /// The operating speed of the baud rate (in units of bits per second)
   uint32_t baud_rate = 115200;
-  /**
-   * @brief Parity bit type for each frame
-   *
-   */
+  /// Parity bit type for each frame
   parity parity = parity::none;
-  /**
-   * @brief Number of stop bits for each frame
-   *
-   */
+  /// Number of stop bits for each frame
   stop_bits stop = stop_bits::one;
-  /**
-   * @brief Number of bits in each frame. Typically between 5 to 9.
-   *
-   */
+  /// Number of bits in each frame. Typically between 5 to 9.
   uint8_t frame_size = 8;
 };
 
@@ -112,9 +76,9 @@ public:
    *   treat the ones at the end as lost packets.
    *
    * - In most other cases where data lost was crucial, then the whole buffer
-   *   may need to be flushed and the data recieved again.
+   *   may need to be flushed and the data received again.
    *
-   * - A way to fix this is to enlarge the recieve buffer. This can be done with
+   * - A way to fix this is to enlarge the receive buffer. This can be done with
    *   dynamic memory allocation, but generally, its better to simply increase
    *   the buffer size by updating the application rather than growing with
    *   need.
@@ -164,6 +128,20 @@ public:
     /// The number of bytes the serial port has buffered up.
     size_t bytes_available;
   };
+
+  /**
+   * @brief Error type indicating that the settings for serial uart could not be
+   * set
+   *
+   * <b>How to handle these errors:</b>
+   *
+   * - The nature of this error signifies an bug in the code. The documentation
+   *   of the peripheral and the API of the driver should be consulted in order
+   *   to determine what are possible settings for this serial port.
+   *
+   */
+  struct invalid_settings
+  {};
 
   /**
    * @brief Write data on the transmitter line of the port. This function will
