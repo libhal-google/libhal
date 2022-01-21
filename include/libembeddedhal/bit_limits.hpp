@@ -15,7 +15,7 @@ template<size_t BitWidth, std::integral T>
 static consteval T generate_field_of_ones()
 {
   T result = 0;
-  for (int i = 0; i < BitWidth; i++) {
+  for (size_t i = 0; i < BitWidth; i++) {
     result |= 1 << i;
   }
   return result;

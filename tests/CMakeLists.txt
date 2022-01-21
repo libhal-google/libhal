@@ -30,6 +30,7 @@ add_executable(${PROJECT_NAME}
     timer/timer.test.cpp
     i2c/i2c.test.cpp
     time.test.cpp
+    overflow_counter.test.cpp
     static_callable.test.cpp
     imu/accelerometer.test.cpp
     imu/gyroscope.test.cpp

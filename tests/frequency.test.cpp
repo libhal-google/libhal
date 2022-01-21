@@ -13,13 +13,6 @@ std::ostream& operator<<(std::ostream& os, const duty_cycle& p_duty)
   return (os << "duty_cycle { high: " << p_duty.high << ","
              << " low: " << p_duty.low << " }");
 }
-// template<typename Rep, typename Period>
-// std::ostream& operator<<(std::ostream& os, const std::chrono::duration<Rep,
-// Period>& p_duty)
-// {
-//   return (os << "duty_cycle { high: " << p_duty.high << ","
-//              << " low: " << p_duty.low << " }");
-// }
 
 boost::ut::suite frequency_user_defined_literals_test = []() {
   using namespace boost::ut;
