@@ -74,7 +74,7 @@ public:
    * first initialized, like baud rate for serial or pull resistor for a pin.
    *
    */
-  void reset() noexcept { m_initialized = false; }
+  void set_as_uninitialized() noexcept { m_initialized = false; }
   /**
    * @brief Determine if the driver has been initialized
    *
