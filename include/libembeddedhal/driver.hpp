@@ -47,6 +47,15 @@ template<class settings_t = no_settings>
 class driver
 {
 public:
+  /// default constructor
+  driver() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  driver(const driver& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  driver& operator=(const driver& p_other) = delete;
+  /// Destroy the object
+  virtual ~driver() = default;
+
   /**
    * @brief Initialize the driver, apply the setting as defined in the
    * settings_t structure and enable it. Calling this function after it has
@@ -61,6 +70,7 @@ public:
   boost::leaf::result<void> initialize()
   {
     auto on_error = embed::error::setup();
+
     EMBED_CHECK(driver_initialize());
 
     m_initialized_settings = m_settings;
@@ -113,6 +123,8 @@ protected:
    * @return false driver initialization failed
    */
   virtual boost::leaf::result<void> driver_initialize() = 0;
+
+private:
   /// Mutable settings
   settings_t m_settings{};
   /// Saved version of the settings at initialization

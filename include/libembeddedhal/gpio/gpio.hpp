@@ -14,78 +14,45 @@ namespace embed {
  */
 enum class pin_resistor
 {
-  /**
-   * @brief No pull up. This will cause the pin to float. This may be desirable
-   * if the pin has an external resistor attached or if the signal is sensitive
-   * to external devices like resistors.
-   *
-   */
+  /// No pull up. This will cause the pin to float. This may be desirable if the
+  /// pin has an external resistor attached or if the signal is sensitive to
+  /// external devices like resistors.
   none = 0,
-  /**
-   * @brief Pull the pin down to devices GND. This will ensure that the voltage
-   * read by the pin when there is no signal on the pin is LOW (or false).
-   *
-   */
+  /// Pull the pin down to devices GND. This will ensure that the voltage read
+  /// by the pin when there is no signal on the pin is LOW (or false).
   pull_down,
-  /**
-   * @brief See pull down explanation, but in this case the pin is pulled up to
-   * VCC, also called VDD on some systems.
-   *
-   */
+  /// See pull down explanation, but in this case the pin is pulled up to VCC,
+  /// also called VDD on some systems.
   pull_up,
 };
 
-/**
- * @brief Generic settings for input pins
- *
- */
+/// Generic settings for input pins
 struct input_pin_settings
 {
-  /**
-   * @brief pull resistor for an input pin
-   *
-   */
+  /// pull resistor for an input pin
   pin_resistor resistor = pin_resistor::pull_up;
 };
 
-/**
- * @brief Generic settings for output pins
- *
- */
+/// Generic settings for output pins
 struct output_pin_settings
 {
-  /**
-   * @brief Set the starting level of the output pin on initialization. HIGH
-   * voltage defined as true and LOW voltage defined as false.
-   *
-   */
+  /// Set the starting level of the output pin on initialization. HIGH voltage
+  /// defined as true and LOW voltage defined as false.
   bool starting_level = true;
-  /**
-   * @brief Starting level of the output pin. HIGH voltage defined as true and
-   * LOW voltage defined as false.
-   *
-   */
+  /// Starting level of the output pin. HIGH voltage defined as true and LOW
+  /// voltage defined as false.
   bool open_drain = false;
-  /**
-   * @brief Pull resistor for the pin. This generally only helpful when open
-   * drain is enabled.
-   *
-   */
+  /// Pull resistor for the pin. This generally only helpful when open
+  /// drain is enabled.
   pin_resistor resistor = pin_resistor::pull_up;
 };
 
-/**
- * @brief Generic settings for interrupt pins
- *
- */
+/// Generic settings for interrupt pins
 struct interrupt_pin_settings
 {
-  /**
-   * @brief pull resistor for an interrupt pin. Generally advised to NOT use
-   * `pin_resistor::none` and if it is used and external pull resistor should be
-   * placed on the pin to prevent random interrupt from firing.
-   *
-   */
+  /// pull resistor for an interrupt pin. Generally advised to NOT use
+  /// `pin_resistor::none` and if it is used and external pull resistor should
+  /// be placed on the pin to prevent random interrupt from firing.
   pin_resistor resistor = pin_resistor::pull_up;
 };
 
@@ -98,6 +65,15 @@ struct interrupt_pin_settings
 class input_pin : public driver<input_pin_settings>
 {
 public:
+  /// default constructor
+  input_pin() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  input_pin(const input_pin& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  input_pin& operator=(const input_pin& p_other) = delete;
+  /// Destroy the object
+  virtual ~input_pin() = default;
+
   /**
    * @brief Read the state of the input pin
    *
@@ -106,6 +82,7 @@ public:
    */
   virtual boost::leaf::result<bool> level() const = 0;
 };
+
 /**
  * @brief Digital output pin hardware abstraction.
  *
@@ -116,6 +93,15 @@ public:
 class output_pin : public driver<output_pin_settings>
 {
 public:
+  /// default constructor
+  output_pin() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  output_pin(const output_pin& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  output_pin& operator=(const output_pin& p_other) = delete;
+  /// Destroy the object
+  virtual ~output_pin() = default;
+
   /**
    * @brief Set the state of the pin
    *
@@ -135,6 +121,7 @@ public:
    */
   virtual boost::leaf::result<bool> level() const = 0;
 };
+
 /**
  * @brief Digital interrupt pin hardware abstraction.
  *
@@ -147,30 +134,28 @@ public:
 class interrupt_pin : public driver<interrupt_pin_settings>
 {
 public:
-  /**
-   * @brief The condition in which an interrupt is triggered.
-   *
-   */
+  /// The condition in which an interrupt is triggered.
   enum class trigger_edge
   {
-    /**
-     * @brief Trigger and interrupt when a pin transitions from HIGH voltage to
-     * LOW voltage.
-     *
-     */
+    /// Trigger and interrupt when a pin transitions from HIGH voltage to
+    /// LOW voltage.
     falling = 0,
-    /**
-     * @brief Trigger and interrupt when a pin transitions from LOW voltage to
-     * HIGH voltage.
-     *
-     */
+    /// Trigger and interrupt when a pin transitions from LOW voltage to
+    /// HIGH voltage.
     rising = 1,
-    /**
-     * @brief Trigger and interrupt when a pin transitions it state
-     *
-     */
+    /// Trigger and interrupt when a pin transitions it state
     both = 2,
   };
+
+  /// default constructor
+  interrupt_pin() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  interrupt_pin(const interrupt_pin& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  interrupt_pin& operator=(const interrupt_pin& p_other) = delete;
+  /// Destroy the object
+  virtual ~interrupt_pin() = default;
+
   /**
    * @brief Return the voltage level of the pin
    *

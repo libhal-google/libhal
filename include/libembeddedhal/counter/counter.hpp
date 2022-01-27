@@ -16,32 +16,29 @@ namespace embed {
 class counter : public driver<>
 {
 public:
-  /**
-   * @brief Set of controls for a counter.
-   *
-   */
+  /// Set of controls for a counter.
   enum class controls
   {
-    /**
-     * @brief Control value to start the counter
-     *
-     */
+    /// Start the counter
     start,
-    /**
-     * @brief Control value to stop a counter
-     *
-     */
+    /// Stop a counter
     stop,
-    /**
-     * @brief Control value to reset a counter. The counter shall remain in a
-     * running or stopped state after this call. So an ongoing counter will
-     * continue to count but will have its counter reset to zero if this control
-     * is used. If a counter is stopped, then it shall be reset to zero, and
-     * stay stopped.
-     *
-     */
+    /// Control value to reset a counter. The counter shall remain in a
+    /// running or stopped state after this call. So an ongoing counter will
+    /// continue to count but will have its counter reset to zero if this
+    /// control is used. If a counter is stopped, then it shall be reset to
+    /// zero, and stay stopped.
     reset,
   };
+
+  /// default constructor
+  counter() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  counter(const counter& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  counter& operator=(const counter& p_other) = delete;
+  /// Destroy the object
+  virtual ~counter() = default;
 
   /**
    * @brief Determine if the counter is currently running

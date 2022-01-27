@@ -17,6 +17,15 @@ namespace embed {
 class timer : public driver<>
 {
 public:
+  /// default constructor
+  timer() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  timer(const timer& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  timer& operator=(const timer& p_other) = delete;
+  /// Destroy the object
+  virtual ~timer() = default;
+
   /**
    * @brief Error type indicating that the desired time delay is not achievable
    * with this timer.
@@ -48,7 +57,6 @@ public:
     /// The maximum possible delay allowed.
     std::chrono::nanoseconds maximum;
   };
-
   /**
    * @brief Determine if the timer is currently running
    *
@@ -56,7 +64,6 @@ public:
    * @return boost::leaf::result<bool> - driver specific error, if any.
    */
   virtual boost::leaf::result<bool> is_running() = 0;
-
   /**
    * @brief Stops a scheduled event from happening.
    *
@@ -70,7 +77,6 @@ public:
    * @return boost::leaf::result<void> - driver specific error, if any.
    */
   virtual boost::leaf::result<void> clear() = 0;
-
   /**
    * @brief Schedule an callback to be called at a designated time/interval
    *

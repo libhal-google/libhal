@@ -143,6 +143,15 @@ public:
   struct invalid_settings
   {};
 
+  /// default constructor
+  serial() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  serial(const serial& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  serial& operator=(const serial& p_other) = delete;
+  /// Destroy the object
+  virtual ~serial() = default;
+
   /**
    * @brief Write data on the transmitter line of the port. This function will
    * block until the entire transfer is finished.
