@@ -102,7 +102,7 @@ public:
    */
   [[nodiscard]] const settings_t& initialized_settings() const noexcept
   {
-    return m_settings;
+    return m_initialized_settings;
   }
 
 protected:
