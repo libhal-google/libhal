@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <utility>
 
-#include "../can.hpp"
 #include "../driver.hpp"
+#include "can.hpp"
 
 namespace embed {
 /**
@@ -152,16 +152,18 @@ public:
    * @param p_memory_resource - memory resource used for storing can messages
    */
   can_network(can& p_can, std::pmr::memory_resource& p_memory_resource) noexcept
-    : m_can(p_can)
+    : m_can(&p_can)
     , m_messages(&p_memory_resource)
   {}
 
   boost::leaf::result<void> driver_initialize() override
   {
     auto on_error = embed::error::setup();
-    EMBED_CHECK(m_can.initialize());
-    auto handler = [this](can& p_can) { receive_handler(p_can); };
-    EMBED_CHECK(m_can.attach_interrupt(handler));
+    EMBED_CHECK(m_can->initialize());
+    auto handler = [this](const can::message_t& p_message) {
+      receive_handler(p_message);
+    };
+    EMBED_CHECK(m_can->attach_interrupt(handler));
     return {};
   }
 
@@ -203,18 +205,6 @@ public:
   }
 
   /**
-   * @brief Manually call the receive handler.
-   *
-   * This is useful for unit testing and for CANBUS peripherals that do NOT have
-   * a receive message interrupt routine. In the later case, a software
-   * (potentially a thread) can perform the receive call manually to extract
-   * messages from the CAN peripheral FIFO. This method cannot guarantee that
-   * data is not lost if the FIFO fills up.
-   *
-   */
-  void manually_call_receive_handler() { receive_handler(m_can); }
-
-  /**
    * @brief get a reference to the can peripheral driver
    *
    * Can be used to initialize, configure, and enable the peripheral as well as
@@ -222,7 +212,7 @@ public:
    *
    * @return can& reference to the can peripheral driver
    */
-  can& bus() { return m_can; }
+  can& bus() { return *m_can; }
 
   /**
    * @brief Get the Internal Map object
@@ -235,16 +225,8 @@ public:
   const auto& get_internal_map() { return m_messages; }
 
 private:
-  void receive_handler(can& p_can)
+  void receive_handler(const can::message_t& p_message)
   {
-    // If there isn't any data available, return early.
-    if (!p_can.has_data()) {
-      return;
-    }
-
-    // Pop the latest can message off the queue.
-    const auto message = p_can.receive();
-
     // Check if the map already has a value for this ID. This acts as the last
     // stage of the CAN filter for the CANBUS Network module. If the key
     // does NOT exist in the map, then this message will not be saved.
@@ -254,16 +236,16 @@ private:
     // Map lookups can be costly, especially in a interrupt context, so only
     // needing to hash/lookup the ID once is preferred. To prevent multiple
     // lookups, an iterator is stored into the message_node variable.
-    auto message_node = m_messages.find(message.id);
+    auto message_node = m_messages.find(p_message.id);
 
     // If the ID has an associated value in the map, then the node std::pair<>
     // is returned, otherwise, the ::end() node is returned.
     if (message_node != m_messages.end()) {
-      message_node->second.update(message);
+      message_node->second.update(p_message);
     }
   }
 
-  can& m_can;
+  can* m_can;
   std::pmr::unordered_map<uint32_t, node_t> m_messages;
 };
 }  // namespace embed

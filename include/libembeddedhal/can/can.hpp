@@ -3,6 +3,7 @@
 #include <array>
 #include <chrono>
 #include <cinttypes>
+#include <cstddef>
 #include <functional>
 
 #include "../driver.hpp"
@@ -37,7 +38,7 @@ public:
     /// The number of elements in the payload
     uint8_t length = 0;
     /// The message data
-    std::array<uint8_t, 8> payload{ 0 };
+    std::array<std::byte, 8> payload{ std::byte{ 0 } };
     /// Whether or not the message is a remote request frame. If true, then
     /// length and payload are ignored.
     bool is_remote_request = false;
