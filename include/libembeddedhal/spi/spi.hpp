@@ -51,6 +51,6 @@ public:
   virtual boost::leaf::result<void> transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_write_value = std::byte{ 0xFF }) = 0;
+    std::byte p_write_value) = 0;
 };
 }  // namespace embed
