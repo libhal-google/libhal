@@ -3,22 +3,15 @@
 #include <chrono>
 #include <functional>
 
+#include "error.hpp"
+
 namespace embed::this_thread {
-/**
- * @brief smallest increment of time for clocks
- *
- */
-using time_increment = std::chrono::nanoseconds;
-/**
- * @brief definition of a sleep function
- *
- */
-using sleep_function = std::function<void(time_increment p_sleep_time)>;
-/**
- * @brief definition of an uptime function
- *
- */
-using uptime_function = std::function<time_increment(void)>;
+/// Smallest increment of time for clocks
+using time_period = std::chrono::nanoseconds;
+/// Definition of a sleep function
+using sleep_function = std::function<void(time_period p_sleep_time)>;
+/// Definition of an uptime function
+using uptime_function = std::function<time_period(void)>;
 
 /**
  * @brief structure containing internal clock variables and functions
@@ -31,12 +24,12 @@ public:
    * @brief Default uptime timer that simply counts each time it is called. This
    * should almost never be used.
    *
-   * @return time_increment - fake uptime
+   * @return time_period - fake uptime
    */
-  static time_increment incremental_uptime()
+  static time_period incremental_uptime()
   {
     using namespace std::chrono_literals;
-    static time_increment count{ 0 };
+    static time_period count{ 0 };
     count += 100ns;
     return count;
   }
@@ -46,10 +39,10 @@ public:
    *
    * @param p_loop_count - number of iterations to loop for to mimick sleeping
    */
-  static void loop_sleep(time_increment p_loop_count)
+  static void loop_sleep(time_period p_loop_count)
   {
     using namespace std::chrono_literals;
-    time_increment count{ 0 };
+    time_period count{ 0 };
     while (count < p_loop_count) {
       count += 100us;
     }
@@ -71,7 +64,7 @@ public:
  *
  * @param p_delay - the amount of time to delay execution by
  */
-static auto sleep_for(time_increment p_delay)
+static auto sleep_for(time_period p_delay)
 {
   if (global_clocks::m_global_sleep) {
     return global_clocks::m_global_sleep(p_delay);
@@ -92,7 +85,6 @@ static auto uptime()
     return global_clocks::incremental_uptime();
   }
 }
-
 /**
  * @brief Set the global sleep object
  *
