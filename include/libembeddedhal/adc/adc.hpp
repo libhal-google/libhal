@@ -15,6 +15,15 @@ namespace embed {
  */
 class adc : public driver<>
 {
+  /// default constructor
+  adc() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  adc(const adc& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  adc& operator=(const adc& p_other) = delete;
+  /// Destroy the object
+  virtual ~adc() = default;
+
   /**
    * @brief Read a sample from the analog to digital converter.
    *

@@ -77,6 +77,15 @@ public:
   struct bus_error
   {};
 
+  /// default constructor
+  i2c() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  i2c(const i2c& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  i2c& operator=(const i2c& p_other) = delete;
+  /// Destroy the object
+  virtual ~i2c() = default;
+
   /**
    * @brief perform an i2c transaction with another device on the bus. The type
    * of transaction depends on values of input parameters. This function will

@@ -30,6 +30,15 @@ struct spi_settings
 class spi : public driver<spi_settings>
 {
 public:
+  /// default constructor
+  spi() = default;
+  /// Explicitly delete copy constructor to prevent slicing
+  spi(const spi& p_other) = delete;
+  /// Explicitly delete assignment operator to prevent slicing
+  spi& operator=(const spi& p_other) = delete;
+  /// Destroy the object
+  virtual ~spi() = default;
+
   /**
    * @brief Send and receieve data between a selected device on the spi bus.
    * This function will block until the entire transfer is finished.

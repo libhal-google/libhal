@@ -34,7 +34,7 @@ public:
     return boost::leaf::new_error(dummy_error{});
   }
 
-  boost::leaf::result<void> driver_initialize()
+  boost::leaf::result<void> driver_initialize() override
   {
     auto on_error = embed::error::setup();
     return errorable_function();
