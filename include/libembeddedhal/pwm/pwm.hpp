@@ -7,11 +7,18 @@
 #include <cinttypes>
 
 namespace embed {
+/// Generic settings for a hardware Pulse Width Modulation (PWM) generating
+/// devices devices.
+struct pwm_settings
+{
+  /// The target channel PWM frequency.
+  embed::frequency frequency = embed::frequency(1'000);
+};
 /**
  * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
  *
  */
-class pwm : public driver<>
+class pwm : public driver<pwm_settings>
 {
   /// default constructor
   pwm() = default;
@@ -23,24 +30,6 @@ class pwm : public driver<>
   virtual ~pwm() = default;
 
   /**
-   * @brief Set the operating frequency of the pwm channel. Note that on many
-   * implementations, setting the frequency of a singular channel can have the
-   * effect of changing the frequency of all of the channels on the same pwm
-   * peripheral.
-   *
-   * @param p_frequency - frequency of the pwm channel in hertz
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
-   */
-  virtual boost::leaf::result<void> frequency(embed::frequency p_frequency) = 0;
-  /**
-   * @brief Get the operating frequency of the pwm channel
-   *
-   * @return boost::leaf::result<embed::frequency> - frequency of the pwm
-   * channel in hertz
-   */
-  virtual boost::leaf::result<embed::frequency> frequency() = 0;
-  /**
    * @brief Set the duty cycle percentage
    *
    * @param p_duty_cycle - set the duty cycle of the pwm.
@@ -48,11 +37,5 @@ class pwm : public driver<>
    * operation.
    */
   virtual boost::leaf::result<void> duty_cycle(percent p_duty_cycle) = 0;
-  /**
-   * @brief Get the duty cycle percentage
-   *
-   * @return boost::leaf::result<percent> - duty cycle
-   */
-  virtual percent duty_cycle() = 0;
 };
 }  // namespace embed
