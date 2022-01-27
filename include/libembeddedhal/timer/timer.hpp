@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../driver.hpp"
-
 #include <chrono>
 #include <functional>
+
+#include "../driver.hpp"
 
 namespace embed {
 /**
@@ -21,9 +21,9 @@ public:
    * @brief Error type indicating that the desired time delay is not achievable
    * with this timer.
    *
-   * Usually this occurs if the time delay is too small relative to the driving
-   * frequency of the timer and along with any prescalars before the counting
-   * register.
+   * Usually this occurs if the time delay is too small or too big based on what
+   * is possible with the driving frequency of the timer and along with any
+   * prescalars before the counting register.
    *
    * <b>How to handle these errors:</b>
    *
@@ -33,38 +33,18 @@ public:
    *
    * - In most other cases, this is usually a bug in the code and cannot be
    *   handled in code and should be treated as such. Drivers using a timer, if
-   *   they need an exact nunber will not be usable with this timer if it throws
+   *   they need an exact number will not be usable with this timer if it throws
    *   this error, which will either require another timer that can perform this
    *   work be used or increasing the clock rate fed into the timer in order to
    *   increase its frequency range.
    *
    */
-  struct delay_too_small
+  struct out_of_bounds
   {
-    /// The invalid delay given to the schedule function
+    /// The invalid delay given to the schedule function.
     std::chrono::nanoseconds invalid;
     /// The minimum possible delay allowed.
     std::chrono::nanoseconds minimum;
-  };
-
-  /**
-   * @brief Error type indicating that the desired delay time is above what can
-   * be achieved by the timer.
-   *
-   * Usually occurs when the driving frequency, prescalar values and the size of
-   * the timer registers are too small for the delay for a particular timer.
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - Usually this is a bug in the program. One way to resolve this in the
-   *   application is to drive down the input frequency to the timer in order to
-   *   make each count longer.
-   *
-   */
-  struct delay_too_large
-  {
-    /// The invalid delay given to the schedule function
-    std::chrono::nanoseconds invalid;
     /// The maximum possible delay allowed.
     std::chrono::nanoseconds maximum;
   };
