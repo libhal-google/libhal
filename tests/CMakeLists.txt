@@ -37,6 +37,7 @@ add_executable(${PROJECT_NAME}
     imu/gyroscope.test.cpp
     imu/compass.test.cpp
     spi/spi.test.cpp
+    spi/spi_util.test.cpp
     adc/adc.test.cpp
     frequency.test.cpp
     rtc/rtc.test.cpp
