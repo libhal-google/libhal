@@ -29,6 +29,7 @@ add_executable(${PROJECT_NAME}
     driver.test.cpp
     timer/timer.test.cpp
     i2c/i2c.test.cpp
+    i2c/i2c_util.test.cpp
     time.test.cpp
     overflow_counter.test.cpp
     static_callable.test.cpp
