@@ -15,6 +15,7 @@ namespace embed {
  */
 class adc : public driver<>
 {
+public:
   /// default constructor
   adc() = default;
   /// Explicitly delete copy constructor to prevent slicing
