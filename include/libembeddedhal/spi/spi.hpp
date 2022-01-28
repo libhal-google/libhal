@@ -44,22 +44,22 @@ public:
    * This function will block until the entire transfer is finished.
    *
    * @param p_data_out - buffer to write data to the bus. If this is set to
-   * null/empty then writing is ignored and the p_write_value will be written to
-   * the bus. If the length is less than p_data_in, then p_write_value will be
+   * null/empty then writing is ignored and the p_filler will be written to
+   * the bus. If the length is less than p_data_in, then p_filler will be
    * written to the bus after this buffer has been sent.
    * @param p_data_in - buffer to read the data off of the bus. If this is
    * null/empty, then the transfer will be write only and the incoming data will
    * be ignored. If the length of this buffer is less than p_data_out, once this
    * buffer has been filled, the rest of the received bytes on the bus will be
    * dropped.
-   * @param p_write_value - filler data to be placed on the bus when the
-   * p_data_out buffer has been exhausted.
+   * @param p_filler - filler data placed on the bus in place of actual write
+   * data when p_data_out has been exhausted.
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
   virtual boost::leaf::result<void> transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_write_value) = 0;
+    std::byte p_filler) = 0;
 };
 }  // namespace embed
