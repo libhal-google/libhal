@@ -50,12 +50,14 @@ add_executable(${PROJECT_NAME}
     percent.test.cpp
     gpio/gpio.test.cpp
     static_memory_resource.test.cpp
+    serial/serial_util.test.cpp
     serial/serial.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
-target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra)
+target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra
+    -Wno-unused-function)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET default)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)

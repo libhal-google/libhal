@@ -26,6 +26,17 @@ struct universal
 {};
 
 /**
+ * @brief An error indicating a timeout event.
+ *
+ * Timeouts occur when a particular operation is given an amount of time to
+ * complete. If the operation cannot be completed in that time, this object
+ * should be thrown.
+ *
+ */
+struct timeout
+{};
+
+/**
  * @brief A structure to hold stack strace source location entries. The size of
  * this class can be changed by changing the
  * embed::config::stacktrace_depth_limit value in the libembeddedhal.tweak.hpp
