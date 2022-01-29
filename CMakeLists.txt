@@ -47,6 +47,7 @@ add_executable(${TEST_NAME}
   tests/timer/timer_mock.test.cpp
   tests/timer/timer_stub.test.cpp
   tests/timer/timer.test.cpp
+  tests/i2c/i2c_mock.test.cpp
   tests/i2c/i2c_util.test.cpp
   tests/i2c/i2c.test.cpp
   tests/percent.test.cpp
