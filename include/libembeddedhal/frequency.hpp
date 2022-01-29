@@ -334,7 +334,7 @@ public:
   }
 
 private:
-  int_t m_cycles_per_second;
+  int_t m_cycles_per_second = 1'000;
 };
 
 /// Default clock rate for serial communication protocols

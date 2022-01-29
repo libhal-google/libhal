@@ -107,8 +107,8 @@ protected:
   }
 
 private:
-  std::array<std::byte, BufferSize> m_buffer;
-  std::byte* m_unallocated_memory;
-  std::pmr::monotonic_buffer_resource m_resource;
+  std::array<std::byte, BufferSize> m_buffer{};
+  std::byte* m_unallocated_memory{};
+  std::pmr::monotonic_buffer_resource m_resource{};
 };
 }  // namespace embed
