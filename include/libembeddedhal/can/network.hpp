@@ -245,7 +245,7 @@ private:
     }
   }
 
-  can* m_can;
-  std::pmr::unordered_map<uint32_t, node_t> m_messages;
+  can* m_can{};
+  std::pmr::unordered_map<uint32_t, node_t> m_messages{};
 };
 }  // namespace embed
