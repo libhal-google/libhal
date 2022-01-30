@@ -18,7 +18,6 @@ class overflow_counter
 public:
   static_assert(CountBitWidth <= 32, "Bit width cannot exceed 32-bits");
   static_assert(CountBitWidth > 1, "Bit width must be greater than 1");
-
   /**
    * @brief update the overflow counter, detect if an overflow has occurred, and
    * return the combined
@@ -28,7 +27,7 @@ public:
    * @return constexpr uint64_t - 64-bit count combining the new count value and
    * the overflow count value.
    */
-  constexpr uint64_t update(uint32_t new_count)
+  constexpr uint64_t update(uint32_t new_count) noexcept
   {
     // Sanitize the new count value to make sure it does not exceed the
     // designated bit width. Without this check when the count is combined with
@@ -62,7 +61,7 @@ public:
    * @brief Reset the overflow count back to zero.
    *
    */
-  constexpr void reset()
+  constexpr void reset() noexcept
   {
     m_previous_count = 0;
     m_overflow_count = 0;

@@ -35,7 +35,7 @@ namespace embed {
  * @return true - matches the platform string
  * @return false - does not matches the platform string
  */
-constexpr bool is_platform(std::string_view p_platform)
+constexpr bool is_platform(std::string_view p_platform) noexcept
 {
   return config::platform.starts_with(p_platform);
 }
@@ -46,7 +46,7 @@ constexpr bool is_platform(std::string_view p_platform)
  * @return true - this application is a test
  * @return false - this application is not a test
  */
-constexpr bool is_a_test()
+constexpr bool is_a_test() noexcept
 {
   return (config::platform.starts_with("unit_test") ||
           config::platform.starts_with("unittest") ||

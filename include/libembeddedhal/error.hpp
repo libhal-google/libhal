@@ -42,7 +42,7 @@ public:
    * @return auto - return a const span with length equal to the number of
    * entries in the stacktrace list.
    */
-  auto get() const
+  auto get() const noexcept
   {
     return std::span<const boost::leaf::e_source_location>(m_list.begin(),
                                                            m_count);
@@ -53,7 +53,7 @@ public:
    *
    * @param p_source_location - source location to be added to the list
    */
-  void append(boost::leaf::e_source_location p_source_location)
+  void append(boost::leaf::e_source_location p_source_location) noexcept
   {
     if constexpr (config::get_stacktrace_on_error) {
       if (m_count < m_list.size()) {
@@ -100,7 +100,7 @@ private:
 inline auto setup(
   const char* p_function_name = std::source_location::current().function_name(),
   const char* p_file_name = std::source_location::current().file_name(),
-  int p_line_number = std::source_location::current().line())
+  int p_line_number = std::source_location::current().line()) noexcept
 {
   // Default strings for file and function that will be reassigned to the actual
   // strings, if their corresponding config options are set to true.
@@ -153,7 +153,7 @@ inline auto setup(
  * function return int of value 0.
  */
 template<typename T>
-constexpr auto get_return_value(boost::leaf::result<T>& p_result)
+constexpr auto get_return_value(boost::leaf::result<T>& p_result) noexcept
 {
   if constexpr (std::is_void_v<T>) {
     return 0;

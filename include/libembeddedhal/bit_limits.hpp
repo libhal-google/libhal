@@ -12,7 +12,7 @@ namespace embed {
  * @return consteval uint32_t - mask with 1s at the LSB
  */
 template<size_t BitWidth, std::integral T>
-static consteval T generate_field_of_ones()
+static consteval T generate_field_of_ones() noexcept
 {
   T result = 0;
   for (size_t i = 0; i < BitWidth; i++) {
@@ -47,7 +47,7 @@ struct bit_limits
    *
    * @return constexpr int_t maximum value
    */
-  static constexpr int_t max()
+  static constexpr int_t max() noexcept
   {
     if constexpr (std::is_signed_v<int_t>) {
       int_t max = generate_field_of_ones<BitWidth, int_t>();
@@ -68,7 +68,7 @@ struct bit_limits
    *
    * @return constexpr int_t minimum value
    */
-  static constexpr int_t min()
+  static constexpr int_t min() noexcept
   {
     if constexpr (BitWidth == 64) {
       return std::numeric_limits<int_t>::min();

@@ -70,7 +70,7 @@ inline void sleep_for(counter& p_counter, std::chrono::nanoseconds p_duration)
  *
  * @param p_counter - counter object
  */
-inline void set_as_global_sleep(counter& p_counter)
+inline void set_as_global_sleep(counter& p_counter) noexcept
 {
   this_thread::set_global_sleep([&p_counter](std::chrono::nanoseconds p_delay) {
     sleep_for(p_counter, p_delay);
@@ -81,7 +81,7 @@ inline void set_as_global_sleep(counter& p_counter)
  *
  * @param p_counter - counter object
  */
-inline void set_as_global_uptime(counter& p_counter)
+inline void set_as_global_uptime(counter& p_counter) noexcept
 {
   this_thread::set_global_uptime(
     [&p_counter]() -> std::chrono::nanoseconds { return uptime(p_counter); });
