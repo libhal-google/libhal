@@ -54,7 +54,7 @@ namespace embed {
  * @return constexpr T - p_value but with resolution scaled up to type T
  */
 template<std::integral T, size_t SourceWidth, std::integral U>
-constexpr static T upscale_integer(U p_value)
+constexpr static T upscale_integer(U p_value) noexcept
 {
   constexpr size_t output_bit_width = sizeof(T) * CHAR_BIT;
 
@@ -116,7 +116,7 @@ public:
    *
    * @return constexpr overflow_t - maximum limit of int_t
    */
-  static constexpr overflow_t raw_max()
+  static constexpr overflow_t raw_max() noexcept
   {
     return std::numeric_limits<int_t>::max();
   }
@@ -126,7 +126,7 @@ public:
    *
    * @return constexpr overflow_t - minimum limit of int_t
    */
-  static constexpr overflow_t raw_min()
+  static constexpr overflow_t raw_min() noexcept
   {
     return std::numeric_limits<int_t>::min() + overflow_t{ 1 };
   }
@@ -136,13 +136,13 @@ public:
    *
    * @return constexpr overflow_t - 0 value for int_t
    */
-  static constexpr overflow_t raw_zero() { return int_t{ 0 }; }
+  static constexpr overflow_t raw_zero() noexcept { return int_t{ 0 }; }
 
   /**
    * @brief Construct 0% percent object
    *
    */
-  constexpr percent()
+  constexpr percent() noexcept
     : m_value(0)
   {}
 
@@ -153,7 +153,10 @@ public:
    * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
    * to 1.0.
    */
-  constexpr percent(std::floating_point auto p_ratio) { *this = p_ratio; }
+  constexpr percent(std::floating_point auto p_ratio) noexcept
+  {
+    *this = p_ratio;
+  }
 
   /**
    * @brief Assignment operator for a percent object based on a floating point
@@ -165,7 +168,7 @@ public:
    * @return constexpr percent& - integer precent object based on the floating
    * point percent value.
    */
-  constexpr percent& operator=(std::floating_point auto p_ratio)
+  constexpr percent& operator=(std::floating_point auto p_ratio) noexcept
   {
     using float_t = decltype(p_ratio);
 
@@ -188,7 +191,7 @@ public:
    * distance to the end of the bit width.
    */
   template<size_t BitWidth, std::integral T>
-  static constexpr percent convert(T p_value)
+  static constexpr percent convert(T p_value) noexcept
   {
     const int_t up_scaled_value = upscale_integer<int_t, BitWidth, T>(p_value);
     return percent(up_scaled_value);
@@ -221,7 +224,7 @@ public:
    * @return constexpr percent
    */
   template<std::integral T>
-  static constexpr percent from_ratio(T p_progress, T p_maximum)
+  static constexpr percent from_ratio(T p_progress, T p_maximum) noexcept
   {
     overflow_t result = p_progress;
     result = (result * raw_max()) / absolute_value(p_maximum);
@@ -235,7 +238,7 @@ public:
    *
    * @return T - percent value
    */
-  constexpr auto raw_value() const { return m_value; }
+  constexpr auto raw_value() const noexcept { return m_value; }
 
   /**
    * @brief Convert percent to a floating point representation
@@ -245,7 +248,7 @@ public:
    * and 1.0f.
    */
   template<std::floating_point T>
-  constexpr T to() const
+  constexpr T to() const noexcept
   {
     constexpr T maximum = static_cast<T>(raw_max());
     return static_cast<T>(m_value) / maximum;
@@ -257,7 +260,7 @@ public:
    * @return float - float representation of the precentage between 0.0f
    * and 1.0f.
    */
-  explicit operator float() const { return to<float>(); }
+  explicit operator float() const noexcept { return to<float>(); }
 
   /**
    * @brief explicit cast to double.
@@ -265,7 +268,7 @@ public:
    * @return double - double representation of the precentage between 0.0
    * and 1.0
    */
-  explicit operator double() const { return to<double>(); }
+  explicit operator double() const noexcept { return to<double>(); }
 
   /**
    * @brief Scale an integral value by a percent value.
@@ -281,7 +284,7 @@ public:
    * @return auto - the scaled down result of p_value * p_scale.
    */
   template<std::integral T>
-  friend constexpr auto operator*(T p_value, percent p_scale)
+  friend constexpr auto operator*(T p_value, percent p_scale) noexcept
   {
     overflow_t arith_container = p_value;
     arith_container = arith_container * p_scale.raw_value();
@@ -298,7 +301,7 @@ public:
    * @return constexpr auto - see other operator*
    */
   template<std::integral T>
-  friend constexpr auto operator*(percent p_scale, T p_value)
+  friend constexpr auto operator*(percent p_scale, T p_value) noexcept
   {
     return p_value * p_scale;
   }
@@ -324,7 +327,7 @@ public:
    *
    * @return auto - string representation of the percent.
    */
-  auto to_string() const
+  auto to_string() const noexcept
   {
     constexpr int_t fixed_percent_scalar = 1000000000;
     // Based on the number of characters needed to hold "fixed_percent_scalar"
@@ -383,7 +386,7 @@ public:
   }
 
 private:
-  constexpr percent(int_t p_value)
+  constexpr percent(int_t p_value) noexcept
     : m_value(p_value)
   {}
 

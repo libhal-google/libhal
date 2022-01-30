@@ -81,7 +81,7 @@ public:
      *
      * @return can::message_t
      */
-    can::message_t secure_get()
+    can::message_t secure_get() noexcept
     {
       // Continuously check if the received CAN message is valid. NOTE: that, in
       // general, the looping logic for this function almost never occurs as
@@ -90,8 +90,8 @@ public:
         // First, atomically copy the access_counter to a variable.
         const auto read_message_start = m_access_counter.load();
 
-        // Copy the contents of the mesage into the kCanMessage variable.
-        const can::message_t kCanMessage = m_data;
+        // Copy the contents of the mesage into the can_message variable.
+        const can::message_t can_message = m_data;
 
         // Finally, atomically copy the access_counter again such that the value
         // between the start and finish can be compared.
@@ -101,7 +101,7 @@ public:
         // receive_handler isn't currently modifying the node_t's data,
         // can the message be considered valid.
         if (read_message_start == read_message_finish) {
-          return kCanMessage;
+          return can_message;
         }
       }
 
@@ -119,7 +119,7 @@ public:
      *
      * @param p_new_data New can message to store
      */
-    void update(const can::message_t& p_new_data)
+    void update(const can::message_t& p_new_data) noexcept
     {
       // Atomic increment of the access counter to notify any threads that are
       // using GetMesage() that the value of this node is changing.
@@ -212,7 +212,7 @@ public:
    *
    * @return can& reference to the can peripheral driver
    */
-  can& bus() { return *m_can; }
+  can& bus() noexcept { return *m_can; }
 
   /**
    * @brief Get the Internal Map object
@@ -222,10 +222,10 @@ public:
    *
    * @return const auto& map of all of the messages in the network.
    */
-  const auto& get_internal_map() { return m_messages; }
+  const auto& get_internal_map() noexcept { return m_messages; }
 
 private:
-  void receive_handler(const can::message_t& p_message)
+  void receive_handler(const can::message_t& p_message) noexcept
   {
     // Check if the map already has a value for this ID. This acts as the last
     // stage of the CAN filter for the CANBUS Network module. If the key

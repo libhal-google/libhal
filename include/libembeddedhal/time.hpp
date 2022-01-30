@@ -26,7 +26,7 @@ public:
    *
    * @return time_period - fake uptime
    */
-  static time_period incremental_uptime()
+  static time_period incremental_uptime() noexcept
   {
     using namespace std::chrono_literals;
     static time_period count{ 0 };
@@ -39,7 +39,7 @@ public:
    *
    * @param p_loop_count - number of iterations to loop for to mimick sleeping
    */
-  static void loop_sleep(time_period p_loop_count)
+  static void loop_sleep(time_period p_loop_count) noexcept
   {
     using namespace std::chrono_literals;
     time_period count{ 0 };
@@ -51,12 +51,12 @@ public:
    * @brief Store the global sleep function
    *
    */
-  static inline sleep_function m_global_sleep = loop_sleep;
+  static inline sleep_function m_global_sleep{};
   /**
    * @brief Store the global uptime function
    *
    */
-  static inline uptime_function m_global_uptime = incremental_uptime;
+  static inline uptime_function m_global_uptime{};
 };
 
 /**
@@ -90,7 +90,7 @@ static auto uptime()
  *
  * @param p_sleep_function - the function to handle sleeping
  */
-static void set_global_sleep(sleep_function p_sleep_function)
+static void set_global_sleep(sleep_function p_sleep_function) noexcept
 {
   global_clocks::m_global_sleep = p_sleep_function;
 }
@@ -99,7 +99,7 @@ static void set_global_sleep(sleep_function p_sleep_function)
  *
  * @param p_uptime_function - the function to return the current system uptime
  */
-static void set_global_uptime(uptime_function p_uptime_function)
+static void set_global_uptime(uptime_function p_uptime_function) noexcept
 {
   global_clocks::m_global_uptime = p_uptime_function;
 }
