@@ -138,45 +138,7 @@ inline auto setup(
                                  });
                                });
 }
-
-/**
- * @brief Get the return value out of a result<T> type. This function is used by
- * the EMBED_CHECK macro and shouldn't be used in general outside of that macro.
- * If this function is called it MUST contain a value. This helper function for
- * the EMBED_CHECK macro uses constexpr if in order to determine if the return
- * type is void and in such situations returns an int 0 in its place. This way
- * the EMBED_CHECK macro can stay small.
- *
- * @tparam T - the return type of the function.
- * @param p_result - the result with a value to be extracted.
- * @return constexpr auto&& - value within the result. If the type is void, this
- * function return int of value 0.
- */
-template<typename T>
-constexpr auto get_return_value(boost::leaf::result<T>& p_result) noexcept
-{
-  if constexpr (std::is_void_v<T>) {
-    return 0;
-  } else {
-    return p_result.value();
-  }
-}
 }  // namespace embed::error
 
-/**
- * @brief Used to run a function or expression that returns a
- * boost::leaf::result<T> type and either return if the result is an error or
- * returns the value within the result if it was not. This macro uses the
- * statement & delcaration statement extension to the language to make the usage
- * of EMBED_CHECK like any other function. This macro can handle any result
- * type, including void type results.
- *
- */
-#define EMBED_CHECK(expr)                                                      \
-  ({                                                                           \
-    auto&& temp = (expr);                                                      \
-    if (!temp) {                                                               \
-      return temp.error();                                                     \
-    }                                                                          \
-    ::embed::error::get_return_value(temp);                                    \
-  })
+/// shorthand for BOOST_LEAF_CHECK
+#define EMBED_CHECK(expr) BOOST_LEAF_CHECK(expr)
