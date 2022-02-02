@@ -16,15 +16,6 @@ namespace embed {
 class dac : public driver<>
 {
 public:
-  /// default constructor
-  dac() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  dac(const dac& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  dac& operator=(const dac& p_other) = delete;
-  /// Destroy the object
-  virtual ~dac() = default;
-
   /**
    * @brief Generate a voltage between a defined LOW and HIGH voltage.
    *

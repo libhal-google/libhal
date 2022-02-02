@@ -20,15 +20,6 @@ struct pwm_settings
  */
 class pwm : public driver<pwm_settings>
 {
-  /// default constructor
-  pwm() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  pwm(const pwm& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  pwm& operator=(const pwm& p_other) = delete;
-  /// Destroy the object
-  virtual ~pwm() = default;
-
   /**
    * @brief Set the duty cycle percentage
    *

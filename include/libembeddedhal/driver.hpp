@@ -53,6 +53,8 @@ public:
   driver(const driver& p_other) = delete;
   /// Explicitly delete assignment operator to prevent slicing
   driver& operator=(const driver& p_other) = delete;
+  /// Explicitly delete move constructor
+  driver(const driver&& p_other) = delete;
   /// Destroy the object
   virtual ~driver() = default;
 

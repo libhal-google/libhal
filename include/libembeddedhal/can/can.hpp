@@ -44,15 +44,6 @@ public:
     bool is_remote_request = false;
   };
 
-  /// default constructor
-  can() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  can(const can& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  can& operator=(const can& p_other) = delete;
-  /// Destroy the object
-  virtual ~can() = default;
-
   /**
    * @brief Send a can message over the can bus
    *

@@ -37,15 +37,6 @@ public:
     reset,
   };
 
-  /// default constructor
-  counter() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  counter(const counter& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  counter& operator=(const counter& p_other) = delete;
-  /// Destroy the object
-  virtual ~counter() = default;
-
   /**
    * @brief Error type indicating that the desired time delay is not achievable
    * with this timer.
