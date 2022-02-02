@@ -65,15 +65,6 @@ struct interrupt_pin_settings
 class input_pin : public driver<input_pin_settings>
 {
 public:
-  /// default constructor
-  input_pin() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  input_pin(const input_pin& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  input_pin& operator=(const input_pin& p_other) = delete;
-  /// Destroy the object
-  virtual ~input_pin() = default;
-
   /**
    * @brief Read the state of the input pin
    *
@@ -93,15 +84,6 @@ public:
 class output_pin : public driver<output_pin_settings>
 {
 public:
-  /// default constructor
-  output_pin() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  output_pin(const output_pin& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  output_pin& operator=(const output_pin& p_other) = delete;
-  /// Destroy the object
-  virtual ~output_pin() = default;
-
   /**
    * @brief Set the state of the pin
    *
@@ -146,16 +128,6 @@ public:
     /// Trigger and interrupt when a pin transitions it state
     both = 2,
   };
-
-  /// default constructor
-  interrupt_pin() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  interrupt_pin(const interrupt_pin& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  interrupt_pin& operator=(const interrupt_pin& p_other) = delete;
-  /// Destroy the object
-  virtual ~interrupt_pin() = default;
-
   /**
    * @brief Return the voltage level of the pin
    *
