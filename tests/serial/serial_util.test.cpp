@@ -3,9 +3,6 @@
 #include <span>
 
 namespace embed {
-///
-/// NOTICE: This code does NOT check if read() fails
-///
 boost::ut::suite serial_util_test = []() {
   using namespace boost::ut;
   using namespace std::chrono_literals;
