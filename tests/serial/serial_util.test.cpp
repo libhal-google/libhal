@@ -18,8 +18,13 @@ boost::ut::suite serial_util_test = []() {
   class dummy : public embed::serial
   {
   public:
-    boost::leaf::result<void> driver_initialize() override { return {}; }
-    boost::leaf::result<void> write(std::span<const std::byte> p_data) override
+    [[nodiscard]] boost::leaf::result<void> driver_configure(
+      const settings&) override
+    {
+      return {};
+    }
+    [[nodiscard]] boost::leaf::result<void> driver_write(
+      std::span<const std::byte> p_data) override
     {
       if (p_data[0] == write_failure_byte) {
         return boost::leaf::new_error();
@@ -28,7 +33,7 @@ boost::ut::suite serial_util_test = []() {
       return {};
     }
 
-    boost::leaf::result<size_t> bytes_available() override
+    [[nodiscard]] boost::leaf::result<size_t> driver_bytes_available() override
     {
       if (m_bytes_available_fails) {
         return boost::leaf::new_error();
@@ -36,7 +41,7 @@ boost::ut::suite serial_util_test = []() {
       return ++m_bytes_available;
     }
 
-    boost::leaf::result<std::span<const std::byte>> read(
+    [[nodiscard]] boost::leaf::result<std::span<const std::byte>> driver_read(
       std::span<std::byte> p_data) override
     {
       if (m_read_fails) {
@@ -47,7 +52,7 @@ boost::ut::suite serial_util_test = []() {
       return p_data;
     }
 
-    boost::leaf::result<void> flush() override
+    [[nodiscard]] boost::leaf::result<void> driver_flush() override
     {
       m_flush_called = true;
       return {};

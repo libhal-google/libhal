@@ -17,6 +17,26 @@ using namespace std::experimental;
 
 namespace embed::error {
 /**
+ * @brief Used for defining static_asserts that should always fail, but only if
+ * the static_assert line is hit via `if constexpr` control block. Prefer to NOT
+ * use this directly but to use `invalid_option` instead
+ *
+ * @tparam options ignored by the application but needed to create a non-trivial
+ * specialization of this class which allows its usage in static_assert.
+ */
+template<auto... options>
+struct invalid_option_t : std::false_type
+{};
+/**
+ * @brief Helper definition to simplify the usage of invalid_option_t.
+ *
+ * @tparam options ignored by the application but needed to create a non-trivial
+ * specialization of this class which allows its usage in static_assert.
+ */
+template<auto... options>
+inline constexpr bool invalid_option = invalid_option_t<options...>::value;
+
+/**
  * @brief An association error type for all libembeddedhal drivers that inherit
  * from this class. It is used to disambiguate errors coming from a
  * libembeddedhal embed::driver vs those coming from other libraries.
@@ -34,6 +54,20 @@ struct universal
  *
  */
 struct timeout
+{};
+
+/**
+ * @brief Error type indicating that the settings for serial uart could not be
+ * set
+ *
+ * <b>How to handle these errors:</b>
+ *
+ * - The nature of this error signifies an bug in the code. The documentation
+ *   of the peripheral and the API of the driver should be consulted in order
+ *   to determine what are possible settings for this serial port.
+ *
+ */
+struct invalid_settings
 {};
 
 /**

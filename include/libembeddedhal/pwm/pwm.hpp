@@ -1,25 +1,37 @@
 #pragma once
 
-#include "../driver.hpp"
+#include "../error.hpp"
 #include "../frequency.hpp"
 #include "../percent.hpp"
 
-#include <cinttypes>
+#include <cstdint>
 
 namespace embed {
-/// Generic settings for a hardware Pulse Width Modulation (PWM) generating
-/// devices devices.
-struct pwm_settings
+/// Pulse Width Modulation (PWM) channel hardware abstraction.
+class pwm
 {
-  /// The target channel PWM frequency.
-  embed::frequency frequency = embed::frequency(1'000);
-};
-/**
- * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
- *
- */
-class pwm : public driver<pwm_settings>
-{
+public:
+  /// Generic settings for a hardware Pulse Width Modulation (PWM) generating
+  /// devices devices.
+  struct settings
+  {
+    /// The target channel PWM frequency.
+    embed::frequency frequency = embed::frequency(1'000);
+  };
+
+  /**
+   * @brief Configure pwm to match the settings supplied
+   *
+   * @param p_settings - settings to apply to pwm driver
+   * @return boost::leaf::result<void> - any error that occurred during this
+   * operation. Will return embed::error::invalid_settings if the settings could
+   * not be achieved.
+   */
+  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  {
+    return driver_configure(p_settings);
+  }
+
   /**
    * @brief Set the duty cycle percentage
    *
@@ -27,6 +39,14 @@ class pwm : public driver<pwm_settings>
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> duty_cycle(percent p_duty_cycle) = 0;
+  [[nodiscard]] boost::leaf::result<void> duty_cycle(percent p_duty_cycle)
+  {
+    return driver_duty_cycle(p_duty_cycle);
+  }
+
+private:
+  virtual boost::leaf::result<void> driver_configure(
+    const settings& p_settings) = 0;
+  virtual boost::leaf::result<void> driver_duty_cycle(percent p_duty_cycle) = 0;
 };
 }  // namespace embed

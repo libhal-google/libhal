@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cinttypes>
+#include <cstdint>
 
-#include "../driver.hpp"
+#include "../error.hpp"
 #include "../percent.hpp"
 
 namespace embed {
@@ -13,7 +13,7 @@ namespace embed {
  * voltage signals into a digital number.
  *
  */
-class adc : public driver<>
+class adc
 {
 public:
   /**
@@ -33,6 +33,9 @@ public:
    * look like: `return embed::bit_depth<uint32_t, 12>(adc_value);`.
    *
    */
-  virtual boost::leaf::result<percent> read() = 0;
+  [[nodiscard]] boost::leaf::result<percent> read() { return driver_read(); }
+
+private:
+  virtual boost::leaf::result<percent> driver_read() = 0;
 };
 }  // namespace embed

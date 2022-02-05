@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cinttypes>
+#include <cstdint>
 
-#include "../driver.hpp"
+#include "../error.hpp"
 #include "../percent.hpp"
 
 namespace embed {
@@ -13,7 +13,7 @@ namespace embed {
  * analog voltages between a defined LOW and HIGH voltage.
  *
  */
-class dac : public driver<>
+class dac
 {
 public:
   /**
@@ -23,10 +23,16 @@ public:
    * (usually denoted V_ref) connected to the device. Generally though, the low
    * voltage is 0V and the high voltage reference is VCC.
    *
-   * @param p_value - precentage scale from LOW to HIGH
+   * @param p_value - precentage scale from LOW to HIGH voltage
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> write(percent p_value) = 0;
+  [[nodiscard]] boost::leaf::result<void> write(percent p_value)
+  {
+    return driver_write(p_value);
+  }
+
+private:
+  virtual boost::leaf::result<void> driver_write(percent p_value) = 0;
 };
 }  // namespace embed

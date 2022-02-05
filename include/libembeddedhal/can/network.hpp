@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "../driver.hpp"
 #include "can.hpp"
 
 namespace embed {
@@ -34,7 +33,7 @@ namespace embed {
  * drivers.
  *
  */
-class can_network : public embed::driver<>
+class can_network
 {
 public:
   /**
@@ -154,17 +153,13 @@ public:
   can_network(can& p_can, std::pmr::memory_resource& p_memory_resource) noexcept
     : m_can(&p_can)
     , m_messages(&p_memory_resource)
-  {}
-
-  boost::leaf::result<void> driver_initialize() override
   {
-    auto on_error = embed::error::setup();
-    EMBED_CHECK(m_can->initialize());
     auto handler = [this](const can::message_t& p_message) {
       receive_handler(p_message);
     };
-    EMBED_CHECK(m_can->attach_interrupt(handler));
-    return {};
+    if (!m_can->attach_interrupt(handler)) {
+      std::abort();
+    }
   }
 
   /**

@@ -2,10 +2,10 @@
 
 #include <algorithm>
 #include <charconv>
-#include <cinttypes>
 #include <climits>
 #include <concepts>
 #include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <type_traits>
 

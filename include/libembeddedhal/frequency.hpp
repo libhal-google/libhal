@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
-#include <cstdint>
+#include <cinttypes>
 #include <limits>
 #include <ratio>
 

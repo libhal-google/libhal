@@ -1,6 +1,6 @@
 #include <boost/ut.hpp>
 #include <cstdio>
-#include <libembeddedhal/driver.hpp>
+#include <libembeddedhal/gpio/input_pin.hpp>
 
 namespace embed {
 
@@ -25,30 +25,35 @@ void print_trace(error::stacktrace const* p_stacktrace)
 struct dummy_error
 {};
 
-class driver_impl : public driver<>
+class input_pin_impl : public input_pin
 {
-public:
-  boost::leaf::result<void> errorable_function()
+private:
+  [[nodiscard]] boost::leaf::result<void> errorable_function()
   {
     auto on_error = embed::error::setup();
     return boost::leaf::new_error(dummy_error{});
   }
-
-  boost::leaf::result<void> driver_initialize() override
+  [[nodiscard]] boost::leaf::result<void> driver_configure(
+    const settings&) override
   {
     auto on_error = embed::error::setup();
     return errorable_function();
+  }
+  [[nodiscard]] boost::leaf::result<bool> driver_level() override
+  {
+    return false;
   }
 };
 
 boost::ut::suite driver_test = []() {
   using namespace boost::ut;
 
-  driver_impl impl;
+  input_pin_impl impl;
 
-  boost::leaf::result<void> result = boost::leaf::try_handle_some(
+  boost::leaf::try_handle_all(
     [&impl]() -> boost::leaf::result<void> {
-      EMBED_CHECK(impl.initialize());
+      auto on_error = embed::error::setup();
+      EMBED_CHECK(impl.configure({}));
       return {};
     },
     [](dummy_error const&,

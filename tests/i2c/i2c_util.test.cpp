@@ -13,10 +13,15 @@ boost::ut::suite i2c_util_test = []() {
   class dummy : public embed::i2c
   {
   public:
-    boost::leaf::result<void> driver_initialize() override { return {}; }
-    boost::leaf::result<void> transaction(std::byte p_address,
-                                          std::span<const std::byte> p_out,
-                                          std::span<std::byte> p_in) override
+    [[nodiscard]] boost::leaf::result<void> driver_configure(
+      const settings&) override
+    {
+      return {};
+    }
+    [[nodiscard]] boost::leaf::result<void> driver_transaction(
+      std::byte p_address,
+      std::span<const std::byte> p_out,
+      std::span<std::byte> p_in) override
     {
       m_address = p_address;
       m_out = p_out;
@@ -202,9 +207,8 @@ boost::ut::suite i2c_util_test = []() {
     expect(successful_address == i2c.m_address);
     expect(that % expected_payload.data() == i2c.m_out.data());
     expect(that % expected_payload.size() == i2c.m_out.size());
-    expect(std::equal(expected_buffer.begin(),
-                      expected_buffer.end(),
-                      actual_array.begin()));
+    expect(std::equal(
+      expected_buffer.begin(), expected_buffer.end(), actual_array.begin()));
   };
 
   "[failure] write_then_read<Length>"_test = []() {

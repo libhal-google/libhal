@@ -1,33 +1,32 @@
 #pragma once
 
-#include <cinttypes>
 #include <cstddef>
+#include <cstdint>
 #include <span>
 #include <system_error>
 
-#include "../driver.hpp"
+#include "../error.hpp"
 #include "../frequency.hpp"
 #include "../percent.hpp"
 
 namespace embed {
 /**
- * @brief Generic settings for a standard I2C device
- *
- */
-struct i2c_settings
-{
-  /// @brief The serial clock rate in hertz.
-  frequency clock_rate = default_clock_rate;
-};
-
-/**
  * @brief Inter-integrated Circuit (I2C) or Two Wire Interface (TWI)
  * communication protocol hardware abstract interface.
  *
  */
-class i2c : public driver<i2c_settings>
+class i2c
 {
 public:
+  /**
+   * @brief Generic settings for a standard I2C device
+   *
+   */
+  struct settings
+  {
+    /// @brief The serial clock rate in hertz.
+    frequency clock_rate = default_clock_rate;
+  };
   /**
    * @brief Error type indicating that the i2c transaction resulted in a NACK,
    * meaning "not acknowledge". NACKs occur when an address has been placed on
@@ -76,6 +75,20 @@ public:
    */
   struct bus_error
   {};
+
+  /**
+   * @brief Configure i2c to match the settings supplied
+   *
+   * @param p_settings - settings to apply to i2c driver
+   * @return boost::leaf::result<void> - any error that occurred during this
+   * operation. Will return embed::error::invalid_settings if the settings could
+   * not be achieved.
+   */
+  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  {
+    return driver_configure(p_settings);
+  }
+
   /**
    * @brief perform an i2c transaction with another device on the bus. The type
    * of transaction depends on values of input parameters. This function will
@@ -111,7 +124,18 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> transaction(
+  [[nodiscard]] boost::leaf::result<void> transaction(
+    std::byte p_address,
+    std::span<const std::byte> p_data_out,
+    std::span<std::byte> p_data_in)
+  {
+    return driver_transaction(p_address, p_data_out, p_data_in);
+  }
+
+private:
+  virtual boost::leaf::result<void> driver_configure(
+    const settings& p_settings) = 0;
+  virtual boost::leaf::result<void> driver_transaction(
     std::byte p_address,
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in) = 0;

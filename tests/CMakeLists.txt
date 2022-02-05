@@ -26,7 +26,7 @@ add_executable(${PROJECT_NAME}
     can/network.test.cpp
     pwm/pwm.test.cpp
     enum.test.cpp
-    driver.test.cpp
+    error.test.cpp
     timer/timer.test.cpp
     i2c/i2c.test.cpp
     i2c/i2c_util.test.cpp

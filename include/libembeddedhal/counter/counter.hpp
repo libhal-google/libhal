@@ -1,17 +1,12 @@
 #pragma once
 
-#include "../driver.hpp"
-
 #include <chrono>
-#include <cinttypes>
+#include <cstdint>
+
+#include "../error.hpp"
+#include "../frequency.hpp"
 
 namespace embed {
-/// Generic settings for a hardware counting devices.
-struct counter_settings
-{
-  /// The target time increment of the counter
-  std::chrono::nanoseconds clock_period = std::chrono::milliseconds(1);
-};
 /**
  * @brief Counter hardware abstraction interface. Use this interface for devices
  * and peripherals that have counting capabilities. Such devices can count up or
@@ -19,7 +14,7 @@ struct counter_settings
  * the end of counting register's limits.
  *
  */
-class counter : public driver<counter_settings>
+class counter
 {
 public:
   /// Set of controls for a counter.
@@ -36,38 +31,6 @@ public:
     /// zero, and stay stopped.
     reset,
   };
-
-  /**
-   * @brief Error type indicating that the desired time delay is not achievable
-   * with this timer.
-   *
-   * Usually this occurs if the time delay is too small or too big based on what
-   * is possible with the driving frequency of the timer and along with any
-   * prescalars before the counting register.
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - In cases where the program is scanning for the fastest delay, this is to
-   *   be expected. The error will report the minimum possible delay which can
-   *   then be assigned. Same for the maximum possible delay.
-   *
-   * - In most other cases, this is usually a bug in the code and cannot be
-   *   handled in code and should be treated as such. Drivers using a timer, if
-   *   they need an exact number will not be usable with this timer if it throws
-   *   this error, which will either require another timer that can perform this
-   *   work be used or increasing the clock rate fed into the timer in order to
-   *   increase its frequency range.
-   *
-   */
-  struct out_of_bounds
-  {
-    /// The invalid delay given to the schedule function.
-    std::chrono::nanoseconds invalid;
-    /// The minimum possible delay allowed.
-    std::chrono::nanoseconds minimum;
-    /// The maximum possible delay allowed.
-    std::chrono::nanoseconds maximum;
-  };
   /**
    * @brief Control the state of the counter
    *
@@ -75,7 +38,10 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> control(controls p_control) = 0;
+  virtual boost::leaf::result<void> control(controls p_control)
+  {
+    return driver_control(p_control);
+  }
   /**
    * @brief Determine if the counter is currently running.
    *
@@ -84,9 +50,9 @@ public:
    *
    * @return bool - true if the counter is currently running.
    */
-  virtual bool is_running() = 0;
+  virtual bool is_running() { return driver_is_running(); }
   /**
-   * @brief Get the current count of the counter
+   * @brief Get the uptime of the counter since it has started.
    *
    * Most counters are only support 32-bits or lower. In this case there are
    * multiple way to increase the bit width of the counter:
@@ -98,8 +64,14 @@ public:
    *     eliminate the need to call the count often enough to detect the
    *     overflows.
    *
-   * @return uint64_t - the current count
+   * @return std::chrono::nanoseconds - the current uptime since the counter has
+   * started.
    */
-  virtual uint64_t count() = 0;
+  std::chrono::nanoseconds uptime() { return driver_uptime(); }
+
+private:
+  virtual boost::leaf::result<void> driver_control(controls p_control) = 0;
+  virtual bool driver_is_running() = 0;
+  virtual std::chrono::nanoseconds driver_uptime() = 0;
 };
 }  // namespace embed
