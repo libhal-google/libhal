@@ -1,35 +1,44 @@
 #pragma once
 
-#include "../driver.hpp"
+#include "../error.hpp"
 #include "../frequency.hpp"
 
-#include <cinttypes>
 #include <cstddef>
+#include <cstdint>
 #include <span>
 
 namespace embed {
-/**
- * @brief Generic settings for a standard SPI device.
- *
- */
-struct spi_settings
-{
-  /// Serial clock frequency
-  frequency clock_rate = default_clock_rate;
-  /// The polarity of the pins when the signal is idle
-  bool clock_idles_high = false;
-  /// The phase of the clock signal when communicating
-  bool data_valid_on_trailing_edge = false;
-};
-
 /**
  * @brief Serial peripheral interface (SPI) communication protocol hardware
  * abstract interface
  *
  */
-class spi : public driver<spi_settings>
+class spi
 {
 public:
+  /// Generic settings for a standard SPI device.
+  struct settings
+  {
+    /// Serial clock frequency
+    frequency clock_rate = default_clock_rate;
+    /// The polarity of the pins when the signal is idle
+    bool clock_idles_high = false;
+    /// The phase of the clock signal when communicating
+    bool data_valid_on_trailing_edge = false;
+  };
+
+  /**
+   * @brief Configure spi to match the settings supplied
+   *
+   * @param p_settings - settings to apply to spi
+   * @return boost::leaf::result<void> - any error that occurred during this
+   * operation. Will return embed::error::invalid_settings if the settings could
+   * not be achieved.
+   */
+  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  {
+    return driver_configure(p_settings);
+  }
   /**
    * @brief Send and receieve data between a selected device on the spi bus.
    * This function will block until the entire transfer is finished.
@@ -48,7 +57,17 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> transfer(
+  boost::leaf::result<void> transfer(std::span<const std::byte> p_data_out,
+                                     std::span<std::byte> p_data_in,
+                                     std::byte p_filler)
+  {
+    return driver_transfer(p_data_out, p_data_in, p_filler);
+  }
+
+private:
+  virtual boost::leaf::result<void> driver_configure(
+    const settings& p_settings) = 0;
+  virtual boost::leaf::result<void> driver_transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
     std::byte p_filler) = 0;

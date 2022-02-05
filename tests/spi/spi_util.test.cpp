@@ -13,10 +13,15 @@ boost::ut::suite spi_util_test = []() {
   class dummy : public embed::spi
   {
   public:
-    boost::leaf::result<void> driver_initialize() override { return {}; }
-    boost::leaf::result<void> transfer(std::span<const std::byte> p_out,
-                                       std::span<std::byte> p_in,
-                                       std::byte p_filler) override
+    [[nodiscard]] boost::leaf::result<void> driver_configure(
+      const settings&) override
+    {
+      return {};
+    }
+    [[nodiscard]] boost::leaf::result<void> driver_transfer(
+      std::span<const std::byte> p_out,
+      std::span<std::byte> p_in,
+      std::byte p_filler) override
     {
       if (!p_out.empty()) {
         m_out = p_out;

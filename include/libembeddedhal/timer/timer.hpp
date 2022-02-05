@@ -3,7 +3,7 @@
 #include <chrono>
 #include <functional>
 
-#include "../driver.hpp"
+#include "../error.hpp"
 
 namespace embed {
 /**
@@ -14,18 +14,9 @@ namespace embed {
  * event/interrupt/signal is generated.
  *
  */
-class timer : public driver<>
+class timer
 {
 public:
-  /// default constructor
-  timer() = default;
-  /// Explicitly delete copy constructor to prevent slicing
-  timer(const timer& p_other) = delete;
-  /// Explicitly delete assignment operator to prevent slicing
-  timer& operator=(const timer& p_other) = delete;
-  /// Destroy the object
-  virtual ~timer() = default;
-
   /**
    * @brief Error type indicating that the desired time delay is not achievable
    * with this timer.
@@ -57,13 +48,17 @@ public:
     /// The maximum possible delay allowed.
     std::chrono::nanoseconds maximum;
   };
+
   /**
    * @brief Determine if the timer is currently running
    *
    * @return boost::leaf::result<bool> - true if timer is currently running
    * @return boost::leaf::result<bool> - driver specific error, if any.
    */
-  virtual boost::leaf::result<bool> is_running() = 0;
+  [[nodiscard]] boost::leaf::result<bool> is_running()
+  {
+    return driver_is_running();
+  }
   /**
    * @brief Stops a scheduled event from happening.
    *
@@ -76,7 +71,7 @@ public:
    *
    * @return boost::leaf::result<void> - driver specific error, if any.
    */
-  virtual boost::leaf::result<void> clear() = 0;
+  [[nodiscard]] boost::leaf::result<void> clear() { return driver_clear(); }
   /**
    * @brief Schedule an callback to be called at a designated time/interval
    *
@@ -89,7 +84,17 @@ public:
    * @return boost::leaf::result<void> - returns `delay_too_small` or
    * `delay_too_large` if p_interval cannot be reached.
    */
-  virtual boost::leaf::result<void> schedule(
+  [[nodiscard]] boost::leaf::result<void> schedule(
+    std::function<void(void)> p_callback,
+    std::chrono::nanoseconds p_delay)
+  {
+    return driver_schedule(p_callback, p_delay);
+  }
+
+private:
+  virtual boost::leaf::result<bool> driver_is_running() = 0;
+  virtual boost::leaf::result<void> driver_clear() = 0;
+  virtual boost::leaf::result<void> driver_schedule(
     std::function<void(void)> p_callback,
     std::chrono::nanoseconds p_delay) = 0;
 };

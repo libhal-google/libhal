@@ -1,48 +1,13 @@
 #pragma once
 
-#include "../driver.hpp"
+#include "../error.hpp"
 
-#include <cinttypes>
 #include <cstddef>
+#include <cstdint>
 #include <optional>
 #include <span>
 
 namespace embed {
-/// Generic settings for a standard serial device.
-struct serial_settings
-{
-  /// Set of available stop bits options
-  enum class stop_bits : uint8_t
-  {
-    one = 0,
-    two,
-  };
-
-  /// Set of parity bit options
-  enum class parity : uint8_t
-  {
-    /// Disable parity bit as part of the frame
-    none = 0,
-    /// Enable parity and set 1 (HIGH) when the number of bits is odd
-    odd,
-    /// Enable parity and set 1 (HIGH) when the number of bits is even
-    even,
-    /// Enable parity bit and always return 1 (HIGH) for ever frame
-    forced1,
-    /// Enable parity bit and always return 0 (LOW) for ever frame
-    forced0,
-  };
-
-  /// The operating speed of the baud rate (in units of bits per second)
-  uint32_t baud_rate = 115200;
-  /// Parity bit type for each frame
-  parity parity = parity::none;
-  /// Number of stop bits for each frame
-  stop_bits stop = stop_bits::one;
-  /// Number of bits in each frame. Typically between 5 to 9.
-  uint8_t frame_size = 8;
-};
-
 /**
  * @brief Serial communication protocol hardware abstract interface.
  *
@@ -60,9 +25,43 @@ struct serial_settings
  * needs of the application.
  *
  */
-class serial : public driver<serial_settings>
+class serial
 {
 public:
+  /// Generic settings for a standard serial device.
+  struct settings
+  {
+    /// Set of available stop bits options
+    enum class stop_bits : uint8_t
+    {
+      one = 0,
+      two,
+    };
+
+    /// Set of parity bit options
+    enum class parity : uint8_t
+    {
+      /// Disable parity bit as part of the frame
+      none = 0,
+      /// Enable parity and set 1 (HIGH) when the number of bits is odd
+      odd,
+      /// Enable parity and set 1 (HIGH) when the number of bits is even
+      even,
+      /// Enable parity bit and always return 1 (HIGH) for ever frame
+      forced1,
+      /// Enable parity bit and always return 0 (LOW) for ever frame
+      forced0,
+    };
+
+    /// The operating speed of the baud rate (in units of bits per second)
+    uint32_t baud_rate = 115200;
+    /// Parity bit type for each frame
+    parity parity = parity::none;
+    /// Number of stop bits for each frame
+    stop_bits stop = stop_bits::one;
+    /// Number of bits in each frame. Typically between 5 to 9.
+    uint8_t frame_size = 8;
+  };
   /**
    * @brief Error indicating that packets were lost during reception. This
    * occurs when the buffer is overrun and reaches the end of the circular
@@ -130,18 +129,18 @@ public:
   };
 
   /**
-   * @brief Error type indicating that the settings for serial uart could not be
-   * set
+   * @brief Configure serial to match the settings supplied
    *
-   * <b>How to handle these errors:</b>
-   *
-   * - The nature of this error signifies an bug in the code. The documentation
-   *   of the peripheral and the API of the driver should be consulted in order
-   *   to determine what are possible settings for this serial port.
-   *
+   * @param p_settings - settings to apply to serial driver
+   * @return boost::leaf::result<void> - any error that occurred during this
+   * operation. Will return embed::error::invalid_settings if the settings could
+   * not be achieved.
    */
-  struct invalid_settings
-  {};
+  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  {
+    return driver_configure(p_settings);
+  }
+
   /**
    * @brief Write data on the transmitter line of the port. This function will
    * block until the entire transfer is finished.
@@ -163,8 +162,11 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> write(
-    std::span<const std::byte> p_data) = 0;
+  [[nodiscard]] boost::leaf::result<void> write(
+    std::span<const std::byte> p_data)
+  {
+    return driver_write(p_data);
+  }
   /**
    * @brief The number of bytes that have been buffered. For frames less than
    * 8-bits, each byte holds a frame. For frames above 8-bits the number of
@@ -174,7 +176,10 @@ public:
    * @return boost::leaf::result<size_t> - number of buffered by the serial
    * driver and are available to be read by the read() function.
    */
-  [[nodiscard]] virtual boost::leaf::result<size_t> bytes_available() = 0;
+  [[nodiscard]] boost::leaf::result<size_t> bytes_available()
+  {
+    return driver_bytes_available();
+  }
   /**
    * @brief Read the bytes received over the ports receiver line and stored in
    * the serial implementations buffer. The number of bytes read will subtract
@@ -189,16 +194,28 @@ public:
    * ALWAYS be the same as p_data and the length will be equal to the number of
    * bytes read from the buffer.
    */
-  virtual boost::leaf::result<std::span<const std::byte>> read(
-    std::span<std::byte> p_data) = 0;
+  [[nodiscard]] boost::leaf::result<std::span<const std::byte>> read(
+    std::span<std::byte> p_data)
+  {
+    return driver_read(p_data);
+  }
   /**
    * @brief Set bytes_available() to zero and clear any received data stored in
-   * hardware registers. This operation must be faster than simply running
-   * read() until bytes_available() is empty.
+   * hardware registers.
    *
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  virtual boost::leaf::result<void> flush() = 0;
+  [[nodiscard]] boost::leaf::result<void> flush() { return driver_flush(); }
+
+private:
+  virtual boost::leaf::result<void> driver_configure(
+    const settings& p_settings) = 0;
+  virtual boost::leaf::result<void> driver_write(
+    std::span<const std::byte> p_data) = 0;
+  virtual boost::leaf::result<size_t> driver_bytes_available() = 0;
+  virtual boost::leaf::result<std::span<const std::byte>> driver_read(
+    std::span<std::byte> p_data) = 0;
+  virtual boost::leaf::result<void> driver_flush() = 0;
 };
 }  // namespace embed
