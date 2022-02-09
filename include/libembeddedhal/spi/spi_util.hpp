@@ -14,8 +14,9 @@ namespace embed {
  * @param p_data_out - data to be written to the SPI bus
  * @return boost::leaf::result<void> - any errors associated with this call
  */
-boost::leaf::result<void> write(spi& p_spi,
-                                std::span<const std::byte> p_data_out)
+[[nodiscard]] inline boost::leaf::result<void> write(
+  spi& p_spi,
+  std::span<const std::byte> p_data_out)
 {
   return p_spi.transfer(p_data_out, std::span<std::byte>{}, std::byte{ 0xFF });
 }
@@ -31,9 +32,10 @@ boost::leaf::result<void> write(spi& p_spi,
  * data.
  * @return boost::leaf::result<void> - any errors associated with this call
  */
-boost::leaf::result<void> read(spi& p_spi,
-                               std::span<std::byte> p_data_in,
-                               std::byte p_filler = std::byte{ 0xFF })
+[[nodiscard]] inline boost::leaf::result<void> read(
+  spi& p_spi,
+  std::span<std::byte> p_data_in,
+  std::byte p_filler = std::byte{ 0xFF })
 {
   return p_spi.transfer(std::span<std::byte>{}, p_data_in, p_filler);
 }
@@ -50,7 +52,7 @@ boost::leaf::result<void> read(spi& p_spi,
  * associated with this call
  */
 template<size_t BytesToRead>
-inline boost::leaf::result<std::array<std::byte, BytesToRead>> read(
+[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
   spi& p_spi,
   std::byte p_filler = std::byte{ 0xFF })
 {
@@ -78,11 +80,11 @@ inline boost::leaf::result<std::array<std::byte, BytesToRead>> read(
  * begins.
  * @return boost::leaf::result<void>
  */
-boost::leaf::result<void> write_then_read(spi& p_spi,
-                                          std::span<const std::byte> p_data_out,
-                                          std::span<std::byte> p_data_in,
-                                          std::byte p_filler = std::byte{
-                                            0xFF })
+[[nodiscard]] inline boost::leaf::result<void> write_then_read(
+  spi& p_spi,
+  std::span<const std::byte> p_data_out,
+  std::span<std::byte> p_data_in,
+  std::byte p_filler = std::byte{ 0xFF })
 {
   EMBED_CHECK(write(p_spi, p_data_out));
   EMBED_CHECK(read(p_spi, p_data_in, p_filler));
@@ -102,10 +104,10 @@ boost::leaf::result<void> write_then_read(spi& p_spi,
  * @return boost::leaf::result<std::array<std::byte, BytesToRead>>
  */
 template<size_t BytesToRead>
-inline boost::leaf::result<std::array<std::byte, BytesToRead>> write_then_read(
-  spi& p_spi,
-  std::span<const std::byte> p_data_out,
-  std::byte p_filler = std::byte{ 0xFF })
+[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
+write_then_read(spi& p_spi,
+                std::span<const std::byte> p_data_out,
+                std::byte p_filler = std::byte{ 0xFF })
 {
   EMBED_CHECK(write(p_spi, p_data_out));
   return read<BytesToRead>(p_spi, p_filler);

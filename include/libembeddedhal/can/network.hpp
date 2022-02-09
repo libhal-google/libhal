@@ -80,7 +80,7 @@ public:
      *
      * @return can::message_t
      */
-    can::message_t secure_get() noexcept
+    [[nodiscard]] can::message_t secure_get() noexcept
     {
       // Continuously check if the received CAN message is valid. NOTE: that, in
       // general, the looping logic for this function almost never occurs as
@@ -207,7 +207,7 @@ public:
    *
    * @return can& reference to the can peripheral driver
    */
-  can& bus() noexcept { return *m_can; }
+  [[nodiscard]] can& bus() noexcept { return *m_can; }
 
   /**
    * @brief Get the Internal Map object
@@ -217,7 +217,7 @@ public:
    *
    * @return const auto& map of all of the messages in the network.
    */
-  const auto& get_internal_map() noexcept { return m_messages; }
+  [[nodiscard]] const auto& get_internal_map() noexcept { return m_messages; }
 
 private:
   void receive_handler(const can::message_t& p_message) noexcept

@@ -64,12 +64,12 @@ public:
  *
  * @param p_delay - the amount of time to delay execution by
  */
-static auto sleep_for(time_period p_delay)
+inline void sleep_for(time_period p_delay)
 {
   if (global_clocks::m_global_sleep) {
-    return global_clocks::m_global_sleep(p_delay);
+    global_clocks::m_global_sleep(p_delay);
   } else {
-    return global_clocks::loop_sleep(p_delay);
+    global_clocks::loop_sleep(p_delay);
   }
 }
 /**
@@ -77,7 +77,7 @@ static auto sleep_for(time_period p_delay)
  *
  * @return auto - the global uptime
  */
-static auto uptime()
+[[nodiscard]] inline auto uptime()
 {
   if (global_clocks::m_global_uptime) {
     return global_clocks::m_global_uptime();
@@ -90,7 +90,7 @@ static auto uptime()
  *
  * @param p_sleep_function - the function to handle sleeping
  */
-static void set_global_sleep(sleep_function p_sleep_function) noexcept
+inline void set_global_sleep(sleep_function p_sleep_function) noexcept
 {
   global_clocks::m_global_sleep = p_sleep_function;
 }
@@ -99,7 +99,7 @@ static void set_global_sleep(sleep_function p_sleep_function) noexcept
  *
  * @param p_uptime_function - the function to return the current system uptime
  */
-static void set_global_uptime(uptime_function p_uptime_function) noexcept
+inline void set_global_uptime(uptime_function p_uptime_function) noexcept
 {
   global_clocks::m_global_uptime = p_uptime_function;
 }

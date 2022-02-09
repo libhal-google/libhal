@@ -10,7 +10,7 @@
 
 namespace embed {
 
-inline boost::leaf::result<void> wait(
+[[nodiscard]] inline boost::leaf::result<void> wait(
   serial& p_serial,
   size_t p_length,
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt)
@@ -37,13 +37,14 @@ inline boost::leaf::result<void> wait(
   return {};
 }
 
-inline boost::leaf::result<void> write(serial& p_serial,
-                                       std::span<const std::byte> p_data_out)
+[[nodiscard]] inline boost::leaf::result<void> write(
+  serial& p_serial,
+  std::span<const std::byte> p_data_out)
 {
   return p_serial.write(p_data_out);
 }
 
-inline boost::leaf::result<std::span<const std::byte>> read(
+[[nodiscard]] inline boost::leaf::result<std::span<const std::byte>> read(
   serial& p_serial,
   std::span<std::byte> p_data_in,
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt)
@@ -53,9 +54,9 @@ inline boost::leaf::result<std::span<const std::byte>> read(
 }
 
 template<size_t BytesToRead>
-inline boost::leaf::result<std::array<std::byte, BytesToRead>> read(
-  serial& p_serial,
-  std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt)
+[[nodiscard]] inline boost::leaf::result<std::array<std::byte, BytesToRead>>
+read(serial& p_serial,
+     std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt)
 {
   std::array<std::byte, BytesToRead> buffer;
   EMBED_CHECK(wait(p_serial, BytesToRead, p_timeout));
@@ -63,7 +64,7 @@ inline boost::leaf::result<std::array<std::byte, BytesToRead>> read(
   return buffer;
 }
 
-inline boost::leaf::result<void> write_then_read(
+[[nodiscard]] inline boost::leaf::result<void> write_then_read(
   serial& p_serial,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in,
@@ -75,7 +76,8 @@ inline boost::leaf::result<void> write_then_read(
 }
 
 template<size_t BytesToRead>
-inline boost::leaf::result<std::array<std::byte, BytesToRead>> write_then_read(
+[[nodiscard]] inline boost::leaf::result<std::array<std::byte, BytesToRead>>
+write_then_read(
   serial& p_serial,
   std::span<const std::byte> p_data_out,
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt)

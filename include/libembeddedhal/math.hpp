@@ -12,7 +12,7 @@ namespace embed {
  * @param p_value - integer value to be made positive
  * @return constexpr auto - positive representation of the integer
  */
-constexpr auto absolute_value(std::integral auto p_value) noexcept
+[[nodiscard]] constexpr auto absolute_value(std::integral auto p_value) noexcept
 {
   if (p_value >= 0) {
     return p_value;
@@ -32,7 +32,8 @@ constexpr auto absolute_value(std::integral auto p_value) noexcept
  * Returns 0 if the denominator is greater than the numerator.
  */
 template<std::integral T>
-constexpr T rounding_division(T p_numerator, T p_denominator) noexcept
+[[nodiscard]] constexpr T rounding_division(T p_numerator,
+                                            T p_denominator) noexcept
 {
   bool num_sign = p_numerator > 0;
   bool den_sign = p_denominator > 0;

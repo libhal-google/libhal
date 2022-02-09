@@ -87,7 +87,7 @@ public:
    * @return auto - return a const span with length equal to the number of
    * entries in the stacktrace list.
    */
-  auto get() const noexcept
+  [[nodiscard]] auto get() const noexcept
   {
     return std::span<const boost::leaf::e_source_location>(m_list.begin(),
                                                            m_count);
@@ -142,7 +142,9 @@ private:
  * @return auto - error handler for when an error is emitted on the calling
  * functions frame.
  */
-inline auto setup(
+[[nodiscard("Save this to a variable like so: \"auto on_error = "
+            "embed::error::setup();\"")]] inline auto
+setup(
   const char* p_function_name = std::source_location::current().function_name(),
   const char* p_file_name = std::source_location::current().file_name(),
   int p_line_number = std::source_location::current().line()) noexcept

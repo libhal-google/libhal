@@ -29,7 +29,8 @@ struct duty_cycle
    * @return constexpr auto - true if the duty cycles have the exact same
    * values.
    */
-  constexpr auto operator==(const duty_cycle& p_cycle) const noexcept
+  [[nodiscard]] constexpr auto operator==(
+    const duty_cycle& p_cycle) const noexcept
   {
     return (high == p_cycle.high) && (low == p_cycle.low);
   }
@@ -55,8 +56,9 @@ public:
    * @param p_precent - the target duty cycle percentage
    * @return constexpr duty_cycle - the duty cycle cycle counts
    */
-  static constexpr duty_cycle calculate_duty_cycle(int_t p_cycles,
-                                                   percent p_precent) noexcept
+  [[nodiscard]] static constexpr duty_cycle calculate_duty_cycle(
+    int_t p_cycles,
+    percent p_precent) noexcept
   {
     // Scale down value based on the integer percentage value in percent
     int_t high = p_cycles * p_precent;
@@ -83,7 +85,7 @@ public:
    *
    * @return constexpr auto - frequency value as an integer
    */
-  constexpr auto cycles_per_second() const noexcept
+  [[nodiscard]] constexpr auto cycles_per_second() const noexcept
   {
     return absolute_value(m_cycles_per_second);
   }
@@ -98,7 +100,7 @@ public:
    * the output frequency is greater than this frequency and there does not
    * exist an integer divider that can produce the output frequency.
    */
-  constexpr int_t divider(frequency p_target) const noexcept
+  [[nodiscard]] constexpr int_t divider(frequency p_target) const noexcept
   {
     if (p_target.m_cycles_per_second > cycles_per_second()) {
       return 0;
@@ -118,7 +120,7 @@ public:
    * duration.
    */
   template<typename Rep, typename Period>
-  constexpr int_t cycles_per(
+  [[nodiscard]] constexpr int_t cycles_per(
     std::chrono::duration<Rep, Period> p_duration) const noexcept
   {
     // Full Equation:
@@ -155,8 +157,8 @@ public:
    */
   template<typename Rep = std::chrono::nanoseconds::rep,
            typename Period = std::chrono::nanoseconds::period>
-  std::chrono::duration<Rep, Period> duration_from_cycles(
-    int_t p_cycles) const noexcept
+  [[nodiscard]] constexpr std::chrono::duration<Rep, Period>
+  duration_from_cycles(int_t p_cycles) const noexcept
   {
     // Full Equation (based on the equation in cycles_per()):
     // =========================================================================
@@ -185,7 +187,7 @@ public:
    * @return constexpr duty_cycle
    */
   template<typename Rep, typename Period>
-  constexpr duty_cycle calculate_duty_cycle(
+  [[nodiscard]] constexpr duty_cycle calculate_duty_cycle(
     std::chrono::duration<Rep, Period> p_duration,
     percent p_precent) const noexcept
   {
@@ -202,8 +204,9 @@ public:
    * @param p_precent - ratio of the duty cycle high time
    * @return constexpr duty_cycle
    */
-  constexpr duty_cycle calculate_duty_cycle(frequency p_target,
-                                            percent p_precent) const noexcept
+  [[nodiscard]] constexpr duty_cycle calculate_duty_cycle(
+    frequency p_target,
+    percent p_precent) const noexcept
   {
     return calculate_duty_cycle(divider(p_target), p_precent);
   }
@@ -213,7 +216,8 @@ public:
    *
    * @return auto - result of the comparison
    */
-  constexpr auto operator<=>(const frequency&) const noexcept = default;
+  [[nodiscard]] constexpr auto operator<=>(const frequency&) const noexcept =
+    default;
 
   /**
    * @brief Scale up a frequency by an integer factor
@@ -224,7 +228,8 @@ public:
    * @return constexpr frequency
    */
   template<std::integral Integer>
-  constexpr friend frequency operator*(frequency p_lhs, Integer p_rhs) noexcept
+  [[nodiscard]] constexpr friend frequency operator*(frequency p_lhs,
+                                                     Integer p_rhs) noexcept
   {
     return frequency{ p_lhs.cycles_per_second() * p_rhs };
   }
@@ -238,7 +243,8 @@ public:
    * @return constexpr frequency
    */
   template<std::integral Integer>
-  constexpr friend frequency operator*(Integer p_rhs, frequency p_lhs) noexcept
+  [[nodiscard]] constexpr friend frequency operator*(Integer p_rhs,
+                                                     frequency p_lhs) noexcept
   {
     return p_lhs * p_rhs;
   }
@@ -252,7 +258,8 @@ public:
    * @return constexpr frequency
    */
   template<std::integral Integer>
-  constexpr friend frequency operator/(frequency p_lhs, Integer p_rhs) noexcept
+  [[nodiscard]] constexpr friend frequency operator/(frequency p_lhs,
+                                                     Integer p_rhs) noexcept
   {
     return frequency{ rounding_division(p_lhs.cycles_per_second(),
                                         int_t{ p_rhs }) };
@@ -267,8 +274,8 @@ public:
    * @return constexpr int_t - frequency divider value representing the number
    * of cycles in the input that constitute one cycle in the target frequency.
    */
-  constexpr friend int_t operator/(frequency p_input,
-                                   frequency p_target) noexcept
+  [[nodiscard]] constexpr friend int_t operator/(frequency p_input,
+                                                 frequency p_target) noexcept
   {
     return p_input.divider(p_target);
   }
@@ -285,7 +292,7 @@ public:
    * duration.
    */
   template<typename Rep, typename Period>
-  constexpr friend int_t operator*(
+  [[nodiscard]] constexpr friend int_t operator*(
     frequency p_input,
     std::chrono::duration<Rep, Period> p_duration) noexcept
   {
@@ -304,7 +311,7 @@ public:
    * duration.
    */
   template<typename Rep, typename Period>
-  constexpr friend int_t operator*(
+  [[nodiscard]] constexpr friend int_t operator*(
     std::chrono::duration<Rep, Period> p_duration,
     frequency p_input) noexcept
   {
@@ -327,7 +334,8 @@ namespace literals {
  * @param p_value - frequency in hertz
  * @return consteval frequency - frequency in hertz
  */
-consteval frequency operator""_Hz(unsigned long long p_value) noexcept
+[[nodiscard]] consteval frequency operator""_Hz(
+  unsigned long long p_value) noexcept
 {
   return frequency{ static_cast<frequency::int_t>(p_value) };
 }
@@ -340,7 +348,8 @@ consteval frequency operator""_Hz(unsigned long long p_value) noexcept
  * @param p_value - frequency in kilohertz
  * @return consteval frequency - frequency in kilohertz
  */
-consteval frequency operator""_kHz(unsigned long long p_value) noexcept
+[[nodiscard]] consteval frequency operator""_kHz(
+  unsigned long long p_value) noexcept
 {
   const auto value = p_value * std::kilo::num;
   return frequency{ static_cast<frequency::int_t>(value) };
@@ -354,7 +363,8 @@ consteval frequency operator""_kHz(unsigned long long p_value) noexcept
  * @param p_value - frequency in megahertz
  * @return consteval frequency - frequency in megahertz
  */
-consteval frequency operator""_MHz(unsigned long long p_value) noexcept
+[[nodiscard]] consteval frequency operator""_MHz(
+  unsigned long long p_value) noexcept
 {
   const auto value = p_value * std::mega::num;
   return frequency{ static_cast<frequency::int_t>(value) };
