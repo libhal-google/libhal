@@ -27,12 +27,12 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> write(percent p_value)
+  [[nodiscard]] boost::leaf::result<void> write(percent p_value) noexcept
   {
     return driver_write(p_value);
   }
 
 private:
-  virtual boost::leaf::result<void> driver_write(percent p_value) = 0;
+  virtual boost::leaf::result<void> driver_write(percent p_value) noexcept = 0;
 };
 }  // namespace embed

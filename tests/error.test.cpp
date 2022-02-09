@@ -34,12 +34,12 @@ private:
     return boost::leaf::new_error(dummy_error{});
   }
   [[nodiscard]] boost::leaf::result<void> driver_configure(
-    const settings&) override
+    const settings&) noexcept override
   {
     auto on_error = embed::error::setup();
     return errorable_function();
   }
-  [[nodiscard]] boost::leaf::result<bool> driver_level() override
+  [[nodiscard]] boost::leaf::result<bool> driver_level() noexcept override
   {
     return false;
   }

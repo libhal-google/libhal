@@ -14,8 +14,10 @@ namespace embed {
  * @param p_data_out - buffer of bytes to write to the target device
  * @return boost::leaf::result<void> - any errors associated with the read call
  */
-[[nodiscard]] inline boost::leaf::result<void>
-write(i2c& p_i2c, std::byte p_address, std::span<const std::byte> p_data_out)
+[[nodiscard]] inline boost::leaf::result<void> write(
+  i2c& p_i2c,
+  std::byte p_address,
+  std::span<const std::byte> p_data_out) noexcept
 {
   return p_i2c.transaction(p_address, p_data_out, std::span<std::byte>{});
 }
@@ -30,7 +32,7 @@ write(i2c& p_i2c, std::byte p_address, std::span<const std::byte> p_data_out)
  * @return boost::leaf::result<void> - any errors associated with the read call
  */
 [[nodiscard]] inline boost::leaf::result<void>
-read(i2c& p_i2c, std::byte p_address, std::span<std::byte> p_data_in)
+read(i2c& p_i2c, std::byte p_address, std::span<std::byte> p_data_in) noexcept
 {
   return p_i2c.transaction(p_address, std::span<std::byte>{}, p_data_in);
 }
@@ -46,8 +48,9 @@ read(i2c& p_i2c, std::byte p_address, std::span<std::byte> p_data_in)
  * bytes from target device or an error.
  */
 template<size_t BytesToRead>
-[[nodiscard]] inline boost::leaf::result<std::array<std::byte, BytesToRead>>
-read(i2c& p_i2c, std::byte p_address)
+[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
+  i2c& p_i2c,
+  std::byte p_address) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   EMBED_CHECK(read(p_i2c, p_address, buffer));
@@ -70,7 +73,7 @@ read(i2c& p_i2c, std::byte p_address)
   i2c& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
-  std::span<std::byte> p_data_in)
+  std::span<std::byte> p_data_in) noexcept
 {
   return p_i2c.transaction(p_address, p_data_out, p_data_in);
 }
@@ -87,10 +90,10 @@ read(i2c& p_i2c, std::byte p_address)
  * @return boost::leaf::result<std::array<std::byte, BytesToRead>>
  */
 template<size_t BytesToRead>
-[[nodiscard]] inline boost::leaf::result<std::array<std::byte, BytesToRead>>
+[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
 write_then_read(i2c& p_i2c,
                 std::byte p_address,
-                std::span<const std::byte> p_data_out)
+                std::span<const std::byte> p_data_out) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   EMBED_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer));

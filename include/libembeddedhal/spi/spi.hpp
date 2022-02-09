@@ -35,7 +35,8 @@ public:
    * operation. Will return embed::error::invalid_settings if the settings could
    * not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  [[nodiscard]] boost::leaf::result<void> configure(
+    const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -60,17 +61,17 @@ public:
   [[nodiscard]] boost::leaf::result<void> transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_filler)
+    std::byte p_filler) noexcept
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
 
 private:
   virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) = 0;
+    const settings& p_settings) noexcept = 0;
   virtual boost::leaf::result<void> driver_transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_filler) = 0;
+    std::byte p_filler) noexcept = 0;
 };
 }  // namespace embed

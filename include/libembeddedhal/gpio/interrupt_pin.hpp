@@ -47,7 +47,8 @@ public:
    * operation. Will return embed::error::invalid_settings if the settings could
    * not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  [[nodiscard]] boost::leaf::result<void> configure(
+    const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -57,7 +58,10 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<bool> level() { return driver_level(); }
+  [[nodiscard]] boost::leaf::result<bool> level() noexcept
+  {
+    return driver_level();
+  }
   /**
    * @brief Enable interrupts for this pin. Pass in the callback to be executed
    * when the trigger condition is met. This function can be called multiple
@@ -73,7 +77,7 @@ public:
    */
   [[nodiscard]] boost::leaf::result<void> attach_interrupt(
     std::function<void(void)> p_callback,
-    trigger_edge p_trigger)
+    trigger_edge p_trigger) noexcept
   {
     return driver_attach_interrupt(p_callback, p_trigger);
   }
@@ -83,18 +87,18 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> detach_interrupt()
+  [[nodiscard]] boost::leaf::result<void> detach_interrupt() noexcept
   {
     return driver_detach_interrupt();
   }
 
 private:
   virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) = 0;
-  virtual boost::leaf::result<bool> driver_level() = 0;
+    const settings& p_settings) noexcept = 0;
+  virtual boost::leaf::result<bool> driver_level() noexcept = 0;
   virtual boost::leaf::result<void> driver_attach_interrupt(
     std::function<void(void)> p_callback,
-    trigger_edge p_trigger) = 0;
-  virtual boost::leaf::result<void> driver_detach_interrupt() = 0;
+    trigger_edge p_trigger) noexcept = 0;
+  virtual boost::leaf::result<void> driver_detach_interrupt() noexcept = 0;
 };
 }  // namespace embed
