@@ -11,7 +11,8 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors that occurred when attempting
  * to reset counter.
  */
-[[nodiscard]] inline boost::leaf::result<void> reset(counter& p_counter)
+[[nodiscard]] inline boost::leaf::result<void> reset(
+  counter& p_counter) noexcept
 {
   return p_counter.control(counter::controls::reset);
 }
@@ -22,7 +23,8 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors that occurred when attempting
  * to start counter.
  */
-[[nodiscard]] inline boost::leaf::result<void> start(counter& p_counter)
+[[nodiscard]] inline boost::leaf::result<void> start(
+  counter& p_counter) noexcept
 {
   return p_counter.control(counter::controls::start);
 }
@@ -33,7 +35,7 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors that occurred when attempting
  * to stop counter.
  */
-[[nodiscard]] inline boost::leaf::result<void> stop(counter& p_counter)
+[[nodiscard]] inline boost::leaf::result<void> stop(counter& p_counter) noexcept
 {
   return p_counter.control(counter::controls::stop);
 }
@@ -45,7 +47,7 @@ namespace embed {
  * @param p_wait_duration - the amount of time to pause execution for
  */
 inline void wait_for(counter& p_counter,
-                     std::chrono::nanoseconds p_wait_duration)
+                     std::chrono::nanoseconds p_wait_duration) noexcept
 {
   const auto start_time = p_counter.uptime();
   const auto end_time = start_time + p_wait_duration;

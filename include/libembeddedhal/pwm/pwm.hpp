@@ -27,7 +27,8 @@ public:
    * operation. Will return embed::error::invalid_settings if the settings could
    * not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  [[nodiscard]] boost::leaf::result<void> configure(
+    const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -39,14 +40,16 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> duty_cycle(percent p_duty_cycle)
+  [[nodiscard]] boost::leaf::result<void> duty_cycle(
+    percent p_duty_cycle) noexcept
   {
     return driver_duty_cycle(p_duty_cycle);
   }
 
 private:
   virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) = 0;
-  virtual boost::leaf::result<void> driver_duty_cycle(percent p_duty_cycle) = 0;
+    const settings& p_settings) noexcept = 0;
+  virtual boost::leaf::result<void> driver_duty_cycle(
+    percent p_duty_cycle) noexcept = 0;
 };
 }  // namespace embed

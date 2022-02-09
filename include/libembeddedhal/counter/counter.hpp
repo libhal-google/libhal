@@ -38,7 +38,8 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] virtual boost::leaf::result<void> control(controls p_control)
+  [[nodiscard]] virtual boost::leaf::result<void> control(
+    controls p_control) noexcept
   {
     return driver_control(p_control);
   }
@@ -50,7 +51,10 @@ public:
    *
    * @return bool - true if the counter is currently running.
    */
-  [[nodiscard]] virtual bool is_running() { return driver_is_running(); }
+  [[nodiscard]] virtual bool is_running() noexcept
+  {
+    return driver_is_running();
+  }
   /**
    * @brief Get the uptime of the counter since it has started.
    *
@@ -67,11 +71,15 @@ public:
    * @return std::chrono::nanoseconds - the current uptime since the counter has
    * started.
    */
-  [[nodiscard]] std::chrono::nanoseconds uptime() { return driver_uptime(); }
+  [[nodiscard]] std::chrono::nanoseconds uptime() noexcept
+  {
+    return driver_uptime();
+  }
 
 private:
-  virtual boost::leaf::result<void> driver_control(controls p_control) = 0;
-  virtual bool driver_is_running() = 0;
-  virtual std::chrono::nanoseconds driver_uptime() = 0;
+  virtual boost::leaf::result<void> driver_control(
+    controls p_control) noexcept = 0;
+  virtual bool driver_is_running() noexcept = 0;
+  virtual std::chrono::nanoseconds driver_uptime() noexcept = 0;
 };
 }  // namespace embed

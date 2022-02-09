@@ -16,7 +16,7 @@ namespace embed {
  */
 [[nodiscard]] inline boost::leaf::result<void> write(
   spi& p_spi,
-  std::span<const std::byte> p_data_out)
+  std::span<const std::byte> p_data_out) noexcept
 {
   return p_spi.transfer(p_data_out, std::span<std::byte>{}, std::byte{ 0xFF });
 }
@@ -35,7 +35,7 @@ namespace embed {
 [[nodiscard]] inline boost::leaf::result<void> read(
   spi& p_spi,
   std::span<std::byte> p_data_in,
-  std::byte p_filler = std::byte{ 0xFF })
+  std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
   return p_spi.transfer(std::span<std::byte>{}, p_data_in, p_filler);
 }
@@ -54,7 +54,7 @@ namespace embed {
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
   spi& p_spi,
-  std::byte p_filler = std::byte{ 0xFF })
+  std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   EMBED_CHECK(p_spi.transfer(std::span<std::byte>{}, buffer, p_filler));
@@ -84,7 +84,7 @@ template<size_t BytesToRead>
   spi& p_spi,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in,
-  std::byte p_filler = std::byte{ 0xFF })
+  std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
   EMBED_CHECK(write(p_spi, p_data_out));
   EMBED_CHECK(read(p_spi, p_data_in, p_filler));
@@ -107,7 +107,7 @@ template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
 write_then_read(spi& p_spi,
                 std::span<const std::byte> p_data_out,
-                std::byte p_filler = std::byte{ 0xFF })
+                std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
   EMBED_CHECK(write(p_spi, p_data_out));
   return read<BytesToRead>(p_spi, p_filler);

@@ -28,7 +28,8 @@ public:
    * operation. Will return embed::error::invalid_settings if the settings could
    * not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  [[nodiscard]] boost::leaf::result<void> configure(
+    const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -39,11 +40,14 @@ public:
    * @return boost::leaf::result<bool> - true indicates HIGH voltage and false
    * indicates LOW voltage
    */
-  [[nodiscard]] boost::leaf::result<bool> level() { return driver_level(); }
+  [[nodiscard]] boost::leaf::result<bool> level() noexcept
+  {
+    return driver_level();
+  }
 
 private:
   virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) = 0;
-  virtual boost::leaf::result<bool> driver_level() = 0;
+    const settings& p_settings) noexcept = 0;
+  virtual boost::leaf::result<bool> driver_level() noexcept = 0;
 };
 }  // namespace embed

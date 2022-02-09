@@ -45,7 +45,8 @@ public:
    * operation. Will return embed::error::invalid_settings if the settings could
    * not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  [[nodiscard]] boost::leaf::result<void> configure(
+    const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -57,7 +58,8 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> send(const message_t& p_message)
+  [[nodiscard]] boost::leaf::result<void> send(
+    const message_t& p_message) noexcept
   {
     return driver_send(p_message);
   }
@@ -73,16 +75,18 @@ public:
    * operation.
    */
   [[nodiscard]] boost::leaf::result<void> attach_interrupt(
-    std::function<void(const message_t& p_message)> p_receive_handler)
+    std::function<void(const message_t& p_message)> p_receive_handler) noexcept
   {
     return driver_attach_interrupt(p_receive_handler);
   }
 
 private:
   virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) = 0;
-  virtual boost::leaf::result<void> driver_send(const message_t& p_message) = 0;
+    const settings& p_settings) noexcept = 0;
+  virtual boost::leaf::result<void> driver_send(
+    const message_t& p_message) noexcept = 0;
   virtual boost::leaf::result<void> driver_attach_interrupt(
-    std::function<void(const message_t& p_message)> p_receive_handler) = 0;
+    std::function<void(const message_t& p_message)>
+      p_receive_handler) noexcept = 0;
 };
 }  // namespace embed

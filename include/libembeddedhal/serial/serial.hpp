@@ -136,7 +136,8 @@ public:
    * operation. Will return embed::error::invalid_settings if the settings could
    * not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(const settings& p_settings)
+  [[nodiscard]] boost::leaf::result<void> configure(
+    const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -163,7 +164,7 @@ public:
    * operation.
    */
   [[nodiscard]] boost::leaf::result<void> write(
-    std::span<const std::byte> p_data)
+    std::span<const std::byte> p_data) noexcept
   {
     return driver_write(p_data);
   }
@@ -176,7 +177,7 @@ public:
    * @return boost::leaf::result<size_t> - number of buffered by the serial
    * driver and are available to be read by the read() function.
    */
-  [[nodiscard]] boost::leaf::result<size_t> bytes_available()
+  [[nodiscard]] boost::leaf::result<size_t> bytes_available() noexcept
   {
     return driver_bytes_available();
   }
@@ -195,7 +196,7 @@ public:
    * bytes read from the buffer.
    */
   [[nodiscard]] boost::leaf::result<std::span<const std::byte>> read(
-    std::span<std::byte> p_data)
+    std::span<std::byte> p_data) noexcept
   {
     return driver_read(p_data);
   }
@@ -206,16 +207,19 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> flush() { return driver_flush(); }
+  [[nodiscard]] boost::leaf::result<void> flush() noexcept
+  {
+    return driver_flush();
+  }
 
 private:
   virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) = 0;
+    const settings& p_settings) noexcept = 0;
   virtual boost::leaf::result<void> driver_write(
-    std::span<const std::byte> p_data) = 0;
-  virtual boost::leaf::result<size_t> driver_bytes_available() = 0;
+    std::span<const std::byte> p_data) noexcept = 0;
+  virtual boost::leaf::result<size_t> driver_bytes_available() noexcept = 0;
   virtual boost::leaf::result<std::span<const std::byte>> driver_read(
-    std::span<std::byte> p_data) = 0;
-  virtual boost::leaf::result<void> driver_flush() = 0;
+    std::span<std::byte> p_data) noexcept = 0;
+  virtual boost::leaf::result<void> driver_flush() noexcept = 0;
 };
 }  // namespace embed

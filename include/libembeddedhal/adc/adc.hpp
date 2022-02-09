@@ -33,9 +33,12 @@ public:
    * look like: `return embed::bit_depth<uint32_t, 12>(adc_value);`.
    *
    */
-  [[nodiscard]] boost::leaf::result<percent> read() { return driver_read(); }
+  [[nodiscard]] boost::leaf::result<percent> read() noexcept
+  {
+    return driver_read();
+  }
 
 private:
-  virtual boost::leaf::result<percent> driver_read() = 0;
+  virtual boost::leaf::result<percent> driver_read() noexcept = 0;
 };
 }  // namespace embed

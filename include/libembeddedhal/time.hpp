@@ -64,7 +64,7 @@ public:
  *
  * @param p_delay - the amount of time to delay execution by
  */
-inline void sleep_for(time_period p_delay)
+inline void sleep_for(time_period p_delay) noexcept
 {
   if (global_clocks::m_global_sleep) {
     global_clocks::m_global_sleep(p_delay);
@@ -77,7 +77,7 @@ inline void sleep_for(time_period p_delay)
  *
  * @return auto - the global uptime
  */
-[[nodiscard]] inline auto uptime()
+[[nodiscard]] inline auto uptime() noexcept
 {
   if (global_clocks::m_global_uptime) {
     return global_clocks::m_global_uptime();

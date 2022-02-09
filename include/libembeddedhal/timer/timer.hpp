@@ -55,7 +55,7 @@ public:
    * @return boost::leaf::result<bool> - true if timer is currently running
    * @return boost::leaf::result<bool> - driver specific error, if any.
    */
-  [[nodiscard]] boost::leaf::result<bool> is_running()
+  [[nodiscard]] boost::leaf::result<bool> is_running() noexcept
   {
     return driver_is_running();
   }
@@ -71,7 +71,10 @@ public:
    *
    * @return boost::leaf::result<void> - driver specific error, if any.
    */
-  [[nodiscard]] boost::leaf::result<void> clear() { return driver_clear(); }
+  [[nodiscard]] boost::leaf::result<void> clear() noexcept
+  {
+    return driver_clear();
+  }
   /**
    * @brief Schedule an callback to be called at a designated time/interval
    *
@@ -86,16 +89,16 @@ public:
    */
   [[nodiscard]] boost::leaf::result<void> schedule(
     std::function<void(void)> p_callback,
-    std::chrono::nanoseconds p_delay)
+    std::chrono::nanoseconds p_delay) noexcept
   {
     return driver_schedule(p_callback, p_delay);
   }
 
 private:
-  virtual boost::leaf::result<bool> driver_is_running() = 0;
-  virtual boost::leaf::result<void> driver_clear() = 0;
+  virtual boost::leaf::result<bool> driver_is_running() noexcept = 0;
+  virtual boost::leaf::result<void> driver_clear() noexcept = 0;
   virtual boost::leaf::result<void> driver_schedule(
     std::function<void(void)> p_callback,
-    std::chrono::nanoseconds p_delay) = 0;
+    std::chrono::nanoseconds p_delay) noexcept = 0;
 };
 }  // namespace embed

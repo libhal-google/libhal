@@ -184,7 +184,7 @@ public:
    * associated with the set ID.
    *
    */
-  [[nodiscard]] node_t* register_message_id(can::id_t p_id)
+  [[nodiscard]] node_t* register_message_id(can::id_t p_id) noexcept
   {
     node_t empty_node;
 
