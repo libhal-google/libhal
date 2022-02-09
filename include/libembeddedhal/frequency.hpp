@@ -351,9 +351,9 @@ namespace literals {
  * Example range: 1337_Hz == 1,337 Hz
  *
  * @param p_value - frequency in hertz
- * @return constexpr frequency - frequency in hertz
+ * @return consteval frequency - frequency in hertz
  */
-constexpr frequency operator""_Hz(unsigned long long p_value) noexcept
+consteval frequency operator""_Hz(unsigned long long p_value) noexcept
 {
   return frequency{ static_cast<frequency::int_t>(p_value) };
 }
@@ -364,9 +364,9 @@ constexpr frequency operator""_Hz(unsigned long long p_value) noexcept
  * Example range: 20_kHz == 20,000 Hz
  *
  * @param p_value - frequency in kilohertz
- * @return constexpr frequency - frequency in kilohertz
+ * @return consteval frequency - frequency in kilohertz
  */
-constexpr frequency operator""_kHz(unsigned long long p_value) noexcept
+consteval frequency operator""_kHz(unsigned long long p_value) noexcept
 {
   const auto value = p_value * std::kilo::num;
   return frequency{ static_cast<frequency::int_t>(value) };
@@ -378,9 +378,9 @@ constexpr frequency operator""_kHz(unsigned long long p_value) noexcept
  * Example range: 42_MHz == 42,000,000 Hz
  *
  * @param p_value - frequency in megahertz
- * @return constexpr frequency - frequency in megahertz
+ * @return consteval frequency - frequency in megahertz
  */
-constexpr frequency operator""_MHz(unsigned long long p_value) noexcept
+consteval frequency operator""_MHz(unsigned long long p_value) noexcept
 {
   const auto value = p_value * std::mega::num;
   return frequency{ static_cast<frequency::int_t>(value) };
