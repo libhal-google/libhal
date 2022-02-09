@@ -90,8 +90,8 @@ boost::ut::suite frequency_duration_from_cycles = []() {
   expect(10'250ms == (1_kHz).duration_from_cycles(10'250));
   expect(12'000'000ns == (1000_MHz).duration_from_cycles(12'000'000));
   expect(0ns == (1000_MHz).duration_from_cycles(0));
-  expect(std::chrono::duration<frequency::int_t, std::pico>(1) ==
-         (1'000'000_MHz).duration_from_cycles<frequency::int_t, std::pico>(1));
+  expect(std::chrono::duration<std::int64_t, std::pico>(1) ==
+         (1'000'000_MHz).duration_from_cycles<std::int64_t, std::pico>(1));
 };
 
 boost::ut::suite frequency_scalar_operator = []() {
