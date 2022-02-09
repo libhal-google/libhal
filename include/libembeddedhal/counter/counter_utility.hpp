@@ -11,7 +11,7 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors that occurred when attempting
  * to reset counter.
  */
-inline boost::leaf::result<void> reset(counter& p_counter)
+[[nodiscard]] inline boost::leaf::result<void> reset(counter& p_counter)
 {
   return p_counter.control(counter::controls::reset);
 }
@@ -22,7 +22,7 @@ inline boost::leaf::result<void> reset(counter& p_counter)
  * @return boost::leaf::result<void> - any errors that occurred when attempting
  * to start counter.
  */
-inline boost::leaf::result<void> start(counter& p_counter)
+[[nodiscard]] inline boost::leaf::result<void> start(counter& p_counter)
 {
   return p_counter.control(counter::controls::start);
 }
@@ -33,7 +33,7 @@ inline boost::leaf::result<void> start(counter& p_counter)
  * @return boost::leaf::result<void> - any errors that occurred when attempting
  * to stop counter.
  */
-inline boost::leaf::result<void> stop(counter& p_counter)
+[[nodiscard]] inline boost::leaf::result<void> stop(counter& p_counter)
 {
   return p_counter.control(counter::controls::stop);
 }

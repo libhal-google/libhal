@@ -16,7 +16,8 @@ namespace embed {
  * @return constexpr std::array<char, N + 1> - the char array object
  */
 template<size_t N>
-constexpr std::array<char, N + 1> to_array(std::string_view p_view) noexcept
+[[nodiscard]] constexpr std::array<char, N + 1> to_array(
+  std::string_view p_view) noexcept
 {
   const size_t min = std::min(N, p_view.size());
   std::array<char, N + 1> result;

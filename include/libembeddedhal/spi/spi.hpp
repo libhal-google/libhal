@@ -57,9 +57,10 @@ public:
    * @return boost::leaf::result<void> - any error that occurred during this
    * operation.
    */
-  boost::leaf::result<void> transfer(std::span<const std::byte> p_data_out,
-                                     std::span<std::byte> p_data_in,
-                                     std::byte p_filler)
+  [[nodiscard]] boost::leaf::result<void> transfer(
+    std::span<const std::byte> p_data_out,
+    std::span<std::byte> p_data_in,
+    std::byte p_filler)
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
