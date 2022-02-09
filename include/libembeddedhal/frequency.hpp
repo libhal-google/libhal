@@ -216,32 +216,6 @@ public:
   constexpr auto operator<=>(const frequency&) const noexcept = default;
 
   /**
-   * @brief sum two frequencies together
-   *
-   * @param p_lhs - left hand frequency
-   * @param p_rhs - right hand frequency
-   * @return constexpr frequency - sum of the two frequencies
-   */
-  constexpr friend frequency operator+(frequency p_lhs,
-                                       frequency p_rhs) noexcept
-  {
-    return frequency{ p_lhs.cycles_per_second() + p_rhs.cycles_per_second() };
-  }
-
-  /**
-   * @brief subtract two frequencies from each other
-   *
-   * @param p_lhs - left hand frequency
-   * @param p_rhs - right hand frequency
-   * @return constexpr frequency - difference of two frequencies
-   */
-  constexpr friend frequency operator-(frequency p_lhs,
-                                       frequency p_rhs) noexcept
-  {
-    return frequency{ p_lhs.cycles_per_second() - p_rhs.cycles_per_second() };
-  }
-
-  /**
    * @brief Scale up a frequency by an integer factor
    *
    * @tparam Integer - type of the integer
