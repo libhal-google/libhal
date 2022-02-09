@@ -57,7 +57,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra
-    -Wno-unused-function)
+    -Wno-unused-function -Wconversion)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET default)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
