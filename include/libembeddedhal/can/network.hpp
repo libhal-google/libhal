@@ -1,11 +1,9 @@
 #pragma once
 
-#include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <memory_resource>
 #include <unordered_map>
-#include <utility>
 
 #include "can.hpp"
 
@@ -184,7 +182,8 @@ public:
    * associated with the set ID.
    *
    */
-  [[nodiscard]] node_t* register_message_id(can::id_t p_id) noexcept
+  [[nodiscard]] boost::leaf::result<node_t*> register_message_id(
+    can::id_t p_id) noexcept
   {
     node_t empty_node;
 
