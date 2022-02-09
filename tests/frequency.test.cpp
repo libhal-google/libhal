@@ -94,17 +94,6 @@ boost::ut::suite frequency_duration_from_cycles = []() {
          (1'000'000_MHz).duration_from_cycles<frequency::int_t, std::pico>(1));
 };
 
-boost::ut::suite frequency_plus_minus_operator = []() {
-  using namespace boost::ut;
-  using namespace std::literals;
-  using namespace embed::literals;
-
-  expect(eq(1100_kHz, (1_MHz + 100_kHz)));
-  expect(eq(15'001_Hz, (15_kHz + 1_Hz)));
-  expect(eq(14'999_Hz, (15_kHz - 1_Hz)));
-  expect(eq(1'015_kHz, (15_kHz + 1_MHz)));
-};
-
 boost::ut::suite frequency_scalar_operator = []() {
   using namespace boost::ut;
   using namespace std::literals;
