@@ -31,17 +31,5 @@ jobs:
       - name: Install g++-10
         run: sudo apt install g++-10
 
-      - name: Local Conan Install
+      - name: Install Conan Package & Run Unit Tests
         run: conan create .
-
-      - name: CMake Build
-        working-directory: tests
-        run: CXX=g++-10 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
-
-      - name: Build Tests
-        working-directory: tests/build
-        run: make
-
-      - name: Run Tests
-        working-directory: tests/build
-        run: ./bin/test
