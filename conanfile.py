@@ -1,5 +1,6 @@
 from conans import ConanFile, CMake, tools
 
+
 class libembeddedhal_conan(ConanFile):
     name = "libembeddedhal"
     version = "0.0.1"
