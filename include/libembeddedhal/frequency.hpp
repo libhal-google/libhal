@@ -18,9 +18,9 @@ namespace embed {
 struct duty_cycle
 {
   /// Number of cycles the signal will stay in the HIGH voltage state
-  std::int64_t high = 0;
+  std::uint32_t high = 0;
   /// Number of cycles the signal will stay in the LOW voltage state
-  std::int64_t low = 0;
+  std::uint32_t low = 0;
 
   /**
    * @brief == operator
@@ -54,13 +54,13 @@ public:
    * @return constexpr duty_cycle - the duty cycle cycle counts
    */
   [[nodiscard]] static constexpr duty_cycle calculate_duty_cycle(
-    std::int64_t p_cycles,
+    std::uint32_t p_cycles,
     percent p_precent) noexcept
   {
     // Scale down value based on the integer percentage value in percent
-    std::int64_t high = p_cycles * p_precent;
+    std::uint32_t high = p_cycles * p_precent;
     // p_cycles will always be larger than or equal to high
-    std::int64_t low = p_cycles - high;
+    std::uint32_t low = p_cycles - high;
 
     return duty_cycle{
       .high = high,
@@ -73,7 +73,7 @@ public:
    *
    * @param p_value - frequency of the object
    */
-  explicit constexpr frequency(std::int64_t p_value) noexcept
+  explicit constexpr frequency(std::uint32_t p_value) noexcept
     : m_cycles_per_second(p_value)
   {}
 
@@ -92,13 +92,13 @@ public:
    * frequency provided.
    *
    * @param p_target - the target output frequency
-   * @return constexpr std::int64_t - the divider, when applied to this
+   * @return constexpr std::uint32_t - the divider, when applied to this
    * frequency, will achieve the p_target frequency. A value of is an error and
    * 0 indicates that the output frequency is greater than this frequency and
    * there does not exist an integer divider that can produce the output
    * frequency.
    */
-  [[nodiscard]] constexpr std::int64_t divider(
+  [[nodiscard]] constexpr std::uint32_t divider(
     frequency p_target) const noexcept
   {
     if (p_target.m_cycles_per_second > cycles_per_second()) {
@@ -115,11 +115,11 @@ public:
    * @tparam Rep - type of the duration
    * @tparam Period - ratio of the time duration relative to 1 second
    * @param p_duration - the target time duration to get a cycle count from
-   * @return constexpr std::int64_t - the number of cycles of this frequency
+   * @return constexpr std::uint32_t - the number of cycles of this frequency
    * within the duration.
    */
   template<typename Rep, typename Period>
-  [[nodiscard]] constexpr std::int64_t cycles_per(
+  [[nodiscard]] constexpr std::uint32_t cycles_per(
     std::chrono::duration<Rep, Period> p_duration) const noexcept
   {
     // Full Equation:
@@ -141,7 +141,22 @@ public:
     // accuracy as possible.
     cycle_count = rounding_division((cycle_count * Period::num), Period::den);
 
-    return static_cast<std::int64_t>(cycle_count);
+    return static_cast<std::uint32_t>(cycle_count);
+  }
+
+  /**
+   * @brief Calculates and returns the wavelength of the frequency in
+   * femtoseconds.
+   *
+   * @return std::chrono::duration<uint64_t, std::femto> - wavelength of the
+   * frequency in femtoseconds.
+   */
+  std::chrono::duration<uint64_t, std::femto> femtoseconds_in_wavelength() const
+  {
+    std::uint64_t numerator = std::femto::den;
+    std::uint64_t denominator = std::femto::num * m_cycles_per_second;
+    std::uint64_t duration = rounding_division(numerator, denominator);
+    return std::chrono::duration<uint64_t, std::femto>(duration);
   }
 
   /**
@@ -157,7 +172,7 @@ public:
   template<typename Rep = std::chrono::nanoseconds::rep,
            typename Period = std::chrono::nanoseconds::period>
   [[nodiscard]] constexpr std::chrono::duration<Rep, Period>
-  duration_from_cycles(std::int64_t p_cycles) const noexcept
+  duration_from_cycles(std::uint64_t p_cycles) const noexcept
   {
     // Full Equation (based on the equation in cycles_per()):
     // =========================================================================
@@ -166,11 +181,23 @@ public:
     //   |period| =  | ---------------------------|
     //                \ frequency_hz * ratio_num /
     //
-    std::int64_t numerator = p_cycles * Period::den;
-    std::int64_t denominator = Period::num * m_cycles_per_second;
-    std::int64_t duration = rounding_division(numerator, denominator);
 
-    return std::chrono::duration<Rep, Period>(duration);
+    // This value is a best guess for which frequency ranges work best for femto
+    // second calculations vs direct calculations.
+    constexpr uint64_t use_femtosecond_limit = 100'000'000;
+    // When the frequency is very high, to prevent overflows, calculations are
+    // done using femtoseconds and the cycle count and then downscaled to
+    // nanoseconds.
+    if (m_cycles_per_second > use_femtosecond_limit) {
+      auto femto = femtoseconds_in_wavelength();
+      femto *= p_cycles;
+      return std::chrono::duration_cast<std::chrono::nanoseconds>(femto);
+    } else {
+      std::uint64_t numerator = p_cycles * Period::den;
+      std::uint64_t denominator = Period::num * m_cycles_per_second;
+      std::uint64_t duration = rounding_division(numerator, denominator);
+      return std::chrono::duration<Rep, Period>(duration);
+    }
   }
 
   /**
@@ -261,7 +288,7 @@ public:
                                                      Integer p_rhs) noexcept
   {
     return frequency{ rounding_division(p_lhs.cycles_per_second(),
-                                        std::int64_t{ p_rhs }) };
+                                        static_cast<std::uint32_t>(p_rhs)) };
   }
 
   /**
@@ -270,11 +297,11 @@ public:
    * @param p_input - the input frequency to be divided down to the target
    * frequency with an integer divider
    * @param p_target - the target frequency to reach via an integer divider
-   * @return constexpr std::int64_t - frequency divider value representing the
+   * @return constexpr std::uint32_t - frequency divider value representing the
    * number of cycles in the input that constitute one cycle in the target
    * frequency.
    */
-  [[nodiscard]] constexpr friend std::int64_t operator/(
+  [[nodiscard]] constexpr friend std::uint32_t operator/(
     frequency p_input,
     frequency p_target) noexcept
   {
@@ -289,11 +316,11 @@ public:
    * @tparam Period - ratio of the time duration relative to 1 second
    * @param p_input - the input frequency
    * @param p_duration - the target time duration to get a cycle count from
-   * @return constexpr std::int64_t - the number of cycles of this frequency
+   * @return constexpr std::uint32_t - the number of cycles of this frequency
    * within the duration.
    */
   template<typename Rep, typename Period>
-  [[nodiscard]] constexpr friend std::int64_t operator*(
+  [[nodiscard]] constexpr friend std::uint32_t operator*(
     frequency p_input,
     std::chrono::duration<Rep, Period> p_duration) noexcept
   {
@@ -308,11 +335,11 @@ public:
    * @tparam Period - ratio of the time duration relative to 1 second
    * @param p_input - the input frequency
    * @param p_duration - the target time duration to get a cycle count from
-   * @return constexpr std::int64_t - the number of cycles of this frequency
+   * @return constexpr std::uint32_t - the number of cycles of this frequency
    * within the duration.
    */
   template<typename Rep, typename Period>
-  [[nodiscard]] constexpr friend std::int64_t operator*(
+  [[nodiscard]] constexpr friend std::uint32_t operator*(
     std::chrono::duration<Rep, Period> p_duration,
     frequency p_input) noexcept
   {
@@ -320,7 +347,7 @@ public:
   }
 
 private:
-  std::int64_t m_cycles_per_second = 1'000;
+  std::uint32_t m_cycles_per_second = 1'000'000;
 };
 
 /// Default clock rate for serial communication protocols
@@ -338,7 +365,7 @@ namespace literals {
 [[nodiscard]] consteval frequency operator""_Hz(
   unsigned long long p_value) noexcept
 {
-  return frequency{ static_cast<std::int64_t>(p_value) };
+  return frequency{ static_cast<std::uint32_t>(p_value) };
 }
 
 /**
@@ -353,7 +380,7 @@ namespace literals {
   unsigned long long p_value) noexcept
 {
   const auto value = p_value * std::kilo::num;
-  return frequency{ static_cast<std::int64_t>(value) };
+  return frequency{ static_cast<std::uint32_t>(value) };
 }
 
 /**
@@ -368,7 +395,7 @@ namespace literals {
   unsigned long long p_value) noexcept
 {
   const auto value = p_value * std::mega::num;
-  return frequency{ static_cast<std::int64_t>(value) };
+  return frequency{ static_cast<std::uint32_t>(value) };
 }
 }  // namespace literals
 }  // namespace embed

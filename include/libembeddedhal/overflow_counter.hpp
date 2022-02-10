@@ -22,37 +22,37 @@ public:
    * @brief update the overflow counter, detect if an overflow has occurred, and
    * return the combined
    *
-   * @param new_count - must be an increasing value and should only decrease
+   * @param p_new_count - must be an increasing value and should only decrease
    * when an overflow event occurs.
    * @return constexpr uint64_t - 64-bit count combining the new count value and
    * the overflow count value.
    */
-  constexpr uint64_t update(uint32_t new_count) noexcept
+  constexpr uint64_t update(uint32_t p_new_count) noexcept
   {
     // Sanitize the new count value to make sure it does not exceed the
     // designated bit width. Without this check when the count is combined with
     // the overflow value the upper bits may effect the bits of the overflow
     // count, getting an incorrect count value.
     constexpr auto mask = generate_field_of_ones<CountBitWidth, uint32_t>();
-    new_count = new_count & mask;
+    p_new_count = p_new_count & mask;
 
     // Detect the overflow by checking if the new count is smaller than the
     // previous count. If the count is always increasing, the only way for the
     // new count to be smaller is if the count reached the end of its bit width
     // and overflowed.
-    if (m_previous_count > new_count) {
+    if (m_previous_count > p_new_count) {
       m_overflow_count++;
     }
 
     // Set previous count to the new count
-    m_previous_count = new_count;
+    m_previous_count = p_new_count;
 
     // Move overflow count up to the upper bits of the 64-bit number based on
     // CountBitWidth
     uint64_t combined_count = m_overflow_count;
     combined_count <<= CountBitWidth;
-    // Add the new_count into the combined count to complete it.
-    combined_count |= new_count;
+    // Add the p_new_count into the combined count to complete it.
+    combined_count |= p_new_count;
 
     return combined_count;
   }
@@ -69,6 +69,6 @@ public:
 
 private:
   uint32_t m_previous_count = 0;
-  uint64_t m_overflow_count = 0;
+  uint32_t m_overflow_count = 0;
 };
 }  // namespace embed
