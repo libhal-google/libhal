@@ -20,46 +20,23 @@ using modern C++ best practices.
 ### Installing Prerequisites
 
 1. [Install Homebrew (Mac OS only)](https://brew.sh/)
-1. [Git Download Page](https://git-scm.com/downloads)
-1. [Python3 Download Page](https://www.python.org/downloads/)
-1. Install g++:
-    - Mac: `brew install gcc`
-    - Ubuntu/Debian: `sudo apt install g++`
+1. [Install Git](https://git-scm.com/downloads)
+1. [Install Python3](https://www.python.org/downloads/)
+1. Install g++-11:
+    - Mac: `brew install gcc@11`
+    - Ubuntu/Debian: `sudo apt install g++-11`
     - Windows: [install msys2](https://www.msys2.org/#installation)
 1. Install CMake: `pip install cmake`
 1. Conan: `pip install conan`
 
 ## Unit tests
 
-The commands to build and run the tests are as follows from the root of the
-repo:
+Unit tests are built and executed as a part of the packaging system. To run unit
+tests you can simply execute this command:
 
 ```bash
 conan create .
-cd tests
-CXX=g++-11 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
-cd build
-make
-./bin/tests
 ```
-
-### Explaining the steps:
-
-1. First step is generating a conan package and installing it into your local conan
-cache. This allows build systems like CMake to find and use the project like it
-would a typical library.
-1. Next we simply enter the test directory
-1. For CMake:
-  1. We ensure that the compiler used for building is is g++11, so we CXX=g++-11
-  1. We set the build directory to `build` using the `-B` flag
-  1. We set the location of the source to the current directory with `-S .`
-  1. We set the build type to DEBUG mode to turn off optimizations. This is
-     helpful for stepping through test code as well as ensuring that the test
-     code works as intended without too much interference from the optimizer
-     optimizing code out.
-  1. Enter the build directory
-  1. Run make to actually build the test executable
-  1. Run the test executable
 
 ### Installing ARM toolchain
 
@@ -109,39 +86,15 @@ conan create liblpc40xx
 conan create libesp8266
 ```
 
-### Running unit tests or cmake
-
-In general what you do for build for cmake is to do the following at the root of
-one of the repos:
-
-```bash
-cd tests
-CXX=g++-11 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
-cd build
-make
-./bin/tests
-```
-
-To explain the steps:
-
-1. Make a build directory to hold of the build artifacts
-2. Change into the build directory
-3. Run `conan install` to install/download the libraries listed in the
-conanfile.py. The "debug" build flags ensures that the build for unit tests and
-the like are using debug level optimization. You can change to this to others if
-you wish.
-4. Run cmake in order to generate the makefiles needed to build the application
-5. Run make to actually build the code.
-
 ### Building applications
 
 For now, see https://github.com/SJSU-Dev2/starter-embeddedhal. The steps should
 be the same as "Running unit tests or cmake" and tinker with the CMakeLists.txt
 file in order modify the code but
 
-### Making changes to a library avaible
+### Making changes to a library available
 
 Each time you make a change to a library, you need to run `conan create` on its
-directory.
+directory in order to get those changes across other libraries.
 
 </details>
