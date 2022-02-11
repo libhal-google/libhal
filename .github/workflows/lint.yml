@@ -1,4 +1,4 @@
-name: lint
+name: 🧼 lint
 
 on:
   workflow_call:
@@ -41,7 +41,7 @@ jobs:
       # Because inputs.library is required for workflow_calls, if this value is
       # blank it means that the workflow was ran in libembeddedhal and not
       # remotely.
-      - name: Cloning .naming.style from libembeddedhal
+      - name: 🖨️ Cloning .naming.style from libembeddedhal
         if: ${{ inputs.library != '' }}
         run: wget https://raw.githubusercontent.com/SJSU-Dev2/libembeddedhal/main/.naming.style -O .naming.style
 
@@ -55,7 +55,7 @@ jobs:
               --style .naming.style | tee ncc.stderr
               [ ! -s ncc.stderr ]
 
-      - name: Cloning .clang-format from libembeddedhal
+      - name: 🖨️ Cloning .clang-format from libembeddedhal
         if: ${{ inputs.library != '' }}
         run: wget https://raw.githubusercontent.com/SJSU-Dev2/libembeddedhal/main/.clang-format -O .clang-format
 

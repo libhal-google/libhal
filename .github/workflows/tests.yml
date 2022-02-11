@@ -1,4 +1,4 @@
-name: tests
+name: 🧪 tests
 
 on:
   workflow_call:
@@ -22,14 +22,14 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Install CMake
+      - name: 📦 Install CMake
         run: pip install cmake
 
-      - name: Install conan
+      - name: 📦 Install conan
         run: pip install conan
 
-      - name: Install g++-11
+      - name: 📦 Install g++-11
         run: sudo apt install g++-11
 
-      - name: Install Conan Package & Run Unit Tests
+      - name: 🧪 Validate Conan Package 📦
         run: conan create .
