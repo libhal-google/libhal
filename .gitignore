@@ -46,6 +46,10 @@ docs/content/api/
 !docs/content/api/_index.md
 docs/public/
 tools/
+archive/
 
 # lint artifacts
 ncc.stderr
+
+# OS files
+.DS_Store
