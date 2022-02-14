@@ -20,7 +20,30 @@
 | [FAQ](#faq)
 |
 
-## Overview
+## [⚙️ Software APIs](https://sjsu-dev2.github.io/libembeddedhal/)
+
+<details open>
+<summary> 📥 Install </summary>
+<hr/>
+
+Install from conan:
+
+```bash
+conan install libembeddedhal
+```
+
+Installing from source locally:
+
+```bash
+git clone https://github.com/SJSU-Dev2/libembeddedhal.git
+conan create libembeddedhal
+```
+
+</details>
+
+<details open>
+<summary> ℹ️ Overview </summary>
+<hr/>
 
 libembeddedhal is a collection of interfaces and abstractions for embedded
 system peripherals and devices using modern C++ best practices. The goal is to
@@ -30,34 +53,20 @@ make writing embedded systems software & applications easy for everyone.
 - Dependencies:
   - Boost.LEAF for error handling
   - C++20 and above (currently only supports g++-10 and above)
-- Designed to be modular, dynamic, and composable
-- Designed to support any embedded target
-- Designed to be lightweight
-- Designed to be simple and minimalist and support majority of use cases
+- Target/platform agnostic (ARM Cortex, STM32, AVR, RPI, embedded linux, etc)
+- Designed to be modular, dynamic, composable, lightweight
+- Throwing exceptions out of drivers is strictly forbidden
+- Dynamically allocating memory is forbidden (rare exceptions may exist for some
+  libraries)
+- Follows C++ Core Guidelines as much as possible
 - Nearly no use of macros (currently only 1 macro)
-- Implementation policies
-  - Throwing exceptions out of drivers is strictly forbidden
-  - Refrain from dynamically allocating memory
-  - Refrain from using the FPU
-  - And more! See list of [implementation policies](#impl-policy)
 - Customizable using tweak header files (not through macros)
 
-## Install
+</details>
 
-```bash
-conan install libembeddedhal
-```
-
-### Installing from source
-
-```bash
-git clone https://github.com/SJSU-Dev2/libembeddedhal.git
-conan create libembeddedhal
-```
-
-NOTE: this will also run unit tests as well.
-
-## Motivation
+<details open>
+<summary> 💡 Motivation </summary>
+<hr/>
 
 The world of embedded systems is written almost entirely in C and C++. More and
 more the embedded world moves away from C and towards C++. This has to do with
@@ -85,7 +94,7 @@ embedded linux.
 This project is inspired by the work of Rust's embedded_hal and follows many of
 the same design goals.
 
-### Design Goals
+libembeddedhal's design goals:
 
 1. Serve as a foundation for building an ecosystem of platform agnostic drivers.
 2. Must abstract away device specific details like registers and bitmaps.
@@ -95,33 +104,76 @@ the same design goals.
 6. Be accessible through package mangers so that developers can easily pick and
    choose which drivers they want to use.
 
-## Policies
+</details>
+
+<details open>
+<summary> 🎛️ Customization </summary>
+<hr/>
+
+libembeddedhal uses the `tweak.hpp` header file approach to customization and
+configuration. See [A New Approach to Build-Time Library
+Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html).
+
+```C++
+#pragma once
+#include <string_view>
+namespace embed::config {
+// Defaults to "test". Indicates that the current running platform is a
+// unit/integration test. Change this to the target platform you are building
+// for. For example, if you are targeting the LPC4078 chip, you should change
+// this to "lpc4078".
+constexpr std::string_view platform = "test";
+// Defaults to "true". Enables stack tracing when errors do occur. There is a
+// performance cost, albeit small, to capturing the current function name.
+constexpr bool get_stacktrace_on_error = true;
+// Defaults to "32". The maximum depth a stack trace can reach before it stops
+// adding entries to the stack trace. Changing this effects the amount of space
+// that the embed::stacktrace object takes up in a functions stack when used
+// with Boost.LEAF.
+constexpr size_t stacktrace_depth_limit = 32;
+// Defaults to "false". If set to false, only the fully qualified function name
+// will be stored in the stack trace. Set to true, the stack trace will capture
+// the line number and file name into the stack trace object as well. Capturing
+// the file names will increase the binary size of the application as the file
+// name strings need to be stored in ROM.
+constexpr bool get_source_position_on_error = false;
+}  // namespace embed::config
+```
+
+Create a `libembeddedhal.tweak.hpp` file somewhere in your application and make
+sure it is within one of the compiler's include paths. For GCC/Clang you'd use
+the `-I` flag to specify directories where headers can be found. The file must
+be at the root of the directory listed within the `-I` include path.
+
+</details>
+
+<details open>
+<summary> 📜 Coding Policies </summary>
+<hr/>
 
 Listed below are the policies that every libembeddedhal implementation must
 follow to ensure consistent behavior, performance and size cost:
 
-### Style
-
-<details>
-<summary>Click to expand</summary>
+<details open>
+<summary>Style</summary>
 
 - Code shall follow libembeddedhal's `.clang-format` file, which uses the
   Mozilla C++ style format as a base with some adjustments.
 - Code shall follow libembeddedhal's `.naming.style` file, which is very
-  similar to the standard library naming convention as well as
-  [Jason Turner's style](https://lefticus.gitbooks.io/cpp-best-practices/content/03-Style.html).
+  similar to the standard library naming convention:
   - CamelCase for template parameters.
   - CAP_CASE for macros.
-  - snake_case for everything else.
+  - lowercase snake_case for everything else.
   - prefix `p_` for function parameters.
   - prefix `m_` for private/protected class member.
 - Refrain from variable names with abbreviations where it can be helped. `adc`
-  `pwm` and `i2c` are extremely common so it is fine to leave them abbreviations
-  but `cntr` should be `counter` and `cdl` and `cdh` should be written out as
-  `clock_divider_low` and `clock_divider_high`. Registers do get a pass if they
-  directly reflect the names in the data sheet which will make looking them up
-  easier in the future.
-- Use `#pragma once` as your include guard for headers.
+  `pwm` and `i2c` are extremely common so it is fine to leave them
+  abbreviations. Most people know the abbreviations more than the words that
+  make them up. But words `cnt` should be `count` and `cdl` and `cdh` should be
+  written out as `clock_divider_low` and `clock_divider_high`. Registers do get
+  a pass if they directly reflect the names in the data sheet which will make
+  looking them up easier in the future.
+- Use `#pragma once` as the include guard for headers.
 - Every file must end with a newline character.
 - Every line in a file must stay within a 80 character limit.
   - Exceptions to this rule are allowed. Use // NOLINT in these cases.
@@ -136,10 +188,8 @@ follow to ensure consistent behavior, performance and size cost:
 
 </details>
 
-### Coding Restrictions
-
-<details>
-<summary>Click to expand</summary>
+<details open>
+<summary>Coding Restrictions</summary>
 
 - Use the `libxbitset` library to perform bitwise operations operations.
 - Only use macros if something cannot be done without using them. Usually macros
@@ -160,42 +210,203 @@ follow to ensure consistent behavior, performance and size cost:
     formatting libraries.
   - libembeddedhal libraries do not have the right to output to stdout/stderr,
     that is the role and responsibility of the application.
+- Interfaces must follow the public API, private virtual method shown
+  [here](http://www.gotw.ca/publications/mill18.htm).
+- Inclusion of a C header file full of register map structures is not allowed as
+  it would pollute the global namespace and tends to result in name collisions.
+
+</details>
+</details>
+
+<details open>
+<summary> 📖 Guides </summary>
+<hr/>
+
+All guides follow the [C++ Core
+Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
+
+<details open>
+<summary>Creating a new interface</summary>
+
+Guidelines for interfaces:
+
+1. Do not include any non-virtual member functions in the interface
+2. For configuration data for which the bounds are not defined and are invariant
+   the actual API use a configure function with this signature
+   `boost::leaf::result<void> configure(const settings&)` where `settings` is an
+   inner `struct` defined within the interface class's namespace. See
+   `include/libembeddedhal/serial/serial.hpp` as an example already in use.
+3. All members of a `settings` `struct` must be initialized with default values
+   that most systems can be expected to achieve.
+4. All virtual member functions must have the following decorations:
+    1. return types: `boost::leaf::result<T>` to order to allow error
+       signaling to propagate, where T is the type you want to return.
+    2. Marked as `noexcept`
+    3. Marked as `[[nodsicard]]`
 
 </details>
 
-## Guides
+<details>
+<summary>Implementing a Peripheral Driver</summary>
 
-### Classification of Drivers
+Follow along with the comments in the example C++ below to get an idea of how
+to create a standard peripheral implementation.
+
+```C++
+/// Since this is a header only driver you'll need pragma once
+#pragma once
+
+/// Be sure to include the adc interface you plan to implement
+#include <libembeddedhal/adc/adc.hpp>
+/// Very likely you'll need to perform bit manipulation so its usually safe to
+/// include this as well. Remove this if you do not end up performing any bit
+/// manipulation.
+#include <libxbitset/bitset.hpp>
+
+/// Make sure to put your driver within a namespace. Do not pollute the global
+/// namespace with your driver and any other variables, functions or objects.
+/// Prefer the namespace name "embed::<insert_platform_name_here>".
+namespace embed::lpc40xx {
+/// Give the class a simple name and inherit the desired interface.
+class adc : public embed::adc
+{
+public:
+  /// Channel specific information.
+  /// This name can be "port", "bus" or anything else that makes sense.
+  struct channel
+  {
+    // Add fields necessary for the driver to work ...
+  };
+
+  /// Structure acting as a namespace to contain bit mask objects. In this
+  /// example, these bit masks are used to manipulate the ADC's control
+  /// register.
+  struct control_register
+  {
+    /// Add bit masks here
+  };
+
+  /// Create a structure representing your register map. Usually vendors for an
+  /// MCU provide a C header file with all of the registers. Use that as a
+  /// reference for making this register map. Don't forget to make each entry
+  /// volatile so that the values are not cached when written to or read from.
+  /// If there is only 1 register map for this class, simply call it "reg_t".
+  /// Otherwise give it a name that makes sense for it and the others.
+  struct reg_t
+  {
+    /// Add register map fields here
+  };
+
+  /// Add a static public member for getting the register map.
+  ///
+  /// If the code is running on the correct platform, then return the address
+  /// of the peripheral.
+  ///
+  /// If the code is being run in a unit test, or doesn't match the intended
+  /// platform, it returns a reference dummy version of the register map.
+  ///
+  /// If there are multiple peripherals that share the same peripheral register
+  /// map, then this function should take int as an index for which peripheral
+  /// to return.
+  static reg_t* reg()
+  {
+    if constexpr (embed::is_platform("lpc40")) {
+      static constexpr intptr_t lpc_apb0_base = 0x40000000UL;
+      static constexpr intptr_t lpc_adc_addr = lpc_apb0_base + 0x34000;
+      return reinterpret_cast<reg_t*>(lpc_adc_addr);
+    } else {
+      static reg_t dummy{};
+      return &dummy;
+    }
+  }
+
+  /// Create a constructor that accepts the channel details as well as any
+  /// settings
+  adc(channel p_channel) noexcept
+    : m_channel(p_channel)
+  {
+    // Step 1. Turn on the peripheral.
+    //         For some devices that means flipping a power bit.
+    //         For others it means enabling a bit that allows a clock through.
+    //         It could be something else for your system.
+    //
+    // Step 2. Setup any pins if that means anything for the peripheral.
+    //
+    // Step 3. Setup any clocks and pre-scalars and dividers for the peripheral
+    //         as well as any other peripheral setup
+    //
+    // Step 4. If the constructor takes any configuration settings pass these
+    //         to the driver_configure() function here.
+  }
+
+private:
+  // Declare implementation of virtual functions here (don't forget "override")
+  boost::leaf::result<percent> driver_read() noexcept override;
+};
+
+// Create a `get_<insert peripheral name here>` function that takes a template
+// parameter for which peripheral this is.
+template<int Channel>
+adc& get_adc()
+{
+  // Use `if constexpr` in order to ensure that only one of these blocks exists
+  // for each possible instance of "Channel"
+  if constexpr (Channel == 0) {
+    constexpr adc::channel channel0 = {
+      .port = 0,
+      .pin = 23,
+      .index = 0,
+      .pin_function = 0b011,
+    };
+    static adc adc_channel0(channel0);
+    return adc_channel0;
+  } else if constexpr (Channel == 1) {
+    // Same as Channel 0 but with the settings for channel 1
+  } else if constexpr (Channel == 2) {
+    // Same as Channel 0 but with the settings for channel 2
+  } else if constexpr (Channel == 3) {
+    // Same as Channel 0 but with the settings for channel 3
+  } else if constexpr (Channel == 4) {
+    // Same as Channel 0 but with the settings for channel 4
+  } else if constexpr (Channel == 5) {
+    // Same as Channel 0 but with the settings for channel 5
+  } else if constexpr (Channel == 6) {
+    // Same as Channel 0 but with the settings for channel 6
+  } else if constexpr (Channel == 7) {
+    // Same as Channel 0 but with the settings for channel 7
+  } else {
+    // Place a static assert here to generate a compiler error for the user if
+    // the accidentally used a channel outside of the bounds of the ADC driver.
+    static_assert(error::invalid_option<Channel>,
+                  "\n\n"
+                  "LPC40xx Compile Time Error:\n"
+                  "    LPC40xx only supports ADC channels from 0 to 7. \n"
+                  "\n");
+    return get_adc<0>();
+  }
+}
+
+// Implement the driver outside of the class in an inline function.
+inline boost::leaf::result<percent> adc::driver_read()
+{
+  // implementation here ...
+  // Don't forget the return value ...
+}
+}  // namespace embed::lpc40xx
+```
+
+</details>
 
 <details>
-<summary>Click to expand</summary>
+<summary>Device Drivers</summary>
 
 TDB
 
 </details>
-
-### Writing Peripheral Drivers
-
-<details>
-<summary>Click to expand</summary>
-
-TDB
-
 </details>
 
-### Writing Device Drivers
-
-<details>
-<summary>Click to expand</summary>
-
-TDB
-
-</details>
-
-## Libraries
-
-<details>
-<summary>Click to expand</summary>
+<details open>
+<summary>📚 Libraries</summary>
 
 - [libarmcortex](https://github.com/SJSU-Dev2/libarmcortex): drivers for the ARM
   Cortex M series of processors.
@@ -212,7 +423,9 @@ TDB
 
 </details>
 
-## Developing on projects in the ecosystem
 <details>
-<summary>Click to expand</summary>
+<summary>👥 Contributing</summary>
+
+TBD
+
 </details>
