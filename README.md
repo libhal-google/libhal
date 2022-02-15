@@ -20,7 +20,7 @@
 | [FAQ](#faq)
 |
 
-## [⚙️ Software APIs](https://sjsu-dev2.github.io/libembeddedhal/)
+### [⚙️ Software APIs](https://sjsu-dev2.github.io/libembeddedhal/)
 
 <details open>
 <summary> 📥 Install </summary>
@@ -41,7 +41,7 @@ conan create libembeddedhal
 
 </details>
 
-<details open>
+<details>
 <summary> ℹ️ Overview </summary>
 <hr/>
 
@@ -64,7 +64,7 @@ make writing embedded systems software & applications easy for everyone.
 
 </details>
 
-<details open>
+<details>
 <summary> 💡 Motivation </summary>
 <hr/>
 
@@ -106,7 +106,7 @@ libembeddedhal's design goals:
 
 </details>
 
-<details open>
+<details>
 <summary> 🎛️ Customization </summary>
 <hr/>
 
@@ -147,14 +147,14 @@ be at the root of the directory listed within the `-I` include path.
 
 </details>
 
-<details open>
+<details>
 <summary> 📜 Coding Policies </summary>
 <hr/>
 
 Listed below are the policies that every libembeddedhal implementation must
 follow to ensure consistent behavior, performance and size cost:
 
-<details open>
+<details>
 <summary>Style</summary>
 
 - Code shall follow libembeddedhal's `.clang-format` file, which uses the
@@ -188,7 +188,7 @@ follow to ensure consistent behavior, performance and size cost:
 
 </details>
 
-<details open>
+<details>
 <summary>Coding Restrictions</summary>
 
 - Use the `libxbitset` library to perform bitwise operations operations.
@@ -218,14 +218,14 @@ follow to ensure consistent behavior, performance and size cost:
 </details>
 </details>
 
-<details open>
+<details>
 <summary> 📖 Guides </summary>
 <hr/>
 
 All guides follow the [C++ Core
 Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
 
-<details open>
+<details>
 <summary>Creating a new interface</summary>
 
 Guidelines for interfaces:
@@ -405,7 +405,7 @@ TDB
 </details>
 </details>
 
-<details open>
+<details>
 <summary>📚 Libraries</summary>
 
 - [libarmcortex](https://github.com/SJSU-Dev2/libarmcortex): drivers for the ARM
