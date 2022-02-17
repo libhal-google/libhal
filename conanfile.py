@@ -27,5 +27,5 @@ class libembeddedhal_conan(ConanFile):
     def package_id(self):
         self.info.header_only()
 
-    def requirements(self):
-        self.requires("boost-ext-ut/1.1.8@")
+    def build_requirements(self):
+        self.test_requires("boost-ext-ut/1.1.8@")
