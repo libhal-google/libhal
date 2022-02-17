@@ -418,7 +418,7 @@ TDB
 - libmpu6050: coming soon. Accelerometer and gyroscope device. Requires an i2c
   driver.
 - libstm32f1xx: coming soon. Drivers for atmega328 microntrollers
-- libatmega328: comming soon. Drivers for atmega328 microntrollers
+- libatmega328: coming soon. Drivers for atmega328 microntrollers
 - libriscvi32: coming soon. Drivers for 32-bit RISC-V processors
 
 </details>
