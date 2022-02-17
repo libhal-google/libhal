@@ -230,15 +230,31 @@ Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
 
 Guidelines for interfaces:
 
-1. Do not include any non-virtual member functions in the interface
-2. For configuration data for which the bounds are not defined and are invariant
+1. Follow the private virtual api pattern which looks like this:
+```C++
+class interface
+{
+ public:
+  /**
+   * ... API behavior documentation goes here ...
+   */
+  [[nodiscard]] boost::leaf::result<void> do_something() {
+    return driver_do_something();
+  }
+ private:
+  virtual boost::leaf::result<void> driver_do_something() = 0;
+};
+```
+2. Outside of rule #1, do not include any non-virtual member functions in the
+   interface.
+3. For configuration data for which the bounds are not defined and are invariant
    the actual API use a configure function with this signature
    `boost::leaf::result<void> configure(const settings&)` where `settings` is an
    inner `struct` defined within the interface class's namespace. See
    `include/libembeddedhal/serial/serial.hpp` as an example already in use.
-3. All members of a `settings` `struct` must be initialized with default values
-   that most systems can be expected to achieve.
-4. All virtual member functions must have the following decorations:
+4. All members of a `settings` `struct` must be initialized with default values.
+   These defaults should be values that most system can support.
+5. All virtual member functions must have the following decorations:
     1. return types: `boost::leaf::result<T>` to order to allow error
        signaling to propagate, where T is the type you want to return.
     2. Marked as `noexcept`
@@ -247,160 +263,39 @@ Guidelines for interfaces:
 </details>
 
 <details>
-<summary>Implementing a Peripheral Driver</summary>
+<summary>Implementing a Peripheral Driver (memory mapped I/O)</summary>
 
 Follow along with the comments in the example C++ below to get an idea of how
-to create a standard peripheral implementation.
+to create a standard peripheral implementation. This is only meant for drivers
+that use memory mapped I/O and do not require other drivers to operate. If
+other device drivers are needed for your implementation, please
+"Implementing a Device Driver".
 
-```C++
-/// Since this is a header only driver you'll need pragma once
-#pragma once
+Rules for peripheral driver implementations:
 
-/// Be sure to include the adc interface you plan to implement
-#include <libembeddedhal/adc/adc.hpp>
-/// Very likely you'll need to perform bit manipulation so its usually safe to
-/// include this as well. Remove this if you do not end up performing any bit
-/// manipulation.
-#include <libxbitset/bitset.hpp>
-
-/// Make sure to put your driver within a namespace. Do not pollute the global
-/// namespace with your driver and any other variables, functions or objects.
-/// Prefer the namespace name "embed::<insert_platform_name_here>".
-namespace embed::lpc40xx {
-/// Give the class a simple name and inherit the desired interface.
-class adc : public embed::adc
-{
-public:
-  /// Channel specific information.
-  /// This name can be "port", "bus" or anything else that makes sense.
-  struct channel
-  {
-    // Add fields necessary for the driver to work ...
-  };
-
-  /// Structure acting as a namespace to contain bit mask objects. In this
-  /// example, these bit masks are used to manipulate the ADC's control
-  /// register.
-  struct control_register
-  {
-    /// Add bit masks here
-  };
-
-  /// Create a structure representing your register map. Usually vendors for an
-  /// MCU provide a C header file with all of the registers. Use that as a
-  /// reference for making this register map. Don't forget to make each entry
-  /// volatile so that the values are not cached when written to or read from.
-  /// If there is only 1 register map for this class, simply call it "reg_t".
-  /// Otherwise give it a name that makes sense for it and the others.
-  struct reg_t
-  {
-    /// Add register map fields here
-  };
-
-  /// Add a static public member for getting the register map.
-  ///
-  /// If the code is running on the correct platform, then return the address
-  /// of the peripheral.
-  ///
-  /// If the code is being run in a unit test, or doesn't match the intended
-  /// platform, it returns a reference dummy version of the register map.
-  ///
-  /// If there are multiple peripherals that share the same peripheral register
-  /// map, then this function should take int as an index for which peripheral
-  /// to return.
-  static reg_t* reg()
-  {
-    if constexpr (embed::is_platform("lpc40")) {
-      static constexpr intptr_t lpc_apb0_base = 0x40000000UL;
-      static constexpr intptr_t lpc_adc_addr = lpc_apb0_base + 0x34000;
-      return reinterpret_cast<reg_t*>(lpc_adc_addr);
-    } else {
-      static reg_t dummy{};
-      return &dummy;
-    }
-  }
-
-  /// Create a constructor that accepts the channel details as well as any
-  /// settings
-  adc(channel p_channel) noexcept
-    : m_channel(p_channel)
-  {
-    // Step 1. Turn on the peripheral.
-    //         For some devices that means flipping a power bit.
-    //         For others it means enabling a bit that allows a clock through.
-    //         It could be something else for your system.
-    //
-    // Step 2. Setup any pins if that means anything for the peripheral.
-    //
-    // Step 3. Setup any clocks and pre-scalars and dividers for the peripheral
-    //         as well as any other peripheral setup
-    //
-    // Step 4. If the constructor takes any configuration settings pass these
-    //         to the driver_configure() function here.
-  }
-
-private:
-  // Declare implementation of virtual functions here (don't forget "override")
-  boost::leaf::result<percent> driver_read() noexcept override;
-};
-
-// Create a `get_<insert peripheral name here>` function that takes a template
-// parameter for which peripheral this is.
-template<int Channel>
-adc& get_adc()
-{
-  // Use `if constexpr` in order to ensure that only one of these blocks exists
-  // for each possible instance of "Channel"
-  if constexpr (Channel == 0) {
-    constexpr adc::channel channel0 = {
-      .port = 0,
-      .pin = 23,
-      .index = 0,
-      .pin_function = 0b011,
-    };
-    static adc adc_channel0(channel0);
-    return adc_channel0;
-  } else if constexpr (Channel == 1) {
-    // Same as Channel 0 but with the settings for channel 1
-  } else if constexpr (Channel == 2) {
-    // Same as Channel 0 but with the settings for channel 2
-  } else if constexpr (Channel == 3) {
-    // Same as Channel 0 but with the settings for channel 3
-  } else if constexpr (Channel == 4) {
-    // Same as Channel 0 but with the settings for channel 4
-  } else if constexpr (Channel == 5) {
-    // Same as Channel 0 but with the settings for channel 5
-  } else if constexpr (Channel == 6) {
-    // Same as Channel 0 but with the settings for channel 6
-  } else if constexpr (Channel == 7) {
-    // Same as Channel 0 but with the settings for channel 7
-  } else {
-    // Place a static assert here to generate a compiler error for the user if
-    // the accidentally used a channel outside of the bounds of the ADC driver.
-    static_assert(error::invalid_option<Channel>,
-                  "\n\n"
-                  "LPC40xx Compile Time Error:\n"
-                  "    LPC40xx only supports ADC channels from 0 to 7. \n"
-                  "\n");
-    return get_adc<0>();
-  }
-}
-
-// Implement the driver outside of the class in an inline function.
-inline boost::leaf::result<percent> adc::driver_read()
-{
-  // implementation here ...
-  // Don't forget the return value ...
-}
-}  // namespace embed::lpc40xx
-```
+1. Keep the global namespace clean of any implementation details. This can be
+   done by nesting all of the supporting code inside of the peripheral library's
+   class. This includes memory maps, bit masks, const/constexpr values.
+2. Do not depend on the data section being initialized when the constructor is
+   executed. This means that non-zero initialized global variables are not
+   allowed for drivers. This includes `static inline` variables nested within
+   the class.
+3. All drivers must be single phase initialized, meaning that that a driver must
+   be usable after it has been constructed. Drivers should initialize any hard
+   dependencies such as interrupt vector tables, or clock initializations should
+   be done at this point in the code.
+4. Expect that that the `.bss` section will be cleared to `0`
+5. Expect that the order of constructors across compilation is effectively
+   random.
 
 </details>
 
 <details>
 <summary>Device Drivers</summary>
 
-TDB
+Some rules for device drivers:
+
+1. Constructors should take
 
 </details>
 </details>
