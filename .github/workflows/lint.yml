@@ -36,7 +36,7 @@ jobs:
 
       - name: 📥 Install pip package 'clang' & 'pyyaml' (for ncc)
         shell: bash
-        run: python3 -m pip install clang pyyaml
+        run: python3 -m pip install clang==11.1 pyyaml
 
       # Because inputs.library is required for workflow_calls, if this value is
       # blank it means that the workflow was ran in libembeddedhal and not
