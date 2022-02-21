@@ -47,6 +47,7 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/dac/dac.test.cpp
   tests/counter/counter.test.cpp
   tests/counter/counter_utility.test.cpp
+  tests/counter/uptime_counter.test.cpp
   tests/overflow_counter.test.cpp
   tests/gpio/gpio.test.cpp
   tests/static_memory_resource.test.cpp

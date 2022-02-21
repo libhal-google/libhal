@@ -64,15 +64,15 @@ template<std::integral T, size_t SourceWidth, std::integral U>
 
   static_assert(SourceWidth >= 2, "Bit Width must be greater than ");
 
-  // Calculate the difference between the destination and the source width
-  constexpr size_t width_difference = output_bit_width - SourceWidth;
-
   constexpr size_t final_source_width =
-    (std::is_signed_v<T>) ? SourceWidth - 1 : SourceWidth;
+    (std::is_signed_v<U>) ? SourceWidth - 1 : SourceWidth;
   constexpr size_t final_width =
     (std::is_signed_v<T>) ? output_bit_width - 1 : output_bit_width;
 
-  T result = static_cast<T>(p_value) << width_difference;
+  // Calculate the difference between the destination and the source width
+  constexpr size_t width_difference = final_width - final_source_width;
+
+  T result = static_cast<T>(p_value << width_difference);
 
   if (p_value > 0) {
     for (size_t i = final_source_width; i < final_width;

@@ -86,7 +86,7 @@ boost::ut::suite frequency_user_defined_literals_test = []() {
 
   "frequency duration from cycles"_test = []() {
     expect(that % 1400us == (1_MHz).duration_from_cycles(1400));
-    expect(that % 2380929ns == (14_MHz).duration_from_cycles(33333));
+    expect(that % 2380943ns == (14_MHz).duration_from_cycles(33333));
     expect(that % 10'250ms == (1_kHz).duration_from_cycles(10'250));
     expect(that % 12'000'000ns == (1000_MHz).duration_from_cycles(12'000'000));
     expect(that % 0ns == (1000_MHz).duration_from_cycles(0));

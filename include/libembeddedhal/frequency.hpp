@@ -145,18 +145,36 @@ public:
   }
 
   /**
-   * @brief Calculates and returns the wavelength of the frequency in
-   * femtoseconds.
+   * @brief
    *
    * @return std::chrono::duration<uint64_t, std::femto> - wavelength of the
    * frequency in femtoseconds.
    */
-  std::chrono::duration<uint64_t, std::femto> femtoseconds_in_wavelength() const
+
+  /**
+   * @brief Calculates and returns the wavelength of the frequency in
+   * seconds.
+   *
+   * @tparam Period - desired period (defaults to std::pico for picoseconds).
+   * @return std::chrono::duration<int64_t, Period> - time based wavelength of
+   * the frequency.
+   */
+  template<typename Period = std::pico>
+  std::chrono::duration<int64_t, Period> wavelength() const
   {
-    std::uint64_t numerator = std::femto::den;
-    std::uint64_t denominator = std::femto::num * m_cycles_per_second;
+    // Full Equation (based on the equation in cycles_per()):
+    // =========================================================================
+    //
+    //                /    cycles * ratio_den    \_
+    //   |period| =  | ---------------------------|
+    //                \ frequency_hz * ratio_num /
+    //
+
+    // In this case the number of cycles is 1.
+    std::uint64_t numerator = 1 * Period::den;
+    std::uint64_t denominator = Period::num * m_cycles_per_second;
     std::uint64_t duration = rounding_division(numerator, denominator);
-    return std::chrono::duration<uint64_t, std::femto>(duration);
+    return std::chrono::duration<int64_t, Period>(duration);
   }
 
   /**
@@ -174,30 +192,10 @@ public:
   [[nodiscard]] constexpr std::chrono::duration<Rep, Period>
   duration_from_cycles(std::uint64_t p_cycles) const noexcept
   {
-    // Full Equation (based on the equation in cycles_per()):
-    // =========================================================================
-    //
-    //                /    cycles * ratio_den    \_
-    //   |period| =  | ---------------------------|
-    //                \ frequency_hz * ratio_num /
-    //
-
-    // This value is a best guess for which frequency ranges work best for femto
-    // second calculations vs direct calculations.
-    constexpr uint64_t use_femtosecond_limit = 100'000'000;
-    // When the frequency is very high, to prevent overflows, calculations are
-    // done using femtoseconds and the cycle count and then downscaled to
-    // nanoseconds.
-    if (m_cycles_per_second > use_femtosecond_limit) {
-      auto femto = femtoseconds_in_wavelength();
-      femto *= p_cycles;
-      return std::chrono::duration_cast<std::chrono::nanoseconds>(femto);
-    } else {
-      std::uint64_t numerator = p_cycles * Period::den;
-      std::uint64_t denominator = Period::num * m_cycles_per_second;
-      std::uint64_t duration = rounding_division(numerator, denominator);
-      return std::chrono::duration<Rep, Period>(duration);
-    }
+    constexpr uint64_t magnitude_delta = std::pico::den / std::nano::den;
+    auto picoseconds = wavelength<std::pico>() * p_cycles;
+    auto nanoseconds = rounding_division(picoseconds.count(), magnitude_delta);
+    return std::chrono::nanoseconds(nanoseconds);
   }
 
   /**
@@ -297,8 +295,8 @@ public:
    * @param p_input - the input frequency to be divided down to the target
    * frequency with an integer divider
    * @param p_target - the target frequency to reach via an integer divider
-   * @return constexpr std::uint32_t - frequency divider value representing the
-   * number of cycles in the input that constitute one cycle in the target
+   * @return constexpr std::uint32_t - frequency divider value representing
+   * the number of cycles in the input that constitute one cycle in the target
    * frequency.
    */
   [[nodiscard]] constexpr friend std::uint32_t operator/(
