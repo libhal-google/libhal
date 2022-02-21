@@ -2,43 +2,9 @@
 
 #include "../time.hpp"
 #include "counter.hpp"
+#include "uptime_counter.hpp"
 
 namespace embed {
-/**
- * @brief Reset counter
- *
- * @param p_counter - hardware counter driver
- * @return boost::leaf::result<void> - any errors that occurred when attempting
- * to reset counter.
- */
-[[nodiscard]] inline boost::leaf::result<void> reset(
-  counter& p_counter) noexcept
-{
-  return p_counter.control(counter::controls::reset);
-}
-/**
- * @brief Start counter
- *
- * @param p_counter - hardware counter driver
- * @return boost::leaf::result<void> - any errors that occurred when attempting
- * to start counter.
- */
-[[nodiscard]] inline boost::leaf::result<void> start(
-  counter& p_counter) noexcept
-{
-  return p_counter.control(counter::controls::start);
-}
-/**
- * @brief Stop counter
- *
- * @param p_counter - hardware counter driver
- * @return boost::leaf::result<void> - any errors that occurred when attempting
- * to stop counter.
- */
-[[nodiscard]] inline boost::leaf::result<void> stop(counter& p_counter) noexcept
-{
-  return p_counter.control(counter::controls::stop);
-}
 /**
  * @brief pause execution for this duration of time using a hardware counter
  * object.
@@ -46,18 +12,23 @@ namespace embed {
  * @param p_counter - hardware counter driver
  * @param p_wait_duration - the amount of time to pause execution for
  */
-inline void wait_for(counter& p_counter,
-                     std::chrono::nanoseconds p_wait_duration) noexcept
+inline boost::leaf::result<void> wait_for(
+  counter& p_counter,
+  std::chrono::nanoseconds p_wait_duration) noexcept
 {
-  const auto start_time = p_counter.uptime();
-  const auto end_time = start_time + p_wait_duration;
+  const auto frequency = BOOST_LEAF_CHECK(p_counter.frequency());
+  const auto start_count = BOOST_LEAF_CHECK(p_counter.uptime());
+  const auto end_count = start_count + frequency.cycles_per(p_wait_duration);
 
-  while (end_time >= p_counter.uptime()) {
+  while (end_count >= BOOST_LEAF_CHECK(p_counter.uptime())) {
     continue;
   }
 }
 /**
- * @brief Use this counter as the global sleep function
+ * @brief Use this counter as the global sleep function.
+ *
+ * The counter must be infailable meaning that frequency() and uptime()
+ * must never return an error, otherwise the program will abort.
  *
  * @param p_counter - hardware counter driver
  */
@@ -68,13 +39,17 @@ inline void set_as_global_sleep(counter& p_counter) noexcept
   });
 }
 /**
- * @brief Use this counter as the global sleep function
+ * @brief Use this counter as the global sleep function.
+ *
+ * The counter must be infailable meaning that frequency() and uptime()
+ * must never return an error, otherwise the program will abort.
  *
  * @param p_counter - hardware counter driver
  */
-inline void set_as_global_uptime(counter& p_counter) noexcept
+inline void set_as_global_uptime(uptime_counter& p_counter) noexcept
 {
-  this_thread::set_global_uptime(
-    [&p_counter]() -> std::chrono::nanoseconds { return p_counter.uptime(); });
+  this_thread::set_global_uptime([&p_counter]() -> std::chrono::nanoseconds {
+    return p_counter.uptime().value();
+  });
 }
 }  // namespace embed

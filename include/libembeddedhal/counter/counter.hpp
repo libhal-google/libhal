@@ -17,46 +17,33 @@ namespace embed {
 class counter
 {
 public:
-  /// Set of controls for a counter.
-  enum class controls
+  /**
+   * @brief Enumerations listing out the potential errors a counter could
+   * encounter
+   *
+   */
+  enum class errors
   {
-    /// Start the counter
-    start,
-    /// Stop a counter
-    stop,
-    /// Control value to reset a counter. The counter shall remain in a
-    /// running or stopped state after this call. So an ongoing counter will
-    /// continue to count but will have its counter reset to zero if this
-    /// control is used. If a counter is stopped, then it shall be reset to
-    /// zero, and stay stopped.
-    reset,
+    /// The counter has back tracked and a previous value is greater than the
+    /// current value. This is an invalid state for a hardware counter and
+    /// considered an error.
+    backtrack,
   };
+
   /**
-   * @brief Control the state of the counter
+   * @brief Returns the operating frequency of the counter.
    *
-   * @param p_control - new state for the counter
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
+   * @return boost::leaf::result<embed::frequency> - the operating frequency of
+   * the counter.
    */
-  [[nodiscard]] virtual boost::leaf::result<void> control(
-    controls p_control) noexcept
+  [[nodiscard]] boost::leaf::result<embed::frequency> frequency() noexcept
   {
-    return driver_control(p_control);
-  }
-  /**
-   * @brief Determine if the counter is currently running.
-   *
-   * If attempting to check if the counter is running results in an error,
-   * then treat that as if the counter is not active and return false.
-   *
-   * @return bool - true if the counter is currently running.
-   */
-  [[nodiscard]] virtual bool is_running() noexcept
-  {
-    return driver_is_running();
+    return driver_frequency();
   }
   /**
    * @brief Get the uptime of the counter since it has started.
+   *
+   * The count for a counter must always count up.
    *
    * Most counters are only support 32-bits or lower. In this case there are
    * multiple way to increase the bit width of the counter:
@@ -71,15 +58,13 @@ public:
    * @return std::chrono::nanoseconds - the current uptime since the counter has
    * started.
    */
-  [[nodiscard]] std::chrono::nanoseconds uptime() noexcept
+  [[nodiscard]] boost::leaf::result<std::uint64_t> uptime() noexcept
   {
     return driver_uptime();
   }
 
 private:
-  virtual boost::leaf::result<void> driver_control(
-    controls p_control) noexcept = 0;
-  virtual bool driver_is_running() noexcept = 0;
-  virtual std::chrono::nanoseconds driver_uptime() noexcept = 0;
+  virtual boost::leaf::result<std::uint64_t> driver_uptime() noexcept = 0;
+  virtual boost::leaf::result<embed::frequency> driver_frequency() noexcept = 0;
 };
 }  // namespace embed
