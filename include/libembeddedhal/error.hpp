@@ -186,6 +186,3 @@ setup(
                                });
 }
 }  // namespace embed::error
-
-/// shorthand for BOOST_LEAF_CHECK
-#define EMBED_CHECK(expr) BOOST_LEAF_CHECK(expr)

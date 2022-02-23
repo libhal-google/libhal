@@ -53,7 +53,7 @@ boost::ut::suite driver_test = []() {
   boost::leaf::try_handle_all(
     [&impl]() -> boost::leaf::result<void> {
       auto on_error = embed::error::setup();
-      EMBED_CHECK(impl.configure({}));
+      BOOST_LEAF_CHECK(impl.configure({}));
       return {};
     },
     [](dummy_error const&,
