@@ -27,54 +27,61 @@ public:
     /// @brief The serial clock rate in hertz.
     frequency clock_rate = default_clock_rate;
   };
-  /**
-   * @brief Error type indicating that the i2c transaction resulted in a NACK,
-   * meaning "not acknowledge". NACKs occur when an address has been placed on
-   * the i2c bus and no device connected to the bus returned an acknowledge
-   * signal.
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - In cases where the program is scanning for available addresses, this
-   *   error is expected behaviour. This is less of an error to handle but an
-   *   expected return status.
-   *
-   * - If a driver has a set of possible addresses that it can use, and for that
-   *   driver it makes sense to attempt to search for the valid address, then a
-   *   handler can keep performing transactions until a valid address is found
-   *   and then store that address.
-   *
-   * - In the case where the address is consistently NACK'ed but the driver
-   *   expects a specific address, this is typically not handleable and
-   *   indicates that the application or driver is incorrect in the device
-   *   address.
-   *
-   * - In the case where NACK's are spurious, then this may indicate that the
-   *   i2c line is faulty or the device is misbehaving. This is not fixable in
-   *   the application. But in some cases, if a software solution is required,
-   *   the driver or application can simply retry again until a valid response
-   *   is returned, but results may vary and are very specific to the devices
-   *   and context of the situation.
-   *
-   */
-  struct address_not_acknowledged
-  {};
 
   /**
-   * @brief Error type indicating that the i2c lines were put into an invalid
-   * state during the transaction due to interference, misconfiguration of the
-   * i2c peripheral or the addressed device or something else.
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - In the event of this type of error, state the addressed device undefined.
-   *   In the case of data reception, the data coming from the addressed device
-   *   should be considered invalid. Any deeper handling will require deep
-   *   context regarding the addressed device the transaction taking place.
+   * @brief General errors associated with I2C communication failures
    *
    */
-  struct bus_error
-  {};
+  enum class errors
+  {
+    /**
+     * @brief Error type indicating that the i2c transaction resulted in a NACK,
+     * meaning "not acknowledge". NACKs occur when an address has been placed on
+     * the i2c bus and no device connected to the bus returned an acknowledge
+     * signal.
+     *
+     * <b>How to handle these errors:</b>
+     *
+     * - In cases where the program is scanning for available addresses, this
+     *   error is expected behaviour. This is less of an error to handle but an
+     *   expected return status.
+     *
+     * - If a driver has a set of possible addresses that it can use, and for
+     * that driver it makes sense to attempt to search for the valid address,
+     * then a handler can keep performing transactions until a valid address is
+     * found and then store that address.
+     *
+     * - In the case where the address is consistently NACK'ed but the driver
+     *   expects a specific address, this is typically not handleable and
+     *   indicates that the application or driver is incorrect in the device
+     *   address.
+     *
+     * - In the case where NACK's are spurious, then this may indicate that the
+     *   i2c line is faulty or the device is misbehaving. This is not fixable in
+     *   the application. But in some cases, if a software solution is required,
+     *   the driver or application can simply retry again until a valid response
+     *   is returned, but results may vary and are very specific to the devices
+     *   and context of the situation.
+     *
+     */
+    address_not_acknowledged,
+
+    /**
+     * @brief Error type indicating that the i2c lines were put into an invalid
+     * state during the transaction due to interference, misconfiguration of the
+     * i2c peripheral or the addressed device or something else.
+     *
+     * <b>How to handle these errors:</b>
+     *
+     * - In the event of this type of error, state the addressed device
+     * undefined. In the case of data reception, the data coming from the
+     * addressed device should be considered invalid. Any deeper handling will
+     * require deep context regarding the addressed device the transaction
+     * taking place.
+     *
+     */
+    bus_error,
+  };
 
   /**
    * @brief Configure i2c to match the settings supplied
