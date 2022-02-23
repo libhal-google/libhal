@@ -295,7 +295,7 @@ boost::ut::suite serial_util_test = []() {
     boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
         std::array<std::byte, buffer_size_for_timeout> expected_buffer;
-        EMBED_CHECK(read(serial, expected_buffer, 0ns));
+        BOOST_LEAF_CHECK(read(serial, expected_buffer, 0ns));
         return {};
       },
       []([[maybe_unused]] embed::error::timeout p_timeout) { expect(true); },
@@ -342,7 +342,7 @@ boost::ut::suite serial_util_test = []() {
     boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
         std::array<std::byte, buffer_size_for_timeout> expected_buffer;
-        EMBED_CHECK(
+        BOOST_LEAF_CHECK(
           write_then_read(serial, expected_payload, expected_buffer, 0ns));
         return {};
       },
@@ -453,7 +453,7 @@ boost::ut::suite serial_util_test = []() {
     // Exercise
     boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
-        EMBED_CHECK(write_then_read<buffer_size_for_timeout>(
+        BOOST_LEAF_CHECK(write_then_read<buffer_size_for_timeout>(
           serial, expected_payload, 0ns));
         return {};
       },

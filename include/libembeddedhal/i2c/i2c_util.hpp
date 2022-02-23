@@ -53,7 +53,7 @@ template<size_t BytesToRead>
   std::byte p_address) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  EMBED_CHECK(read(p_i2c, p_address, buffer));
+  BOOST_LEAF_CHECK(read(p_i2c, p_address, buffer));
   return buffer;
 }
 /**
@@ -96,7 +96,7 @@ write_then_read(i2c& p_i2c,
                 std::span<const std::byte> p_data_out) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  EMBED_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer));
+  BOOST_LEAF_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer));
   return buffer;
 }
 }  // namespace embed

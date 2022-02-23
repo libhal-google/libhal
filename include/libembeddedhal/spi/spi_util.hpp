@@ -57,7 +57,7 @@ template<size_t BytesToRead>
   std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  EMBED_CHECK(p_spi.transfer(std::span<std::byte>{}, buffer, p_filler));
+  BOOST_LEAF_CHECK(p_spi.transfer(std::span<std::byte>{}, buffer, p_filler));
   return buffer;
 }
 
@@ -86,8 +86,8 @@ template<size_t BytesToRead>
   std::span<std::byte> p_data_in,
   std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
-  EMBED_CHECK(write(p_spi, p_data_out));
-  EMBED_CHECK(read(p_spi, p_data_in, p_filler));
+  BOOST_LEAF_CHECK(write(p_spi, p_data_out));
+  BOOST_LEAF_CHECK(read(p_spi, p_data_in, p_filler));
   return {};
 }
 
@@ -109,7 +109,7 @@ write_then_read(spi& p_spi,
                 std::span<const std::byte> p_data_out,
                 std::byte p_filler = std::byte{ 0xFF }) noexcept
 {
-  EMBED_CHECK(write(p_spi, p_data_out));
+  BOOST_LEAF_CHECK(write(p_spi, p_data_out));
   return read<BytesToRead>(p_spi, p_filler);
 }
 }  // namespace embed

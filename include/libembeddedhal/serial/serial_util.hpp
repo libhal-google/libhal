@@ -18,19 +18,19 @@ namespace embed {
   if (p_timeout) {
     auto current_time = this_thread::uptime();
     auto timeout_time = current_time + p_timeout.value();
-    size_t bytes_available = EMBED_CHECK(p_serial.bytes_available());
+    size_t bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
 
     while (bytes_available < p_length) {
       current_time = this_thread::uptime();
       if (current_time > timeout_time) {
         return boost::leaf::new_error(error::timeout{});
       }
-      bytes_available = EMBED_CHECK(p_serial.bytes_available());
+      bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
     }
   } else {
-    size_t bytes_available = EMBED_CHECK(p_serial.bytes_available());
+    size_t bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
     while (bytes_available < p_length) {
-      bytes_available = EMBED_CHECK(p_serial.bytes_available());
+      bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
     }
   }
 
@@ -49,7 +49,7 @@ namespace embed {
   std::span<std::byte> p_data_in,
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt)
 {
-  EMBED_CHECK(wait(p_serial, p_data_in.size(), p_timeout));
+  BOOST_LEAF_CHECK(wait(p_serial, p_data_in.size(), p_timeout));
   return p_serial.read(p_data_in);
 }
 
@@ -59,8 +59,8 @@ template<size_t BytesToRead>
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  EMBED_CHECK(wait(p_serial, BytesToRead, p_timeout));
-  EMBED_CHECK(p_serial.read(buffer));
+  BOOST_LEAF_CHECK(wait(p_serial, BytesToRead, p_timeout));
+  BOOST_LEAF_CHECK(p_serial.read(buffer));
   return buffer;
 }
 
@@ -70,8 +70,8 @@ template<size_t BytesToRead>
   std::span<std::byte> p_data_in,
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt) noexcept
 {
-  EMBED_CHECK(write(p_serial, p_data_out));
-  EMBED_CHECK(read(p_serial, p_data_in, p_timeout));
+  BOOST_LEAF_CHECK(write(p_serial, p_data_out));
+  BOOST_LEAF_CHECK(read(p_serial, p_data_in, p_timeout));
   return {};
 }
 
@@ -83,7 +83,7 @@ write_then_read(
   std::optional<std::chrono::nanoseconds> p_timeout = std::nullopt) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  EMBED_CHECK(write_then_read(p_serial, p_data_out, buffer, p_timeout));
+  BOOST_LEAF_CHECK(write_then_read(p_serial, p_data_out, buffer, p_timeout));
   return buffer;
 }
 }  // namespace embed
