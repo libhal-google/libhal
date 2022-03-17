@@ -16,11 +16,11 @@ inline boost::leaf::result<void> wait_for(
   counter& p_counter,
   std::chrono::nanoseconds p_wait_duration) noexcept
 {
-  const auto frequency = BOOST_LEAF_CHECK(p_counter.frequency());
-  const auto start_count = BOOST_LEAF_CHECK(p_counter.uptime());
-  const auto end_count = start_count + frequency.cycles_per(p_wait_duration);
+  const auto [frequency, start_count] = BOOST_LEAF_CHECK(p_counter.uptime());
+  const auto cycles = BOOST_LEAF_CHECK(frequency.cycles_per(p_wait_duration));
+  const auto end_count = start_count + cycles;
 
-  while (end_count >= BOOST_LEAF_CHECK(p_counter.uptime())) {
+  while (end_count >= BOOST_LEAF_CHECK(p_counter.uptime()).count) {
     continue;
   }
 }

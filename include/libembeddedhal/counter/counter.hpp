@@ -18,53 +18,31 @@ class counter
 {
 public:
   /**
-   * @brief Enumerations listing out the potential errors a counter could
-   * encounter
+   * @brief Representation of a counter's uptime
    *
    */
-  enum class errors
+  struct uptime_t
   {
-    /// The counter has back tracked and a previous value is greater than the
-    /// current value. This is an invalid state for a hardware counter and
-    /// considered an error.
-    backtrack,
+    /// Current operating frequency of the counter
+    embed::frequency frequency;
+    /// The current count of the counter
+    std::uint32_t count;
   };
 
   /**
-   * @brief Returns the operating frequency of the counter.
-   *
-   * @return boost::leaf::result<embed::frequency> - the operating frequency of
-   * the counter.
-   */
-  [[nodiscard]] boost::leaf::result<embed::frequency> frequency() noexcept
-  {
-    return driver_frequency();
-  }
-  /**
    * @brief Get the uptime of the counter since it has started.
    *
-   * The count for a counter must always count up.
+   * The count for a counterr will always count up.
+   * Hardware counters must support 32-bit counts.
    *
-   * Most counters are only support 32-bits or lower. In this case there are
-   * multiple way to increase the bit width of the counter:
-   *
-   *  1. Use the overflow_count class to detect overflows each time the count is
-   *     called. In cases where this is used, the counter::count() must be
-   *     called often enough to detect overflows
-   *  2. Use the overflow_count class with overflow interrupt. This will
-   *     eliminate the need to call the count often enough to detect the
-   *     overflows.
-   *
-   * @return std::chrono::nanoseconds - the current uptime since the counter has
-   * started.
+   * @return uptime_t - the current uptime since the counter has started.
    */
-  [[nodiscard]] boost::leaf::result<std::uint64_t> uptime() noexcept
+  [[nodiscard]] boost::leaf::result<uptime_t> uptime() noexcept
   {
     return driver_uptime();
   }
 
 private:
-  virtual boost::leaf::result<std::uint64_t> driver_uptime() noexcept = 0;
-  virtual boost::leaf::result<embed::frequency> driver_frequency() noexcept = 0;
+  virtual boost::leaf::result<uptime_t> driver_uptime() noexcept = 0;
 };
 }  // namespace embed

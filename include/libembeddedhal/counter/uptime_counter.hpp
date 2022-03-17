@@ -37,16 +37,11 @@ public:
    */
   boost::leaf::result<std::chrono::nanoseconds> uptime()
   {
-    using rep = std::chrono::nanoseconds::rep;
-    using period = std::chrono::nanoseconds::period;
-    auto frequency = BOOST_LEAF_CHECK(m_counter->frequency());
-    auto new_uptime = BOOST_LEAF_CHECK(m_counter->uptime());
-    if (new_uptime < m_previous_count) {
-      return boost::leaf::new_error(counter::errors::backtrack);
-    }
-    auto time_delta = new_uptime - m_previous_count;
+    const auto [frequency, new_uptime] = BOOST_LEAF_CHECK(m_counter->uptime());
+    auto time_delta =
+      static_cast<decltype(m_previous_count)>(new_uptime - m_previous_count);
     auto nanosecond_delta =
-      frequency.duration_from_cycles<rep, period>(time_delta);
+      BOOST_LEAF_CHECK(frequency.duration_from_cycles(time_delta));
     m_last_uptime += nanosecond_delta;
     m_previous_count = new_uptime;
     return m_last_uptime;
@@ -54,7 +49,7 @@ public:
 
 private:
   counter* m_counter = nullptr;
-  uint64_t m_previous_count{};
+  uint32_t m_previous_count{};
   std::chrono::nanoseconds m_last_uptime{};
 };
 }  // namespace embed

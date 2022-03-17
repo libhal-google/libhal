@@ -344,10 +344,10 @@ boost::ut::suite percent_to_string_test = []() {
   expect(get_actual_string() == std::string_view{ "-0.000000000" });
 
   // Percentage is effectively 1
-  value = percent::from_ratio(2, 2147483647);
+  value = percent::from_ratio(3, 2147483647);
   expect(get_actual_string() == std::string_view{ "+0.000000001" });
 
-  value = percent::from_ratio(-2, 2147483647);
+  value = percent::from_ratio(-3, 2147483647);
   expect(get_actual_string() == std::string_view{ "-0.000000001" });
 
   // Percentage is effectively 100%

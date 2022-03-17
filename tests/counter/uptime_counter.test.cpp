@@ -12,19 +12,14 @@ boost::ut::suite uptime_utility_test = []() {
   class mock_counter : public embed::counter
   {
   public:
-    boost::leaf::result<embed::frequency> driver_frequency() noexcept override
-    {
-      return m_frequency;
-    };
-
-    boost::leaf::result<std::uint64_t> driver_uptime() noexcept override
+    boost::leaf::result<uptime_t> driver_uptime() noexcept override
     {
       auto count = uptime_sequence.front();
       uptime_sequence.pop();
-      return count;
+      return uptime_t{ m_frequency, count };
     };
 
-    std::queue<std::uint64_t> uptime_sequence{};
+    std::queue<std::uint32_t> uptime_sequence{};
 
   private:
     embed::frequency m_frequency{ 1'000_MHz };
@@ -118,45 +113,36 @@ boost::ut::suite uptime_utility_test = []() {
     // Setup
     mock_counter mock;
     uptime_counter uptime(mock);
-    // 9223372 seconds is the approximate limit for frequency to duration
-    // calculations so we will push that up to ns and see what happens.
+    constexpr auto max = std::numeric_limits<uint32_t>::max();
+    constexpr auto max_ns = std::chrono::nanoseconds(max);
+    constexpr auto d_max = max_ns * 2;
+
     mock.uptime_sequence.push(1);
-    mock.uptime_sequence.push(9223372 * std::nano::den);
-    mock.uptime_sequence.push((9223372 * std::nano::den) + 1);
-    mock.uptime_sequence.push((9223372 * std::nano::den) * 2);
+    mock.uptime_sequence.push(100);
+    mock.uptime_sequence.push(max);
+    mock.uptime_sequence.push(50'000);
+    mock.uptime_sequence.push(max);
+    mock.uptime_sequence.push(12'345);
 
     // Exercise
     auto nanoseconds0 = uptime.uptime().value();
     auto nanoseconds1 = uptime.uptime().value();
     auto nanoseconds2 = uptime.uptime().value();
     auto nanoseconds3 = uptime.uptime().value();
+    auto nanoseconds4 = uptime.uptime().value();
+    auto nanoseconds5 = uptime.uptime().value();
 
     // Verify
     expect(that % (1ns).count() == nanoseconds0.count());
-    expect(that % (9223372000000000ns).count() == nanoseconds1.count());
-    expect(that % (9223372000000001ns).count() == nanoseconds2.count());
-    expect(that % (9223372000000000ns * 2).count() == nanoseconds3.count());
+    expect(that % (100ns).count() == nanoseconds1.count());
+    expect(that % max_ns.count() == nanoseconds2.count());
+    expect(that % (max_ns + 50'000ns + 1ns).count() == nanoseconds3.count());
+    expect(that % (d_max + 1ns).count() == nanoseconds4.count());
+    expect(that % (d_max + 12'345ns + 2ns).count() == nanoseconds5.count());
   };
 
   "[uptime_counter] errors"_test = []() {
-    // Setup
-    mock_counter mock;
-    uptime_counter uptime(mock);
-    mock.uptime_sequence.push(20);
-    mock.uptime_sequence.push(19);
-
-    // Exercise
-    boost::leaf::try_handle_all(
-      [&uptime]() -> boost::leaf::result<void> {
-        auto nanoseconds0 = uptime.uptime().value();
-        // Error should occur here!
-        auto nanoseconds1 = BOOST_LEAF_CHECK(uptime.uptime());
-        return {};
-      },
-      [](counter::errors p_error) {
-        expect(p_error == counter::errors::backtrack);
-      },
-      []() { expect(false) << "Backtrack error was not emitted"; });
+    // None at the moment
   };
 };
 }  // namespace embed
