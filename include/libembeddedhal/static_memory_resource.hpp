@@ -57,7 +57,7 @@ public:
 
 protected:
   /**
-   * @brief Implemenation of the do_allocate() method for
+   * @brief Implementation of the do_allocate() method for
    * std::pmr::memory_resource
    *
    * @param p_bytes - number of bytes to allocate
@@ -79,7 +79,7 @@ protected:
     return allocated_address;
   }
   /**
-   * @brief Implemenation of the do_deallocate() method for
+   * @brief Implementation of the do_deallocate() method for
    * std::pmr::memory_resource
    *
    * @param p_address - address of space to be deallocated
@@ -93,7 +93,7 @@ protected:
     return m_resource.deallocate(p_address, p_bytes, p_alignment);
   }
   /**
-   * @brief Implemenation of the do_is_equal() method for
+   * @brief Implementation of the do_is_equal() method for
    * std::pmr::memory_resource
    *
    * @param p_other - another memory resource to

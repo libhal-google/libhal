@@ -84,27 +84,24 @@ public:
    */
   [[nodiscard]] constexpr auto cycles_per_second() const noexcept
   {
-    return absolute_value(m_cycles_per_second);
+    return m_cycles_per_second;
   }
 
   /**
-   * @brief Calculate the frequency divider required to generate the output
+   * @brief Calculate the frequency divide required to generate the output
    * frequency provided.
    *
    * @param p_target - the target output frequency
-   * @return constexpr std::uint32_t - the divider, when applied to this
+   * @return constexpr std::uint32_t - the divide, when applied to this
    * frequency, will achieve the p_target frequency. A value of is an error and
    * 0 indicates that the output frequency is greater than this frequency and
-   * there does not exist an integer divider that can produce the output
+   * there does not exist an integer divide that can produce the output
    * frequency.
    */
-  [[nodiscard]] constexpr std::uint32_t divider(
+  [[nodiscard]] constexpr std::uint32_t divide(
     frequency p_target) const noexcept
   {
-    if (p_target.m_cycles_per_second > cycles_per_second()) {
-      return 0;
-    }
-    return rounding_division(cycles_per_second(), p_target.m_cycles_per_second);
+    return rounding_division(cycles_per_second(), p_target.cycles_per_second());
   }
 
   /**
@@ -112,15 +109,15 @@ public:
    * duration. This function is meant for timers to determine how many count
    * cycles are needed to reach a paricular time duration at this frequency.
    *
-   * @tparam Rep - type of the duration
-   * @tparam Period - ratio of the time duration relative to 1 second
-   * @param p_duration - the target time duration to get a cycle count from
-   * @return constexpr std::uint32_t - the number of cycles of this frequency
-   * within the duration.
+   * nanoseconds duration cannot exceed 4294967297000000000ns or ~136.1 average
+   * Gregorian years otherwise the output of this function is not defined.
+   *
+   * @param p_duration - the amount of time to convert to cycles
+   * @return boost::leaf::result<std::uint64_t> - either the number of cycles or
+   * `std::errc::result_out_of_range`.
    */
-  template<typename Rep, typename Period>
-  [[nodiscard]] constexpr std::uint32_t cycles_per(
-    std::chrono::duration<Rep, Period> p_duration) const noexcept
+  [[nodiscard]] boost::leaf::result<std::uint64_t> cycles_per(
+    std::chrono::nanoseconds p_duration) const noexcept
   {
     // Full Equation:
     // =========================================================================
@@ -129,50 +126,70 @@ public:
     //   frequency_hz * |period| * | ----------- |  = cycles
     //                              \ ratio_den /
     //
+    // std::chrono::nanoseconds::period::num == 1
+    // std::chrono::nanoseconds::period::den == 1,000,000,000
 
-    // Make sure duration is a positive as the cycle count will always be a
-    // positive number.
-    const std::intmax_t absolute_duration = std::imaxabs(p_duration.count());
-    // The number of cycles between an input frequency and a duration can be
-    // found by multiplying the frequency by the time duration. The units cancel
-    // out and you get the number of clock intervals within a time period.
-    std::intmax_t cycle_count = cycles_per_second() * absolute_duration;
-    // The value is multiplied up before division to prevent as much lose of
-    // accuracy as possible.
-    cycle_count = rounding_division((cycle_count * Period::num), Period::den);
+    using uint128_t = math::wide_integer::uint128_t;
 
-    return static_cast<std::uint32_t>(cycle_count);
+    constexpr uint128_t numerator = decltype(p_duration)::period::num;
+    constexpr uint128_t denominator = decltype(p_duration)::period::den;
+    // Storing 64-bit value in a uint128_t for later computation, no truncation
+    // possible.
+    const uint128_t duration = absolute_value(p_duration.count());
+    // Duration contains at most a 64-bit number, cycles_per_second() is a
+    // 32-bit number, and numerator is always the value 1.
+    //
+    // To contain the maximum resultant possible requires storage within an
+    // integer of size 96-bits, and thus will fit within a uint128_t variable,
+    // no overflow checks required.
+    const uint128_t count = duration * cycles_per_second() * numerator;
+    const uint128_t cycle_count = rounding_division(count, denominator);
+
+    // The nanoseconds denominator is 1,000,000,000. It's log2 value of ~29.897
+    // meaning one would need a 30 bit integer to represent it. Dividing a
+    // number by it will reduce the number of its it needs to be stored in by
+    // ~30. Because 96-bits - 30-bits is equal to 66-bits, it is possible that
+    // the resultant will not fit within a 64-bit unsigned integer, and thus a
+    // bounds check is required.
+    if (cycle_count > std::numeric_limits<std::uint64_t>::max()) {
+      return boost::leaf::new_error(std::errc::result_out_of_range);
+    }
+
+    return static_cast<std::uint64_t>(cycle_count);
   }
-
-  /**
-   * @brief
-   *
-   * @return std::chrono::duration<uint64_t, std::femto> - wavelength of the
-   * frequency in femtoseconds.
-   */
 
   /**
    * @brief Calculates and returns the wavelength of the frequency in
    * seconds.
    *
-   * @tparam Period - desired period (defaults to std::pico for picoseconds).
+   * @tparam Period - desired period (defaults to std::femto for femtoseconds).
    * @return std::chrono::duration<int64_t, Period> - time based wavelength of
    * the frequency.
    */
-  template<typename Period = std::pico>
+  template<typename Period = std::femto>
   std::chrono::duration<int64_t, Period> wavelength() const
   {
     // Full Equation (based on the equation in cycles_per()):
     // =========================================================================
     //
-    //                /    cycles * ratio_den    \_
+    //                /  cycle_count * ratio_den \_
     //   |period| =  | ---------------------------|
-    //                \ frequency_hz * ratio_num /
+    //                \ ratio_num * frequency_hz /
     //
+    // let cycle_count = 1
+    // --> Wavelength is the length of a single cycle
+    //
+    // let ratio_num = 1
+    // --> Smallest frequency can only be as small as 1Hz. No wavelengths with
+    //     numerators
 
-    // In this case the number of cycles is 1.
-    std::uint64_t numerator = 1 * Period::den;
-    std::uint64_t denominator = Period::num * m_cycles_per_second;
+    static_assert(Period::num == 1,
+                  "Period::num of 1 are allowed for this function.");
+    static_assert(Period::den <= 1000000000000000000,
+                  "Peroid::den cannot exceed 1000000000000000000.");
+
+    std::uint64_t numerator = Period::den;
+    std::uint64_t denominator = cycles_per_second();
     std::uint64_t duration = rounding_division(numerator, denominator);
     return std::chrono::duration<int64_t, Period>(duration);
   }
@@ -181,21 +198,34 @@ public:
    * @brief Calculate the time duration based on the frequency and a number of
    * cycles.
    *
-   * @tparam Rep - type of the duration
-   * @tparam Period - ratio of the time duration relative to 1 second
    * @param p_cycles - number of cycles within the time duration
-   * @return std::chrono::duration<Rep, Period> - time duration based on this
-   * frequency and the number of cycles.
+   * @return boost::leaf::result<std::chrono::nanoseconds> - time duration based
+   * on this frequency and the number of cycles or
+   * `std::errc::result_out_of_range`.
    */
-  template<typename Rep = std::chrono::nanoseconds::rep,
-           typename Period = std::chrono::nanoseconds::period>
-  [[nodiscard]] constexpr std::chrono::duration<Rep, Period>
+  [[nodiscard]] boost::leaf::result<std::chrono::nanoseconds>
   duration_from_cycles(std::uint64_t p_cycles) const noexcept
   {
-    constexpr uint64_t magnitude_delta = std::pico::den / std::nano::den;
-    auto picoseconds = wavelength<std::pico>() * p_cycles;
-    auto nanoseconds = rounding_division(picoseconds.count(), magnitude_delta);
-    return std::chrono::nanoseconds(nanoseconds);
+    // Full Equation (based on the equation in cycles_per()):
+    // =========================================================================
+    //
+    //                /    cycles * ratio_den    \_
+    //   |period| =  | ---------------------------|
+    //                \ frequency_hz * ratio_num /
+    //
+    using uint128_t = math::wide_integer::uint128_t;
+
+    uint128_t numerator = BOOST_LEAF_CHECK(multiply_with_overflow_detection(
+      uint128_t{ p_cycles }, uint128_t{ std::nano::den }));
+
+    uint128_t denominator = cycles_per_second() * std::nano::num;
+    uint128_t nanoseconds = rounding_division(numerator, denominator);
+
+    if (nanoseconds > std::numeric_limits<std::int64_t>::max()) {
+      return boost::leaf::new_error(std::errc::result_out_of_range);
+    }
+
+    return std::chrono::nanoseconds(static_cast<std::int64_t>(nanoseconds));
   }
 
   /**
@@ -203,19 +233,19 @@ public:
    * and this driving frequency. Typically used for PWM or clock lines with
    * controllable duty cycles for serial communication.
    *
-   * @tparam T - containing type of the percent
-   * @tparam Rep - containing type of the duration
-   * @tparam Period - ratio of the time duration relative to 1 second
    * @param p_duration - target time duration to reach
    * @param p_precent - ratio of the duty cycle high time
    * @return constexpr duty_cycle
    */
-  template<typename Rep, typename Period>
-  [[nodiscard]] constexpr duty_cycle calculate_duty_cycle(
-    std::chrono::duration<Rep, Period> p_duration,
+  [[nodiscard]] boost::leaf::result<duty_cycle> calculate_duty_cycle(
+    std::chrono::nanoseconds p_duration,
     percent p_precent) const noexcept
   {
-    return calculate_duty_cycle(cycles_per(p_duration), p_precent);
+    std::uint64_t cycles = BOOST_LEAF_CHECK(cycles_per(p_duration));
+    if (cycles > std::numeric_limits<std::uint32_t>::max()) {
+      return boost::leaf::new_error(std::errc::value_too_large);
+    }
+    return calculate_duty_cycle(static_cast<uint32_t>(cycles), p_precent);
   }
 
   /**
@@ -232,7 +262,7 @@ public:
     frequency p_target,
     percent p_precent) const noexcept
   {
-    return calculate_duty_cycle(divider(p_target), p_precent);
+    return calculate_duty_cycle(divide(p_target), p_precent);
   }
 
   /**
@@ -244,58 +274,26 @@ public:
     default;
 
   /**
-   * @brief Scale up a frequency by an integer factor
-   *
-   * @tparam Integer - type of the integer
-   * @param p_lhs - the frequency to be scaled
-   * @param p_rhs - the integer value to scale the frequency by
-   * @return constexpr frequency
-   */
-  template<std::integral Integer>
-  [[nodiscard]] constexpr friend frequency operator*(frequency p_lhs,
-                                                     Integer p_rhs) noexcept
-  {
-    return frequency{ p_lhs.cycles_per_second() * p_rhs };
-  }
-
-  /**
-   * @brief Scale up a frequency by an integer factor
-   *
-   * @tparam Integer - type of the integer
-   * @param p_lhs - the integer value to scale the frequency by
-   * @param p_rhs - the frequency to be scaled
-   * @return constexpr frequency
-   */
-  template<std::integral Integer>
-  [[nodiscard]] constexpr friend frequency operator*(Integer p_rhs,
-                                                     frequency p_lhs) noexcept
-  {
-    return p_lhs * p_rhs;
-  }
-
-  /**
    * @brief Scale down a frequency by an integer factor
    *
-   * @tparam Integer - type of the integer
    * @param p_lhs - the frequency to be scaled
    * @param p_rhs - the integer value to scale the frequency by
    * @return constexpr frequency
    */
-  template<std::integral Integer>
-  [[nodiscard]] constexpr friend frequency operator/(frequency p_lhs,
-                                                     Integer p_rhs) noexcept
+  [[nodiscard]] constexpr friend frequency operator/(
+    frequency p_lhs,
+    std::uint32_t p_rhs) noexcept
   {
-    return frequency{ rounding_division(p_lhs.cycles_per_second(),
-                                        static_cast<std::uint32_t>(p_rhs)) };
+    return frequency{ rounding_division(p_lhs.cycles_per_second(), p_rhs) };
   }
 
   /**
    * @brief Scale down a frequency by an integer factor
    *
    * @param p_input - the input frequency to be divided down to the target
-   * frequency with an integer divider
-   * @param p_target - the target frequency to reach via an integer divider
-   * @return constexpr std::uint32_t - frequency divider value representing
+   * frequency with an integer divide
+   * @param p_target - the target frequency to reach via an integer divide
+   * @return constexpr std::uint32_t - frequency divide value representing
    * the number of cycles in the input that constitute one cycle in the target
    * frequency.
    */
@@ -303,45 +301,22 @@ public:
     frequency p_input,
     frequency p_target) noexcept
   {
-    return p_input.divider(p_target);
+    return p_input.divide(p_target);
   }
 
   /**
-   * @brief multiplying a frequency by a time period returns the number of
-   * cycles of the input frequency contained within the time duration.
+   * @brief Scale up a frequency by an integer factor
    *
-   * @tparam Rep - type of the duration
-   * @tparam Period - ratio of the time duration relative to 1 second
-   * @param p_input - the input frequency
-   * @param p_duration - the target time duration to get a cycle count from
-   * @return constexpr std::uint32_t - the number of cycles of this frequency
-   * within the duration.
+   * @tparam Integer - type of unsigned integer
+   * @param p_scalar - the value to scale the frequency up to
+   * @return constexpr frequency
    */
-  template<typename Rep, typename Period>
-  [[nodiscard]] constexpr friend std::uint32_t operator*(
-    frequency p_input,
-    std::chrono::duration<Rep, Period> p_duration) noexcept
+  template<std::unsigned_integral Integer>
+  [[nodiscard]] boost::leaf::result<frequency> scale(
+    Integer p_scalar) const noexcept
   {
-    return p_input.cycles_per(p_duration);
-  }
-
-  /**
-   * @brief multiplying a frequency by a time period returns the number of
-   * cycles of the input frequency contained within the time duration.
-   *
-   * @tparam Rep - type of the duration
-   * @tparam Period - ratio of the time duration relative to 1 second
-   * @param p_input - the input frequency
-   * @param p_duration - the target time duration to get a cycle count from
-   * @return constexpr std::uint32_t - the number of cycles of this frequency
-   * within the duration.
-   */
-  template<typename Rep, typename Period>
-  [[nodiscard]] constexpr friend std::uint32_t operator*(
-    std::chrono::duration<Rep, Period> p_duration,
-    frequency p_input) noexcept
-  {
-    return p_input * p_duration;
+    return frequency{ BOOST_LEAF_CHECK(
+      multiply_with_overflow_detection(cycles_per_second(), p_scalar)) };
   }
 
 private:

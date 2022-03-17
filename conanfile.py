@@ -22,6 +22,7 @@ class libembeddedhal_conan(ConanFile):
             self.run("ctest -j %s --output-on-failure" % tools.cpu_count())
 
     def package(self):
+        self.copy("*.h")
         self.copy("*.hpp")
 
     def package_id(self):
