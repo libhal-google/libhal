@@ -1,5 +1,5 @@
 # .github/workflows/take.yml
-name: Assign issue to contributor
+name: 📛 assign issue to contributor
 on:
   issue_comment:
 
