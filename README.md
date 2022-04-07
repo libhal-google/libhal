@@ -321,6 +321,14 @@ Some rules for device drivers:
 <details>
 <summary>👥 Contributing</summary>
 
-TBD
+### Self Assigning to an Issue
+
+If you find an issue you'd like to work on, simply type and submit a comment
+with the phrase `.take` in it to get assigned by our github actions.
+
+### Submitting a PR
+
+Submitting a PR at anytime is fine, but code will not be reviewed until all of
+the continuous integration steps have finished.
 
 </details>
