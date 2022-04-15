@@ -305,6 +305,38 @@ public:
   }
 
   /**
+   * @brief Calculate a duty cycle based on a target, the percent
+   * and this driving frequency. Typically used for PWM or clock lines with
+   * controllable duty cycles for serial communication.
+   *
+   * @param p_target - target frequency to reach
+   * @param p_precent - ratio of the duty cycle high time
+   * @return constexpr duty_cycle
+   */
+  [[nodiscard]] constexpr friend duty_cycle operator*(
+    frequency p_target,
+    percent p_percent) noexcept
+  {
+    return calculate_duty_cycle(p_target, p_percent);
+  }
+
+  /**
+   * @brief Calculate a duty cycle based on a target, the percent
+   * and this driving frequency. Typically used for PWM or clock lines with
+   * controllable duty cycles for serial communication.
+   *
+   * @param p_precent - ratio of the duty cycle high time
+   * @param p_target - target frequency to reach
+   * @return constexpr duty_cycle
+   */
+  [[nodiscard]] constexpr friend duty_cycle operator*(
+    percent p_percent,
+    frequency p_target) noexcept
+  {
+    return calculate_duty_cycle(p_target, p_percent);
+  }
+
+  /**
    * @brief Scale up a frequency by an integer factor
    *
    * @tparam Integer - type of unsigned integer
