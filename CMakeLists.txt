@@ -51,6 +51,7 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/overflow_counter.test.cpp
   tests/gpio/gpio.test.cpp
   tests/static_memory_resource.test.cpp
+  tests/serial/serial_stub.test.cpp
   tests/serial/serial_util.test.cpp
   tests/serial/serial.test.cpp)
 
