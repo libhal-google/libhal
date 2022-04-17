@@ -17,6 +17,14 @@ public:
   {
     /// The target channel PWM frequency.
     embed::frequency frequency = embed::frequency(1'000);
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /**

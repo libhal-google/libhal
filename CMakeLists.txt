@@ -25,6 +25,7 @@ set(CMAKE_BUILD_TYPE Debug)
 add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/can/network.test.cpp
   tests/error.test.cpp
+  tests/pwm/pwm_mock.test.cpp
   tests/pwm/pwm.test.cpp
   tests/enum.test.cpp
   tests/timer/timer.test.cpp
@@ -42,6 +43,7 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/frequency.test.cpp
   tests/rtc/rtc.test.cpp
   tests/main.test.cpp
+  tests/testing.test.cpp
   tests/display/pixel_display.test.cpp
   tests/display/text_display.test.cpp
   tests/dac/dac.test.cpp
