@@ -162,6 +162,14 @@ public:
   }
 
   /**
+   * @brief Default operators for <, <=, >, >= and ==
+   *
+   * @return auto - result of the comparison
+   */
+  [[nodiscard]] constexpr auto operator<=>(const percent&) const noexcept =
+    default;
+
+  /**
    * @brief Assignment operator for a percent object based on a floating point
    * value.
    *
