@@ -44,7 +44,7 @@ namespace embed {
  * Expected 32-bit value is: 0x7FFFFFFF
  * Actual value from scaling: 0x7F7F7F7F
  * % difference is: (0x7FFFFFFF - 0x7F7F7F7F) / 0x7FFFFFFF = 0.39215684%
- * A precent difference well below 1% makes this a viable solution for most
+ * A percent difference well below 1% makes this a viable solution for most
  * applications.
  *
  * @tparam T - integral type to bring the resolution of U up to.
@@ -85,7 +85,7 @@ template<std::integral T, size_t SourceWidth, std::integral U>
 }
 
 /**
- * @brief A integer representation of a precentage.
+ * @brief A integer representation of a percentage.
  *
  * Primary usage is representing numbers with a arbitrary bit-resolution and up
  * scaling them to higher bit resolutions while retaining their proportionality.
@@ -150,7 +150,7 @@ public:
   {}
 
   /**
-   * @brief Construct a percent based on a floating point precentage value.
+   * @brief Construct a percent based on a floating point percentage value.
    *
    * @param p_ratio - floating point ratio value. For signed numbers this is
    * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
@@ -176,7 +176,7 @@ public:
    * @param p_ratio - floating point ratio value. For signed numbers this is
    * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
    * to 1.0.
-   * @return constexpr percent& - integer precent object based on the floating
+   * @return constexpr percent& - integer percent object based on the floating
    * point percent value.
    */
   constexpr percent& operator=(std::floating_point auto p_ratio) noexcept
@@ -192,13 +192,13 @@ public:
   }
 
   /**
-   * @brief Convert a fixed width integer value into a precentage based on its
+   * @brief Convert a fixed width integer value into a percentage based on its
    * distance to the end of its bit width.
    *
    * @tparam BitWidth - The bit width of the input value
    * @tparam T - integral type of input value
    * @param p_value - the value of the number
-   * @return constexpr percent - the precent type based on the input value's
+   * @return constexpr percent - the percent type based on the input value's
    * distance to the end of the bit width.
    */
   template<size_t BitWidth, std::integral T>
@@ -256,7 +256,7 @@ public:
    * @brief Convert percent to a floating point representation
    *
    * @tparam T - floating point type
-   * @return constexpr T - float representation of the precentage between 0.0f
+   * @return constexpr T - float representation of the percentage between 0.0f
    * and 1.0f.
    */
   template<std::floating_point T>
@@ -269,7 +269,7 @@ public:
   /**
    * @brief explicit cast to float.
    *
-   * @return float - float representation of the precentage between 0.0f
+   * @return float - float representation of the percentage between 0.0f
    * and 1.0f.
    */
   [[nodiscard]] explicit operator float() const noexcept { return to<float>(); }
@@ -277,7 +277,7 @@ public:
   /**
    * @brief explicit cast to double.
    *
-   * @return double - double representation of the precentage between 0.0
+   * @return double - double representation of the percentage between 0.0
    * and 1.0
    */
   [[nodiscard]] explicit operator double() const noexcept
