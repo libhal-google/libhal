@@ -45,6 +45,7 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/testing.test.cpp
   tests/display/pixel_display.test.cpp
   tests/display/text_display.test.cpp
+  tests/dac/dac_stub.test.cpp
   tests/dac/dac.test.cpp
   tests/counter/counter.test.cpp
   tests/counter/counter_utility.test.cpp
