@@ -50,15 +50,15 @@ public:
    * percent
    *
    * @param p_cycles - the number of cycles to be split into a duty cycle
-   * @param p_precent - the target duty cycle percentage
+   * @param p_percent - the target duty cycle percentage
    * @return constexpr duty_cycle - the duty cycle cycle counts
    */
   [[nodiscard]] static constexpr duty_cycle calculate_duty_cycle(
     std::uint32_t p_cycles,
-    percent p_precent) noexcept
+    percent p_percent) noexcept
   {
     // Scale down value based on the integer percentage value in percent
-    std::uint32_t high = p_cycles * p_precent;
+    std::uint32_t high = p_cycles * p_percent;
     // p_cycles will always be larger than or equal to high
     std::uint32_t low = p_cycles - high;
 
@@ -234,18 +234,18 @@ public:
    * controllable duty cycles for serial communication.
    *
    * @param p_duration - target time duration to reach
-   * @param p_precent - ratio of the duty cycle high time
+   * @param p_percent - ratio of the duty cycle high time
    * @return constexpr duty_cycle
    */
   [[nodiscard]] boost::leaf::result<duty_cycle> calculate_duty_cycle(
     std::chrono::nanoseconds p_duration,
-    percent p_precent) const noexcept
+    percent p_percent) const noexcept
   {
     std::uint64_t cycles = BOOST_LEAF_CHECK(cycles_per(p_duration));
     if (cycles > std::numeric_limits<std::uint32_t>::max()) {
       return boost::leaf::new_error(std::errc::value_too_large);
     }
-    return calculate_duty_cycle(static_cast<uint32_t>(cycles), p_precent);
+    return calculate_duty_cycle(static_cast<uint32_t>(cycles), p_percent);
   }
 
   /**
@@ -255,14 +255,14 @@ public:
    *
    * @tparam T - containing type of the percent
    * @param p_target - target frequency to reach
-   * @param p_precent - ratio of the duty cycle high time
+   * @param p_percent - ratio of the duty cycle high time
    * @return constexpr duty_cycle
    */
   [[nodiscard]] constexpr duty_cycle calculate_duty_cycle(
     frequency p_target,
-    percent p_precent) const noexcept
+    percent p_percent) const noexcept
   {
-    return calculate_duty_cycle(divide(p_target), p_precent);
+    return calculate_duty_cycle(divide(p_target), p_percent);
   }
 
   /**
