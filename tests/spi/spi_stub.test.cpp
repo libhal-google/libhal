@@ -9,7 +9,7 @@ boost::ut::suite spi_util_test = []() {
   // Setup
   embed::stub::spi stub;
 
-  expect(bool{stub.configure({})});
-  expect(bool{stub.transfer({}, {}, std::byte{0xFF})});
+  expect(bool{ stub.configure({}) });
+  expect(bool{ stub.transfer({}, {}, std::byte{ 0xFF }) });
 };
 }  // namespace embed
