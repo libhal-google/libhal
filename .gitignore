@@ -49,3 +49,6 @@ tools/
 
 # lint artifacts
 ncc.stderr
+
+# OS files
+.DS_Store

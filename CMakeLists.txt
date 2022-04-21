@@ -7,7 +7,6 @@ project(libembeddedhal VERSION 0.0.1 LANGUAGES CXX)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE include)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}
@@ -25,8 +24,10 @@ set(CMAKE_BUILD_TYPE Debug)
 add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/can/network.test.cpp
   tests/error.test.cpp
+  tests/pwm/pwm_mock.test.cpp
   tests/pwm/pwm.test.cpp
   tests/enum.test.cpp
+  tests/timer/timer_stub.test.cpp
   tests/timer/timer.test.cpp
   tests/i2c/i2c_util.test.cpp
   tests/i2c/i2c.test.cpp
@@ -42,8 +43,10 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/frequency.test.cpp
   tests/rtc/rtc.test.cpp
   tests/main.test.cpp
+  tests/testing.test.cpp
   tests/display/pixel_display.test.cpp
   tests/display/text_display.test.cpp
+  tests/dac/dac_stub.test.cpp
   tests/dac/dac.test.cpp
   tests/counter/counter.test.cpp
   tests/counter/counter_utility.test.cpp
@@ -51,6 +54,7 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/overflow_counter.test.cpp
   tests/gpio/gpio.test.cpp
   tests/static_memory_resource.test.cpp
+  tests/serial/serial_stub.test.cpp
   tests/serial/serial_util.test.cpp
   tests/serial/serial.test.cpp)
 
