@@ -60,6 +60,7 @@ add_executable(${TEST_NAME}
   tests/rtc/rtc.test.cpp
   tests/main.test.cpp
   tests/testing.test.cpp
+  tests/temperature/temperature.test.cpp
   tests/display/pixel_display.test.cpp
   tests/display/text_display.test.cpp
   tests/dac/dac_mock.test.cpp
