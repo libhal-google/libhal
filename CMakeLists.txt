@@ -35,7 +35,9 @@ find_package(gsl-lite)
 set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
 
-add_executable(${TEST_NAME} tests/can/can.test.cpp
+add_executable(${TEST_NAME}
+  tests/accelerometer/accelerometer.test.cpp
+  tests/can/can.test.cpp
   tests/can/network.test.cpp
   tests/error.test.cpp
   tests/pwm/pwm_mock.test.cpp
@@ -49,7 +51,6 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/percent.test.cpp
   tests/time.test.cpp
   tests/static_callable.test.cpp
-  tests/imu/accelerometer.test.cpp
   tests/imu/gyroscope.test.cpp
   tests/imu/compass.test.cpp
   tests/spi/spi.test.cpp
