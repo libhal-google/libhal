@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../error.hpp"
-#include "../frequency.hpp"
-
 #include <cstddef>
 #include <cstdint>
 #include <span>
+
+#include "../error.hpp"
+#include "../frequency.hpp"
 
 namespace embed {
 /**
@@ -25,6 +25,14 @@ public:
     bool clock_idles_high = false;
     /// The phase of the clock signal when communicating
     bool data_valid_on_trailing_edge = false;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /**
