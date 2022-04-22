@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "../error.hpp"
 #include "../percent.hpp"
 #include "accelerometer_units.hpp"

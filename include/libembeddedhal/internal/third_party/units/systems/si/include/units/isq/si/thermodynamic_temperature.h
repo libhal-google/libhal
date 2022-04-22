@@ -9,8 +9,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -29,16 +29,21 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
+#include <units/isq/si/prefixes.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+struct kelvin : named_unit<kelvin, "K", prefix>
+{};
 
-struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin> {};
+struct dim_thermodynamic_temperature
+  : isq::dim_thermodynamic_temperature<kelvin>
+{};
 
 template<UnitOf<dim_thermodynamic_temperature> U, Representation Rep = double>
-using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
+using thermodynamic_temperature =
+  quantity<dim_thermodynamic_temperature, U, Rep>;
 
 #ifndef UNITS_NO_LITERALS
 
@@ -48,9 +53,13 @@ inline namespace literals {
 constexpr auto operator"" _q_K(unsigned long long l)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
-  return thermodynamic_temperature<kelvin, std::int64_t>(static_cast<std::int64_t>(l));
+  return thermodynamic_temperature<kelvin, std::int64_t>(
+    static_cast<std::int64_t>(l));
 }
-constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature<kelvin, long double>(l); }
+constexpr auto operator"" _q_K(long double l)
+{
+  return thermodynamic_temperature<kelvin, long double>(l);
+}
 
 }  // namespace literals
 
@@ -79,7 +88,8 @@ using namespace thermodynamic_temperature_references;
 namespace units::aliases::isq::si::inline thermodynamic_temperature {
 
 template<Representation Rep = double>
-using K = units::isq::si::thermodynamic_temperature<units::isq::si::kelvin, Rep>;
+using K =
+  units::isq::si::thermodynamic_temperature<units::isq::si::kelvin, Rep>;
 
 }  // namespace units::aliases::isq::si::inline thermodynamic_temperature
 

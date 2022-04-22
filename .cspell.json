@@ -5,7 +5,9 @@
         "femto",
         "libembeddedhal",
         "microcontrollers",
+        "millikelvin",
         "millimetre",
+        "nanokelvin",
         "nanometre",
         "pico"
     ]
