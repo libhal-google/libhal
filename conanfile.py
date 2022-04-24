@@ -31,6 +31,7 @@ class libembeddedhal_conan(ConanFile):
     def requirements(self):
         # Uncomment this back when 0.8.0 is released
         # self.requires("mp-units/0.8.0@")
+        self.requires("gsl-lite/0.38.0")
         pass
 
     def build_requirements(self):
