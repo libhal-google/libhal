@@ -27,6 +27,7 @@ add_executable(${TEST_NAME} tests/can/can.test.cpp
   tests/pwm/pwm_mock.test.cpp
   tests/pwm/pwm.test.cpp
   tests/enum.test.cpp
+  tests/timer/timer_mock.test.cpp
   tests/timer/timer_stub.test.cpp
   tests/timer/timer.test.cpp
   tests/i2c/i2c_util.test.cpp
