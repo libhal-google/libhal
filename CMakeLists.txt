@@ -83,8 +83,9 @@ add_test(NAME ${TEST_NAME} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 
 target_include_directories(${TEST_NAME} PUBLIC tests)
 target_compile_options(${TEST_NAME} PRIVATE -Werror -Wall -Wextra
-  -Wno-unused-function -Wconversion -g)
-set_target_properties(${TEST_NAME} PROPERTIES CXX_VISIBILITY_PRESET default)
+  -Wno-unused-function -Wconversion)
+set_target_properties(${TEST_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
 target_compile_features(${TEST_NAME} PRIVATE cxx_std_20)
 set_target_properties(${TEST_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(${TEST_NAME} PRIVATE boost::ut ${PROJECT_NAME} gsl::gsl-lite)
+target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME}
+  boost::ut gsl::gsl-lite)

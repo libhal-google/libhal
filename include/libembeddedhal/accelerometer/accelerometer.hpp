@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "../error.hpp"
 #include "../percent.hpp"
 #include "accelerometer_units.hpp"
@@ -29,15 +31,15 @@ public:
   {
     /// Represents the maximum amplitude of acceleration for this sample of
     /// data. In many cases this is 1g, 2g, 4g, 8g and many other values, where
-    /// g represents the acceleration due to gravity on Earth at sea level. For
-    /// example, if full_scale is 2g and the X-axis returns 50%, then the
+    /// "g" represents the acceleration due to gravity on Earth at sea level.
+    /// For example, if full_scale is 2g and the X-axis returns 50%, then the
     /// acceleration read on X is 1g of acceleration.
     ///
     /// full_scale is made available for each sample in the event that the
     /// driver changes the full_scale between samples. This is uncommon and many
     /// applications will simply save the full scale once and drop saving it for
     /// subsequent calls.
-    embed::nanometre_per_second_sq full_scale;
+    embed::acceleration full_scale;
 
     /// Represents the percentage of acceleration in the X, Y & Z axis relative
     /// to the full-scale
@@ -49,10 +51,26 @@ public:
       percent y;
       /// Percentage of acceleration in the Z-axis relative to the full-scale
       percent z;
+
+      /**
+       * @brief Default operators for <, <=, >, >= and ==
+       *
+       * @return auto - result of the comparison
+       */
+      [[nodiscard]] constexpr auto operator<=>(const axis_t&) const noexcept =
+        default;
     };
 
     /// Acceleration in the XYZ axis
     axis_t axis;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const sample&) const noexcept =
+      default;
   };
 
   /**

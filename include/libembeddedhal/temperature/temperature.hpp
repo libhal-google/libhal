@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../error.hpp"
+#include <cstdint>
 
+#include "../error.hpp"
 #include "temperature_units.hpp"
 
 namespace embed {
@@ -18,12 +19,12 @@ public:
    * @return boost::leaf::result<nanokelvin> - current temperature reading or an
    * error.
    */
-  [[nodiscard]] boost::leaf::result<nanokelvin> read() noexcept
+  [[nodiscard]] boost::leaf::result<temperature> read() noexcept
   {
     return driver_read();
   }
 
 private:
-  virtual boost::leaf::result<nanokelvin> driver_read() noexcept = 0;
+  virtual boost::leaf::result<temperature> driver_read() noexcept = 0;
 };
 }  // namespace embed
