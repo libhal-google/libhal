@@ -35,6 +35,9 @@ public:
       default;
   };
 
+  /// Default filler data placed on the bus in place of actual write data when the write buffer has been exhausted.
+  static constexpr std::byte default_filler = std::byte{ 0xFF };
+
   /**
    * @brief Configure spi to match the settings supplied
    *
@@ -69,7 +72,7 @@ public:
   [[nodiscard]] boost::leaf::result<void> transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_filler) noexcept
+    std::byte p_filler = default_filler) noexcept
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
@@ -80,6 +83,6 @@ private:
   virtual boost::leaf::result<void> driver_transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_filler) noexcept = 0;
+    std::byte p_filler = default_filler) noexcept = 0;
 };
 }  // namespace embed
