@@ -37,6 +37,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(${TEST_NAME}
   tests/accelerometer/accelerometer.test.cpp
+  tests/actuator/motor_mock.test.cpp
   tests/can/can.test.cpp
   tests/can/network.test.cpp
   tests/error.test.cpp
