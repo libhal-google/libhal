@@ -34,6 +34,18 @@ struct duty_cycle
   {
     return (high == p_cycle.high) && (low == p_cycle.low);
   }
+
+  /**
+   * @brief Conversion from duty cycle to percentage
+   *
+   * @return constexpr percentage - Percentage of high cycles to the total cycle
+   * count.
+   */
+  [[nodiscard]] explicit constexpr operator percent() const noexcept
+  {
+    std::uint64_t total_cycles = high + low;
+    return percent::from_ratio(static_cast<std::uint64_t>(high), total_cycles);
+  }
 };
 
 /**
