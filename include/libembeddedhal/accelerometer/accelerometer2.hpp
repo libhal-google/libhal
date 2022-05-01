@@ -74,31 +74,8 @@ public:
       default;
   };
 
-  /**
-   * @brief Read the current acceleration from the accelerometer.
-   *
-   * @return boost::leaf::result<sample> - a sample of data or an error
-   */
+  size_t samples_available();
 
-  /**
-   * @brief Read out acceleration data from the accelerometer.
-   *
-   * For accelerometers not configured to store data within a FIFO or do not
-   * have a FIFO available, this function will always return a span of data
-   * length 1 sample. For multiple samples multiple calls of this function will
-   * need to be made. This is the low bandwidth situation.
-   *
-   * If an accelerometer is configured to use a FIFO and utilizes interrupts to
-   * detect when the FIFO is almost/entirely full, then a circular buffer shall
-   * be used to store this data until read by this function. The length of the
-   * returned span will be minimum between the p_samples buffer or the circular
-   * buffer.
-   *
-   * @param p_samples - a buffer to fill with sample data
-   * @return boost::leaf::result<std::span<sample>> - an error or a span of
-   * sample data with the address equal to the p_samples argument and size, the
-   * number of samples filled into the buffer.
-   */
   [[nodiscard]] boost::leaf::result<std::span<sample>> read(
     std::span<sample> p_samples) noexcept
   {

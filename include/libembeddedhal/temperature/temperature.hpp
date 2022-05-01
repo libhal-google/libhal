@@ -19,12 +19,22 @@ public:
    * @return boost::leaf::result<nanokelvin> - current temperature reading or an
    * error.
    */
-  [[nodiscard]] boost::leaf::result<temperature> read() noexcept
+
+  /**
+   * @brief Read the current temperature from the sensor.
+   *
+   * @param p_sample -
+   * @return boost::leaf::result<std::span<temperature>> - a span with length
+   * based on the number of
+   */
+  [[nodiscard]] boost::leaf::result<std::span<temperature>> read(
+    std::span<temperature> p_sample) noexcept
   {
-    return driver_read();
+    return driver_read(p_sample);
   }
 
 private:
-  virtual boost::leaf::result<temperature> driver_read() noexcept = 0;
+  virtual boost::leaf::result<std::span<temperature>> driver_read(
+    std::span<temperature> p_sample) noexcept = 0;
 };
 }  // namespace embed
