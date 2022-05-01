@@ -3,40 +3,37 @@
 
 namespace embed::mock {
 /**
- * @brief Mock spi implementation for use in unit tests and simulations with spy
- * functions for configure() and transfer().
- *
+ * @brief Mock spi implementation for use in unit tests and simulations with a
+ * spy functions for configure() and a record for the transfer() out data. The
+ * record ignores the in buffer and just stores the data being sent so it can be
+ * inspected later.
  */
-struct spi : public embed::spi
-{
+struct write_only_spi : public embed::spi {
   /**
    * @brief Reset spy information for both configure() and transfer()
    *
    */
-  void reset()
-  {
+  void reset() {
     spy_configure.reset();
-    spy_transfer.reset();
+    write_record.clear();
   }
 
   /// Spy handler for embed::spi::configure()
   spy_handler<settings> spy_configure;
-  /// Spy handler for embed::spi::transfer()
-  spy_handler<std::span<const std::byte>, std::span<std::byte>, std::byte>
-    spy_transfer;
+  /// Record of the out data from embed::spi::transfer()
+  std::vector<std::vector<std::byte>> write_record;
 
-private:
+ private:
   boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept override
-  {
+      const settings& p_settings) noexcept override {
     return spy_configure.record(p_settings);
   };
   boost::leaf::result<void> driver_transfer(
-    std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in,
-    std::byte p_filler) noexcept override
-  {
-    return spy_transfer.record(p_data_out, p_data_in, p_filler);
+      std::span<const std::byte> p_data_out,
+      [[maybe_unused]] std::span<std::byte> p_data_in,
+      [[maybe_unused]] std::byte p_filler) noexcept override {
+    write_record.push_back({p_data_out.begin(), p_data_out.end()});
+    return {};
   };
 };
 }  // namespace embed::mock
