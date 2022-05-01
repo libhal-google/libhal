@@ -76,6 +76,6 @@ private:
   virtual boost::leaf::result<void> driver_transfer(
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::byte p_filler = default_filler) noexcept = 0;
+    std::byte p_filler) noexcept = 0;
 };
 }  // namespace embed
