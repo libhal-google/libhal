@@ -35,7 +35,8 @@ public:
       default;
   };
 
-  /// Default filler data placed on the bus in place of actual write data when the write buffer has been exhausted.
+  /// Default filler data placed on the bus in place of actual write data when
+  /// the write buffer has been exhausted.
   static constexpr std::byte default_filler = std::byte{ 0xFF };
 
   /**

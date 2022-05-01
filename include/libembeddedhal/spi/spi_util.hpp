@@ -18,7 +18,8 @@ namespace embed {
   spi& p_spi,
   std::span<const std::byte> p_data_out) noexcept
 {
-  return p_spi.transfer(p_data_out, std::span<std::byte>{}, spi::default_filler);
+  return p_spi.transfer(
+    p_data_out, std::span<std::byte>{}, spi::default_filler);
 }
 
 /**
