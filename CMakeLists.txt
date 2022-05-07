@@ -57,6 +57,7 @@ add_executable(${TEST_NAME}
   tests/spi/spi.test.cpp
   tests/spi/spi_util.test.cpp
   tests/spi/spi_mock.test.cpp
+  tests/adc/adc_stub.test.cpp
   tests/adc/adc.test.cpp
   tests/frequency.test.cpp
   tests/rtc/rtc.test.cpp
