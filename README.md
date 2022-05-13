@@ -21,7 +21,7 @@
 | [FAQ](#faq)
 |
 
-### [⚙️ Software APIs](https://sjsu-dev2.github.io/libembeddedhal/)
+### [⚙️ Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
 
 <details open>
 <summary> 📥 Install </summary>
@@ -232,6 +232,7 @@ Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
 Guidelines for interfaces:
 
 1. Follow the private virtual api pattern which looks like this:
+
 ```C++
 class interface
 {
@@ -246,6 +247,7 @@ class interface
   virtual boost::leaf::result<void> driver_do_something() = 0;
 };
 ```
+
 2. Outside of rule #1, do not include any non-virtual member functions in the
    interface.
 3. For configuration data for which the bounds are not defined and are invariant
@@ -256,10 +258,10 @@ class interface
 4. All members of a `settings` `struct` must be initialized with default values.
    These defaults should be values that most system can support.
 5. All virtual member functions must have the following decorations:
-    1. return types: `boost::leaf::result<T>` to order to allow error
-       signaling to propagate, where T is the type you want to return.
-    2. Marked as `noexcept`
-    3. Marked as `[[nodsicard]]`
+   1. return types: `boost::leaf::result<T>` to order to allow error
+      signaling to propagate, where T is the type you want to return.
+   2. Marked as `noexcept`
+   3. Marked as `[[nodsicard]]`
 
 </details>
 

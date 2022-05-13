@@ -78,7 +78,8 @@ add_executable(${TEST_NAME}
   tests/serial/serial_stub.test.cpp
   tests/serial/serial_util.test.cpp
   tests/serial/serial.test.cpp
-  tests/units.test.cpp)
+  tests/units.test.cpp
+  tests/linear_encoder/linear_potentiometer.test.cpp)
 
 enable_testing()
 add_test(NAME ${TEST_NAME} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

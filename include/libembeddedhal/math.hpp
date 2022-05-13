@@ -95,4 +95,29 @@ template<typename T>
 
   return quotient;
 }
+/**
+ * @brief Remap a value from one range to another without constraining values
+ * within the given ranges.
+ *
+ * @tparam T
+ * @param p_in_value - Value to convert.
+ * @param p_in_min - Minimum value of the range to convert from.
+ * @param p_in_max - Maximum value of the range to convert from.
+ * @param p_out_min - Minimum value of the range to convert to.
+ * @param p_out_max - Maximum value of the range to convert to.
+ * @return constexpr T - Value after being remapped to out range
+ */
+template<typename T>
+[[nodiscard]] constexpr T linear_map(T p_in_value,
+                                     T p_in_min,
+                                     T p_in_max,
+                                     T p_out_min,
+                                     T p_out_max) noexcept
+{
+  auto numerator = multiply_with_overflow_detection((p_in_value - p_in_min),
+                                                    (p_out_max - p_out_min))
+                     .value();
+  auto denominator = p_in_max - p_in_min;
+  return rounding_division(numerator, denominator) + p_out_min;
+}
 }  // namespace embed
