@@ -73,6 +73,7 @@ add_executable(${TEST_NAME}
   tests/timer/mock.test.cpp
   tests/spi/mock.test.cpp
   tests/dac/mock.test.cpp
+  tests/adc/mock.test.cpp
 
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp
