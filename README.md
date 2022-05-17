@@ -9,17 +9,16 @@
 [![lint](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/lint.yml)
 [![tests](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml)
 
-**🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
+## 🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧
 
-| [Install](#📥-install)
-| [Overview](#ℹ️-overview)
-| [Glossary](#📃-glossary)
-| [Usage](#✍️-usage)
-| [Library Badges](#🪪-library-badges)
-| [Development Guides](#🔨-development-guides)
-| [Libraries](#📚-libraries)
-| [Motivation](#💡-motivation)
-| [Contributing](#👥-contributing)
+| [Overview](#overview)
+| [Install](#install)
+| [Motivation](#motivation)
+| [Policies](#policies)
+| [User Guides](#user-guides)
+| [Libraries](#libraries)
+| [Developer Guides](#developer-guides)
+| [FAQ](#faq)
 |
 
 # [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
@@ -40,14 +39,15 @@ cd libembeddedhal
 conan create .
 ```
 
-# ℹ️ Overview
+## ℹ️ Overview
 
-libembeddedhal exists to make hardware drivers:
+libembeddedhal is a collection of peripheral and device interfaces and
+abstractions. The goal is to make writing
 
-- **🚚 portable**
-- **🦾 flexible**
-- **📦 accessible**
-- **🍰 easy to use**
+libembeddedhal
+
+aims to be the standard hardware abstraction layer for embedded
+applications
 
 ## Project Attributes
 
@@ -58,76 +58,41 @@ libembeddedhal exists to make hardware drivers:
 - Uses tweak header files for customization
 - Designed to be modular, dynamic, composable, and lightweight
 - Dependencies:
-  - C++20 or above
-  - [Boost.LEAF](https://boostorg.github.io/leaf/) for error handling
-  - [libxbitset](https://github.com/libembeddedhal/libxbitset/)
-  - [mp-units](https://mpusz.github.io/units/)
-  - [uintwide_t.h](https://github.com/ckormanyos/wide-integer)
-- System agnostic
+  - Boost.LEAF for error handling
+  - C++20 and above (currently only supports g++-10 and above)
+  - libxbitset
+  - mp-units
+    - gsl-lite/0.38.0
+  - Boost.LEAF
+  - uintwide_t.h
+- Target/platform agnostic (ARM Cortex, STM32, AVR, Embedded Linux, etc)
 - Follows C++ Core Guidelines
 
 # 📃 Glossary
 
 Here is a list of terms used in libembeddedhal. It is HIGHLY RECOMMENDED that
-new users of libembeddedhal read this section.
+those new to libembeddedhal to read this section.
 
 ## Target
 
-Targets are defined as MCUs (micro-controllers), SOCs (system-on-chip),
-operating systems, or operating systems running on a particular SBC
-(single-board-computer).
-
-### MCU target examples
-
-- LPC40xx series family of MCUs
-- STM32F10x series family of MCUs
-- RP2040
-
-### SOCs target examples
-
-- AM335x
-- Samsung Exynos5422
-
-### Operating Systems target examples
-
-- Linux
-- Windows CE
-
-### SBC example
-
-- Raspberry Pi
-- ODROID UX
-- BeagleBone Black
+Is a general purpose device that can execute code and contains 1 or more
+peripherals or busses for communicating with devices and hardware external to
+itself. In the context of libembeddedhal these are defined as a micro-controller
+(MCU) or a system-on-chip (SOC).
 
 ## Interface
 
-Interfaces are the basic building block of libembeddedhal and enables the
-flexibility needed to be portable and flexible.
-
-An interface is a contract of functions that an implementing class must adhere
-to. Interface documentation explains in detail the expected behavior that each
-function should have on hardware regardless of the implementation. When a
-program is compiled and a driver implements an interface, the compiler detects
-if any of the functions have not been provided and if so, will report an error.
-
-In libembeddedhal each interface corresponds to a type of embedded systems
-primitive which can be things such as:
-
-- Digital I/O (input/output pins)
-- Analog to digital converter (adc)
-- Pulse width modulation (pwm)
-- Serial peripheral interface (spi)
-- Universal asynchronous receiver transmitter (serial/uart)
-- Accelerometer
+Is a codescription of the behavior that a hardware  of a C++ class without
+committing to a particular implementation of that class.
 
 ## Peripheral drivers
 
-Peripheral drivers are drivers for a target that is embedded within the device
-and therefor cannot be removed from the chip and is fixed in number.
+Are drivers for a target that is embedded within the device and therefor cannot
+be removed from the chip and is fixed in number.
 
 - Example: A digital output and input pin
-- Example: 1 of 5 hardware timer within a micro-controller
-- Example: Integrated analog-to-digital converter
+- Example: A hardware timer
+- Example: An analog-to-digital converter
 
 ## Device drivers
 
@@ -137,69 +102,52 @@ to operate correctly.
 
 - Example: an accelerometer driver for the mpu6050
 - Example: a memory storage driver for a at581 flash memory
-- Example: a black and white pixel display
+
+## Hard drivers
+
+Are simply peripheral drivers and device drivers.
 
 ## Soft drivers
 
 Are drivers that do not have any specific underlying hardware associated with
-them. They are used to emulate, give context to, or alter the behavior of
+them. They are used to emulate, give context to, or alter the behavior of other
 interfaces. For a driver to be a soft driver it must implement or have a way
-to generate, construct or create implementations of hardware interfaces.
+to generate, construct or create an implementation of a hardware interface.
 
-### Emulation Example
-
-- Emulate spi by using 2 output pins and 1 input pin.
-- Emulate uart transmission with a 16-bit spi driver and some clever bit
-  positioning.
-
-### Context Example
-
-- Implement a rotary encoder by using an adc a potentiometer and some
-  specification of the potentiometer like min and max angle, along with min and
-  max voltage.
-- Implement a dac using multiple output pins and a set of resistors and an op
-  amp.
-
-### Alteration example
-
-- Implement an input pin that inverts the readings of an actual input pin
-- Implement an i2c driver that is thread safe by taking an i2c and locking
-  mechanism provided by the user.
+- Emulation example: Using 2 output pins and 1 input pin to emulate spi
+- Context example: Using an adc and the attributes of an attached
+  potentiometer can be used to create a rotary encoder.
+- Alteration example: Taking an input pin and inverting the logic level read
+  from hardware.
 
 In general, software drivers tend to incur some overhead so nesting them
 deeply will effect performance.
 
-## Hard drivers
-
-Hard drivers are peripheral drivers and device drivers.
-
 ## Off Interface Function
 
-Off interface functions are public class functions that a driver can have that
-is beyond what is available for the interface it is implementing. These
-functions usually configures a peripheral or device in a way that is outside of
-the scope of the implementing interface. For peripherals these are platform
-specific. For drivers these are device specific features. Examples of such
-specific functions are as follows:
+Is a public function that a driver can have that is beyond what is available for
+the interface it is implementing. These functions usually configures a
+peripheral or device in a way that is outside of the scope of the implementing
+interface.
 
-- An output pin driver with a high drain current mode
-- An input pin driver with support for inverting the voltage level of what it
-  reads in hardware.
-- Enabling/disabling continuous sampling from an accelerometer where sampling
-  continuously would make reading samples faster but would consume more power
-  and disabling continuous sampling would do the opposite.
+- Example: An output pin driver with a high drain current mode
+- Example: An input pin driver with support for inverting the voltage level
+  of what it reads in hardware.
+- Example: Enabling/disabling continuous sampling from an accelerometer
+  where sampling continuously would make reading samples faster but would
+  consume more power and disabling continuous sampling would do the
+  opposite.
 
 # ✍️ Usage
 
 This section will go over how to use libembeddedhal in general. For details
 pertaining to specific interfaces see the
-[📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/) for more
-details.
+[📚 Software APIs](#📚-software-apishttpslibembeddedhalgithubiolibembeddedhal)
+for more details.
 
 ## Button & LED Example
 
 ```C++
-// Include driver code
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
 
@@ -219,12 +167,6 @@ int main() {
   }
 }
 ```
-
-NOTE: that normally you wouldn't just get the value out of the function
-`button.level()` using the `::value()` function because this aborts the
-application if the response contains an error. Luckily
-`embed::lpc40xx::input_pin` never returns an error so the error handling check
-can be ignored.
 
 ## Blink Example
 
@@ -254,10 +196,10 @@ int main() {
 
 ## Library file structure
 
-libembeddedhal attempts to keep the organization of source code simple and
+libembeddedhal attempts to keep the organization of source code simple,
 consistent in order to make including libraries easy to remember.
 
-The file organization follows these rules:
+Some attributes of the file structure:
 
 1. Only 2 layers deep, excluding the `internal/` directory.
 2. Non-hardware related utilities are placed at the root of the directory.
@@ -266,10 +208,10 @@ The file organization follows these rules:
     - Example: `#include <libembeddedhal/adc/interface.hpp>`
     - Example: `#include <libembeddedhal/dac/interface.hpp>`
 5. Any files associated/extending a particular interface will reside in that
-   interfaces directory such as soft drivers or utilities.
+   interfaces directory.
 6. Any hardware/interface files that extend to multiple interfaces will be
-   placed in one interface directories. The choice should be the directory that
-   makes the most sense, but this can be very arbitrary.
+   placed in one interface directories. The choice should be which directory
+   makes the most sense but this can be very arbitrary.
     - Example: `#include <libembeddedhal/input_pin/pin_resistor.hpp>`, this file
       could be in `output_pin` or `interrupt_pin` but `input_pin` seems like the
       best choice but is effectively arbitrary.
@@ -290,7 +232,7 @@ libembeddedhal/
 ├── internal (internal code that should NOT be accessed directly)
 │   └── third_party (dependencies for libembeddedhal)
 │       ├── leaf.hpp (add Boost.LEAF for error handling and transport)
-│       ├── uintwide_t.h (add support for integers above 64-bits in width)
+│       ├── uintwide_t.h (add support for numbers above 64-bit)
 │       └── units (add physical unit support)
 ├── enum.hpp (utility to handle enumerations)
 ├── error.hpp (error handling code is found here)
@@ -301,27 +243,21 @@ libembeddedhal/
 ├── static_callable.hpp (convert polymorphic functions into free functions, useful for ISRs)
 ├── static_memory_resource.hpp (static buffer for pmr containers)
 ├── testing.hpp (utilities for unit testing)
-└── to_array.hpp (contains conversions from containers to std::array)
+├── time.hpp (provides global time keeping functions)
+└── to_array.hpp (converts containers to std::array)
 ```
 
 ## Using Utility Functions
 
 Utility functions help eliminate boilerplate code for the application and driver
-writers. They provide common semantics for drivers such as being able to
-call `embed::read(/* insert interface here */)` on interfaces that have
-read/sample capabilities.
+writers. They also provide common semantics for drivers such as being able to
+call `embed::read(/* insert interface here */)` on any interface that has the
+capability to read or sample something.
 
-Meaning that the following code should work for all three of these functions.
-
-```C++
-auto response_i2c = embed::read<1>(i2c, std::byte(0x17));
-auto response_spi = embed::read<1>(spi);
-auto response_uart = embed::read<1>(uart);
-```
-
-Utility functions are always "free" functions. "Free" means a non-class member
-function. Utility functions should never need access to the internal details of
-a class and thus do not and should not be members of the class.
+Utility functions are always "free" functions. "Free" meaning that the function
+is standalone and is not a member of an object/class. Utility functions should
+never need access to the internal details of a class and thus do not and should
+not be members of the class.
 
 When C++ adds support for UFCS (Uniform function call syntax) free functions can
 be called as if they were member functions and class functions could be called
@@ -330,15 +266,30 @@ as if they were free functions. Slated currently for C++26.
 An example of UFCS would be the following:
 
 ```C++
-// These two will be equivalent in C++26
-auto c_style_call = embed::read<1>(spi);
-auto ufcs_style_call = spi.read<1>();
+// What this function actually does is not very relevant, but what is relevant
+// is that is a free function that can act in place of a class method.
+template<size_t N, std::chrono::nanoseconds Spacing>
+auto read(embed::adc & p_adc)
+{
+  // returns an array of N samples with "Spacing" amount of time between samples
+}
+
+void example_function(embed::adc & p_adc)
+{
+  using std::chrono::literals;
+  // embed::adc does not have a templated read function in its interface, but
+  // with UFCS the free "read" function will be looked up instead and if it
+  // matches the parameters given here, it will be used.
+  // In this case the first parameter is "p_adc".
+  auto samples = p_adc.read<16, 100ms>();
+  // do something with samples ...
+}
 ```
 
 ### Finding Utilities
 
 Utility headers can be found within interface folders with the name `util.hpp`.
-For example if you want to use utilities for `embed::adc` then you would
+For example if you want to include the utilities for `embed::adc` then you would
 include `#include <libembeddedhal/adc/util.hpp>`.
 
 ### Common Utility Functions
@@ -349,17 +300,40 @@ what a typical developer should expect, read from the device for input devices
 or write to the device for output devices. The exact behavior depends on the
 interface.
 
+The read and write free functions are also overloaded to keep them consistent.
+For example `embed::spi` has something like this:
+
+```C++
+[[nodiscard]] boost::leaf::result<std::byte> read(embed::spi & p_spi) noexcept
+{
+  // Read a single byte and return it.
+}
+```
+
+and
+
+```C++
+template<size_t BytesToRead>
+[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
+  spi& p_spi) noexcept
+{
+  // Read bytes into a buffer and return that buffer.
+}
+```
+
+Both are overloads of each other and makes the semantics consistent for all read
+like operations.
+
 To find more, see the
 [📚 Software APIs](#📚-software-apishttpslibembeddedhalgithubiolibembeddedhal).
 
 ## Using Device Drivers
 
-Instantiating a device driver is different from a peripheral driver because
-device drivers require other drivers in order to operate. Sensors tend to need
-i2c or spi. GPS modules generally require serial. Motor controllers generally
-need pwm signals and some output pins.
+Using a device driver requires that the target device you are working for
+supports the peripherals for it. If necessary soft drivers can be used to
+emulate peripherals.
 
-### Using an MPU6050 as an Accelerometer and/or Gyroscope
+### Using an MPU6050 as an accelerometer and/or gyroscope
 
 The following steps assumes you already have a project that can be compiled and
 flashed on to a device and also has driver support for i2c.
@@ -375,7 +349,7 @@ In order to get started we need install libmpu6050 via conan.
 conan install libmpu6050
 ```
 
-#### Step 2. Include & instantiate the mpu6050 driver in your project
+#### Step 2. Include & Instantiate the mpu6050 driver in your project
 
 Follow along with the example code below
 
@@ -415,15 +389,17 @@ difference between device drivers and soft drivers is the fact that soft drivers
 are not associated with a particular device like an mpu6050 or esp8266. They are
 generic.
 
-A useful soft driver that can be used when a target does not have an spi
-peripheral or cannot use one of the available spi busses, is the
-`embed::bit_bang_spi`. "bit bang" refers to any method of data transmission that
-employs software as a substitute for dedicated hardware to generate transmitted
-signals or process received signals. `embed::bit_bang_spi` implements the
-`embed::spi` interface using 2 `embed::output_pins` and 1 `embed::input_pin`.
+A useful soft driver that one can use in a pinch is the `embed::bit_bang_spi`.
+"bit bang" refers to any method of data transmission that employs software as a
+substitute for dedicated hardware to generate transmitted signals or process
+received signals. `embed::bit_bang_spi` implements the `embed::spi` interface
+using 2 `embed::output_pins` and 1 `embed::input_pin`.
 
-Being software emulated this driver is far slower than using hardware driven
-spi.
+Note that many soft drivers like `embed::bit_bang_spi`, due to its use of
+bit-banging has lower performance compared to dedicated spi hardware. This
+driver is helpful when you need spi but the device you are using does not
+contain an spi peripheral. Another use case is that the spi busses available are
+too saturated and a low speed low performance separate bus is needed.
 
 ```C++
 #include <libembeddedhal/spi/bit_bang.hpp>
@@ -457,8 +433,8 @@ int main() {
 ```
 
 This can go even further. You don't need to use pins directly connected to the
-micro-controller. You could even use pins from a device driver such as an I/O
-expander:
+micro-controller. You could even use pins from an I/O expander:
+
 
 ```C++
 #include <libembeddedhal/spi/bit_bang.hpp>
@@ -639,10 +615,9 @@ void throw_exception(std::exception const& e)
 
 ## 🎛️ Customization
 
-libembeddedhal uses `tweak.hpp` header files for customization and
+libembeddedhal uses the `tweak.hpp` header file approach to customization and
 configuration. See [A New Approach to Build-Time Library
-Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html)
-for more details.
+Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html).
 
 ```C++
 #pragma once
@@ -675,6 +650,44 @@ sure it is within one of the compiler's include paths. For GCC/Clang you'd use
 the `-I` flag to specify directories where headers can be found. The file must
 be at the root of the directory listed within the `-I` include path.
 
+## 💡 Motivation
+
+The world of embedded systems is written almost entirely in C and C++. More and
+more the embedded world moves away from C and towards C++. This has to do with
+the many benefits of C++ such as type safety, compile time features,
+meta-programming, multiple programming paradigms which, if use correctly can
+result in smaller and higher performance code than in C.
+
+But a problem for embedded software in C++, as well as in C, is that there isn't
+a consistent and common API for embedded libraries. Looking around, you will
+find that each hardware vendor has their own set of libraries and tools for
+their specific products. If you write a driver on top of their libraries, you
+will find that your code will only work for that specific platform/product. In
+some cases you may also be limited to just their toolchain. You as the developer
+are locked in to this one specific setup. And if you move to another platform,
+you must do the work of rewriting all of your code again.
+
+libembeddedhal seeks to solve this issue by creating a set of generic interfaces
+for embedded system concepts such as serial communication (UART), analog to
+digital conversion (ADC), inertial measurement units (IMU), pulse width
+modulation (PWM) and much more. The advantage of building a system on top of
+libembeddedhal is that higher level drivers can be used with any target platform
+whether it is an stm32, an nxp micro controller, an RISC-V or is on an
+embedded linux.
+
+This project is inspired by the work of Rust's embedded_hal and follows many of
+the same design goals.
+
+libembeddedhal's design goals:
+
+1. Serve as a foundation for building an ecosystem of platform agnostic drivers.
+2. Must abstract away device specific details like registers and bitmaps.
+3. Must be generic across devices such that any platform can be supported.
+4. Must be minimal for boosting performance and reducing size costs.
+5. Must be composable such that higher level drivers can build on top of these.
+6. Be accessible through package mangers so that developers can easily pick and
+   choose which drivers they want to use.
+
 # 🪪 Library Badges
 
 ![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fsupported.json)
@@ -683,8 +696,8 @@ be at the root of the directory listed within the `-I` include path.
 ![floats](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Ffloats.json)
 ![throws](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fthrows.json)
 
-The badges above are displayed in a library's README.md right below the title to
-indicate attributes of the library. When searching for a library to use for your
+The badges above are displayed in a project's README.md right below the title to
+indicate attributes of the code. When searching for a library to use for your
 project, these badges can help you decide if the project meets your
 requirements.
 
@@ -697,61 +710,24 @@ indicate library users/consumers.
 
 If a library follows completely the AUTOSAR C++20 guidelines.
 
+## ⚠️ FLOATS
+
+If a library uses floating point arithmetic anywhere in its implementation.
+
+## ⚠️ THROWS
+
+If a library ever throws an exception anywhere in its code base.
+
 ## ⚠️ ALLOCATES
 
 This badge is placed for a libraries that have the possibility to dynamically
 allocates memory via `new`, `malloc`, `std::allocator` or a standard library
 that uses any of the allocating functions.
 
-## ⚠️ FLOATS
-
-If a library uses floating point arithmetic anywhere in its implementation.
-Some points to consider when seeing a library that uses floats:
-
-- Floating point operations take up flash space for devices without a hardware
-  FPU (floating point unit).
-- The cost is only paid once because the software floating point support code
-  can be called each time for each operation. So if you are already using
-  software floats then it is likely that using this library will not add more
-  space to a project.
-- Software driven floating arithmetic is very slow compared to integer
-  arithmetic.
-- For applications using multiple threads along with FPU support, context
-  switching time will increase because the FPU registers will need to be saved.
-
-## ⚠️ THROWS
-
-If a library ever throws an exception anywhere in its code base.
-Some points to consider when seeing a library that uses floats:
-
-- Exceptions can be quite slow to propagate when they occur, although this is
-  not always the case.
-- If a project has exceptions turned off, this library will not compile, and thus
-  cannot be used.
-- Using exceptions generally incurs an increase in size for your binary (around
-  8kB for the exception runtime environment for arm cortex-m).
-- The infrastructure for error handling is already handled by Boost.LEAF so
-  exceptions are redundant.
-- Exceptions require dynamic memory allocate.
-
 # 🔨 Development Guides
 
 All guides follow the [C++ Core
 Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
-
-## Making your own libembeddedhal Interfaces and Drivers
-
-In order to demonstrate how to create an interface a thoroughly
-documented/commented set of example code has been written. The comments in these
-files acts as guides to help new developers learn how to create their own
-libembeddedhal interfaces, peripheral drivers, device drivers and soft drivers.
-
-The following files are a guide to how to write their respective driver:
-
-- [`example/interface.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/interface.hpp)
-- [`example/peripheral_driver.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/peripheral_driver.hpp)
-- [`example/device_driver.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/device_driver.hpp)
-- [`example/soft_driver.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/soft_driver.hpp)
 
 ## 📜 Coding Policies
 
@@ -815,6 +791,73 @@ follow to ensure consistent behavior, performance and size cost:
 - Inclusion of a C header file full of register map structures is not allowed as
   it would pollute the global namespace and tends to result in name collisions.
 
+
+
+## Writing an interface
+
+Guidelines for interfaces:
+
+1. Follow the private virtual api pattern which looks like this:
+
+```C++
+class interface
+{
+ public:
+  /**
+   * ... API behavior documentation goes here ...
+   */
+  [[nodiscard]] boost::leaf::result<void> do_something() {
+    return driver_do_something();
+  }
+ private:
+  virtual boost::leaf::result<void> driver_do_something() = 0;
+};
+```
+
+2. Outside of rule #1, do not include any non-virtual member functions in the
+   interface.
+3. For configuration data for which the bounds are not defined and are invariant
+   the actual API use a configure function with this signature
+   `boost::leaf::result<void> configure(const settings&)` where `settings` is an
+   inner `struct` defined within the interface class's namespace. See
+   `include/libembeddedhal/serial/serial.hpp` as an example already in use.
+4. All members of a `settings` `struct` must be initialized with default values.
+   These defaults should be values that most system can support.
+5. All virtual member functions must have the following decorations:
+   1. return types: `boost::leaf::result<T>` to order to allow error
+      signaling to propagate, where T is the type you want to return.
+   2. Marked as `noexcept`
+   3. Marked as `[[nodsicard]]`
+
+## Writing a Peripheral Driver (memory mapped I/O)
+
+Follow along with the comments in the example C++ below to get an idea of how
+to create a standard peripheral implementation. This is only meant for drivers
+that use memory mapped I/O and do not require other drivers to operate. If
+other device drivers are needed for your implementation, please
+"Implementing a Device Driver".
+
+Rules for peripheral driver implementations:
+
+1. Keep the global namespace clean of any implementation details. This can be
+   done by nesting all of the supporting code inside of the peripheral library's
+   class. This includes memory maps, bit masks, const/constexpr values.
+2. Do not depend on the data section being initialized when the constructor is
+   executed. This means that non-zero initialized global variables are not
+   allowed for drivers. This includes `static inline` variables nested within
+   the class.
+3. All drivers must be single phase initialized, meaning that that a driver must
+   be usable after it has been constructed. Drivers should initialize any hard
+   dependencies such as interrupt vector tables, or clock initializations should
+   be done at this point in the code.
+4. Expect that that the `.bss` section will be cleared to `0`
+5. Expect that the order of constructors across compilation is effectively
+   random.
+
+## Writing a Device Drivers
+
+(TODO)
+
 # 📚 Libraries
 
 ## Processors
@@ -837,49 +880,10 @@ follow to ensure consistent behavior, performance and size cost:
 - [libesp8266](https://github.com/libembeddedhal/libesp8266): Drivers for the
   esp8266 micro-controller as well as drivers for the WiFi/Internet firmware AT
   client.
-- [libmpu6050](https://github.com/libembeddedhal/libmpu6050): Coming soon.
+- [libmpu6050]((https://github.com/libembeddedhal/libmpu6050)): Coming soon.
   Accelerometer and gyroscope device. Requires an i2c driver.
 - [libatmega328](https://github.com/libembeddedhal/libatmega328): Coming soon.
   Drivers for atmega328 micro-controller
-
-
-# 💡 Motivation
-
-The world of embedded systems is written almost entirely in C and C++. More and
-more the embedded world moves away from C and towards C++. This has to do with
-the many benefits of C++ such as type safety, compile time features,
-meta-programming, multiple programming paradigms which, if use correctly can
-result in smaller and higher performance code than in C.
-
-But a problem for embedded software in C++, as well as in C, is that there isn't
-a consistent and common API for embedded libraries. Looking around, you will
-find that each hardware vendor has their own set of libraries and tools for
-their specific products. If you write a driver on top of their libraries, you
-will find that your code will only work for that specific platform/product. In
-some cases you may also be limited to just their toolchain. You as the developer
-are locked in to this one specific setup. And if you move to another platform,
-you must do the work of rewriting all of your code again.
-
-libembeddedhal seeks to solve this issue by creating a set of generic interfaces
-for embedded system concepts such as serial communication (UART), analog to
-digital conversion (ADC), inertial measurement units (IMU), pulse width
-modulation (PWM) and much more. The advantage of building a system on top of
-libembeddedhal is that higher level drivers can be used with any target platform
-whether it is an stm32, an nxp micro controller, an RISC-V or is on an
-embedded linux.
-
-This project is inspired by the work of Rust's embedded_hal and follows many of
-the same design goals.
-
-libembeddedhal's design goals:
-
-1. Serve as a foundation for building an ecosystem of platform agnostic drivers.
-2. Must abstract away device specific details like registers and bitmaps.
-3. Must be generic across devices such that any platform can be supported.
-4. Must be minimal for boosting performance and reducing size costs.
-5. Must be composable such that higher level drivers can build on top of these.
-6. Be accessible through package mangers so that developers can easily pick and
-   choose which drivers they want to use.
 
 # 👥 Contributing
 
@@ -892,15 +896,3 @@ with the phrase `.take` in it to get assigned by our github actions.
 
 Submitting a PR at anytime is fine, but code will not be reviewed until all of
 the continuous integration steps have finished.
-
-Commit message style:
-
-```
-Title no more than 50 characters
-<empty newline here>
-Actual content of the commit message in the present tense.
-```
-
-A pull request should only have a single commit in it at the start.
-For each round of review, additional commits can be made, but this is not
-required.
