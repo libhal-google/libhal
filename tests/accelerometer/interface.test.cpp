@@ -15,10 +15,7 @@ constexpr auto expected_sample = embed::accelerometer::sample{
 class test_accelerometer : public embed::accelerometer
 {
 private:
-  virtual boost::leaf::result<sample> driver_read() noexcept
-  {
-    return expected_sample;
-  }
+  boost::leaf::result<sample> driver_read() noexcept { return expected_sample; }
 };
 }  // namespace
 

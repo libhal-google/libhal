@@ -7,9 +7,12 @@
         "microcontrollers",
         "millikelvin",
         "millimetre",
+        "mrad",
         "nanokelvin",
         "nanometre",
         "pico",
-        "tparam"
+        "tparam",
+        "nrad",
+        "urad"
     ]
 }
