@@ -19,14 +19,14 @@ namespace embed {
  *
  * The purpose of bit scaling a value is to take a value of lower bit
  * resolution, scale it up but keep the percentage relative to the bits
- * resolution. This is useful for bit resolution erasure as well as image
- * upscaling.
+ * resolution. This is useful for bit resolution erasure as well as scaling up
+ * pixel depth in images.
  *
  * For example, lets take an 8-bit value of 127 (or 0x7F). This value
  * is 50% of an 8-bit number. 50% of an 32-bit would be 2147483647 or 0x7FFFFFFF
- * which is half of 2^32. A perfect upscaling would take 0x7F and generate
+ * which is half of 2^32. A perfect up scale would take 0x7F and generate
  * 0x7FFFFFFF in this case. Doing so is quite costly and requires multiplication
- * and division operations which are slower opetation.
+ * and division operations which are slower operation.
  *
  * Fast and efficient bit scaling is done via bit replication. For example, to
  * scale an 8-bit value up to 32-bits would look like this:
@@ -92,9 +92,9 @@ template<std::integral T, size_t SourceWidth, std::integral U>
  *
  * For example, if a device has an 10-bit unsigned ADC, its range of possible
  * output is 0 to 1024. If a device driver requires an ADC, that driver will
- * need to know the ADC value and the bit resolution in order to deterimine
+ * need to know the ADC value and the bit resolution in order to determine
  * where the decimal number fits within the range of the ADC. percent
- * eliminates this by upscaling all numbers to uint32_t or int32_t and keeping
+ * eliminates this by scaling up all numbers to uint32_t or int32_t and keeping
  * the proportion within the range the same. So 512 out of 1024 is 50% and this
  * class will preserve that 50% value proportional value but within a 32-bit
  * integer.

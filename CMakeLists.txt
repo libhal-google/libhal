@@ -36,48 +36,54 @@ set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(${TEST_NAME}
-  tests/accelerometer/accelerometer.test.cpp
-  tests/actuator/motor_mock.test.cpp
-  tests/can/can.test.cpp
-  tests/can/network.test.cpp
+  tests/accelerometer/interface.test.cpp
+  tests/can/interface.test.cpp
+  tests/can/interface.test.cpp
+  tests/pwm/interface.test.cpp
+  tests/timer/interface.test.cpp
+  tests/i2c/interface.test.cpp
+  tests/compass/interface.test.cpp
+  tests/gyroscope/interface.test.cpp
+  tests/spi/interface.test.cpp
+  tests/adc/interface.test.cpp
+  tests/rtc/interface.test.cpp
+  tests/temperature/interface.test.cpp
+  tests/pixel_display/interface.test.cpp
+  tests/text_display/interface.test.cpp
+  tests/dac/interface.test.cpp
+  tests/counter/interface.test.cpp
+  tests/counter/interface.test.cpp
+  tests/input_pin/interface.test.cpp
+  tests/interrupt_pin/interface.test.cpp
+  tests/output_pin/interface.test.cpp
+  tests/serial/interface.test.cpp
+
+  tests/timer/stub.test.cpp
+  tests/adc/stub.test.cpp
+  tests/dac/stub.test.cpp
+  tests/serial/stub.test.cpp
+
+  tests/i2c/util.test.cpp
+  tests/spi/util.test.cpp
+  tests/counter/util.test.cpp
+  tests/serial/util.test.cpp
+
+  tests/motor/mock.test.cpp
+  tests/pwm/mock.test.cpp
+  tests/timer/mock.test.cpp
+  tests/spi/mock.test.cpp
+  tests/dac/mock.test.cpp
+
+  tests/static_memory_resource.test.cpp
+  tests/frequency.test.cpp
   tests/error.test.cpp
-  tests/pwm/pwm_mock.test.cpp
-  tests/pwm/pwm.test.cpp
   tests/enum.test.cpp
-  tests/timer/timer_mock.test.cpp
-  tests/timer/timer_stub.test.cpp
-  tests/timer/timer.test.cpp
-  tests/i2c/i2c_util.test.cpp
-  tests/i2c/i2c.test.cpp
   tests/percent.test.cpp
   tests/time.test.cpp
   tests/static_callable.test.cpp
-  tests/imu/gyroscope.test.cpp
-  tests/imu/compass.test.cpp
-  tests/spi/spi.test.cpp
-  tests/spi/spi_util.test.cpp
-  tests/spi/spi_mock.test.cpp
-  tests/adc/adc_stub.test.cpp
-  tests/adc/adc.test.cpp
-  tests/frequency.test.cpp
-  tests/rtc/rtc.test.cpp
-  tests/main.test.cpp
   tests/testing.test.cpp
-  tests/temperature/temperature.test.cpp
-  tests/display/pixel_display.test.cpp
-  tests/display/text_display.test.cpp
-  tests/dac/dac_mock.test.cpp
-  tests/dac/dac_stub.test.cpp
-  tests/dac/dac.test.cpp
-  tests/counter/counter.test.cpp
-  tests/counter/counter_utility.test.cpp
-  tests/counter/uptime_counter.test.cpp
+  tests/main.test.cpp
   tests/overflow_counter.test.cpp
-  tests/gpio/gpio.test.cpp
-  tests/static_memory_resource.test.cpp
-  tests/serial/serial_stub.test.cpp
-  tests/serial/serial_util.test.cpp
-  tests/serial/serial.test.cpp
   tests/units.test.cpp)
 
 enable_testing()

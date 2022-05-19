@@ -119,7 +119,7 @@ public:
   /**
    * @brief Calculate the number of cycles of this frequency within the time
    * duration. This function is meant for timers to determine how many count
-   * cycles are needed to reach a paricular time duration at this frequency.
+   * cycles are needed to reach a particular time duration at this frequency.
    *
    * nanoseconds duration cannot exceed 4294967297000000000ns or ~136.1 average
    * Gregorian years otherwise the output of this function is not defined.
@@ -198,7 +198,7 @@ public:
     static_assert(Period::num == 1,
                   "Period::num of 1 are allowed for this function.");
     static_assert(Period::den <= 1000000000000000000,
-                  "Peroid::den cannot exceed 1000000000000000000.");
+                  "Period::den cannot exceed 1000000000000000000.");
 
     std::uint64_t numerator = Period::den;
     std::uint64_t denominator = cycles_per_second();

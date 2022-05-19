@@ -5,7 +5,7 @@
 #include <memory_resource>
 #include <unordered_map>
 
-#include "can.hpp"
+#include "interface.hpp"
 
 namespace embed {
 /**

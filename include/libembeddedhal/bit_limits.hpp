@@ -5,7 +5,7 @@
 
 namespace embed {
 /**
- * @brief Generate a mask of 1s at compiletime
+ * @brief Generate a mask of 1s at compile time
  *
  * @tparam BitWidth - number of 1s in the mask
  * @tparam T - the type
