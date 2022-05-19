@@ -9,6 +9,7 @@
         "millimetre",
         "nanokelvin",
         "nanometre",
-        "pico"
+        "pico",
+        "tparam"
     ]
 }

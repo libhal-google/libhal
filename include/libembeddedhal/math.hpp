@@ -64,7 +64,7 @@ template<typename T>
  * @tparam T - integral type of the two operands
  * @param p_numerator - the value to be divided
  * @param p_denominator - the value to divide the numerator against
- * @return constexpr T - rounded quotent between numerator and denominator.
+ * @return constexpr T - rounded quotient between numerator and denominator.
  * Returns 0 if the denominator is greater than the numerator.
  */
 template<typename T>

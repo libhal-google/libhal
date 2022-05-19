@@ -15,7 +15,7 @@ namespace embed {
  * developers can determine if they need to reduce or increase the size of the
  * buffer. Memory statistics can also give programs the insight into how much
  * memory space is available and make decisions based on that. In the event that
- * the memory of the static allocator is exceeded, a std::bad_alloc excpetion is
+ * the memory of the static allocator is exceeded, a std::bad_alloc exception is
  * thrown.
  *
  * USAGE:
@@ -67,7 +67,7 @@ protected:
   void* do_allocate(std::size_t p_bytes, std::size_t p_alignment) override
   {
     // Request a pointer to unallocated memory from the
-    // monotonic_m_bufferresource buffer.
+    // monotonic resource buffer.
     void* allocated_address = m_resource.allocate(p_bytes, p_alignment);
 
     // If the above call has not thrown a std::bad_alloc exception, then the

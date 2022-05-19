@@ -1,6 +1,6 @@
 #pragma once
 
-#include "counter.hpp"
+#include "interface.hpp"
 
 namespace embed {
 /**

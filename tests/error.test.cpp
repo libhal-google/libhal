@@ -1,6 +1,6 @@
 #include <boost/ut.hpp>
 #include <cstdio>
-#include <libembeddedhal/gpio/input_pin.hpp>
+#include <libembeddedhal/input_pin/interface.hpp>
 
 namespace embed {
 

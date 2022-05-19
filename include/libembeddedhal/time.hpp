@@ -37,7 +37,7 @@ public:
    * @brief Default sleep function that simply counts until it reaches a
    * designated number.
    *
-   * @param p_loop_count - number of iterations to loop for to mimick sleeping
+   * @param p_loop_count - number of iterations to loop for to mimic sleeping
    */
   static void loop_sleep(time_period p_loop_count) noexcept
   {

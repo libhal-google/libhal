@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/pwm/pwm_mock.hpp>
+#include <libembeddedhal/pwm/mock.hpp>
 
 namespace embed {
 boost::ut::suite testing_utilities_test = []() {
