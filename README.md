@@ -21,11 +21,9 @@
 | [FAQ](#faq)
 |
 
-### [⚙️ Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
+## [⚙️ Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
 
-<details open>
-<summary> 📥 Install </summary>
-<hr/>
+## 📥 Install
 
 Install from conan:
 
@@ -37,37 +35,41 @@ Installing from source locally:
 
 ```bash
 git clone https://github.com/SJSU-Dev2/libembeddedhal.git
-conan create libembeddedhal
+cd libembeddedhal
+conan create .
 ```
 
-</details>
+## ℹ️ Overview
 
-<details>
-<summary> ℹ️ Overview </summary>
-<hr/>
+libembeddedhal is a collection of peripheral and device interfaces and
+abstractions. The goal is to make writing
 
-libembeddedhal is a collection of interfaces and abstractions for embedded
-system peripherals and devices using modern C++ best practices. The goal is to
-make writing embedded systems software & applications easy for everyone.
+libembeddedhal
+
+aims to be the standard hardware abstraction layer for embedded
+applications
+
+### Design Rules
 
 - Header only
 - Dependencies:
   - Boost.LEAF for error handling
   - C++20 and above (currently only supports g++-10 and above)
-- Target/platform agnostic (ARM Cortex, STM32, AVR, RPI, embedded linux, etc)
+  - libxbitset
+  - mp-units
+    - gsl-lite/0.38.0
+  - Boost.LEAF
+  - uintwide_t.h
+- Target/platform agnostic (ARM Cortex, STM32, AVR, Embedded Linux, etc)
 - Designed to be modular, dynamic, composable, lightweight
 - Throwing exceptions out of drivers is strictly forbidden
 - Dynamically allocating memory is forbidden (rare exceptions may exist for some
   libraries)
 - Follows C++ Core Guidelines as much as possible
-- Nearly no use of macros (currently only 1 macro)
+- Almost no use of macros (currently only 1 macro)
 - Customizable using tweak header files (not through macros)
 
-</details>
-
-<details>
-<summary> 💡 Motivation </summary>
-<hr/>
+## 💡 Motivation
 
 The world of embedded systems is written almost entirely in C and C++. More and
 more the embedded world moves away from C and towards C++. This has to do with
@@ -77,19 +79,19 @@ result in smaller and higher performance code than in C.
 
 But a problem for embedded software in C++, as well as in C, is that there isn't
 a consistent and common API for embedded libraries. Looking around, you will
-find that each vendor of embedded products has their own set of libraries and
-tools for their specific products. If you write a driver on top of their
-libraries, you will find that your code will only work for that specific
-platform, using that specific API and in some cases using a specific toolchain.
-You as the developer are locked in to this one specific setup. And if you move
-to another platform, you must do the work of rewriting all of your code again.
+find that each hardware vendor has their own set of libraries and tools for
+their specific products. If you write a driver on top of their libraries, you
+will find that your code will only work for that specific platform/product. In
+some cases you may also be limited to just their toolchain. You as the developer
+are locked in to this one specific setup. And if you move to another platform,
+you must do the work of rewriting all of your code again.
 
 libembeddedhal seeks to solve this issue by creating a set of generic interfaces
 for embedded system concepts such as serial communication (UART), analog to
 digital conversion (ADC), inertial measurement units (IMU), pulse width
 modulation (PWM) and much more. The advantage of building a system on top of
 libembeddedhal is that higher level drivers can be used with any target platform
-whether it is an stm32, an nxp micro controller, runs on RISC-V or is on an
+whether it is an stm32, an nxp micro controller, an RISC-V or is on an
 embedded linux.
 
 This project is inspired by the work of Rust's embedded_hal and follows many of
@@ -105,11 +107,7 @@ libembeddedhal's design goals:
 6. Be accessible through package mangers so that developers can easily pick and
    choose which drivers they want to use.
 
-</details>
-
-<details>
-<summary> 🎛️ Customization </summary>
-<hr/>
+# 🎛️ Customization
 
 libembeddedhal uses the `tweak.hpp` header file approach to customization and
 configuration. See [A New Approach to Build-Time Library
@@ -146,17 +144,12 @@ sure it is within one of the compiler's include paths. For GCC/Clang you'd use
 the `-I` flag to specify directories where headers can be found. The file must
 be at the root of the directory listed within the `-I` include path.
 
-</details>
-
-<details>
-<summary> 📜 Coding Policies </summary>
-<hr/>
+# 📜 Coding Policies
 
 Listed below are the policies that every libembeddedhal implementation must
 follow to ensure consistent behavior, performance and size cost:
 
-<details>
-<summary>Style</summary>
+## Style
 
 - Code shall follow libembeddedhal's `.clang-format` file, which uses the
   Mozilla C++ style format as a base with some adjustments.
@@ -187,10 +180,7 @@ follow to ensure consistent behavior, performance and size cost:
 - Include the C++ header version of C headers such as `<cstdint>` vs
   `<stdint.h>`.
 
-</details>
-
-<details>
-<summary>Coding Restrictions</summary>
+## Coding Restrictions
 
 - Use the `libxbitset` library to perform bitwise operations operations.
 - Only use macros if something cannot be done without using them. Usually macros
@@ -216,18 +206,13 @@ follow to ensure consistent behavior, performance and size cost:
 - Inclusion of a C header file full of register map structures is not allowed as
   it would pollute the global namespace and tends to result in name collisions.
 
-</details>
-</details>
 
-<details>
-<summary> 📖 Guides </summary>
-<hr/>
+## 📖 Guides
 
 All guides follow the [C++ Core
 Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
 
-<details>
-<summary>Creating a new interface</summary>
+### Creating a new interface
 
 Guidelines for interfaces:
 
@@ -263,10 +248,7 @@ class interface
    2. Marked as `noexcept`
    3. Marked as `[[nodsicard]]`
 
-</details>
-
-<details>
-<summary>Implementing a Peripheral Driver (memory mapped I/O)</summary>
+### Implementing a Peripheral Driver (memory mapped I/O)
 
 Follow along with the comments in the example C++ below to get an idea of how
 to create a standard peripheral implementation. This is only meant for drivers
@@ -291,20 +273,13 @@ Rules for peripheral driver implementations:
 5. Expect that the order of constructors across compilation is effectively
    random.
 
-</details>
-
-<details>
-<summary>Device Drivers</summary>
+### Device Drivers
 
 Some rules for device drivers:
 
 1. Constructors should take
 
-</details>
-</details>
-
-<details>
-<summary>📚 Libraries</summary>
+# 📚 Libraries
 
 - [libarmcortex](https://github.com/SJSU-Dev2/libarmcortex): drivers for the ARM
   Cortex M series of processors.
@@ -319,19 +294,14 @@ Some rules for device drivers:
 - libatmega328: coming soon. Drivers for atmega328 microntrollers
 - libriscvi32: coming soon. Drivers for 32-bit RISC-V processors
 
-</details>
+# 👥 Contributing
 
-<details>
-<summary>👥 Contributing</summary>
-
-### Self Assigning to an Issue
+## 🤚 Self Assigning to an Issue
 
 If you find an issue you'd like to work on, simply type and submit a comment
 with the phrase `.take` in it to get assigned by our github actions.
 
-### Submitting a PR
+## 📤 Submitting a PR
 
 Submitting a PR at anytime is fine, but code will not be reviewed until all of
 the continuous integration steps have finished.
-
-</details>
