@@ -9,7 +9,7 @@
 [![lint](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/lint.yml)
 [![tests](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml)
 
-## 🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧
+**🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
 
 | [Overview](#overview)
 | [Install](#install)
@@ -21,9 +21,11 @@
 | [FAQ](#faq)
 |
 
-## [⚙️ Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
+# 📚 Software APIs
 
-## 📥 Install
+- https://libembeddedhal.github.io/libembeddedhal/
+
+# 📥 Install
 
 Install from conan:
 
@@ -39,35 +41,373 @@ cd libembeddedhal
 conan create .
 ```
 
-## ℹ️ Overview
+# ℹ️ Overview
 
-libembeddedhal is a collection of peripheral and device interfaces and
-abstractions. The goal is to make writing
+libembeddedhal exists to make hardware drivers:
 
-libembeddedhal
+- **🚚 portable**
+- **🦾 flexible**
+- **📦 accessible**
+- **🍰 easy to use**
 
-aims to be the standard hardware abstraction layer for embedded
-applications
-
-### Design Rules
+## Project C++ Attributes
 
 - Header only
+- Available on Conan (coming soon to vcpkg)
 - Dependencies:
   - Boost.LEAF for error handling
-  - C++20 and above (currently only supports g++-10 and above)
+  - C++20
   - libxbitset
   - mp-units
-    - gsl-lite/0.38.0
-  - Boost.LEAF
   - uintwide_t.h
 - Target/platform agnostic (ARM Cortex, STM32, AVR, Embedded Linux, etc)
-- Designed to be modular, dynamic, composable, lightweight
-- Throwing exceptions out of drivers is strictly forbidden
-- Dynamically allocating memory is forbidden (rare exceptions may exist for some
-  libraries)
-- Follows C++ Core Guidelines as much as possible
-- Almost no use of macros (currently only 1 macro)
-- Customizable using tweak header files (not through macros)
+- Designed to be modular, dynamic, composable, and lightweight
+- Does not throw exceptions
+- Does not dynamically allocation
+- Uses tweak header files for customization
+- Follows C++ Core Guidelines
+
+# 📃 Glossary
+
+Here is a list of terms used in libembeddedhal. It is HIGHLY RECOMMENDED that
+those new to libembeddedhal to read this section.
+
+- **Target**: is a general purpose device that can execute code
+  and contains 1 or more peripherals or busses for communicating with devices
+  and hardware external to itself. In the context of libembeddedhal these are
+  defined as a micro-controller (MCU) or a system-on-chip (SOC).
+
+- **Interface**: is a (TODO).
+
+- **Peripheral drivers**: are drivers for a target that is embedded within
+  the device and therefor cannot be removed from the chip and is fixed in
+  number.
+
+    - Example: A digital output and input pin
+    - Example: A hardware timer
+    - Example: An analog-to-digital converter
+
+- **Device drivers**: are drivers for devices external to a target. In
+  order to communicate with such a device the target must have the necessary
+  peripherals and peripheral drivers to operate correctly.
+
+    - Example: an accelerometer driver for the mpu6050
+    - Example: a memory storage driver for a at581 flash memory
+
+- **Hard drivers**: Are simply peripheral drivers and device drivers.
+
+- **Soft drivers**: Are drivers that do not have any specific underlying
+  hardware associated with them. They are used to emulate, give context to, or
+  alter the behavior of other interfaces.
+
+    - Emulation example: Using 2 output pins and 1 input pin to emulate spi
+    - Context example: Using an adc and the attributes of an attached
+      potentiometer can be used to create a rotary encoder.
+    - Alteration example: Taking an input pin and inverting the logic level read
+      from hardware.
+
+  In general, software drivers tend to incur some overhead so nesting them
+  deeply will effect performance.
+
+- **Off Interface Function**: Is a public function that a driver can have that
+  is beyond what is available for the interface it is implementing. These
+  functions usually configures a peripheral or device in a way that is outside
+  of the scope of the implementing interface.
+
+    - Example: An output pin driver with a high drain current mode
+    - Example: An input pin driver with support for inverting the voltage level
+      of what it reads in hardware.
+    - Example: Enabling/disabling continuous sampling from an accelerometer
+      where sampling continuously would make reading samples faster but would
+      consume more power and disabling continuous sampling would do the
+      opposite.
+
+# ✍️ Usage
+
+This section will go over how to use libembeddedhal in general. For details
+pertaining to specific interfaces see the [📚 Software APIs](#📚-software-apis)
+for more details.
+
+## Button & LED Example
+
+```C++
+#include <liblpc40xx/output_pin.hpp>
+#include <liblpc40xx/input_pin.hpp>
+
+int main() {
+  // Get pin A2 as an output pin
+  embed::output_pin & led = embed::lpc40xx::output_pin::get<0, 2>();
+  // Get pin B6 as an input pin
+  embed::input_pin & button = embed::lpc40xx::input_pin::get<1, 6>();
+
+  while (true)
+  {
+    if (button.level().value() == true) {
+      led.level(true);
+    } else {
+      led.level(false);
+    }
+  }
+}
+```
+
+## Blink Example
+
+```C++
+#include <chrono>
+
+#include <libarmcortex/counter.hpp>
+#include <libembeddedhal/counter/util.hpp>
+#include <liblpc40xx/output_pin.hpp>
+
+int main() {
+  // Get pin A2 as an output pin (will be initialized after the first call)
+  embed::output_pin & led = embed::lpc40xx::output_pin::get<0, 2>();
+  // Get a hardware counter (will be initialized after the first call)
+  embed::counter & counter = embed::lpc40xx::counter::get();
+
+  while (true)
+  {
+    using std::chrono::literals;
+    led.level(true);
+    wait_for(counter, 500ms);
+    led.level(false);
+    wait_for(counter, 500ms);
+  }
+}
+```
+
+## Library file structure
+
+libembeddedhal attempts to keep the organization of source code simple,
+consistent in order to make including libraries easy to remember.
+
+Some attributes of the file structure:
+
+1. Only 2 layers deep, excluding the `internal/` directory.
+2. Non-hardware related utilities are placed at the root of the directory.
+3. Each interface has a directory at the root of the libembeddedhal directory.
+4. Each interface directory will have an `interface.hpp` file.
+    - Example: `#include <libembeddedhal/adc/interface.hpp>`
+    - Example: `#include <libembeddedhal/dac/interface.hpp>`
+5. Any files associated/extending a particular interface will reside in that
+   interfaces directory.
+6. Any hardware/interface files that extend to multiple interfaces will be
+   placed in one interface directories. The choice should be which directory
+   makes the most sense but this can be very arbitrary.
+    - Example: `#include <libembeddedhal/input_pin/pin_resistor.hpp>`, this file
+      could be in `output_pin` or `interrupt_pin` but `input_pin` seems like the
+      best choice but is effectively arbitrary.
+
+```
+libembeddedhal/
+├── config.hpp
+├── <interface_1> (the name of an example interface)
+│   ├── interface.hpp (REQUIRED: the interface definition is found here)
+│   ├── utility_class.hpp (some interfaces have utility classes as well)
+│   ├── mock.hpp (mocks for unit testing can be found here)
+│   ├── unit.hpp (contains any units associated with the interface)
+│   └── util.hpp (utilities for the interface can be found here)
+├── i2c (example interface)
+│   ├── interface.hpp (holds the embed::i2c interface)
+│   ├── thread_safe.hpp (holds a soft driver implementing embed::i2c but with lock support)
+│   └── util.hpp (holds embed::i2c utilities)
+├── internal (internal code that should NOT be accessed directly)
+│   └── third_party (dependencies for libembeddedhal)
+│       ├── leaf.hpp (add Boost.LEAF for error handling and transport)
+│       ├── uintwide_t.h (add support for numbers above 64-bit)
+│       └── units (add physical unit support)
+├── enum.hpp (utility to handle enumerations)
+├── error.hpp (error handling code is found here)
+├── frequency.hpp (definition of the frequency type is found here)
+├── math.hpp (helper math functions)
+├── overflow_counter.hpp (detecting counter overflow)
+├── percent.hpp (defines the percent class)
+├── static_callable.hpp (convert polymorphic functions into free functions, useful for ISRs)
+├── static_memory_resource.hpp (static buffer for pmr containers)
+├── testing.hpp (utilities for unit testing)
+├── time.hpp (provides global time keeping functions)
+└── to_array.hpp (converts containers to std::array)
+```
+
+## Using Utility Functions
+
+Utility functions help eliminate boilerplate code for the application and driver
+writers. They also provide common semantics for drivers such as being able to
+call `embed::read(/* insert interface here */)` on any interface that has the
+capability to read or sample something.
+
+Utility functions are always "free" functions. "Free" meaning that the function
+is standalone and is not a member of an object/class. Utility functions should
+never need access to the internal details of a class and thus do not and should
+not be members of the class.
+
+When C++ adds support for UFCS (Uniform function call syntax) free functions can
+be called as if they were member functions and class functions could be called
+as if they were free functions. Slated currently for C++26.
+
+An example of UFCS would be the following:
+
+```C++
+// What this function actually does is not very relevant, but what is relevant
+// is that is a free function that can act in place of a class method.
+template<size_t N, std::chrono::nanoseconds Spacing>
+auto read(embed::adc & p_adc)
+{
+  // returns an array of N samples with "Spacing" amount of time between samples
+}
+
+void example_function(embed::adc & p_adc)
+{
+  using std::chrono::literals;
+  // embed::adc does not have a templated read function in its interface, but
+  // with UFCS the free "read" function will be looked up instead and if it
+  // matches the parameters given here, it will be used.
+  // In this case the first parameter is "p_adc".
+  auto samples = p_adc.read<16, 100ms>();
+  // do something with samples ...
+}
+```
+
+### Finding Utilities
+
+Utility headers can be found within interface folders with the name `util.hpp`.
+For example if you want to include the utilities for `embed::adc` then you would
+include `#include <libembeddedhal/adc/util.hpp>`.
+
+### Common Utility Functions
+
+To keep the semantics consistent almost every driver will have either or both a
+`embed::read()` or `embed::write()` free function. These functions should do
+what a typical developer should expect, read from the device for input devices
+or write to the device for output devices. The exact behavior depends on the
+interface.
+
+The read and write free functions are also overloaded to keep them consistent.
+For example `embed::spi` has something like this:
+
+```C++
+[[nodiscard]] boost::leaf::result<std::byte> read(embed::spi & p_spi) noexcept
+{
+  // Read a single byte and return it.
+}
+```
+
+and
+
+```C++
+template<size_t BytesToRead>
+[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
+  spi& p_spi) noexcept
+{
+  // Read bytes into a buffer and return that buffer.
+}
+```
+
+Both are overloads of each other and makes the semantics consistent for all read
+like operations.
+
+To find more, see the [📚 Software APIs](#📚-software-apis)
+
+## Using Device Drivers
+
+Using a device driver requires that the target device you are working for
+supports the peripherals for it. If necessary soft drivers can be used to
+emulate peripherals.
+
+### Using an MPU6050 as an accelerometer and/or gyroscope
+
+The following steps assumes you already have a project that can be compiled and
+flashed on to a device and also has driver support for i2c.
+
+This particular examples uses the "normal" or low bandwidth versions of the
+mpu6050 driver and not the high bandwidth version that is more complicated.
+
+#### Step 1. Install the libmpu6050
+
+In order to get started we need install libmpu6050 via conan.
+
+```bash
+conan install libmpu6050
+```
+
+#### Step 2. Include & Instantiate the mpu6050 driver in your project
+
+Follow along with the example code below
+
+```C++
+#include <libexamplemcu/i2c.hpp>
+#include <libmpu6050/mpu6050.hpp>
+
+int main() {
+  embed::i2c & i2c = /* some i2c driver provided here */;
+  // Create an mpu6050 driver and pass the i2c associated with the physical i2c
+  // bus that is connected to the mpu6050's SDA and SCL lines.
+  embed::mpu6050 mpu6050(i2c);
+
+  // Get a reference to the accelerometer portion of the mpu6050
+  embed::accelerometer & accelerometer = mpu6050.as_accelerometer();
+  // Get a reference to the gyroscope portion of the mpu6050
+  embed::gyroscope & gyroscope = mpu6050.as_gyroscope();
+
+  // Read a sample from the acceleration of the mpu6050
+  auto accelerometer_sample = accelerometer.read();
+  // Read the rotational velocity of the mpu6050
+  auto gyroscope_sample = gyroscope.read();
+
+  /* Do other work... */
+}
+```
+
+#### Step 3. DONE!
+
+At this point you have a fully functional and available accelerometer and
+gyroscope drivers that your code can use.
+
+##  Using Soft Drivers
+
+### Using a rc servo driver
+
+### Using input and output pins to emulate SPI
+
+## 🔎 Finding drivers
+
+### Peripheral Drivers
+
+### Device Drivers
+
+### Soft Drivers
+
+## 📊 Using the percent utility
+
+## Using the frequency utility
+
+## ⚖️ Using mp-units with libembeddedhal
+
+## ☔️ Handling errors
+
+### Basic errors
+### Getting logs from errors
+### Peripheral driver debug snapshots
+### Getting stack traces
+
+
+## 🪪 Library Badges
+
+Each FOSS repo that implements libembeddedhal should include the following
+badges in their root directory's README.md file if they apply to them. Note that
+this only matters for non-testing code.
+
+- **LIBEMBEDDEDHAL**: All libraries that implement libembeddedhal interfaces
+  should have this badge to indicate library users/consumers.
+- **FLOATS**: If a library uses floating point arithmetic anywhere in its
+  implementation.
+- **THROWS**: If a library ever throws an exception anywhere in its code
+  base.
+- **ALLOCATES**: If a library ever dynamically allocates memory via malloc,
+  new, any standard containers, etc.
+- **SAFETY CRITICAL**: If a library follows completely the AUTOSAR C++20
+  guidelines.
 
 ## 💡 Motivation
 
