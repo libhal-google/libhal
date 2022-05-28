@@ -58,7 +58,7 @@ libembeddedhal exists to make hardware drivers:
 - Uses tweak header files for customization
 - Designed to be modular, dynamic, composable, and lightweight
 - Dependencies:
-  - >= C++20
+  - C++20 or above
   - [Boost.LEAF](https://boostorg.github.io/leaf/) for error handling
   - [libxbitset](https://github.com/libembeddedhal/libxbitset/)
   - [mp-units](https://mpusz.github.io/units/)
