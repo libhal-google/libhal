@@ -21,9 +21,7 @@
 | [FAQ](#faq)
 |
 
-# 📚 Software APIs
-
-- https://libembeddedhal.github.io/libembeddedhal/
+# [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
 
 # 📥 Install
 
@@ -50,10 +48,14 @@ libembeddedhal exists to make hardware drivers:
 - **📦 accessible**
 - **🍰 easy to use**
 
-## Project C++ Attributes
+## Project Attributes
 
 - Header only
 - Available on Conan (coming soon to vcpkg)
+- Does not throw exceptions
+- Does not dynamically allocation
+- Uses tweak header files for customization
+- Designed to be modular, dynamic, composable, and lightweight
 - Dependencies:
   - Boost.LEAF for error handling
   - C++20
@@ -61,10 +63,6 @@ libembeddedhal exists to make hardware drivers:
   - mp-units
   - uintwide_t.h
 - Target/platform agnostic (ARM Cortex, STM32, AVR, Embedded Linux, etc)
-- Designed to be modular, dynamic, composable, and lightweight
-- Does not throw exceptions
-- Does not dynamically allocation
-- Uses tweak header files for customization
 - Follows C++ Core Guidelines
 
 # 📃 Glossary
@@ -72,60 +70,76 @@ libembeddedhal exists to make hardware drivers:
 Here is a list of terms used in libembeddedhal. It is HIGHLY RECOMMENDED that
 those new to libembeddedhal to read this section.
 
-- **Target**: is a general purpose device that can execute code
-  and contains 1 or more peripherals or busses for communicating with devices
-  and hardware external to itself. In the context of libembeddedhal these are
-  defined as a micro-controller (MCU) or a system-on-chip (SOC).
+## Target
 
-- **Interface**: is a (TODO).
+Is a general purpose device that can execute code and contains 1 or more
+peripherals or busses for communicating with devices and hardware external to
+itself. In the context of libembeddedhal these are defined as a micro-controller
+(MCU) or a system-on-chip (SOC).
 
-- **Peripheral drivers**: are drivers for a target that is embedded within
-  the device and therefor cannot be removed from the chip and is fixed in
-  number.
+## Interface
 
-    - Example: A digital output and input pin
-    - Example: A hardware timer
-    - Example: An analog-to-digital converter
+Is a codescription of the behavior that a hardware  of a C++ class without
+committing to a particular implementation of that class.
 
-- **Device drivers**: are drivers for devices external to a target. In
-  order to communicate with such a device the target must have the necessary
-  peripherals and peripheral drivers to operate correctly.
+## Peripheral drivers
 
-    - Example: an accelerometer driver for the mpu6050
-    - Example: a memory storage driver for a at581 flash memory
+Are drivers for a target that is embedded within the device and therefor cannot
+be removed from the chip and is fixed in number.
 
-- **Hard drivers**: Are simply peripheral drivers and device drivers.
+- Example: A digital output and input pin
+- Example: A hardware timer
+- Example: An analog-to-digital converter
 
-- **Soft drivers**: Are drivers that do not have any specific underlying
-  hardware associated with them. They are used to emulate, give context to, or
-  alter the behavior of other interfaces.
+## Device drivers
 
-    - Emulation example: Using 2 output pins and 1 input pin to emulate spi
-    - Context example: Using an adc and the attributes of an attached
-      potentiometer can be used to create a rotary encoder.
-    - Alteration example: Taking an input pin and inverting the logic level read
-      from hardware.
+Are drivers for devices external to a target. In order to communicate with such
+a device the target must have the necessary peripherals and peripheral drivers
+to operate correctly.
 
-  In general, software drivers tend to incur some overhead so nesting them
-  deeply will effect performance.
+- Example: an accelerometer driver for the mpu6050
+- Example: a memory storage driver for a at581 flash memory
 
-- **Off Interface Function**: Is a public function that a driver can have that
-  is beyond what is available for the interface it is implementing. These
-  functions usually configures a peripheral or device in a way that is outside
-  of the scope of the implementing interface.
+## Hard drivers
 
-    - Example: An output pin driver with a high drain current mode
-    - Example: An input pin driver with support for inverting the voltage level
-      of what it reads in hardware.
-    - Example: Enabling/disabling continuous sampling from an accelerometer
-      where sampling continuously would make reading samples faster but would
-      consume more power and disabling continuous sampling would do the
-      opposite.
+Are simply peripheral drivers and device drivers.
+
+## Soft drivers
+
+Are drivers that do not have any specific underlying hardware associated with
+them. They are used to emulate, give context to, or alter the behavior of other
+interfaces. For a driver to be a soft driver it must implement or have a way
+to generate, construct or create an implementation of a hardware interface.
+
+- Emulation example: Using 2 output pins and 1 input pin to emulate spi
+- Context example: Using an adc and the attributes of an attached
+  potentiometer can be used to create a rotary encoder.
+- Alteration example: Taking an input pin and inverting the logic level read
+  from hardware.
+
+In general, software drivers tend to incur some overhead so nesting them
+deeply will effect performance.
+
+## Off Interface Function
+
+Is a public function that a driver can have that is beyond what is available for
+the interface it is implementing. These functions usually configures a
+peripheral or device in a way that is outside of the scope of the implementing
+interface.
+
+- Example: An output pin driver with a high drain current mode
+- Example: An input pin driver with support for inverting the voltage level
+  of what it reads in hardware.
+- Example: Enabling/disabling continuous sampling from an accelerometer
+  where sampling continuously would make reading samples faster but would
+  consume more power and disabling continuous sampling would do the
+  opposite.
 
 # ✍️ Usage
 
 This section will go over how to use libembeddedhal in general. For details
-pertaining to specific interfaces see the [📚 Software APIs](#📚-software-apis)
+pertaining to specific interfaces see the
+[📚 Software APIs](#📚-software-apishttpslibembeddedhalgithubiolibembeddedhal)
 for more details.
 
 ## Button & LED Example
@@ -170,9 +184,9 @@ int main() {
   {
     using std::chrono::literals;
     led.level(true);
-    wait_for(counter, 500ms);
+    embed::wait_for(counter, 500ms);
     led.level(false);
-    wait_for(counter, 500ms);
+    embed::wait_for(counter, 500ms);
   }
 }
 ```
@@ -307,7 +321,8 @@ template<size_t BytesToRead>
 Both are overloads of each other and makes the semantics consistent for all read
 like operations.
 
-To find more, see the [📚 Software APIs](#📚-software-apis)
+To find more, see the
+[📚 Software APIs](#📚-software-apishttpslibembeddedhalgithubiolibembeddedhal).
 
 ## Using Device Drivers
 
@@ -364,50 +379,273 @@ int main() {
 At this point you have a fully functional and available accelerometer and
 gyroscope drivers that your code can use.
 
-##  Using Soft Drivers
+## Using Soft Drivers
 
-### Using a rc servo driver
+Using soft drivers is no different than using a device driver. The only
+difference between device drivers and soft drivers is the fact that soft drivers
+are not associated with a particular device like an mpu6050 or esp8266. They are
+generic.
 
-### Using input and output pins to emulate SPI
+A useful soft driver that one can use in a pinch is the `embed::bit_bang_spi`.
+"bit bang" refers to any method of data transmission that employs software as a
+substitute for dedicated hardware to generate transmitted signals or process
+received signals. `embed::bit_bang_spi` implements the `embed::spi` interface
+using 2 `embed::output_pins` and 1 `embed::input_pin`.
 
-## 🔎 Finding drivers
+Note that many soft drivers like `embed::bit_bang_spi`, due to its use of
+bit-banging has lower performance compared to dedicated spi hardware. This
+driver is helpful when you need spi but the device you are using does not
+contain an spi peripheral. Another use case is that the spi busses available are
+too saturated and a low speed low performance separate bus is needed.
 
-### Peripheral Drivers
+```C++
+#include <libembeddedhal/spi/bit_bang.hpp>
+#include <liblpc40xx/output_pin.hpp>
+#include <liblpc40xx/input_pin.hpp>
 
-### Device Drivers
+int main() {
+  // Get references to all of the pins you want to use for spi emulation
+  embed::output_pin & clock = embed::lpc40xx::output_pin::get<0, 1>();
+  embed::output_pin & data_out = embed::lpc40xx::output_pin::get<0, 2>();
+  embed::input_pin & data_in = embed::lpc40xx::input_pin::get<0, 3>();
+  // Get an output_pin and have it act like a chip select
+  embed::output_pin & chip_select = embed::lpc40xx::output_pin::get<0, 4>();
 
-### Soft Drivers
+  // Construct the bit_bang_spi object using the implementations above
+  embed::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
 
-## 📊 Using the percent utility
+  std::array<std::byte, 4> payload = {
+    std::byte(0x11),
+    std::byte(0x22),
+    std::byte(0x33),
+    std::byte(0x44),
+  };
 
-## Using the frequency utility
+  chip_select.level(false);
+  embed::write(bit_bang_spi, payload);
+  chip_select.level(true);
+
+  return 0;
+}
+```
+
+This can go even further. You don't need to use pins directly connected to the
+micro-controller. You could even use pins from an I/O expander:
+
+
+```C++
+#include <libembeddedhal/spi/bit_bang.hpp>
+#include <liblpc40xx/output_pin.hpp>
+#include <liblpc40xx/input_pin.hpp>
+
+int main() {
+  embed::i2c & i2c0 = embed::lpc40xx::i2c::get<0>();
+  embed::pca9536 io_expander(i2c0);
+
+  // Get references to all of the pins you want to use for spi emulation
+  embed::output_pin & clock = io_expander.get_as_output_pin<1>();
+  embed::output_pin & data_out = io_expander.get_as_output_pin<2>();
+  embed::input_pin & data_in = io_expander.get_as_input_pin<3>();
+  embed::output_pin & chip_select = io_expander.get_as_output_pin<4>();
+
+  // NOTICE: That the code below doesn't have to change even if the pin
+  // implementations change.
+
+  // Construct the bit_bang_spi object using the implementations above
+  embed::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
+
+  // Get an output_pin and have it act like a chip select
+
+  std::array<std::byte, 4> payload = {
+    std::byte(0x11),
+    std::byte(0x22),
+    std::byte(0x33),
+    std::byte(0x44),
+  };
+
+  chip_select.level(false);
+  embed::write(bit_bang_spi, payload);
+  chip_select.level(true);
+
+  return 0;
+}
+```
+
+## 📊 Utility Classes
+
+Utility classes are like soft drivers except they do not implement hardware
+interfaces. Utility classes are generally used to manage an interface and
+extend a driver's usefulness.
+
+Examples of this would be `embed::can_network` which takes an `embed::can`
+implementation and manages a map of the messages the device has received on the
+can bus.
+
+Another example is `embed::uptime_counter` which takes an `embed::counter` and
+for each call for uptime on the uptime counter, the class checks if the 32-bit
+counter has overflowed. If it has, then increment another 32-bit number with the
+number of overflows counted. Return the result as a 64-bit number which is the
+concatenation of both 32-bit numbers. This driver, so long as it is checked
+often enough, can take a 32-bit hardware counter and extend it to a 64-bit
+counter.
+
+### embed::percent
+
+(TODO)
+
+### embed::frequency
+
+(TODO)
 
 ## ⚖️ Using mp-units with libembeddedhal
 
+(TODO)
+
 ## ☔️ Handling errors
 
+Errors are handled in libembeddedhal using
+[Boost.LEAF](https://boostorg.github.io/leaf/). Check out their documentation
+for details on how to use it in detail. It is generally favorable to enable
+embedded mode for LEAF as it greatly reduces the storage and memory requires of
+the system.
+
+```C++
+// Define this at the top of your main application file or in your compiler
+// arguments.
+#define BOOST_LEAF_EMBEDDED
+// If you aren't using threads then add this as well
+#define BOOST_LEAF_NO_THREADS
+```
+
+LEAF also allows you to control how exceptions are handled by defining a
+`boost::throw_exception(std::exception const&)` function. In general you want
+this to simply execute `std::abort` when this occurs. To do this, simply add
+this snippet to one of the C++ files linked into the project.
+
+```C++
+namespace boost {
+void throw_exception(std::exception const& e)
+{
+  std::abort();
+}
+```
+
 ### Basic errors
+
+```C++
+#define BOOST_LEAF_EMBEDDED
+#define BOOST_LEAF_NO_THREADS
+
+#include <array>
+#include <span>
+
+#include <libembeddedhal/i2c/util.hpp>
+#include <liblpc40xx/i2c.hpp>
+
+int main()
+{
+  // Get an i2c peripheral implementation
+  auto& i2c0 = embed::lpc40xx::i2c::get<0>();
+
+  // Default configure the i2c0 bus (100kHz clock)
+  i2c0.configure({});
+
+  boost::leaf::try_handle_all(
+    // First function can be considered the "try" portion of the code. If an
+    // error result is returned from this function the handlers below will be
+    // called.
+    [&i2c0]() -> boost::leaf::result<void> {
+      constexpr std::byte address(0x11);
+      std::array<std::byte, 1> dummy_payload{ std::byte{ 0xAA } };
+      // Functions that return boost::leaf::result must have their result
+      // checked and handled. To do this we use the BOOST_LEAF_CHECK to remove
+      // the boiler plate in doing this.
+      //
+      // To make sure that errors are transported up the stack each call to a
+      // function returning a boost::leaf::result must be wrapped in a
+      // BOOST_LEAF_CHECK() macro call.
+      BOOST_LEAF_CHECK(embed::write(i2c, address, dummy_payload));
+      return {};
+    },
+    // Functions after the first are the handlers.
+    // In this case, we only check for embed::i2c::errors.
+    [](embed::i2c::errors p_error) {
+      switch(p_error) {
+        case embed::i2c::errors::address_not_acknowledged:
+          // Handle this case here...
+          break;
+        case embed::i2c::errors::bus_error:
+          // Handle this case here...
+          break;
+      }
+    },
+    // A function that takes no parameters is the wild card and is called when
+    // there are unhandled remaining errors
+    []() {
+      // Unknown error occurred!
+      // Handle those here!
+    });
+
+  return 0;
+}
+
+// This is here to remove exceptions from being thrown
+namespace boost {
+void throw_exception(std::exception const& e)
+{
+  std::abort();
+}
+} // namespace boost
+```
+
 ### Getting logs from errors
+
+(TODO)
+
 ### Peripheral driver debug snapshots
+
+(TODO)
+
 ### Getting stack traces
 
+(TODO)
 
-## 🪪 Library Badges
+## 🎛️ Customization
 
-Each FOSS repo that implements libembeddedhal should include the following
-badges in their root directory's README.md file if they apply to them. Note that
-this only matters for non-testing code.
+libembeddedhal uses the `tweak.hpp` header file approach to customization and
+configuration. See [A New Approach to Build-Time Library
+Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html).
 
-- **LIBEMBEDDEDHAL**: All libraries that implement libembeddedhal interfaces
-  should have this badge to indicate library users/consumers.
-- **FLOATS**: If a library uses floating point arithmetic anywhere in its
-  implementation.
-- **THROWS**: If a library ever throws an exception anywhere in its code
-  base.
-- **ALLOCATES**: If a library ever dynamically allocates memory via malloc,
-  new, any standard containers, etc.
-- **SAFETY CRITICAL**: If a library follows completely the AUTOSAR C++20
-  guidelines.
+```C++
+#pragma once
+#include <string_view>
+namespace embed::config {
+// Defaults to "test". Indicates that the current running platform is a
+// unit/integration test. Change this to the target platform you are building
+// for. For example, if you are targeting the LPC4078 chip, you should change
+// this to "lpc4078".
+constexpr std::string_view platform = "test";
+// Defaults to "true". Enables stack tracing when errors do occur. There is a
+// performance cost, albeit small, to capturing the current function name.
+constexpr bool get_stacktrace_on_error = true;
+// Defaults to "32". The maximum depth a stack trace can reach before it stops
+// adding entries to the stack trace. Changing this effects the amount of space
+// that the embed::stacktrace object takes up in a functions stack when used
+// with Boost.LEAF.
+constexpr size_t stacktrace_depth_limit = 32;
+// Defaults to "false". If set to false, only the fully qualified function name
+// will be stored in the stack trace. Set to true, the stack trace will capture
+// the line number and file name into the stack trace object as well. Capturing
+// the file names will increase the binary size of the application as the file
+// name strings need to be stored in ROM.
+constexpr bool get_source_position_on_error = false;
+}  // namespace embed::config
+```
+
+Create a `libembeddedhal.tweak.hpp` file somewhere in your application and make
+sure it is within one of the compiler's include paths. For GCC/Clang you'd use
+the `-I` flag to specify directories where headers can be found. The file must
+be at the root of the directory listed within the `-I` include path.
 
 ## 💡 Motivation
 
@@ -447,49 +685,55 @@ libembeddedhal's design goals:
 6. Be accessible through package mangers so that developers can easily pick and
    choose which drivers they want to use.
 
-# 🎛️ Customization
+# 🪪 Library Badges
 
-libembeddedhal uses the `tweak.hpp` header file approach to customization and
-configuration. See [A New Approach to Build-Time Library
-Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html).
+![uses](https://img.shields.io/badge/libembeddedhal-🔗%20uses-brightgreen)
+![floats](https://img.shields.io/badge/libembeddedhal-⚠️%20floats-ff0000)
+![throws](https://img.shields.io/badge/libembeddedhal-⚠️%20throws-ff0000)
+![allocates](https://img.shields.io/badge/libembeddedhal-⚠️%20allocates-ff0000)
+![safety-critical](https://img.shields.io/badge/libembeddedhal-🦺%20safety%20critical-yellow)
 
-```C++
-#pragma once
-#include <string_view>
-namespace embed::config {
-// Defaults to "test". Indicates that the current running platform is a
-// unit/integration test. Change this to the target platform you are building
-// for. For example, if you are targeting the LPC4078 chip, you should change
-// this to "lpc4078".
-constexpr std::string_view platform = "test";
-// Defaults to "true". Enables stack tracing when errors do occur. There is a
-// performance cost, albeit small, to capturing the current function name.
-constexpr bool get_stacktrace_on_error = true;
-// Defaults to "32". The maximum depth a stack trace can reach before it stops
-// adding entries to the stack trace. Changing this effects the amount of space
-// that the embed::stacktrace object takes up in a functions stack when used
-// with Boost.LEAF.
-constexpr size_t stacktrace_depth_limit = 32;
-// Defaults to "false". If set to false, only the fully qualified function name
-// will be stored in the stack trace. Set to true, the stack trace will capture
-// the line number and file name into the stack trace object as well. Capturing
-// the file names will increase the binary size of the application as the file
-// name strings need to be stored in ROM.
-constexpr bool get_source_position_on_error = false;
-}  // namespace embed::config
-```
+Each FOSS repo that implements libembeddedhal should include the following
+badges in their root directory's README.md right below the title file if they
+apply to the project's code. These should not reflect aspects of test code.
 
-Create a `libembeddedhal.tweak.hpp` file somewhere in your application and make
-sure it is within one of the compiler's include paths. For GCC/Clang you'd use
-the `-I` flag to specify directories where headers can be found. The file must
-be at the root of the directory listed within the `-I` include path.
+When searching for a library to use for your project, these badges can help you
+decide if the project meets your requirements.
 
-# 📜 Coding Policies
+## 🔗 uses
+
+All libraries that implement libembeddedhal interfaces should have this badge to
+indicate library users/consumers.
+
+## ⚠️ floats
+
+If a library uses floating point arithmetic anywhere in its implementation.
+
+## ⚠️ throws
+
+If a library ever throws an exception anywhere in its code base.
+
+## ⚠️ allocates
+
+This badge is placed for a libraries that have the possibility to dynamically
+allocates memory via `new`, `malloc`, `std::allocator` or a standard library
+that uses any of the allocating functions.
+
+## 🦺 safety critical
+
+If a library follows completely the AUTOSAR C++20 guidelines.
+
+# 🔨 Development Guides
+
+All guides follow the [C++ Core
+Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
+
+## 📜 Coding Policies
 
 Listed below are the policies that every libembeddedhal implementation must
 follow to ensure consistent behavior, performance and size cost:
 
-## Style
+### Style
 
 - Code shall follow libembeddedhal's `.clang-format` file, which uses the
   Mozilla C++ style format as a base with some adjustments.
@@ -520,7 +764,7 @@ follow to ensure consistent behavior, performance and size cost:
 - Include the C++ header version of C headers such as `<cstdint>` vs
   `<stdint.h>`.
 
-## Coding Restrictions
+### Coding Restrictions
 
 - Use the `libxbitset` library to perform bitwise operations operations.
 - Only use macros if something cannot be done without using them. Usually macros
@@ -547,12 +791,8 @@ follow to ensure consistent behavior, performance and size cost:
   it would pollute the global namespace and tends to result in name collisions.
 
 
-## 📖 Guides
 
-All guides follow the [C++ Core
-Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
-
-### Creating a new interface
+## Writing an interface
 
 Guidelines for interfaces:
 
@@ -588,7 +828,7 @@ class interface
    2. Marked as `noexcept`
    3. Marked as `[[nodsicard]]`
 
-### Implementing a Peripheral Driver (memory mapped I/O)
+## Writing a Peripheral Driver (memory mapped I/O)
 
 Follow along with the comments in the example C++ below to get an idea of how
 to create a standard peripheral implementation. This is only meant for drivers
@@ -613,26 +853,36 @@ Rules for peripheral driver implementations:
 5. Expect that the order of constructors across compilation is effectively
    random.
 
-### Device Drivers
+## Writing a Device Drivers
 
-Some rules for device drivers:
-
-1. Constructors should take
+(TODO)
 
 # 📚 Libraries
 
-- [libarmcortex](https://github.com/SJSU-Dev2/libarmcortex): drivers for the ARM
-  Cortex M series of processors.
-- [liblpc40xx](https://github.com/SJSU-Dev2/liblpc40xx): drivers the lpc40xx
+## Processors
+
+- [libarmcortex](https://github.com/libembeddedhal/libarmcortex): Drivers for
+  the ARM Cortex M series of processors.
+- [libriscvi32](https://github.com/libembeddedhal/libriscvi32): Coming soon.
+  Drivers for 32-bit RISC-V processors
+
+## Targets
+
+- [liblpc40xx](https://github.com/libembeddedhal/liblpc40xx): Drivers the lpc40xx
   series of microcontrollers. This includes startup code, linker scripts, and
   peripheral drivers.
-- [libesp8266](https://github.com/SJSU-Dev2/libesp8266): WiFi card driver with
-  TCP/IP communication as well. Requires a serial driver
-- libmpu6050: coming soon. Accelerometer and gyroscope device. Requires an i2c
-  driver.
-- libstm32f1xx: coming soon. Drivers for atmega328 microntrollers
-- libatmega328: coming soon. Drivers for atmega328 microntrollers
-- libriscvi32: coming soon. Drivers for 32-bit RISC-V processors
+- [libstm32f1xx](https://github.com/libembeddedhal/libstm32f1xx): Coming soon.
+  Drivers for atmega328 micro-controller
+
+### Drivers
+
+- [libesp8266](https://github.com/libembeddedhal/libesp8266): Drivers for the
+  esp8266 micro-controller as well as drivers for the WiFi/Internet firmware AT
+  client.
+- [libmpu6050]((https://github.com/libembeddedhal/libmpu6050)): Coming soon.
+  Accelerometer and gyroscope device. Requires an i2c driver.
+- [libatmega328](https://github.com/libembeddedhal/libatmega328): Coming soon.
+  Drivers for atmega328 micro-controller
 
 # 👥 Contributing
 
