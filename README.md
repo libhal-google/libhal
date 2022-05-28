@@ -687,41 +687,39 @@ libembeddedhal's design goals:
 
 # 🪪 Library Badges
 
-![uses](https://img.shields.io/badge/libembeddedhal-🔗%20uses-brightgreen)
-![floats](https://img.shields.io/badge/libembeddedhal-⚠️%20floats-ff0000)
-![throws](https://img.shields.io/badge/libembeddedhal-⚠️%20throws-ff0000)
-![allocates](https://img.shields.io/badge/libembeddedhal-⚠️%20allocates-ff0000)
-![safety-critical](https://img.shields.io/badge/libembeddedhal-🦺%20safety%20critical-yellow)
+![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fsupported.json)
+![safety critical](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fsafety_critical.json)
+![allocates](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fallocates.json)
+![floats](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Ffloats.json)
+![throws](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fthrows.json)
 
-Each FOSS repo that implements libembeddedhal should include the following
-badges in their root directory's README.md right below the title file if they
-apply to the project's code. These should not reflect aspects of test code.
+The badges above are displayed in a project's README.md right below the title to
+indicate attributes of the code. When searching for a library to use for your
+project, these badges can help you decide if the project meets your
+requirements.
 
-When searching for a library to use for your project, these badges can help you
-decide if the project meets your requirements.
-
-## 🔗 uses
+## Supported
 
 All libraries that implement libembeddedhal interfaces should have this badge to
 indicate library users/consumers.
 
-## ⚠️ floats
+## 🦺 SAFETY CRITICAL
+
+If a library follows completely the AUTOSAR C++20 guidelines.
+
+## ⚠️ FLOATS
 
 If a library uses floating point arithmetic anywhere in its implementation.
 
-## ⚠️ throws
+## ⚠️ THROWS
 
 If a library ever throws an exception anywhere in its code base.
 
-## ⚠️ allocates
+## ⚠️ ALLOCATES
 
 This badge is placed for a libraries that have the possibility to dynamically
 allocates memory via `new`, `malloc`, `std::allocator` or a standard library
 that uses any of the allocating functions.
-
-## 🦺 safety critical
-
-If a library follows completely the AUTOSAR C++20 guidelines.
 
 # 🔨 Development Guides
 
