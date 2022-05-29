@@ -57,6 +57,7 @@ add_executable(${TEST_NAME}
   tests/interrupt_pin/interface.test.cpp
   tests/output_pin/interface.test.cpp
   tests/serial/interface.test.cpp
+  tests/linear_potentiometer/interface.test.cpp
 
   tests/timer/stub.test.cpp
   tests/adc/stub.test.cpp
