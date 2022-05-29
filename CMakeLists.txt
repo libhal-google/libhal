@@ -58,6 +58,13 @@ add_executable(${TEST_NAME}
   tests/output_pin/interface.test.cpp
   tests/serial/interface.test.cpp
   tests/rotary_encoder/interface.test.cpp
+  tests/linear_potentiometer/interface.test.cpp
+  tests/linear_potentiometer/interface.test.cpp
+
+  tests/timer/stub.test.cpp
+  tests/adc/stub.test.cpp
+  tests/dac/stub.test.cpp
+  tests/serial/stub.test.cpp
 
   tests/i2c/util.test.cpp
   tests/spi/util.test.cpp
