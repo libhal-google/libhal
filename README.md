@@ -675,6 +675,185 @@ sure it is within one of the compiler's include paths. For GCC/Clang you'd use
 the `-I` flag to specify directories where headers can be found. The file must
 be at the root of the directory listed within the `-I` include path.
 
+# Techniques
+
+## Virtual Static Polymorphism (VSP)
+
+TL;DR: This technique is used to eliminate the cost of making virtual function
+calls.
+
+### Discussion
+
+Each interface in libembeddedhal uses the keyword `virtual` to support runtime
+polymorphism. There are consequences to using the `virtual` keyword such as the
+generation of a "vtable". This article
+[Demystifying virtual functions, Vtable and VPTR in
+C++](https://medium.com/@abhichavhan/demystifying-virtual-functions-vtable-and-vptr-in-c-bf56f11f7cc7)
+explains how vtables work in detail.
+
+Whether or not vtables use too much space for an application is up for debate
+depending on the application. libembeddedhal mitigates this by trying to keep
+the number of virtual functions for each interface as small as is reasonable.
+
+The real concern regarding `virtual` keyword use is the function call
+performance. In order to call a virtual function, a lookup must be performed,
+then the call can be made. This tends to require 1 to 2 additional instructions
+before a function is called. For most applications this is negligible but for
+those in which this is a deal breaker there is a solution in using the "Virtual
+Static Polymorphism" technique. Note that this technique can improve call speed
+but at the cost of increasing the binary size of the application.
+
+### Writing Device Drivers with this Technique
+
+Here is an example of a soft driver for `embed::input_pin` which inverts the
+value of the read function using VSP.
+
+```C++
+namespace embed
+{
+template<typename T = embed::input_pin>
+class invert_read : public embed::input_pin {
+public:
+  template<typename U>
+  invert_read(U & p_input_pin) : m_input_pin(p_input_pin) {}
+
+private:
+  boost::leaf::result<void> driver_configure(
+    const settings& p_settings) noexcept override
+  {
+    return m_input_pin->configure(p_settings);
+  }
+
+  boost::leaf::result<bool> driver_level() noexcept override
+  {
+    return !BOOST_LEAF_CHECK(m_input_pin->level());
+  }
+
+  T * m_input_pin;
+};
+}
+```
+
+How is this useful? See the breakdown.
+
+### Scenario #1: Virtual call
+
+In this scenario, the default class template type has not been explicitly
+changed and thus the code will call class functions in a virtual, indirect way.
+
+```C++
+embed::some_mcu::input_pin & input0 = embed::some_mcu::get_input_pin<0>();
+embed::invert_pin runtime_polymorphic(input0);
+auto result0 = runtime_polymorphic.read();
+```
+
+The information about the original class object and its internal implementation
+is not visible to the `runtime_polymorphic` object. So when read is called,
+because the type of the internal pointer is `T = embed::input_pin`, the code
+must perform a virtual call through the interface.
+
+### Scenario #2: Direct call
+
+Now lets look at a scenario where the default class template type has been
+explicitly set to the type of the input pin driver.
+
+```C++
+// Uses static (direct) function calls
+embed::some_mcu::input_pin & input1 = embed::some_mcu::get_input_pin<1>();
+embed::invert_pin<embed::some_mcu::input_pin> static_polymorphic(input1);
+auto result1 = runtime_polymorphic.read();
+```
+
+Now `embed::invert_pin` is no longer dealing with an interface as type `T` is
+now `embed::some_mcu::input_pin`. As far as `embed::invert_pin` is concerned, we
+never used an interface in this case. Note that the constructor's type `U` is
+now equal to the type `T` and thus there is no down casting occurring. Now when
+read is called, the class has full context regarding the implementation of the
+read function. The compiler can then make a decision on whether or not to do the
+following three options:
+
+1. **Worst Case Scenario**: virtual call (costly so unlikely)
+2. **Better Scenario**: if the function's implementation is sufficiently large,
+   direct function call. This does result in cost but its better than a virtual
+   call.
+3. **Best Case Scenario**: if the function's implementation is small enough, the
+   compiler can inline the implementation of the driver into the soft driver
+   removing the call entirely.
+
+### Evaluating the PROS & CONS
+
+The PROS of scenario 2 or 3 from the list above is that you get better calling
+performance. And if you stack these multiple levels deep the performance
+improves stack.
+
+The CONS of this is that for each different unique explicit instantiation of
+`embed::invert_pin`, there will be multiple implementations of the same driver
+in the binary. For example, if a project has 3 drivers that implement the input
+pin interface and each requires an `embed::invert_pin` class to invert their
+read values, then you would have the following:
+
+```C++
+// using virtual calls
+embed::invert_pin<embed::input_pin>
+// direct calls to some_mcu::input_pin
+embed::invert_pin<embed::some_mcu::input_pin>
+// direct calls to io_expander::input_pin
+embed::invert_pin<embed::io_expander::input_pin>
+```
+
+The cost of all of these driver instantiations can be large for large projects
+if the choice of speed over space is not made carefully.
+
+## Supporting Multiple Platforms
+
+Peripherals are platform specific, thus an lpc40xx output pin driver will not
+work on an stm32f10x device. Because each implements the peripherals in a
+different and unique way there needs to be a separate driver for each. This is
+the crux of why embedded software is not portable across multiple devices. But
+libembeddedhal has a method of fixing this.
+
+The following section of code will explain in its comments how to support
+multiple platforms between lpc40xx and stm32f103
+
+```C++
+int main()
+{
+  // Step 1. Create a set of interface pointers to each driver your application
+  //         will needed.
+  embed::input_pin * button{};
+  embed::output_pin * led{};
+
+  // Step 2. Map each pointer to their respective peripheral on either device.
+  //         `if constexpr` is required to prevent leaking implementation
+  //         details from one platform to another. This is important because a
+  //         lpc40xx driver can never work on stm32f10 and thus leaking code
+  //         into a binary meant for another platform results in code bloat.
+  if constexpr (embed::is_platform("lpc40"))
+  {
+    button = &embed::lpc40xx::input_pin<0, 1>();
+    led = &embed::lpc40xx::output_pin<0,2>();
+  }
+  else if (embed::is_platform("stm32f10"))
+  {
+    button = &embed::stm32f103::input_pin<0, 1>();
+    led = &embed::stm32f103::output_pin<0,2>();
+  }
+  else
+  {
+    return -1;
+  }
+
+  // Step 3. Use the interface pointers above.
+  while(true)
+  {
+    if (button.read().value())
+    {
+      (void)led.level(true);
+    }
+  }
+}
+```
+
 # 🪪 Library Badges
 
 ![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fsupported.json)
