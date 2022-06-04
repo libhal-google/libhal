@@ -1,3 +1,7 @@
+/**
+ * @file util.hpp
+ * @brief Provide utility functions for the counter interface
+ */
 #pragma once
 
 #include "../time.hpp"
@@ -11,6 +15,8 @@ namespace embed {
  *
  * @param p_counter - hardware counter driver
  * @param p_wait_duration - the amount of time to pause execution for
+ * @return boost::leaf::result<void> - returns an error if a call to p_counter
+ * uptime() results in an error otherwise, returns success.
  */
 inline boost::leaf::result<void> wait_for(
   counter& p_counter,
