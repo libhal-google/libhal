@@ -1,29 +1,9 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/frequency.hpp>
 
-namespace {
-template <typename Rep, typename Period>
-std::ostream& operator<<(std::ostream& os,
-                         const std::chrono::duration<Rep, Period>& p_duration) {
-  return (os << p_duration.count() << " * (" << Period::num << "/"
-             << Period::den << ")s");
-}
-}  // namespace
+#include "ostreams.hpp"
 
 namespace embed {
-std::ostream& operator<<(std::ostream& os, const frequency& p_frequency) {
-  return (os << p_frequency.cycles_per_second() << "_Hz");
-}
-
-std::ostream& operator<<(std::ostream& os, const duty_cycle& p_duty) {
-  return (os << "duty_cycle { high: " << p_duty.high << ","
-             << " low: " << p_duty.low << " }");
-}
-
-std::ostream& operator<<(std::ostream& os, const percent& p_percent) {
-  return (os << "percent { " << static_cast<float>(p_percent) << " }");
-}
-
 boost::ut::suite frequency_user_defined_literals_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
@@ -54,28 +34,28 @@ boost::ut::suite frequency_user_defined_literals_test = []() {
 
   "frequency::operator<=>"_test = []() {
     // ==
-    expect(that % frequency{1'000'000} == 1_MHz);
-    expect(that % frequency{8'000'000} == 8_MHz);
-    expect(that % frequency{48'000'000} == 48_MHz);
-    expect(that % frequency{133'000'000} == 133_MHz);
-    expect(that % frequency{140'000'000} == 140_MHz);
+    expect(that % frequency{ 1'000'000 } == 1_MHz);
+    expect(that % frequency{ 8'000'000 } == 8_MHz);
+    expect(that % frequency{ 48'000'000 } == 48_MHz);
+    expect(that % frequency{ 133'000'000 } == 133_MHz);
+    expect(that % frequency{ 140'000'000 } == 140_MHz);
 
     // >
-    expect(that % frequency{14'000} > 12_kHz);
-    expect(that % frequency{80'000} > 77_kHz);
-    expect(that % frequency{55'000} > 53_kHz);
-    expect(that % frequency{700'000} > 674_kHz);
-    expect(that % frequency{1'000'000} > 927_kHz);
-    expect(that % frequency{715'000} > 714_kHz);
-    expect(that % frequency{714'834'001} > 714834_kHz);
+    expect(that % frequency{ 14'000 } > 12_kHz);
+    expect(that % frequency{ 80'000 } > 77_kHz);
+    expect(that % frequency{ 55'000 } > 53_kHz);
+    expect(that % frequency{ 700'000 } > 674_kHz);
+    expect(that % frequency{ 1'000'000 } > 927_kHz);
+    expect(that % frequency{ 715'000 } > 714_kHz);
+    expect(that % frequency{ 714'834'001 } > 714834_kHz);
 
     // <
-    expect(that % frequency{40} < 50_Hz);
-    expect(that % frequency{1336} < 1337_Hz);
-    expect(that % frequency{99} < 100_Hz);
-    expect(that % frequency{1475} < 1476_Hz);
-    expect(that % frequency{5} < 1290_Hz);
-    expect(that % frequency{4444} < 8762_Hz);
+    expect(that % frequency{ 40 } < 50_Hz);
+    expect(that % frequency{ 1336 } < 1337_Hz);
+    expect(that % frequency{ 99 } < 100_Hz);
+    expect(that % frequency{ 1475 } < 1476_Hz);
+    expect(that % frequency{ 5 } < 1290_Hz);
+    expect(that % frequency{ 4444 } < 8762_Hz);
   };
 
   "frequency::divide"_test = []() {
@@ -185,45 +165,45 @@ boost::ut::suite frequency_user_defined_literals_test = []() {
   };
 
   "frequency::duty_cycle"_test = []() {
-    expect(eq(duty_cycle{280000, 0},
+    expect(eq(duty_cycle{ 280000, 0 },
               (14_MHz).calculate_duty_cycle(20ms, percent(1.00)).value()));
-    expect(eq(duty_cycle{277200, 2800},
+    expect(eq(duty_cycle{ 277200, 2800 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.99)).value()));
-    expect(eq(duty_cycle{238000, 42000},
+    expect(eq(duty_cycle{ 238000, 42000 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.85)).value()));
-    expect(eq(duty_cycle{126000, 154000},
+    expect(eq(duty_cycle{ 126000, 154000 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.45)).value()));
-    expect(eq(duty_cycle{70'000, 210'000},
+    expect(eq(duty_cycle{ 70'000, 210'000 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.25)).value()));
-    expect(eq(duty_cycle{14000, 266000},
+    expect(eq(duty_cycle{ 14000, 266000 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.05)).value()));
-    expect(eq(duty_cycle{2800, 277200},
+    expect(eq(duty_cycle{ 2800, 277200 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.01)).value()));
-    expect(eq(duty_cycle{0, 280000},
+    expect(eq(duty_cycle{ 0, 280000 },
               (14_MHz).calculate_duty_cycle(20ms, percent(0.00)).value()));
 
-    expect(eq(duty_cycle{2800, 0},
+    expect(eq(duty_cycle{ 2800, 0 },
               (56_MHz).calculate_duty_cycle(20_kHz, percent(1.00))));
-    expect(eq(duty_cycle{2240, 560},
+    expect(eq(duty_cycle{ 2240, 560 },
               (56_MHz).calculate_duty_cycle(20_kHz, percent(0.80))));
-    expect(eq(duty_cycle{1540, 1260},
+    expect(eq(duty_cycle{ 1540, 1260 },
               (56_MHz).calculate_duty_cycle(20_kHz, percent(0.55))));
-    expect(eq(duty_cycle{924, 1876},
+    expect(eq(duty_cycle{ 924, 1876 },
               (56_MHz).calculate_duty_cycle(20_kHz, percent(0.33))));
-    expect(eq(duty_cycle{336, 2464},
+    expect(eq(duty_cycle{ 336, 2464 },
               (56_MHz).calculate_duty_cycle(20_kHz, percent(0.12))));
-    expect(eq(duty_cycle{0, 2800},
+    expect(eq(duty_cycle{ 0, 2800 },
               (56_MHz).calculate_duty_cycle(20_kHz, percent(0.00))));
 
-    expect(eq(static_cast<percent>(duty_cycle{2800, 0}), percent(1.00)));
-    expect(eq(static_cast<percent>(duty_cycle{2240, 560}), percent(0.80)));
-    expect(eq(static_cast<percent>(duty_cycle{1540, 1260}), percent(0.55)));
-    expect(eq(static_cast<percent>(duty_cycle{924, 1876}), percent(0.33)));
-    expect(eq(static_cast<percent>(duty_cycle{336, 2464}), percent(0.12)));
-    expect(eq(static_cast<percent>(duty_cycle{0, 2800}), percent(0.00)));
+    expect(eq(static_cast<percent>(duty_cycle{ 2800, 0 }), percent(1.00)));
+    expect(eq(static_cast<percent>(duty_cycle{ 2240, 560 }), percent(0.80)));
+    expect(eq(static_cast<percent>(duty_cycle{ 1540, 1260 }), percent(0.55)));
+    expect(eq(static_cast<percent>(duty_cycle{ 924, 1876 }), percent(0.33)));
+    expect(eq(static_cast<percent>(duty_cycle{ 336, 2464 }), percent(0.12)));
+    expect(eq(static_cast<percent>(duty_cycle{ 0, 2800 }), percent(0.00)));
     expect(eq(static_cast<percent>(
-                  duty_cycle{std::numeric_limits<std::int32_t>::max(),
-                             std::numeric_limits<std::int32_t>::max()}),
+                duty_cycle{ std::numeric_limits<std::int32_t>::max(),
+                            std::numeric_limits<std::int32_t>::max() }),
               percent(0.50)));
   };
 };

@@ -10,10 +10,6 @@ boost::ut::suite serial_util_test = []() {
   // static constexpr std::byte success_filler{ 0xF5 };
   static constexpr std::byte write_failure_byte{ 0x33 };
   static constexpr std::byte filler_byte{ 0xA5 };
-  static constexpr std::chrono::nanoseconds expected_timeout = 1ms;
-  // Buffer must be large enough to cause a timeout of 0ns to actually fire on
-  // host tests.
-  static constexpr size_t buffer_size_for_timeout = 1024;
 
   class dummy : public embed::serial
   {
@@ -113,7 +109,7 @@ boost::ut::suite serial_util_test = []() {
     std::array<std::byte, 4> expected_buffer;
 
     // Exercise
-    auto result = read(serial, expected_buffer, expected_timeout);
+    auto result = read(serial, expected_buffer);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -133,7 +129,7 @@ boost::ut::suite serial_util_test = []() {
     serial.m_bytes_available_fails = true;
 
     // Exercise
-    auto result = read(serial, expected_buffer, expected_timeout);
+    auto result = read(serial, expected_buffer);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -153,7 +149,7 @@ boost::ut::suite serial_util_test = []() {
     serial.m_read_fails = true;
 
     // Exercise
-    auto result = read(serial, expected_buffer, expected_timeout);
+    auto result = read(serial, expected_buffer);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -173,7 +169,7 @@ boost::ut::suite serial_util_test = []() {
     expected_buffer.fill(filler_byte);
 
     // Exercise
-    auto result = read<expected_buffer.size()>(serial, expected_timeout);
+    auto result = read<expected_buffer.size()>(serial);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -230,8 +226,7 @@ boost::ut::suite serial_util_test = []() {
     std::array<std::byte, 4> expected_buffer;
 
     // Exercise
-    auto result = write_then_read(
-      serial, expected_payload, expected_buffer, expected_timeout);
+    auto result = write_then_read(serial, expected_payload, expected_buffer);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -287,32 +282,6 @@ boost::ut::suite serial_util_test = []() {
     expect(that % 4 == serial.m_bytes_available);
   };
 
-  "[failure on timeout] read"_test = []() {
-    // Setup
-    dummy serial;
-
-    // Exercise
-    boost::leaf::try_handle_all(
-      [&]() -> boost::leaf::result<void> {
-        std::array<std::byte, buffer_size_for_timeout> expected_buffer;
-        BOOST_LEAF_CHECK(read(serial, expected_buffer, 0ns));
-        return {};
-      },
-      []([[maybe_unused]] embed::error::timeout p_timeout) { expect(true); },
-      []() {
-        expect(false) << "Uncaught error thrown by write_then_read<5>()";
-      });
-
-    expect(!serial.m_flush_called);
-    expect(that % nullptr == serial.m_in.data());
-    expect(that % 0 == serial.m_in.size());
-    expect(that % nullptr == serial.m_out.data());
-    expect(that % 0 == serial.m_out.size());
-    // bytes_available must be called at least once before checking if the
-    // operation timed out, thus m_bytes_available must be non-zero.
-    expect(that % 0 != serial.m_bytes_available);
-  };
-
   "[failure on write] write_then_read"_test = []() {
     // Setup
     dummy serial;
@@ -333,34 +302,6 @@ boost::ut::suite serial_util_test = []() {
     expect(that % 0 == serial.m_bytes_available);
   };
 
-  "[failure on timeout] write_then_read"_test = []() {
-    // Setup
-    dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
-
-    // Exercise
-    boost::leaf::try_handle_all(
-      [&]() -> boost::leaf::result<void> {
-        std::array<std::byte, buffer_size_for_timeout> expected_buffer;
-        BOOST_LEAF_CHECK(
-          write_then_read(serial, expected_payload, expected_buffer, 0ns));
-        return {};
-      },
-      []([[maybe_unused]] embed::error::timeout p_timeout) { expect(true); },
-      []() {
-        expect(false) << "Uncaught error thrown by write_then_read<5>()";
-      });
-
-    expect(!serial.m_flush_called);
-    expect(that % nullptr == serial.m_in.data());
-    expect(that % 0 == serial.m_in.size());
-    expect(that % expected_payload.data() == serial.m_out.data());
-    expect(that % expected_payload.size() == serial.m_out.size());
-    // bytes_available must be called at least once before checking if the
-    // operation timed out, thus m_bytes_available must be non-zero.
-    expect(that % 0 != serial.m_bytes_available);
-  };
-
   "[success] write_then_read<Length>"_test = []() {
     // Setup
     dummy serial;
@@ -369,8 +310,7 @@ boost::ut::suite serial_util_test = []() {
     expected_buffer.fill(filler_byte);
 
     // Exercise
-    auto result =
-      write_then_read<5>(serial, expected_payload, expected_timeout);
+    auto result = write_then_read<5>(serial, expected_payload);
     bool successful = static_cast<bool>(result);
     auto actual_array = result.value();
 
@@ -389,8 +329,7 @@ boost::ut::suite serial_util_test = []() {
     const std::array<std::byte, 4> expected_payload{ write_failure_byte };
 
     // Exercise
-    auto result =
-      write_then_read<5>(serial, expected_payload, expected_timeout);
+    auto result = write_then_read<5>(serial, expected_payload);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -410,8 +349,7 @@ boost::ut::suite serial_util_test = []() {
     serial.m_bytes_available_fails = true;
 
     // Exercise
-    auto result =
-      write_then_read<5>(serial, expected_payload, expected_timeout);
+    auto result = write_then_read<5>(serial, expected_payload);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -431,8 +369,7 @@ boost::ut::suite serial_util_test = []() {
     serial.m_read_fails = true;
 
     // Exercise
-    auto result =
-      write_then_read<5>(serial, expected_payload, expected_timeout);
+    auto result = write_then_read<5>(serial, expected_payload);
     bool successful = static_cast<bool>(result);
 
     // Verify
@@ -443,33 +380,6 @@ boost::ut::suite serial_util_test = []() {
     expect(that % expected_payload.data() == serial.m_out.data());
     expect(that % expected_payload.size() == serial.m_out.size());
     expect(that % 5 == serial.m_bytes_available);
-  };
-
-  "[failure on timeout] write_then_read<Length>"_test = []() {
-    // Setup
-    dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
-
-    // Exercise
-    boost::leaf::try_handle_all(
-      [&]() -> boost::leaf::result<void> {
-        BOOST_LEAF_CHECK(write_then_read<buffer_size_for_timeout>(
-          serial, expected_payload, 0ns));
-        return {};
-      },
-      []([[maybe_unused]] embed::error::timeout p_timeout) { expect(true); },
-      []() {
-        expect(false) << "Uncaught error thrown by write_then_read<5>()";
-      });
-
-    expect(!serial.m_flush_called);
-    expect(that % nullptr == serial.m_in.data());
-    expect(that % 0 == serial.m_in.size());
-    expect(that % expected_payload.data() == serial.m_out.data());
-    expect(that % expected_payload.size() == serial.m_out.size());
-    // bytes_available must be called at least once before checking if the
-    // operation timed out, thus m_bytes_available must be non-zero.
-    expect(that % 0 != serial.m_bytes_available);
   };
 };
 }  // namespace embed
