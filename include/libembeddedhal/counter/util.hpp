@@ -46,9 +46,6 @@ inline auto to_sleep(counter& p_counter) noexcept
     return {};
   };
 
-  static_assert(std::is_assignable<std::function<sleep_function>,
-                                   decltype(function)>::value);
-
   return function;
 }
 
@@ -65,9 +62,6 @@ inline auto to_uptime(uptime_counter& p_counter) noexcept
     [&p_counter]() -> boost::leaf::result<std::chrono::nanoseconds> {
     return p_counter.uptime();
   };
-
-  static_assert(std::is_assignable<std::function<uptime_function>,
-                                   decltype(function)>::value);
 
   return function;
 }
