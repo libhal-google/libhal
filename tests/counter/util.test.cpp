@@ -77,6 +77,15 @@ boost::ut::suite counter_utility_test = []() {
 
   // ====== TO SLEEP ======
 
+  "Verify that embed::to_sleep() returns embed::sleep_function"_test = []() {
+    // Setup
+    dummy_counter test_counter;
+
+    // Exercise
+    [[maybe_unused]] std::function<embed::sleep_function> test_subject =
+      to_sleep(test_counter);
+  };
+
   "embed::to_sleep(embed::counter)(0ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(0);
@@ -120,6 +129,17 @@ boost::ut::suite counter_utility_test = []() {
   };
 
   // ====== TO UPTIME ======
+
+  "Verify that embed::to_uptime() returns embed::uptime_function"_test = []() {
+    // Setup
+    constexpr std::chrono::nanoseconds expected(0);
+    dummy_counter test_counter;
+    uptime_counter dummy_uptime_counter(test_counter);
+
+    // Exercise
+    [[maybe_unused]] std::function<embed::uptime_function> test_subject =
+      to_uptime(dummy_uptime_counter);
+  };
 
   "embed::to_uptime(embed::counter)(0ns)"_test = []() {
     // Setup
