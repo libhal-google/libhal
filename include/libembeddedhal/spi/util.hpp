@@ -1,3 +1,7 @@
+/**
+ * @file util.hpp
+ * @brief Provide utility functions for the spi interface
+ */
 #pragma once
 
 #include <span>

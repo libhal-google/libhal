@@ -1,3 +1,7 @@
+/**
+ * @file util.hpp
+ * @brief Provide utility functions for the i2c interface
+ */
 #pragma once
 
 #include "../error.hpp"
