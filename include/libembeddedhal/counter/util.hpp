@@ -1,33 +1,99 @@
 /**
  * @file util.hpp
- * @brief Provide utility functions for the counter interface
+ * @brief Provide utility handlers for the counter interface
  */
 #pragma once
 
 #include "../time.hpp"
 #include "interface.hpp"
-#include "uptime_counter.hpp"
+#include "overflow_counter.hpp"
 
 namespace embed {
+/**
+ * @brief Create an uptime handler lambda using an embed::counter that satisfies
+ * the embed::uptime_handler requirement.
+ *
+ * @param p_counter - hardware counter driver
+ * @return auto - lambda uptime handler based on the counter
+ */
+[[nodiscard]] inline auto to_uptime(counter& p_counter) noexcept
+{
+  overflow_counter counter(p_counter);
+
+  auto handler =
+    [counter]() mutable -> boost::leaf::result<std::chrono::nanoseconds> {
+    return counter.uptime();
+  };
+
+  static_assert(
+    std::is_constructible_v<std::function<uptime_handler>, decltype(handler)>,
+    "[INTERNAL] Callable must be convertible to a embed::uptime_handler");
+
+  return handler;
+}
+
+/**
+ * @brief Create a timeout handler lambda from a counter that satisfies the
+ * embed::timeout_handler definition.
+ *
+ * @param p_counter - hardware counter driver
+ * @return auto - lambda timeout handler based on the counter
+ */
+[[nodiscard]] inline auto to_timeout(
+  counter& p_counter,
+  std::chrono::nanoseconds p_timeout) noexcept
+{
+  auto previous_count = 0;
+  bool first_call = true;
+  std::int64_t cycles = 0;
+
+  auto handler = [cycles,
+                  p_timeout,
+                  &p_counter,
+                  previous_count,
+                  first_call]() mutable -> boost::leaf::result<bool> {
+    if (first_call) {
+      const auto [frequency, count] = BOOST_LEAF_CHECK(p_counter.uptime());
+      previous_count = count;
+      first_call = false;
+      cycles = BOOST_LEAF_CHECK(frequency.cycles_per(p_timeout));
+    }
+
+    if (cycles <= 0) {
+      return true;
+    }
+
+    auto current_count = BOOST_LEAF_CHECK(p_counter.uptime()).count;
+    std::uint32_t delta_count = current_count - previous_count;
+    previous_count = current_count;
+    cycles -= delta_count;
+
+    return false;
+  };
+
+  static_assert(
+    std::is_constructible_v<std::function<timeout_handler>, decltype(handler)>,
+    "[INTERNAL] Callable must be convertible to a embed::uptime_handler");
+
+  return handler;
+}
+
 /**
  * @brief Delay execution for this duration of time using a hardware counter
  * object.
  *
  * @param p_counter - hardware counter driver
- * @param p_wait_duration - the amount of time to pause execution for
+ * @param p_duration - the amount of time to pause execution for
  * @return boost::leaf::result<void> - returns an error if a call to p_counter
  * uptime() results in an error otherwise, returns success.
  */
-inline boost::leaf::result<void> delay(
+[[nodiscard]] inline boost::leaf::result<void> delay(
   counter& p_counter,
-  std::chrono::nanoseconds p_wait_duration) noexcept
+  std::chrono::nanoseconds p_duration) noexcept
 {
-  auto [frequency, current_count] = BOOST_LEAF_CHECK(p_counter.uptime());
-  const auto cycles = BOOST_LEAF_CHECK(frequency.cycles_per(p_wait_duration));
-  const auto end_count = current_count + cycles;
+  auto timeout = to_timeout(p_counter, p_duration);
 
-  while (end_count > current_count) {
-    current_count = BOOST_LEAF_CHECK(p_counter.uptime()).count;
+  while (!BOOST_LEAF_CHECK(timeout())) {
     continue;
   }
 
@@ -35,40 +101,27 @@ inline boost::leaf::result<void> delay(
 }
 
 /**
- * @brief Create a sleep function (specifically a lambda) that satisfies the
- * embed::sleep_function requirement.
+ * @brief Create a delay handler lambda using an embed::counter that satisfies
+ * the embed::delay_handler requirement.
  *
- * The sleep function will perform a busy wait in order to delay execution.
+ * The delay handler will perform a busy wait in order to delay execution.
  *
  * @param p_counter - hardware counter driver
- * @return auto - lambda sleep function based on the counter
+ * @return auto - lambda delay handler based on the counter
  */
-inline auto to_sleep(counter& p_counter) noexcept
+[[nodiscard]] inline auto to_delay(counter& p_counter) noexcept
 {
-  auto function =
+  auto handler =
     [&p_counter](
       std::chrono::nanoseconds p_delay) -> boost::leaf::result<void> {
     BOOST_LEAF_CHECK(delay(p_counter, p_delay));
     return {};
   };
 
-  return function;
-}
+  static_assert(
+    std::is_constructible_v<std::function<delay_handler>, decltype(handler)>,
+    "[INTERNAL] Callable must be convertible to a embed::uptime_handler");
 
-/**
- * @brief Create an uptime function (specifically a lambda) that satisfies the
- * embed::uptime_function requirement.
- *
- * @param p_counter - hardware counter driver
- * @return auto - lambda uptime function based on the counter
- */
-inline auto to_uptime(uptime_counter& p_counter) noexcept
-{
-  auto function =
-    [&p_counter]() -> boost::leaf::result<std::chrono::nanoseconds> {
-    return p_counter.uptime();
-  };
-
-  return function;
+  return handler;
 }
 }  // namespace embed

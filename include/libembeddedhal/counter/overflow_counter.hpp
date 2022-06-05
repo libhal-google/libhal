@@ -4,7 +4,7 @@
 
 namespace embed {
 /**
- * @brief uptime counter takes a hardware counter and calculates the uptime in
+ * @brief Overflow counter takes a hardware counter and calculates the uptime in
  * nanoseconds.
  *
  * This class should be used over calling frequency::duration_from_cycles() to
@@ -12,10 +12,10 @@ namespace embed {
  * around 15 weeks have elapsed. This has to do with how the integer arithmetic
  * is handled for converting from frequency to duration using a cycle count.
  *
- * So long as this class's uptime() is called within a 15 week timespan, the
+ * So long as this class's uptime() is called at least once every 15 weeks, the
  * uptime will be accurate up to ~292 years.
  */
-class uptime_counter
+class overflow_counter
 {
 public:
   /**
@@ -23,9 +23,10 @@ public:
    *
    * @param p_counter - hardware counter
    */
-  uptime_counter(counter& p_counter)
+  overflow_counter(counter& p_counter)
     : m_counter(&p_counter)
-  {}
+  {
+  }
 
   /**
    * @brief Calculates the number of nanoseconds since the counter has started

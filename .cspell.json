@@ -13,6 +13,7 @@
         "nanometre",
         "nodiscard",
         "pico",
+        "prescalars",
         "tparam"
     ]
 }

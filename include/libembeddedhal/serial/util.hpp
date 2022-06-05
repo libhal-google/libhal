@@ -8,12 +8,67 @@
 #include <span>
 #include <string_view>
 
+#include "../counter/interface.hpp"
 #include "../error.hpp"
 #include "../time.hpp"
 #include "interface.hpp"
 
 namespace embed {
 
+/**
+ * @brief Create a timeout handler lambda from a serial that satisfies the
+ * embed::timeout_handler definition.
+ *
+ * @param p_serial - hardware serial driver
+ * @return auto - lambda timeout handler based on the serial
+ */
+[[nodiscard]] inline auto to_timeout(serial& p_serial, size_t p_length) noexcept
+{
+  auto handler = [&p_serial, p_length]() mutable -> boost::leaf::result<bool> {
+    if (BOOST_LEAF_CHECK(p_serial.bytes_available()) >= p_length) {
+      return true;
+    }
+    return false;
+  };
+
+  static_assert(
+    std::is_constructible_v<std::function<timeout_handler>, decltype(handler)>,
+    "[INTERNAL] Callable must be convertible to a embed::uptime_handler");
+
+  return handler;
+}
+
+/**
+ * @brief Create a timeout handler lambda from a serial that satisfies the
+ * embed::timeout_handler definition.
+ *
+ * @param p_serial - hardware serial driver
+ * @return auto - lambda timeout handler based on the serial
+ */
+template<typename TimeoutHandler = std::function<timeout_handler>>
+[[nodiscard]] inline auto to_timeout(serial& p_serial,
+                                     size_t p_length,
+                                     TimeoutHandler p_timeout_handler) noexcept
+{
+  auto serial_timeout_handler = to_timeout(p_serial, p_length);
+  auto handler = [serial_timeout_handler,
+                  p_timeout_handler]() -> boost::leaf::result<bool> {
+    if (serial_timeout_handler()) {
+      return true;
+    }
+    if (p_timeout_handler()) {
+      auto on_error = embed::error::setup();
+      return boost::leaf::new_error(embed::error::timeout{});
+    }
+    return false;
+  };
+
+  static_assert(
+    std::is_constructible_v<std::function<timeout_handler>, decltype(handler)>,
+    "[INTERNAL] Callable must be convertible to a embed::uptime_handler");
+
+  return handler;
+}
 /**
  * @brief Delay execution until the serial buffer has reached a specific number
  * of buffered bytes.

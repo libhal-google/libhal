@@ -62,6 +62,7 @@ add_executable(${TEST_NAME}
   tests/spi/util.test.cpp
   tests/counter/util.test.cpp
   tests/serial/util.test.cpp
+  tests/timer/util.test.cpp
 
   tests/motor/mock.test.cpp
   tests/pwm/mock.test.cpp

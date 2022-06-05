@@ -513,7 +513,7 @@ Examples of this would be `embed::can_network` which takes an `embed::can`
 implementation and manages a map of the messages the device has received on the
 can bus.
 
-Another example is `embed::uptime_counter` which takes an `embed::counter` and
+Another example is `embed::overflow_counter` which takes an `embed::counter` and
 for each call for uptime on the uptime counter, the class checks if the 32-bit
 counter has overflowed. If it has, then increment another 32-bit number with the
 number of overflows counted. Return the result as a 64-bit number which is the

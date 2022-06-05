@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/counter/uptime_counter.hpp>
+#include <libembeddedhal/counter/overflow_counter.hpp>
 #include <queue>
 
 namespace embed {
@@ -25,10 +25,10 @@ boost::ut::suite uptime_utility_test = []() {
     embed::frequency m_frequency{ 1'000_MHz };
   };
 
-  "[uptime_counter] zero"_test = []() {
+  "[overflow_counter] zero"_test = []() {
     // Setup
     mock_counter mock;
-    uptime_counter uptime(mock);
+    overflow_counter uptime(mock);
     mock.uptime_sequence.push(0);
     mock.uptime_sequence.push(0);
     mock.uptime_sequence.push(0);
@@ -47,10 +47,10 @@ boost::ut::suite uptime_utility_test = []() {
     expect(that % (0ns).count() == nanoseconds3.count());
   };
 
-  "[uptime_counter] one"_test = []() {
+  "[overflow_counter] one"_test = []() {
     // Setup
     mock_counter mock;
-    uptime_counter uptime(mock);
+    overflow_counter uptime(mock);
     mock.uptime_sequence.push(1);
     mock.uptime_sequence.push(2);
     mock.uptime_sequence.push(3);
@@ -69,10 +69,10 @@ boost::ut::suite uptime_utility_test = []() {
     expect(that % (4ns).count() == nanoseconds3.count());
   };
 
-  "[uptime_counter] many"_test = []() {
+  "[overflow_counter] many"_test = []() {
     // Setup
     mock_counter mock;
-    uptime_counter uptime(mock);
+    overflow_counter uptime(mock);
     mock.uptime_sequence.push(1);
     mock.uptime_sequence.push(20);
     mock.uptime_sequence.push(300);
@@ -109,10 +109,10 @@ boost::ut::suite uptime_utility_test = []() {
     expect(that % (7000005ns).count() == nanoseconds9.count());
   };
 
-  "[uptime_counter] boundaries"_test = []() {
+  "[overflow_counter] boundaries"_test = []() {
     // Setup
     mock_counter mock;
-    uptime_counter uptime(mock);
+    overflow_counter uptime(mock);
     constexpr auto max = std::numeric_limits<uint32_t>::max();
     constexpr auto max_ns = std::chrono::nanoseconds(max);
     constexpr auto d_max = max_ns * 2;
@@ -141,7 +141,7 @@ boost::ut::suite uptime_utility_test = []() {
     expect(that % (d_max + 12'345ns + 2ns).count() == nanoseconds5.count());
   };
 
-  "[uptime_counter] errors"_test = []() {
+  "[overflow_counter] errors"_test = []() {
     // None at the moment
   };
 };

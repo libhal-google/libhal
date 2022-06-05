@@ -13,17 +13,6 @@ boost::ut::suite counter_utility_test = []() {
   class dummy_counter : public embed::counter
   {
   public:
-    uptime_t get_internal_uptime()
-    {
-      // embed::delay needs to call the uptime counter at least once to get
-      // the starting position, this removes the inital count that is made to
-      // start the embed::delay function.
-      static constexpr int initialization_cycle_count = 1;
-      return { .frequency = m_uptime.frequency,
-               .count = m_uptime.count - initialization_cycle_count };
-    }
-
-  private:
     boost::leaf::result<uptime_t> driver_uptime() noexcept override
     {
       m_uptime.count++;
@@ -42,9 +31,8 @@ boost::ut::suite counter_utility_test = []() {
     delay(test_counter, expected);
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
   "embed::delay(embed::counter, 50ns)"_test = []() {
@@ -56,9 +44,8 @@ boost::ut::suite counter_utility_test = []() {
     delay(test_counter, expected);
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
   "embed::delay(embed::counter, 1337ns)"_test = []() {
@@ -70,132 +57,121 @@ boost::ut::suite counter_utility_test = []() {
     delay(test_counter, expected);
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
   // ====== TO SLEEP ======
 
-  "Verify that embed::to_sleep() returns embed::sleep_function"_test = []() {
+  "Verify that embed::to_delay() returns embed::delay_handler"_test = []() {
     // Setup
     dummy_counter test_counter;
 
     // Exercise
-    [[maybe_unused]] std::function<embed::sleep_function> test_subject =
-      to_sleep(test_counter);
+    [[maybe_unused]] std::function<embed::delay_handler> test_subject =
+      to_delay(test_counter);
   };
 
-  "embed::to_sleep(embed::counter)(0ns)"_test = []() {
+  "embed::to_delay(embed::counter)(0ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(0);
     dummy_counter test_counter;
 
     // Exercise
-    to_sleep(test_counter)(expected);
+    to_delay(test_counter)(expected);
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
-  "embed::to_sleep(embed::counter)(50ns)"_test = []() {
+  "embed::to_delay(embed::counter)(50ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(50);
     dummy_counter test_counter;
 
     // Exercise
-    to_sleep(test_counter)(expected);
+    to_delay(test_counter)(expected);
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
-  "embed::to_sleep(embed::counter)(1337ns)"_test = []() {
+  "embed::to_delay(embed::counter)(1337ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(1337);
     dummy_counter test_counter;
 
     // Exercise
-    to_sleep(test_counter)(expected);
+    to_delay(test_counter)(expected);
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
   // ====== TO UPTIME ======
 
-  "Verify that embed::to_uptime() returns embed::uptime_function"_test = []() {
+  "Verify that embed::to_uptime() returns embed::uptime_handler"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(0);
     dummy_counter test_counter;
-    uptime_counter dummy_uptime_counter(test_counter);
 
     // Exercise
-    [[maybe_unused]] std::function<embed::uptime_function> test_subject =
-      to_uptime(dummy_uptime_counter);
+    [[maybe_unused]] std::function<embed::uptime_handler> test_subject =
+      to_uptime(test_counter);
   };
 
   "embed::to_uptime(embed::counter)(0ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(0);
     dummy_counter test_counter;
-    uptime_counter dummy_uptime_counter(test_counter);
 
     // Exercise
-    auto test_subject = to_uptime(dummy_uptime_counter);
+    auto test_subject = to_uptime(test_counter);
 
     for (int i = 0; i < expected.count() + 1; i++) {
       test_subject();
     }
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
   "embed::to_uptime(embed::counter)(50ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(50);
     dummy_counter test_counter;
-    uptime_counter dummy_uptime_counter(test_counter);
 
     // Exercise
-    auto test_subject = to_uptime(dummy_uptime_counter);
+    auto test_subject = to_uptime(test_counter);
 
     for (int i = 0; i < expected.count() + 1; i++) {
       test_subject();
     }
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 
   "embed::to_uptime(embed::counter)(1337ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(1337);
     dummy_counter test_counter;
-    uptime_counter dummy_uptime_counter(test_counter);
 
     // Exercise
-    auto test_subject = to_uptime(dummy_uptime_counter);
+    auto test_subject = to_uptime(test_counter);
 
     for (int i = 0; i < expected.count() + 1; i++) {
       test_subject();
     }
 
     // Verify
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
+    expect(that % expected.count() == test_counter.m_uptime.count - 1);
+    expect(that % expected_frequency == test_counter.m_uptime.frequency);
   };
 };
 }  // namespace embed
