@@ -5,9 +5,9 @@
 # libembeddedhal
 
 [![Discord](https://img.shields.io/discord/800515757871726622?color=7389D8&logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/p5A6vzv8tm)
-[![docs](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/docs.yml)
-[![lint](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/lint.yml)
-[![tests](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SJSU-Dev2/libembeddedhal/actions/workflows/tests.yml)
+[![docs](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/docs.yml)
+[![lint](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/lint.yml)
+[![tests](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/tests.yml)
 
 **🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
 
@@ -35,7 +35,7 @@ conan install libembeddedhal
 Installing from source locally:
 
 ```bash
-git clone https://github.com/SJSU-Dev2/libembeddedhal.git
+git clone https://github.com/libembeddedhal/libembeddedhal.git
 cd libembeddedhal
 conan create .
 ```
@@ -54,7 +54,7 @@ libembeddedhal exists to make hardware drivers:
 - Header only
 - Available on Conan (coming soon to vcpkg)
 - Does not throw exceptions
-- Does not dynamically allocation
+- Does not dynamically allocate
 - Uses tweak header files for customization
 - Designed to be modular, dynamic, composable, and lightweight
 - Dependencies:
@@ -123,7 +123,7 @@ primitive which can be things such as:
 ## Peripheral drivers
 
 Peripheral drivers are drivers for a target that is embedded within the device
-and therefor cannot be removed from the chip and is fixed in number.
+and therefore cannot be removed from the chip and is fixed in number.
 
 - Example: A digital output and input pin
 - Example: 1 of 5 hardware timer within a micro-controller
@@ -245,9 +245,9 @@ int main() {
   {
     using std::chrono::literals;
     led.level(true);
-    embed::delay_for(counter, 500ms);
+    embed::delay(counter, 500ms);
     led.level(false);
-    embed::delay_for(counter, 500ms);
+    embed::delay(counter, 500ms);
   }
 }
 ```
@@ -314,7 +314,8 @@ read/sample capabilities.
 Meaning that the following code should work for all three of these functions.
 
 ```C++
-auto response_i2c = embed::read<1>(i2c, std::byte(0x17));
+constexpr std::byte address(0x17);
+auto response_i2c = embed::read<1>(i2c, address);
 auto response_spi = embed::read<1>(spi);
 auto response_uart = embed::read<1>(uart);
 ```
@@ -375,7 +376,11 @@ In order to get started we need install libmpu6050 via conan.
 conan install libmpu6050
 ```
 
-#### Step 2. Include & instantiate the mpu6050 driver in your project
+#### Step 2. Add as dependency to conan file
+
+TBD
+
+#### Step 3. Include & instantiate the mpu6050 driver in your project
 
 Follow along with the example code below
 
@@ -403,7 +408,7 @@ int main() {
 }
 ```
 
-#### Step 3. DONE!
+#### Step 4. DONE!
 
 At this point you have a fully functional and available accelerometer and
 gyroscope drivers that your code can use.
@@ -831,12 +836,12 @@ int main()
   if constexpr (embed::is_platform("lpc40"))
   {
     button = &embed::lpc40xx::input_pin<0, 1>();
-    led = &embed::lpc40xx::output_pin<0,2>();
+    led = &embed::lpc40xx::output_pin<0, 2>();
   }
   else if (embed::is_platform("stm32f10"))
   {
-    button = &embed::stm32f103::input_pin<0, 1>();
-    led = &embed::stm32f103::output_pin<0,2>();
+    button = &embed::stm32f103::input_pin<'A', 1>();
+    led = &embed::stm32f103::output_pin<'B', 2>();
   }
   else
   {

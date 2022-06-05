@@ -23,7 +23,7 @@ weight = 20
 [[menu.shortcuts]]
 name = "<i class='fab fa-fw fa-github'></i> GitHub"
 identifier = "ds"
-url = "https://github.com/SJSU-Dev2/libembeddedhal"
+url = "https://github.com/libembeddedhal/libembeddedhal"
 weight = 30
 
 [[menu.shortcuts]]

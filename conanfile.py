@@ -6,7 +6,7 @@ class libembeddedhal_conan(ConanFile):
     version = "0.0.1"
     license = "Apache License Version 2.0"
     author = "Khalil Estell"
-    url = "https://github.com/SJSU-Dev2/libembeddedhal"
+    url = "https://github.com/libembeddedhal/libembeddedhal"
     description = "A collection of interfaces and abstractions for embedded peripherals and devices using modern C++"
     topics = ("peripherals", "hardware")
     settings = "os", "compiler", "arch", "build_type"
