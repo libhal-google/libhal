@@ -126,7 +126,7 @@ public:
    * address indicator). The lower byte of the address must be contained in the
    * first byte of the p_data_out span.
    * @param p_data_out data to be written to the addressed device. Set to
-   * nullptr with length zero in order to skip writting.
+   * nullptr with length zero in order to skip writing.
    * @param p_data_in buffer to store read data from the addressed device. Set
    * to nullptr with length 0 in order to skip reading.
    * @return boost::leaf::result<void> - any error that occurred during this

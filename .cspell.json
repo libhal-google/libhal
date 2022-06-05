@@ -4,12 +4,14 @@
     "words": [
         "chrono",
         "femto",
+        "handleable",
         "libembeddedhal",
         "microcontrollers",
         "millikelvin",
         "millimetre",
         "nanokelvin",
         "nanometre",
+        "nodiscard",
         "pico",
         "tparam"
     ]

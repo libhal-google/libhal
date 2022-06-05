@@ -15,7 +15,7 @@
 namespace embed {
 
 /**
- * @brief Halt execution until the serial buffer has reached a specific number
+ * @brief Delay execution until the serial buffer has reached a specific number
  * of buffered bytes.
  *
  * NOTE: If the length is greater than the serial port's capacity this will loop
@@ -27,9 +27,8 @@ namespace embed {
  * @return boost::leaf::result<void> - return an error if a call to
  * serial::bytes_available returns an error from the serial port.
  */
-[[nodiscard]] inline boost::leaf::result<void> wait_for(
-  serial& p_serial,
-  size_t p_length) noexcept
+[[nodiscard]] inline boost::leaf::result<void> delay(serial& p_serial,
+                                                     size_t p_length) noexcept
 {
   size_t bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
   while (bytes_available < p_length) {
@@ -59,7 +58,7 @@ namespace embed {
  * @param p_serial - the serial port that will be read from
  * @param p_data_in - buffer to have bytes from the serial port read into
  * @return boost::leaf::result<std::span<const std::byte>> - return an error if
- * a call to serial::read or wait_for() returns an error from the serial port or
+ * a call to serial::read or delay() returns an error from the serial port or
  * a span with the number of bytes read and a pointer to where the read bytes
  * are.
  */
@@ -67,7 +66,7 @@ namespace embed {
   serial& p_serial,
   std::span<std::byte> p_data_in)
 {
-  BOOST_LEAF_CHECK(wait_for(p_serial, p_data_in.size()));
+  BOOST_LEAF_CHECK(delay(p_serial, p_data_in.size()));
   return p_serial.read(p_data_in);
 }
 
@@ -80,7 +79,7 @@ namespace embed {
  * @tparam BytesToRead - the number of bytes to be read from the serial port.
  * @param p_serial - the serial port to be read from
  * @return boost::leaf::result<std::array<std::byte, BytesToRead>> - return an
- * error if a call to serial::read or wait_for() returns an error from the
+ * error if a call to serial::read or delay() returns an error from the
  * serial port or a span with the number of bytes read and a pointer to where
  * the read bytes are.
  */
@@ -89,7 +88,7 @@ template<size_t BytesToRead>
   serial& p_serial) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  BOOST_LEAF_CHECK(wait_for(p_serial, BytesToRead));
+  BOOST_LEAF_CHECK(delay(p_serial, BytesToRead));
   BOOST_LEAF_CHECK(p_serial.read(buffer));
   return buffer;
 }
