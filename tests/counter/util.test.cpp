@@ -15,9 +15,9 @@ boost::ut::suite counter_utility_test = []() {
   public:
     uptime_t get_internal_uptime()
     {
-      // embed::wait_for needs to call the uptime counter at least once to get
+      // embed::delay needs to call the uptime counter at least once to get
       // the starting position, this removes the inital count that is made to
-      // start the embed::wait_for function.
+      // start the embed::delay function.
       static constexpr int initialization_cycle_count = 1;
       return { .frequency = m_uptime.frequency,
                .count = m_uptime.count - initialization_cycle_count };
@@ -33,13 +33,13 @@ boost::ut::suite counter_utility_test = []() {
     uptime_t m_uptime{ .frequency = expected_frequency, .count = 0 };
   };
 
-  "embed::wait_for(embed::counter, 0ns)"_test = []() {
+  "embed::delay(embed::counter, 0ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(0);
     dummy_counter test_counter;
 
     // Exercise
-    wait_for(test_counter, expected);
+    delay(test_counter, expected);
 
     // Verify
     expect(that % expected.count() == test_counter.get_internal_uptime().count);
@@ -47,13 +47,13 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::wait_for(embed::counter, 50ns)"_test = []() {
+  "embed::delay(embed::counter, 50ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(50);
     dummy_counter test_counter;
 
     // Exercise
-    wait_for(test_counter, expected);
+    delay(test_counter, expected);
 
     // Verify
     expect(that % expected.count() == test_counter.get_internal_uptime().count);
@@ -61,13 +61,13 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::wait_for(embed::counter, 1337ns)"_test = []() {
+  "embed::delay(embed::counter, 1337ns)"_test = []() {
     // Setup
     constexpr std::chrono::nanoseconds expected(1337);
     dummy_counter test_counter;
 
     // Exercise
-    wait_for(test_counter, expected);
+    delay(test_counter, expected);
 
     // Verify
     expect(that % expected.count() == test_counter.get_internal_uptime().count);

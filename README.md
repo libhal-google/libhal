@@ -245,9 +245,9 @@ int main() {
   {
     using std::chrono::literals;
     led.level(true);
-    embed::wait_for(counter, 500ms);
+    embed::delay_for(counter, 500ms);
     led.level(false);
-    embed::wait_for(counter, 500ms);
+    embed::delay_for(counter, 500ms);
   }
 }
 ```

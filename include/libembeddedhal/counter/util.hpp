@@ -10,7 +10,7 @@
 
 namespace embed {
 /**
- * @brief pause execution for this duration of time using a hardware counter
+ * @brief Delay execution for this duration of time using a hardware counter
  * object.
  *
  * @param p_counter - hardware counter driver
@@ -18,7 +18,7 @@ namespace embed {
  * @return boost::leaf::result<void> - returns an error if a call to p_counter
  * uptime() results in an error otherwise, returns success.
  */
-inline boost::leaf::result<void> wait_for(
+inline boost::leaf::result<void> delay(
   counter& p_counter,
   std::chrono::nanoseconds p_wait_duration) noexcept
 {
@@ -48,7 +48,7 @@ inline auto to_sleep(counter& p_counter) noexcept
   auto function =
     [&p_counter](
       std::chrono::nanoseconds p_delay) -> boost::leaf::result<void> {
-    BOOST_LEAF_CHECK(wait_for(p_counter, p_delay));
+    BOOST_LEAF_CHECK(delay(p_counter, p_delay));
     return {};
   };
 
