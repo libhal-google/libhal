@@ -198,15 +198,17 @@ details.
 
 ## Button & LED Example
 
+Using an lpc4078:
+
 ```C++
 // Include driver code
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
 
 int main() {
-  // Get pin A2 as an output pin
+  // Get pin P0[2] as an output pin
   embed::output_pin & led = embed::lpc40xx::output_pin::get<0, 2>();
-  // Get pin B6 as an input pin
+  // Get pin P1[6] as an input pin
   embed::input_pin & button = embed::lpc40xx::input_pin::get<1, 6>();
 
   while (true)
@@ -221,25 +223,29 @@ int main() {
 ```
 
 NOTE: that normally you wouldn't just get the value out of the function
-`button.level()` using the `::value()` function because this aborts the
+`button.level()` using the `::value()` function because this exits the
 application if the response contains an error. Luckily
 `embed::lpc40xx::input_pin` never returns an error so the error handling check
 can be ignored.
 
 ## Blink Example
 
+Using stm32f10x:
+
 ```C++
 #include <chrono>
 
 #include <libarmcortex/counter.hpp>
 #include <libembeddedhal/counter/util.hpp>
-#include <liblpc40xx/output_pin.hpp>
+#include <libstm32f10x/output_pin.hpp>
+#include <libarmcortex/dwt_counter.hpp>
 
 int main() {
-  // Get pin A2 as an output pin (will be initialized after the first call)
-  embed::output_pin & led = embed::lpc40xx::output_pin::get<0, 2>();
-  // Get a hardware counter (will be initialized after the first call)
-  embed::counter & counter = embed::lpc40xx::counter::get();
+  // Get pin A2 as an output pin
+  embed::output_pin & led = embed::stm32f10x::output_pin::get<'A', 2>();
+  // Construct a hardware counter
+  embed::counter & counter = embed::cortex_m::dwt_counter::get(
+      embed::stm32f10x::clock::cpu());
 
   while (true)
   {
@@ -551,14 +557,14 @@ the system.
 
 LEAF also allows you to control how exceptions are handled by defining a
 `boost::throw_exception(std::exception const&)` function. In general you want
-this to simply execute `std::abort` when this occurs. To do this, simply add
+this to simply execute `std::exit` when this occurs. To do this, simply add
 this snippet to one of the C++ files linked into the project.
 
 ```C++
 namespace boost {
 void throw_exception(std::exception const& e)
 {
-  std::abort();
+  std::exit();
 }
 ```
 
@@ -625,7 +631,7 @@ int main()
 namespace boost {
 void throw_exception(std::exception const& e)
 {
-  std::abort();
+  std::exit();
 }
 } // namespace boost
 ```
