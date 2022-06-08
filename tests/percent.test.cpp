@@ -1,3 +1,4 @@
+#include "ostreams.hpp"
 #include <boost/ut.hpp>
 #include <libembeddedhal/percent.hpp>
 
@@ -363,5 +364,383 @@ boost::ut::suite percent_to_string_test = []() {
   // Percentage is effectively 99.9...%
   value = percent::from_ratio(-2147483644, 2147483647);
   expect(get_actual_string() == std::string_view{ "-0.999999999" });
+};
+
+boost::ut::suite percent_scale_test = []() {
+  using namespace boost::ut;
+  "scale_percent_range"_test = []() {
+    // Setup
+    auto value1 = percent::from_ratio(1, 4);
+    auto value2 = percent::from_ratio(3, 4);
+    auto expected_100_percent = percent::from_ratio(1, 1);
+    auto expected_75_percent = percent::from_ratio(3, 4);
+    auto expected_50_percent = percent::from_ratio(1, 2);
+    auto expected_25_percent = percent::from_ratio(1, 4);
+    auto expected_0_percent = percent::from_ratio(0, 1);
+    percent test = percent::from_ratio(3, 4);
+
+    // Exercise + Verify
+    // Positive percent range boundaries
+    percent actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(5, 8);
+    actual = test.scale(value1, value2);
+    expect(that % expected_75_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(value1, value2);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(3, 8);
+    actual = test.scale(value1, value2);
+    expect(that % expected_25_percent == actual);
+
+    test = percent::from_ratio(1, 4);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(1, 8);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    // Negative percent range boundaries
+    value1 = percent::from_ratio(-1, 2);
+    value2 = percent::from_ratio(-3, 4);
+
+    test = percent::from_ratio(-1, 2);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(-1, 4);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(-5, 8);
+    actual = test.scale(value1, value2);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(-3, 4);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-2, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    // Min and max percent range boundaries
+    value1 = percent::from_ratio(-1, 1);
+    value2 = percent::from_ratio(1, 1);
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(value1, value2);
+    expect(that % expected_75_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_50_percent == actual);
+
+    // TODO: Fix with issue #273,  Expected value should be 25%, raw value is
+    // off by 1
+    test = percent::from_ratio(-1, 2);
+    actual = test.scale(value1, value2);
+    expect(that % percent::from_ratio(
+                    536870912, std::numeric_limits<std::int32_t>::max()) ==
+           actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-2, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+
+    // Range boundaries are equal
+    value1 = percent::from_ratio(1, 2);
+    value2 = percent::from_ratio(1, 2);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(value1, value2);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(1, 4);
+    actual = test.scale(value1, value2);
+    expect(that % expected_0_percent == actual);
+  };
+
+  "scale_int32_range"_test = []() {
+    // Setup
+    percent test;
+    std::int32_t actual;
+    std::int32_t min = 250000;
+    std::int32_t max = 750000;
+
+    std::int32_t expected_100_percent = 750000;
+    std::int32_t expected_75_percent = 625000;
+    std::int32_t expected_50_percent = 500000;
+    std::int32_t expected_25_percent = 375000;
+    std::int32_t expected_0_percent = 250000;
+
+    // Exercise + Verify
+    // Positive range boundaries
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(3, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_75_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(1, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_25_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    // Range with one boundary as int max
+    min = 0;
+    max = std::numeric_limits<std::int32_t>::max();
+
+    expected_0_percent = 0;
+    expected_50_percent = max / 2;
+    expected_100_percent = std::numeric_limits<std::int32_t>::max();
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    // Range with one boundary as int min
+    min = std::numeric_limits<std::int32_t>::min();
+    max = 0;
+
+    expected_0_percent = min;
+    expected_25_percent = min - (min / 4) - 1;
+    expected_50_percent = min / 2;
+    expected_75_percent = min / 4;
+    expected_100_percent = 0;
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(3, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_75_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(1, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_25_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    // Large range
+    min = -200000000;
+    max = 200000000;
+
+    expected_0_percent = min;
+    expected_25_percent = min / 2;
+    expected_50_percent = 0;
+    expected_75_percent = max / 2;
+    expected_100_percent = max;
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(3, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_75_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(1, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_25_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    // Range boundaries values are equal
+    min = 0;
+    max = 0;
+
+    expected_0_percent = 0;
+    expected_50_percent = 0;
+    expected_100_percent = 0;
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+  };
+
+  "scale_int64_range"_test = []() {
+    // Setup
+    percent test;
+    std::int64_t actual;
+    std::int64_t min = 0;
+    std::int64_t max = 4000000000000000;
+
+    // TODO: Fix with issue #273, expected values adjusted to work with current
+    // division arithmetic
+    std::int64_t expected_100_percent = 4000000000000000;
+    std::int64_t expected_75_percent = 2999999999534338;
+    std::int64_t expected_50_percent = 1999999999068677;
+    std::int64_t expected_25_percent = 999999998603016;
+    std::int64_t expected_0_percent = 0;
+
+    // Exercise + Verify
+    // Positive Range
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(3, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_75_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(1, 4);
+    actual = test.scale(min, max);
+    expect(that % expected_25_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    // Range boundaries values are equal
+    min = 1000000000000000;
+    max = 1000000000000000;
+
+    expected_0_percent = 1000000000000000;
+    expected_50_percent = 1000000000000000;
+    expected_100_percent = 1000000000000000;
+
+    test = percent::from_ratio(1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(2, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_100_percent == actual);
+
+    test = percent::from_ratio(1, 2);
+    actual = test.scale(min, max);
+    expect(that % expected_50_percent == actual);
+
+    test = percent::from_ratio(0, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+
+    test = percent::from_ratio(-1, 1);
+    actual = test.scale(min, max);
+    expect(that % expected_0_percent == actual);
+  };
 };
 }  // namespace embed

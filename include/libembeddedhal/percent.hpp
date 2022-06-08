@@ -108,6 +108,9 @@ public:
   /// The overflow type must be 2x the size of int_t in order to perform
   /// multiplication against two int_t value and not lose any data.
   using overflow_t = std::int64_t;
+  /// Overflow type for int64_t must be 2x the size of int64_t in order to
+  /// perform multiplication against two int64_t value and not lose any data.
+  using int128_t = math::wide_integer::int128_t;
 
   static_assert(sizeof(overflow_t) >= sizeof(int_t),
                 "Overflow integer type must be equal to or greater ");
@@ -139,6 +142,85 @@ public:
   [[nodiscard]] static constexpr overflow_t raw_zero() noexcept
   {
     return int_t{ 0 };
+  }
+
+  /**
+   * @brief Get the percent after it is scaled to a range. The output percent is
+   * bound within the given range. If the percent is greater than or equal to
+   * the maximum bounds of the range, then 100 percent is returned. Likewise, if
+   * the percent is less than or equal to the minimum bounds of the range, then
+   * 0 percent is returned.
+   *
+   * Examples:
+   * If the range is [0, 100] and the percent is 50, output should be 50%
+   * If the range is [-100, 100] and the percent is -50, output should be 25%
+   * If the range is [-100, 100] and the percent is 0, output should be 50%
+   * If the range is [-100, 100] and the percent is 50, output should be 75%
+   * If the range is [-10, 100] and the percent is 45, output should be 50%
+   *
+   * @param p_value1 - first value of the range
+   * @param p_value2 - second value of the range
+   * @return percent - percent after it has been scaled
+   */
+  [[nodiscard]] constexpr percent scale(percent p_value1, percent p_value2)
+  {
+    overflow_t min =
+      static_cast<overflow_t>(std::min(p_value1, p_value2).m_value);
+    overflow_t max =
+      static_cast<overflow_t>(std::max(p_value1, p_value2).m_value);
+
+    if (m_value >= max) {
+      return from_ratio(1, 1);
+    }
+    if (m_value <= min) {
+      return from_ratio(0, 1);
+    }
+
+    overflow_t numerator = static_cast<overflow_t>(m_value) - min;
+    overflow_t denominator = max - min;
+    overflow_t scaled_value = (numerator * raw_max()) / denominator;
+    scaled_value = std::clamp(scaled_value, raw_min(), raw_max());
+    return percent(static_cast<int_t>(scaled_value));
+  }
+
+  /**
+   * @brief Get the value of the percent after it is scaled to a range. The
+   * output value is bound within the given range. If the percent is greater
+   * than or equal to 100 percent, then the maximum value of the range is
+   * returned. Likewise, if the value is less than or equal to 0 percent, then
+   * the minimum value of the range is returned.
+   *
+   * Examples:
+   * If the range is [0, 100] and the percent is 25, output should be 25
+   * If the range is [0, 100] and the percent is 75, output should be 75
+   * If the range is [-100, 0] and the percent is 25, output should be -75
+   * If the range is [-100, 0] and the percent is 75, output should be -25
+   * If the range is [-100, 100] and the percent is 25, output should be -50
+   * If the range is [-100, 100] and the percent is 75, output should be 50
+   * If the range is [-100, 100] and the percent is 0, output should be -100
+   * If the range is [-100, 100] and the percent is 100, output should be 100
+   *
+   * @tparam T - types for range and return value
+   * @param p_value1 - first value of the range
+   * @param p_value2 - second value of the range
+   * @return T - value after it has been scaled
+   */
+  template<std::integral T>
+  [[nodiscard]] T scale(T p_value1, T p_value2)
+  {
+    T min = std::min(p_value1, p_value2);
+    T max = std::max(p_value1, p_value2);
+
+    if (m_value == raw_max()) {
+      return max;
+    } else if (m_value <= raw_zero()) {
+      return min;
+    }
+
+    T scaled_max = (*this) * max;
+    T scaled_min = (*this) * min;
+    T scaled_output = min + scaled_max - scaled_min;
+    return scaled_output;
   }
 
   /**
@@ -240,7 +322,7 @@ public:
                                                     T p_maximum) noexcept
   {
     overflow_t result = p_progress;
-    result = (result * raw_max()) / absolute_value(p_maximum);
+    result = (result * raw_max()) / overflow_t(p_maximum);
     result = std::clamp(result, raw_min(), raw_max());
 
     return percent(static_cast<int_t>(result));
@@ -307,6 +389,27 @@ public:
     arith_container = arith_container * p_scale.raw_value();
     arith_container = rounding_division(arith_container, raw_max());
     return static_cast<T>(arith_container);
+  }
+
+  /**
+   * @brief Scale an integral value by a percent value.
+   *
+   * Returns a scaled down version of the input value. For example if the input
+   * is 100 and the scale value represents a percentage of 50%, then performing
+   * the following operation: `100 * percent_50_percent` is equivalent to `100 *
+   * 0.5f`.
+   *
+   * @param p_value - value to be scaled
+   * @param p_scale - value scalar
+   * @return auto - the scaled down result of p_value * p_scale.
+   */
+  [[nodiscard]] friend constexpr auto operator*(std::int64_t p_value,
+                                                percent p_scale) noexcept
+  {
+    int128_t arith_container = p_value;
+    arith_container = arith_container * p_scale.raw_value();
+    arith_container = arith_container / int128_t{ raw_max() };
+    return static_cast<decltype(p_value)>(arith_container);
   }
 
   /**
