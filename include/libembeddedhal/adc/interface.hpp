@@ -29,7 +29,7 @@ public:
    * application.
    *
    * @return boost::leaf::result<percent> - Return the value of the
-   * ADC as a full_scale value. Typical implemenation for a 12-bit adc would
+   * ADC as a full_scale value. Typical implementation for a 12-bit adc would
    * look like: `return embed::bit_depth<uint32_t, 12>(adc_value);`.
    *
    */
