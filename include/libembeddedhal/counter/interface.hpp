@@ -32,7 +32,7 @@ public:
   /**
    * @brief Get the uptime of the counter since it has started.
    *
-   * The count for a counterr will always count up.
+   * The count for a counter will always count up.
    * Hardware counters must support 32-bit counts.
    *
    * @return uptime_t - the current uptime since the counter has started.
