@@ -9,7 +9,6 @@
 #include <string_view>
 
 #include "../error.hpp"
-#include "../time.hpp"
 #include "interface.hpp"
 
 namespace embed {

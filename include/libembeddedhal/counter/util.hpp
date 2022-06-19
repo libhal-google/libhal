@@ -4,7 +4,6 @@
  */
 #pragma once
 
-#include "../time.hpp"
 #include "interface.hpp"
 #include "uptime_counter.hpp"
 

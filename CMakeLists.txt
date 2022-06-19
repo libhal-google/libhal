@@ -75,7 +75,7 @@ add_executable(${TEST_NAME}
   tests/error.test.cpp
   tests/enum.test.cpp
   tests/percent.test.cpp
-  tests/time.test.cpp
+  tests/timeout.test.cpp
   tests/static_callable.test.cpp
   tests/testing.test.cpp
   tests/main.test.cpp
