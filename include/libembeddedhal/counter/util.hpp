@@ -1,73 +1,57 @@
 /**
  * @file util.hpp
- * @brief Provide utility functions for the counter interface
+ * @brief Provide utilities for the counter interface
  */
 #pragma once
 
+#include <chrono>
+
+#include "../error.hpp"
+#include "../timeout.hpp"
 #include "interface.hpp"
-#include "uptime_counter.hpp"
+#include "timeout.hpp"
 
 namespace embed {
 /**
- * @brief Delay execution for this duration of time using a hardware counter
- * object.
+ * @brief Create a timeout object based on embed::counter.
  *
- * @param p_counter - hardware counter driver
- * @param p_wait_duration - the amount of time to pause execution for
- * @return boost::leaf::result<void> - returns an error if a call to p_counter
- * uptime() results in an error otherwise, returns success.
+ * NOTE: that multiple timeout objects can be made from a single counter without
+ * any influence on other timeout objects.
+ *
+ * @param p_counter - embed::counter implementation
+ * @param p_duration - amount of time until timeout
+ * @return boost::leaf::result<embed::counter_timeout>
  */
-inline boost::leaf::result<void> delay(
-  counter& p_counter,
-  std::chrono::nanoseconds p_wait_duration) noexcept
+inline boost::leaf::result<embed::counter_timeout> create_timeout(
+  embed::counter& p_counter,
+  std::chrono::nanoseconds p_duration)
 {
-  auto [frequency, current_count] = BOOST_LEAF_CHECK(p_counter.uptime());
-  const auto cycles = BOOST_LEAF_CHECK(frequency.cycles_per(p_wait_duration));
-  const auto end_count = current_count + cycles;
-
-  while (end_count > current_count) {
-    current_count = BOOST_LEAF_CHECK(p_counter.uptime()).count;
-    continue;
+  if (p_duration < std::chrono::nanoseconds(0)) {
+    return boost::leaf::new_error(std::errc::result_out_of_range);
   }
-
-  return {};
+  const auto [frequency, count] = BOOST_LEAF_CHECK(p_counter.uptime());
+  auto cycles = BOOST_LEAF_CHECK(frequency.cycles_per(p_duration));
+  return embed::counter_timeout(p_counter, cycles);
 }
 
 /**
- * @brief Create a sleep function (specifically a lambda) that satisfies the
- * embed::sleep_function requirement.
+ * @brief Delay execution for a duration of time using a hardware counter.
  *
- * The sleep function will perform a busy wait in order to delay execution.
- *
- * @param p_counter - hardware counter driver
- * @return auto - lambda sleep function based on the counter
+ * @param p_counter - counter driver
+ * @param p_duration - the amount of time to delay for, must be positive
+ * @return boost::leaf::result<void> - returns any errors that result from
+ * embed::counter::uptime(), otherwise returns success.
+ * @throws std::errc::result_out_of_range - if the calculated cycle count
+ * exceeds std::int64_t.
  */
-inline auto to_sleep(counter& p_counter) noexcept
+[[nodiscard]] inline boost::leaf::result<void> delay(
+  embed::counter& p_counter,
+  std::chrono::nanoseconds p_duration) noexcept
 {
-  auto function =
-    [&p_counter](
-      std::chrono::nanoseconds p_delay) -> boost::leaf::result<void> {
-    BOOST_LEAF_CHECK(delay(p_counter, p_delay));
-    return {};
-  };
-
-  return function;
-}
-
-/**
- * @brief Create an uptime function (specifically a lambda) that satisfies the
- * embed::uptime_function requirement.
- *
- * @param p_counter - hardware counter driver
- * @return auto - lambda uptime function based on the counter
- */
-inline auto to_uptime(uptime_counter& p_counter) noexcept
-{
-  auto function =
-    [&p_counter]() -> boost::leaf::result<std::chrono::nanoseconds> {
-    return p_counter.uptime();
-  };
-
-  return function;
+  if (p_duration < std::chrono::nanoseconds(0)) {
+    return boost::leaf::new_error(std::errc::result_out_of_range);
+  }
+  auto timeout_object = BOOST_LEAF_CHECK(create_timeout(p_counter, p_duration));
+  return delay(timeout_object);
 }
 }  // namespace embed

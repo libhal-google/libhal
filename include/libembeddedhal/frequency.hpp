@@ -87,7 +87,8 @@ public:
    */
   explicit constexpr frequency(std::uint32_t p_value) noexcept
     : m_cycles_per_second(p_value)
-  {}
+  {
+  }
 
   /**
    * @brief Get the frequency as an integer
@@ -125,10 +126,11 @@ public:
    * Gregorian years otherwise the output of this function is not defined.
    *
    * @param p_duration - the amount of time to convert to cycles
-   * @return boost::leaf::result<std::uint64_t> - either the number of cycles or
-   * `std::errc::result_out_of_range`.
+   * @return boost::leaf::result<std::int64_t> - number of cycles
+   * @throws std::errc::result_out_of_range - if the calculated cycle count
+   * exceeds std::int64_t.
    */
-  [[nodiscard]] boost::leaf::result<std::uint64_t> cycles_per(
+  [[nodiscard]] boost::leaf::result<std::int64_t> cycles_per(
     std::chrono::nanoseconds p_duration) const noexcept
   {
     // Full Equation:
@@ -147,7 +149,7 @@ public:
     constexpr uint128_t denominator = decltype(p_duration)::period::den;
     // Storing 64-bit value in a uint128_t for later computation, no truncation
     // possible.
-    const uint128_t duration = absolute_value(p_duration.count());
+    const uint128_t duration = p_duration.count();
     // Duration contains at most a 64-bit number, cycles_per_second() is a
     // 32-bit number, and numerator is always the value 1.
     //
@@ -163,7 +165,7 @@ public:
     // ~30. Because 96-bits - 30-bits is equal to 66-bits, it is possible that
     // the resultant will not fit within a 64-bit unsigned integer, and thus a
     // bounds check is required.
-    if (cycle_count > std::numeric_limits<std::uint64_t>::max()) {
+    if (cycle_count > std::numeric_limits<std::int64_t>::max()) {
       return boost::leaf::new_error(std::errc::result_out_of_range);
     }
 

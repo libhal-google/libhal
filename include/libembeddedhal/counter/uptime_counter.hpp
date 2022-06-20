@@ -12,8 +12,8 @@ namespace embed {
  * around 15 weeks have elapsed. This has to do with how the integer arithmetic
  * is handled for converting from frequency to duration using a cycle count.
  *
- * So long as this class's uptime() is called within a 15 week timespan, the
- * uptime will be accurate up to ~292 years.
+ * So long as this class's uptime() is at least once every 15 weeks, the uptime
+ * will be accurate up to ~292 years.
  */
 class uptime_counter
 {
@@ -25,7 +25,8 @@ public:
    */
   uptime_counter(counter& p_counter)
     : m_counter(&p_counter)
-  {}
+  {
+  }
 
   /**
    * @brief Calculates the number of nanoseconds since the counter has started
