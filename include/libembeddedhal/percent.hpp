@@ -147,7 +147,8 @@ public:
    */
   constexpr percent() noexcept
     : m_value(0)
-  {}
+  {
+  }
 
   /**
    * @brief Construct a percent based on a floating point percentage value.
@@ -405,7 +406,8 @@ public:
 private:
   constexpr percent(int_t p_value) noexcept
     : m_value(p_value)
-  {}
+  {
+  }
 
   int_t m_value = 0;
 };

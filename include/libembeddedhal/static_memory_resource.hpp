@@ -37,7 +37,8 @@ public:
     , m_resource(m_buffer.data(),
                  m_buffer.size(),
                  std::pmr::null_memory_resource())
-  {}
+  {
+  }
   /**
    * @return constexpr std::size_t - the total number of bytes that this
    * allocator can allocate before throwing a std::bad_alloc exception.
