@@ -11,6 +11,19 @@
 #include "error.hpp"
 
 namespace embed {
+namespace error {
+/**
+ * @brief An error indicating a timeout event.
+ *
+ * Timeouts occur when a particular operation is given an amount of time to
+ * complete. If the operation cannot be completed in that time, this object
+ * should be thrown.
+ *
+ */
+struct timeout
+{};
+}  // namespace error
+
 /**
  * @brief Timeout is a callable object or function that signals to a procedure
  * that the procedure has exceeded its time allotment and should return control

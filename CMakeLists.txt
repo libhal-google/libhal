@@ -72,7 +72,6 @@ add_executable(${TEST_NAME}
 
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp
-  tests/error.test.cpp
   tests/enum.test.cpp
   tests/percent.test.cpp
   tests/timeout.test.cpp

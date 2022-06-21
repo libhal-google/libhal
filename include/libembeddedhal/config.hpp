@@ -5,9 +5,6 @@
 namespace embed::config {
 namespace defaults {
 constexpr std::string_view platform = "test";
-constexpr bool get_stacktrace_on_error = true;
-constexpr size_t stacktrace_depth_limit = 32;
-constexpr bool get_source_position_on_error = false;
 }  // namespace defaults
 using namespace defaults;
 }  // namespace embed::config
