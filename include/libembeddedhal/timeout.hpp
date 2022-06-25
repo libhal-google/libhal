@@ -54,10 +54,7 @@ template<typename Timeout = std::function<embed::timeout>>
     // If any error other than `embed::error::timeout` is thrown, return an
     // error flag from this function.
     BOOST_LEAF_CHECK(boost::leaf::try_handle_some(
-      // Execute the timeout function and check if it returns an error
-      [&p_timeout_function]() -> boost::leaf::result<void> {
-        return p_timeout_function();
-      },
+      p_timeout_function,
       // Catch `embed::error::timeout` errors and handle them by changing
       // `waiting` from true to false.
       [&waiting]([[maybe_unused]] embed::error::timeout p_timeout_error)
