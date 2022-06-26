@@ -18,6 +18,9 @@ public:
   {
     /// pull resistor for an input pin
     pin_resistor resistor = pin_resistor::pull_up;
+
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /**

@@ -26,6 +26,9 @@ public:
     /// Set the starting level of the output pin on initialization. HIGH voltage
     /// defined as true and LOW voltage defined as false.
     bool starting_level = true;
+
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /**
