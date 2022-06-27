@@ -5,8 +5,7 @@
 
 namespace embed::mock {
 /**
- * @brief Mock output pin for use in unit tests and simulations with spy
- * functions for configure configure() and level()
+ * @brief mock output pin for use in unit tests and simulations
  *
  */
 struct output_pin : public embed::output_pin
@@ -41,6 +40,6 @@ private:
   {
     return m_current_level;
   }
-    bool m_current_level = false;
+  bool m_current_level = false;
 };
-}  // namespace embedd::mock
+}  // namespace embed::mock

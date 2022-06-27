@@ -32,8 +32,10 @@ boost::ut::suite input_pin_mock_test = []() {
     embed::mock::input_pin mock;
     std::deque inputs{ true, false, true };
     std::queue queue(inputs);
+
     // Exercise
-    (void)mock.set(queue);
+    mock.set(queue);
+
     // Verify
     expect(that % true == mock.level().value());
     expect(that % false == mock.level().value());
@@ -45,6 +47,7 @@ boost::ut::suite input_pin_mock_test = []() {
     constexpr embed::input_pin::settings mock_settings_default{};
     embed::mock::input_pin mock;
     (void)mock.configure(mock_settings_default);
+    expect(that % 1 == mock.spy_configure.call_history().size());
 
     // Exercise
     mock.reset();

@@ -8,7 +8,7 @@
 
 namespace embed::mock {
 /**
- * @brief Mock input_pin implementation for use in unit tests and simulations.
+ * @brief mock input_pin implementation for use in unit tests and simulations.
  *
  */
 struct input_pin : public embed::input_pin
@@ -23,11 +23,11 @@ struct input_pin : public embed::input_pin
   spy_handler<settings> spy_configure;
 
   /**
-   * @brief Set input value of pin to given value
+   * @brief Queues the active levels to be returned for levels()
    *
-   * @param p_level - vector of high or low values for input pin
+   * @param p_levels - queue of actives levels
    */
-  void set(std::queue<bool>& p_levels) { m_level = p_levels; }
+  void set(std::queue<bool>& p_levels) { m_levels = p_levels; }
 
 private:
   boost::leaf::result<void> driver_configure(
@@ -37,15 +37,17 @@ private:
   }
   boost::leaf::result<bool> driver_level() noexcept
   {
-    if (m_level.size() == 0) {
+    // This comparison performs bounds checking because front() and pop() do
+    // not bounds check and results in undefined behavior if the queue is empty.
+    if (m_levels.size() == 0) {
       return boost::leaf::new_error(
         std::out_of_range("input_pin level queue is empty!"));
     }
-    bool m_current_value = m_level.front();
-    m_level.pop();
+    bool m_current_value = m_levels.front();
+    m_levels.pop();
     return m_current_value;
   }
 
-  std::queue<bool> m_level{};
+  std::queue<bool> m_levels{};
 };
 }  // namespace embed::mock
