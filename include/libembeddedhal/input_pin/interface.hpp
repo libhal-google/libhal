@@ -18,6 +18,14 @@ public:
   {
     /// pull resistor for an input pin
     pin_resistor resistor = pin_resistor::pull_up;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /**
