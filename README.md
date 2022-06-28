@@ -11,15 +11,15 @@
 
 **🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
 
-| [Install](#📥-install)
-| [Overview](#ℹ️-overview)
-| [Glossary](#📃-glossary)
-| [Usage](#✍️-usage)
-| [Library Badges](#🪪-library-badges)
-| [Development Guides](#🔨-development-guides)
-| [Libraries](#📚-libraries)
-| [Motivation](#💡-motivation)
-| [Contributing](#👥-contributing)
+| [Install](#-install)
+| [Overview](#-overview)
+| [Glossary](#-glossary)
+| [Usage](#-usage)
+| [Library Badges](#-library-badges)
+| [Development Guides](#-development-guides)
+| [Libraries](#-libraries)
+| [Motivation](#-motivation)
+| [Contributing](#-contributing)
 |
 
 # [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
@@ -1078,19 +1078,14 @@ libembeddedhal's design goals:
 If you find an issue you'd like to work on, simply type and submit a comment
 with the phrase `.take` in it to get assigned by our github actions.
 
-## 📤 Submitting a PR
+## 📤 Pull Request Guidelines
 
-Submitting a PR at anytime is fine, but code will not be reviewed until all of
-the continuous integration steps have finished.
-
-Commit message style:
-
-```
-Title no more than 50 characters
-<empty newline here>
-Actual content of the commit message in the present tense.
-```
-
-A pull request should only have a single commit in it at the start.
-For each round of review, additional commits can be made, but this is not
-required.
+1. Code must finish continuous integration steps before it will be reviewed.
+2. Commit messages should follow these guidelines here
+   https://cbea.ms/git-commit/.
+3. Pull requests should contain a single commit
+4. Pull requests should be small and implement a single feature where possible.
+   If it can be broken up into separate parts it most likely should be.
+5. Each PR should have an associated issue with it. Exceptions are made for very
+   small PRs such as fixing typos, fixing up documentation or removing
+   unnecessary headers.
