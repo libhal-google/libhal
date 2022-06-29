@@ -333,7 +333,10 @@ public:
    *
    * @return T - percent value
    */
-  [[nodiscard]] constexpr auto raw_value() const noexcept { return m_value; }
+  [[nodiscard]] constexpr auto raw_value() const noexcept
+  {
+    return m_value;
+  }
 
   /**
    * @brief Convert percent to a floating point representation
@@ -355,7 +358,10 @@ public:
    * @return float - float representation of the percentage between 0.0f
    * and 1.0f.
    */
-  [[nodiscard]] explicit operator float() const noexcept { return to<float>(); }
+  [[nodiscard]] explicit operator float() const noexcept
+  {
+    return to<float>();
+  }
 
   /**
    * @brief explicit cast to double.

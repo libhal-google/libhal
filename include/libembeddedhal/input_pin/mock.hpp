@@ -17,7 +17,10 @@ struct input_pin : public embed::input_pin
    * @brief Reset spy information for configure()
    *
    */
-  void reset() { spy_configure.reset(); }
+  void reset()
+  {
+    spy_configure.reset();
+  }
 
   /// Spy handler for embedd:input_pin::configure()
   spy_handler<settings> spy_configure;
@@ -27,7 +30,10 @@ struct input_pin : public embed::input_pin
    *
    * @param p_levels - queue of actives levels
    */
-  void set(std::queue<bool>& p_levels) { m_levels = p_levels; }
+  void set(std::queue<bool>& p_levels)
+  {
+    m_levels = p_levels;
+  }
 
 private:
   boost::leaf::result<void> driver_configure(

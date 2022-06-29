@@ -43,7 +43,10 @@ public:
    * @return constexpr std::size_t - the total number of bytes that this
    * allocator can allocate before throwing a std::bad_alloc exception.
    */
-  constexpr std::size_t capacity() const noexcept { return BufferSize; }
+  constexpr std::size_t capacity() const noexcept
+  {
+    return BufferSize;
+  }
   /**
    * @return std::size_t - number of bytes that have already been allocated.
    */
@@ -54,7 +57,10 @@ public:
   /**
    * @return int - Bytes that have yet to be allocated from this allocator.
    */
-  int memory_available() const noexcept { return capacity() - memory_used(); }
+  int memory_available() const noexcept
+  {
+    return capacity() - memory_used();
+  }
 
 protected:
   /**

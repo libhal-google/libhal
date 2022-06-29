@@ -823,11 +823,20 @@ public:
     return *this;
   }
 
-  ~optional() noexcept { reset(); }
+  ~optional() noexcept
+  {
+    reset();
+  }
 
-  BOOST_LEAF_CONSTEXPR bool empty() const noexcept { return key_ == 0; }
+  BOOST_LEAF_CONSTEXPR bool empty() const noexcept
+  {
+    return key_ == 0;
+  }
 
-  BOOST_LEAF_CONSTEXPR int key() const noexcept { return key_; }
+  BOOST_LEAF_CONSTEXPR int key() const noexcept
+  {
+    return key_;
+  }
 
   BOOST_LEAF_CONSTEXPR void reset() noexcept
   {
@@ -1023,9 +1032,15 @@ public:
     : m_p(demangle_alloc(name))
   {}
 
-  ~scoped_demangled_name() noexcept { demangle_free(m_p); }
+  ~scoped_demangled_name() noexcept
+  {
+    demangle_free(m_p);
+  }
 
-  char const* get() const noexcept { return m_p; }
+  char const* get() const noexcept
+  {
+    return m_p;
+  }
 
   scoped_demangled_name(scoped_demangled_name const&) = delete;
   scoped_demangled_name& operator=(scoped_demangled_name const&) = delete;
@@ -1061,7 +1076,8 @@ inline char const* demangle_alloc(char const* name) noexcept
   return name;
 }
 
-inline void demangle_free(char const*) noexcept {}
+inline void demangle_free(char const*) noexcept
+{}
 
 inline char const* demangle(char const* name)
 {
@@ -1921,7 +1937,8 @@ class BOOST_LEAF_SYMBOL_VISIBLE e_unexpected_info
   std::set<char const* (*)()> already_;
 
 public:
-  e_unexpected_info() noexcept {}
+  e_unexpected_info() noexcept
+  {}
 
   template<class E>
   void add(E&& e)
@@ -2217,11 +2234,18 @@ class leaf_category final : public std::error_category
   {
     return false;
   }
-  char const* name() const noexcept final override { return "LEAF error"; }
-  std::string message(int condition) const final override { return name(); }
+  char const* name() const noexcept final override
+  {
+    return "LEAF error";
+  }
+  std::string message(int condition) const final override
+  {
+    return name();
+  }
 
 public:
-  ~leaf_category() noexcept final override {}
+  ~leaf_category() noexcept final override
+  {}
 };
 
 template<class = void>
@@ -2301,7 +2325,10 @@ public:
   }
 #endif
 
-  BOOST_LEAF_CONSTEXPR error_id load() const noexcept { return *this; }
+  BOOST_LEAF_CONSTEXPR error_id load() const noexcept
+  {
+    return *this;
+  }
 
   template<class... Item>
   BOOST_LEAF_CONSTEXPR error_id load(Item&&... item) const noexcept
@@ -2525,7 +2552,8 @@ namespace boost {
 namespace leaf {
 
 namespace leaf_detail {
-inline void enforce_std_exception(std::exception const&) noexcept {}
+inline void enforce_std_exception(std::exception const&) noexcept
+{}
 
 class BOOST_LEAF_SYMBOL_VISIBLE exception_base
 {
@@ -2539,7 +2567,8 @@ protected:
     : auto_id_bump_(0, [](void const*) { (void)new_id(); })
   {}
 
-  ~exception_base() noexcept {}
+  ~exception_base() noexcept
+  {}
 };
 
 template<class Ex>
@@ -2548,7 +2577,10 @@ class BOOST_LEAF_SYMBOL_VISIBLE exception
   , public exception_base
   , public error_id
 {
-  error_id get_error_id() const noexcept final override { return *this; }
+  error_id get_error_id() const noexcept final override
+  {
+    return *this;
+  }
 
 public:
   exception(exception const&) = default;
@@ -2817,7 +2849,8 @@ struct tuple_for_each_preload
 template<class Tuple>
 struct tuple_for_each_preload<0, Tuple>
 {
-  BOOST_LEAF_CONSTEXPR static void trigger(Tuple const&, int) noexcept {}
+  BOOST_LEAF_CONSTEXPR static void trigger(Tuple const&, int) noexcept
+  {}
 };
 
 template<class E>
@@ -3230,7 +3263,8 @@ struct BOOST_LEAF_SYMBOL_VISIBLE e_file_name
 struct BOOST_LEAF_SYMBOL_VISIBLE e_file_name
 {
   constexpr static char const* const value = "<unavailable>";
-  BOOST_LEAF_CONSTEXPR explicit e_file_name(char const*) {}
+  BOOST_LEAF_CONSTEXPR explicit e_file_name(char const*)
+  {}
 };
 
 #endif
@@ -3556,10 +3590,14 @@ struct tuple_for_each
 template<class Tuple>
 struct tuple_for_each<0, Tuple>
 {
-  BOOST_LEAF_CONSTEXPR static void activate(Tuple&) noexcept {}
-  BOOST_LEAF_CONSTEXPR static void deactivate(Tuple&) noexcept {}
-  BOOST_LEAF_CONSTEXPR static void propagate(Tuple&, int) noexcept {}
-  BOOST_LEAF_CONSTEXPR static void propagate_captured(Tuple&, int) noexcept {}
+  BOOST_LEAF_CONSTEXPR static void activate(Tuple&) noexcept
+  {}
+  BOOST_LEAF_CONSTEXPR static void deactivate(Tuple&) noexcept
+  {}
+  BOOST_LEAF_CONSTEXPR static void propagate(Tuple&, int) noexcept
+  {}
+  BOOST_LEAF_CONSTEXPR static void propagate_captured(Tuple&, int) noexcept
+  {}
   template<class CharT, class Traits>
   BOOST_LEAF_CONSTEXPR static void print(std::basic_ostream<CharT, Traits>&,
                                          void const*,
@@ -3703,11 +3741,20 @@ public:
     : is_active_(false)
   {}
 
-  ~context() noexcept { BOOST_LEAF_ASSERT(!is_active()); }
+  ~context() noexcept
+  {
+    BOOST_LEAF_ASSERT(!is_active());
+  }
 
-  BOOST_LEAF_CONSTEXPR Tup const& tup() const noexcept { return tup_; }
+  BOOST_LEAF_CONSTEXPR Tup const& tup() const noexcept
+  {
+    return tup_;
+  }
 
-  BOOST_LEAF_CONSTEXPR Tup& tup() noexcept { return tup_; }
+  BOOST_LEAF_CONSTEXPR Tup& tup() noexcept
+  {
+    return tup_;
+  }
 
   BOOST_LEAF_CONSTEXPR void activate() noexcept
   {
@@ -3747,7 +3794,10 @@ public:
       tup_, id.value());
   }
 
-  BOOST_LEAF_CONSTEXPR bool is_active() const noexcept { return is_active_; }
+  BOOST_LEAF_CONSTEXPR bool is_active() const noexcept
+  {
+    return is_active_;
+  }
 
   template<class CharT, class Traits>
   void print(std::basic_ostream<CharT, Traits>& os) const
@@ -3815,12 +3865,27 @@ struct polymorphic_context_impl
   {
     return Ctx::propagate_captured_errors(captured_id_);
   }
-  void activate() noexcept final override { Ctx::activate(); }
-  void deactivate() noexcept final override { Ctx::deactivate(); }
-  void propagate(error_id id) noexcept final override { Ctx::propagate(id); }
-  bool is_active() const noexcept final override { return Ctx::is_active(); }
+  void activate() noexcept final override
+  {
+    Ctx::activate();
+  }
+  void deactivate() noexcept final override
+  {
+    Ctx::deactivate();
+  }
+  void propagate(error_id id) noexcept final override
+  {
+    Ctx::propagate(id);
+  }
+  bool is_active() const noexcept final override
+  {
+    return Ctx::is_active();
+  }
 #if BOOST_LEAF_CFG_DIAGNOSTICS
-  void print(std::ostream& os) const final override { return Ctx::print(os); }
+  void print(std::ostream& os) const final override
+  {
+    return Ctx::print(os);
+  }
 #endif
 };
 }  // namespace leaf_detail
@@ -3948,7 +4013,10 @@ public:
   {}
 #endif
 
-  BOOST_LEAF_CONSTEXPR error_id error() const noexcept { return err_id_; }
+  BOOST_LEAF_CONSTEXPR error_id error() const noexcept
+  {
+    return err_id_;
+  }
 
   BOOST_LEAF_CONSTEXPR std::exception* exception() const noexcept
   {
@@ -4304,7 +4372,10 @@ struct peek_exception<E, true>
 template<class E>
 struct peek_exception<E, false>
 {
-  BOOST_LEAF_CONSTEXPR static E* peek(error_info const&) noexcept { return 0; }
+  BOOST_LEAF_CONSTEXPR static E* peek(error_info const&) noexcept
+  {
+    return 0;
+  }
 };
 
 #endif
@@ -5264,9 +5335,15 @@ struct stored
   using value_rv_cref = T const&&;
   using value_rv_ref = T&&;
 
-  static value_type_const* cptr(type const& v) noexcept { return &v; }
+  static value_type_const* cptr(type const& v) noexcept
+  {
+    return &v;
+  }
 
-  static value_type* ptr(type& v) noexcept { return &v; }
+  static value_type* ptr(type& v) noexcept
+  {
+    return &v;
+  }
 };
 
 template<class T>
@@ -5280,9 +5357,15 @@ struct stored<T&>
   using value_rv_ref = T&;
   using value_rv_cref = T&;
 
-  static value_type_const* cptr(type const& v) noexcept { return &v.get(); }
+  static value_type_const* cptr(type const& v) noexcept
+  {
+    return &v.get();
+  }
 
-  static value_type* ptr(type const& v) noexcept { return &v.get(); }
+  static value_type* ptr(type const& v) noexcept
+  {
+    return &v.get();
+  }
 };
 
 class result_discriminant
@@ -5318,7 +5401,10 @@ public:
   {}
 #endif
 
-  kind_t kind() const noexcept { return kind_t(state_ & 3); }
+  kind_t kind() const noexcept
+  {
+    return kind_t(state_ & 3);
+  }
 
   error_id get_error_id() const noexcept
   {
@@ -5466,9 +5552,15 @@ class result
 #endif
   }
 
-  stored_type const* get() const noexcept { return has_value() ? &stored_ : 0; }
+  stored_type const* get() const noexcept
+  {
+    return has_value() ? &stored_ : 0;
+  }
 
-  stored_type* get() noexcept { return has_value() ? &stored_ : 0; }
+  stored_type* get() noexcept
+  {
+    return has_value() ? &stored_ : 0;
+  }
 
 protected:
   void enforce_value_state() const
@@ -5559,7 +5651,10 @@ public:
   {}
 #endif
 
-  ~result() noexcept { destroy(); }
+  ~result() noexcept
+  {
+    destroy();
+  }
 
   result& operator=(result&& x) noexcept
   {
@@ -5581,9 +5676,15 @@ public:
     return what_.kind() == result_discriminant::val;
   }
 
-  bool has_error() const noexcept { return !has_value(); }
+  bool has_error() const noexcept
+  {
+    return !has_value();
+  }
 
-  explicit operator bool() const noexcept { return has_value(); }
+  explicit operator bool() const noexcept
+  {
+    return has_value();
+  }
 
 #ifdef BOOST_LEAF_NO_CXX11_REF_QUALIFIERS
 
@@ -5685,7 +5786,10 @@ public:
 
 #endif
 
-  error_result error() noexcept { return error_result{ *this }; }
+  error_result error() noexcept
+  {
+    return error_result{ *this };
+  }
 
   template<class... Item>
   error_id load(Item&&... item) noexcept
@@ -5722,7 +5826,8 @@ public:
     : base(std::move(x))
   {}
 
-  result() noexcept {}
+  result() noexcept
+  {}
 
   result(error_id err) noexcept
     : base(err)
@@ -5747,15 +5852,28 @@ public:
   {}
 #endif
 
-  ~result() noexcept {}
+  ~result() noexcept
+  {}
 
-  void value() const { base::enforce_value_state(); }
+  void value() const
+  {
+    base::enforce_value_state();
+  }
 
-  void const* operator->() const noexcept { return base::operator->(); }
+  void const* operator->() const noexcept
+  {
+    return base::operator->();
+  }
 
-  void* operator->() noexcept { return base::operator->(); }
+  void* operator->() noexcept
+  {
+    return base::operator->();
+  }
 
-  void operator*() const noexcept { BOOST_LEAF_ASSERT(has_value()); }
+  void operator*() const noexcept
+  {
+    BOOST_LEAF_ASSERT(has_value());
+  }
 
   using base::operator=;
   using base::operator bool;
