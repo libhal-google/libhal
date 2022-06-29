@@ -61,7 +61,10 @@ public:
    *
    * @return const auto& - reference to the call history vector
    */
-  const auto& call_history() const noexcept { return m_call_history; }
+  const auto& call_history() const noexcept
+  {
+    return m_call_history;
+  }
 
   /**
    * @brief Reset call recordings and turns off error trigger

@@ -22,7 +22,7 @@ namespace embed {
  * initiator of the communication. Once an i2c controller successfully starts a
  * conversation with another device on the bus, the response should always come
  * from that device. CAN has this problem where messages can come in at any time
- * from any device on the bus, making writting a driver that accepts the can
+ * from any device on the bus, making writing a driver that accepts the can
  * interface directly impossible as there would be no way to coordinate which
  * driver gets what data when the can interface has only a singular receive
  * method.
@@ -51,7 +51,7 @@ public:
      * @brief Construct a new node t object
      *
      */
-    node_t() noexcept {}
+    node_t() noexcept = default;
 
     /**
      * @brief Node assignment operator
@@ -71,7 +71,10 @@ public:
      *
      * @param p_node the object to copy
      */
-    node_t(const node_t& p_node) noexcept { *this = p_node; }
+    node_t(const node_t& p_node) noexcept
+    {
+      *this = p_node;
+    }
 
     /**
      * @brief Get this node's can message
@@ -87,7 +90,7 @@ public:
         // First, atomically copy the access_counter to a variable.
         const auto read_message_start = m_access_counter.load();
 
-        // Copy the contents of the mesage into the can_message variable.
+        // Copy the contents of the message into the can_message variable.
         const can::message_t can_message = m_data;
 
         // Finally, atomically copy the access_counter again such that the value
@@ -206,7 +209,10 @@ public:
    *
    * @return can& reference to the can peripheral driver
    */
-  [[nodiscard]] can& bus() noexcept { return *m_can; }
+  [[nodiscard]] can& bus() noexcept
+  {
+    return *m_can;
+  }
 
   /**
    * @brief Get the Internal Map object
@@ -216,7 +222,10 @@ public:
    *
    * @return const auto& map of all of the messages in the network.
    */
-  [[nodiscard]] const auto& get_internal_map() noexcept { return m_messages; }
+  [[nodiscard]] const auto& get_internal_map() noexcept
+  {
+    return m_messages;
+  }
 
 private:
   void receive_handler(const can::message_t& p_message) noexcept

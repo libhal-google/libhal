@@ -13,7 +13,10 @@ struct motor : public embed::motor
    * @brief Reset spy information for power()
    *
    */
-  void reset() { spy_power.reset(); }
+  void reset()
+  {
+    spy_power.reset();
+  }
 
   /// Spy handler for embed::motor::write()
   spy_handler<percent> spy_power;

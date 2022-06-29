@@ -15,7 +15,10 @@ struct dac : public embed::dac
    * @brief Reset spy information for write()
    *
    */
-  void reset() { spy_write.reset(); }
+  void reset()
+  {
+    spy_write.reset();
+  }
 
   /// Spy handler for embded::dac::write()
   spy_handler<percent> spy_write;

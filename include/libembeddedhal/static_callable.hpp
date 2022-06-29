@@ -50,7 +50,10 @@ public:
    *
    * @return auto* - static function's address
    */
-  [[nodiscard]] auto* get_handler() noexcept { return &handler; }
+  [[nodiscard]] auto* get_handler() noexcept
+  {
+    return &handler;
+  }
 
 private:
   /**
