@@ -6,7 +6,6 @@
 #include <limits>
 #include <ratio>
 #include <span>
-#include <stdio.h>
 
 #include "math.hpp"
 #include "percent.hpp"
