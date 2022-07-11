@@ -63,9 +63,9 @@ public:
    */
   enum class selection_mode
   {
-    /// Restrict dividers to acheive frequencies above target frequency.
+    /// Restrict dividers to achieve frequencies above target frequency.
     higher,
-    /// Restrict dividers to acheive frequencies below target frequency.
+    /// Restrict dividers to achieve frequencies below target frequency.
     lower,
     /// Do not restrict dividers.
     closest
@@ -298,7 +298,7 @@ public:
    * @brief Calculate closest resulting frequency to target when using one of
    * the provided dividers.
    *
-   * @param p_target - The target frequency to acheive by using one of the
+   * @param p_target - The target frequency to achieve by using one of the
    * dividers
    * @param p_dividers - The set of available dividers
    * @param p_selection_mode - The selection mode for dividers. This can
