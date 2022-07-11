@@ -76,6 +76,7 @@ add_executable(${TEST_NAME}
   tests/input_pin/mock.test.cpp
   tests/temperature/mock.test.cpp
   tests/accelerometer/mock.test.cpp
+  tests/counter/mock.test.cpp
 
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp
