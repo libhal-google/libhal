@@ -302,27 +302,36 @@ public:
     std::span<std::uint32_t> p_dividers,
     selection_mode p_selection_mode)
   {
-    auto evaluate = [&](uint32_t p_candidate) -> std::pair<bool, frequency> {
+    auto is_applicable = [&](std::uint32_t p_candidate) -> bool {
       auto resulting_frequency = (*this / p_candidate);
-      auto accepted = true;
 
-      if (p_selection_mode == selection_mode::lower) {
-        accepted = (*this / p_candidate) <= p_target;
-      } else if (p_selection_mode == selection_mode::higher) {
-        accepted = (*this / p_candidate) >= p_target;
-      } else if (p_selection_mode == selection_mode::closest) {
-        accepted = true;
+      switch (p_selection_mode) {
+        case selection_mode::lower:
+          return resulting_frequency <= p_target;
+        case selection_mode::higher:
+          return resulting_frequency >= p_target;
+        case selection_mode::closest:
+          return true;
+        default:
+          return false;
       }
+    };
 
-      return std::make_pair{ accepted, resulting_frequency };
+    auto cost = [&](std::uint32_t p_candidate) -> std::uint32_t {
+      return distance((*this / p_candidate).cycles_per_second(),
+                      p_target.cycles_per_second());
     };
 
     auto best =
       std::find_if(p_dividers.begin(), p_dividers.end(), is_applicable);
     for (auto candidate = best; candidate != p_dividers.end(); candidate++) {
+<<<<<<< HEAD
       auto [accepted, candidate_frequency] = evaluate(candidate);
       if (accepted && distance(candidate_frequency, p_target) <
                         distance((*this / *best), p_target)) {
+=======
+      if (is_applicable(*candidate) && cost(*candidate) < cost(*best)) {
+>>>>>>> 8ad70fd8 (Add frequency::closest and tests)
         best = candidate;
       }
     }
@@ -330,7 +339,11 @@ public:
     if (best == p_dividers.end()) {
       return std::nullopt;
     }
+<<<<<<< HEAD
     return best;
+=======
+    return *this / *best;
+>>>>>>> 8ad70fd8 (Add frequency::closest and tests)
   }
 
   /**
