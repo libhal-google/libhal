@@ -5,6 +5,8 @@
 #include <cinttypes>
 #include <limits>
 #include <ratio>
+#include <span>
+#include <stdio.h>
 
 #include "math.hpp"
 #include "percent.hpp"
@@ -57,6 +59,19 @@ class frequency
 {
 public:
   /**
+   * @brief Divider selection mode for achieving a target frequency.
+   */
+  enum class selection_mode
+  {
+    /// Restrict dividers to acheive frequencies above target frequency.
+    higher,
+    /// Restrict dividers to acheive frequencies below target frequency.
+    lower,
+    /// Do not restrict dividers.
+    closest
+  };
+
+  /**
    * @brief Generate a duty_cycle object based on the percent value and
    * the input count value. The count value is split based on the ratio within
    * percent
@@ -87,8 +102,7 @@ public:
    */
   explicit constexpr frequency(std::uint32_t p_value) noexcept
     : m_cycles_per_second(p_value)
-  {
-  }
+  {}
 
   /**
    * @brief Get the frequency as an integer
@@ -277,6 +291,46 @@ public:
     percent p_percent) const noexcept
   {
     return calculate_duty_cycle(divide(p_target), p_percent);
+  }
+
+  /**
+   * @brief Calculate closest resulting frequency to target when using one of
+   * the provided dividers.
+   */
+  [[nodiscard]] constexpr std::optional<frequency> closest(
+    frequency p_target,
+    std::span<std::uint32_t> p_dividers,
+    selection_mode p_selection_mode)
+  {
+    auto evaluate = [&](uint32_t p_candidate) -> std::pair<bool, frequency> {
+      auto resulting_frequency = (*this / p_candidate);
+      auto accepted = true;
+
+      if (p_selection_mode == selection_mode::lower) {
+        accepted = (*this / p_candidate) <= p_target;
+      } else if (p_selection_mode == selection_mode::higher) {
+        accepted = (*this / p_candidate) >= p_target;
+      } else if (p_selection_mode == selection_mode::closest) {
+        accepted = true;
+      }
+
+      return std::make_pair{ accepted, resulting_frequency };
+    };
+
+    auto best =
+      std::find_if(p_dividers.begin(), p_dividers.end(), is_applicable);
+    for (auto candidate = best; candidate != p_dividers.end(); candidate++) {
+      auto [accepted, candidate_frequency] = evaluate(candidate);
+      if (accepted && distance(candidate_frequency, p_target) <
+                        distance((*this / *best), p_target)) {
+        best = candidate;
+      }
+    }
+
+    if (best == p_dividers.end()) {
+      return std::nullopt;
+    }
+    return best;
   }
 
   /**
