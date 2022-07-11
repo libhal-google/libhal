@@ -296,6 +296,13 @@ public:
   /**
    * @brief Calculate closest resulting frequency to target when using one of
    * the provided dividers.
+   * 
+   * @param p_target - The target frequency to acheive by using one of the dividers
+   * @param p_dividers - The set of available dividers
+   * @param p_selection_mode - The selection mode for dividers. This can restrict the dividers
+   * to result in a frequency less than or equal to the target, higher than or equal to the target
+   * or not restrict the dividers at all and get the closest value to the target.
+   * @return std::optional<frequency> - The resulting frequency or std::nullopt if no solution is found.
    */
   [[nodiscard]] constexpr std::optional<frequency> closest(
     frequency p_target,
