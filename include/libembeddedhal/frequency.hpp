@@ -325,13 +325,7 @@ public:
     auto best =
       std::find_if(p_dividers.begin(), p_dividers.end(), is_applicable);
     for (auto candidate = best; candidate != p_dividers.end(); candidate++) {
-<<<<<<< HEAD
-      auto [accepted, candidate_frequency] = evaluate(candidate);
-      if (accepted && distance(candidate_frequency, p_target) <
-                        distance((*this / *best), p_target)) {
-=======
       if (is_applicable(*candidate) && cost(*candidate) < cost(*best)) {
->>>>>>> 8ad70fd8 (Add frequency::closest and tests)
         best = candidate;
       }
     }
@@ -339,11 +333,7 @@ public:
     if (best == p_dividers.end()) {
       return std::nullopt;
     }
-<<<<<<< HEAD
-    return best;
-=======
     return *this / *best;
->>>>>>> 8ad70fd8 (Add frequency::closest and tests)
   }
 
   /**
