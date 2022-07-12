@@ -1,7 +1,6 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/adc/mock.hpp>
 #include <libembeddedhal/linear_potentiometer/interface.hpp>
-#include <units/isq/si/international/length.h>
 
 namespace embed {
 boost::ut::suite linear_pot_test = []() {
