@@ -10,9 +10,9 @@ boost::ut::suite temperature_mock_test = []() {
   "embed::mock::temperature::read()"_test = []() {
     // Setup
     embed::mock::temperature_sensor mock;
-    auto expected1 = temperature(0);
-    auto expected2 = temperature(1000);
-    auto expected3 = temperature(2000);
+    auto expected1 = 0;
+    auto expected2 = 1000;
+    auto expected3 = 2000;
     std::deque temps{ expected1, expected2, expected3 };
     std::queue queue(temps);
 

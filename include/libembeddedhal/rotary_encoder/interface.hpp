@@ -22,24 +22,21 @@ public:
    * non-zero value at initialization. This interface does not distinguish
    * between these two encoder schemes.
    *
-   * The highest resolution that is supported is 1 nanoradian where 1 bit
-   * being 1.46 nanodegrees.
-   *
    * The fastest practical motor velocity for this API is 100,000 RPM and at
    * this velocity, it would take 10.19 days to overflow the underlying int64_t
    * of data type angular_position. If the use of this api requires more
    * stored rotations than allowed, then external support will need to be added
    * to allow for an additional counter of storage.
    *
-   * @return boost::leaf::result<nanoradian> - current angular position reading
-   * or an error.
+   * @return boost::leaf::result<microrotation> - current angular position
+   * reading or an error.
    */
-  [[nodiscard]] boost::leaf::result<angular_position> read() noexcept
+  [[nodiscard]] boost::leaf::result<microrotation> read() noexcept
   {
     return driver_read();
   }
 
 private:
-  virtual boost::leaf::result<angular_position> driver_read() noexcept = 0;
+  virtual boost::leaf::result<microrotation> driver_read() noexcept = 0;
 };
 }  // namespace embed

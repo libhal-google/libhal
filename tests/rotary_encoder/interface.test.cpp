@@ -3,13 +3,13 @@
 
 namespace embed {
 namespace {
-constexpr auto expected_angular_position = nRad(1'000'000'000);
+constexpr auto expected_rotations = 1'000'000'000;
 class test_rotary_encoder : public embed::rotary_encoder
 {
 private:
-  virtual boost::leaf::result<angular_position> driver_read() noexcept
+  virtual boost::leaf::result<microrotation> driver_read() noexcept
   {
-    return expected_angular_position;
+    return expected_rotations;
   }
 };
 }  // namespace
@@ -23,6 +23,6 @@ boost::ut::suite rotary_encoder_test = []() {
   auto sample = test.read().value();
 
   // Verify
-  expect(expected_angular_position == sample);
+  expect(expected_rotations == sample);
 };
 }  // namespace embed
