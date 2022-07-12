@@ -3,11 +3,11 @@
 
 namespace embed {
 namespace {
-constexpr auto expected_temperature = nK(1'000'000'000);
+constexpr auto expected_temperature = 1'000'000'000;
 class test_temperature_sensor : public embed::temperature_sensor
 {
 private:
-  virtual boost::leaf::result<temperature> driver_read() noexcept
+  virtual boost::leaf::result<microkelvin> driver_read() noexcept
   {
     return expected_temperature;
   }

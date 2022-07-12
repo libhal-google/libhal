@@ -36,30 +36,22 @@ set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(${TEST_NAME}
-  tests/accelerometer/interface.test.cpp
   tests/can/interface.test.cpp
   tests/can/interface.test.cpp
   tests/pwm/interface.test.cpp
   tests/timer/interface.test.cpp
   tests/i2c/interface.test.cpp
-  tests/compass/interface.test.cpp
-  tests/gyroscope/interface.test.cpp
   tests/spi/interface.test.cpp
   tests/adc/interface.test.cpp
   tests/rtc/interface.test.cpp
-  tests/temperature/interface.test.cpp
   tests/pixel_display/interface.test.cpp
   tests/text_display/interface.test.cpp
   tests/dac/interface.test.cpp
-  tests/counter/interface.test.cpp
   tests/counter/interface.test.cpp
   tests/input_pin/interface.test.cpp
   tests/interrupt_pin/interface.test.cpp
   tests/output_pin/interface.test.cpp
   tests/serial/interface.test.cpp
-  tests/rotary_encoder/interface.test.cpp
-  tests/linear_encoder/interface.test.cpp
-  tests/linear_potentiometer/interface.test.cpp
 
   tests/i2c/util.test.cpp
   tests/spi/util.test.cpp
@@ -77,6 +69,13 @@ add_executable(${TEST_NAME}
   tests/temperature/mock.test.cpp
   tests/accelerometer/mock.test.cpp
   tests/counter/mock.test.cpp
+
+  tests/accelerometer/interface.test.cpp
+  tests/temperature/interface.test.cpp
+  tests/compass/interface.test.cpp
+  tests/gyroscope/interface.test.cpp
+  tests/rotary_encoder/interface.test.cpp
+  tests/linear_potentiometer/interface.test.cpp
 
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp

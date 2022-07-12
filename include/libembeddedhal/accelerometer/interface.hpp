@@ -17,6 +17,26 @@ namespace embed {
 class accelerometer
 {
 public:
+  /// Represents the percentage of acceleration in the X, Y & Z axis relative
+  /// to the full-scale
+  struct axis_t
+  {
+    /// Percentage of acceleration in the X-axis relative to the full-scale
+    percent x;
+    /// Percentage of acceleration in the Y-axis relative to the full-scale
+    percent y;
+    /// Percentage of acceleration in the Z-axis relative to the full-scale
+    percent z;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const axis_t&) const noexcept =
+      default;
+  };
+
   /**
    * @brief Representation of a sample of accelerometer data
    *
@@ -39,31 +59,9 @@ public:
     /// driver changes the full_scale between samples. This is uncommon and many
     /// applications will simply save the full scale once and drop saving it for
     /// subsequent calls.
-    embed::acceleration full_scale;
-
-    /// Represents the percentage of acceleration in the X, Y & Z axis relative
-    /// to the full-scale
-    struct axis_t
-    {
-      /// Percentage of acceleration in the X-axis relative to the full-scale
-      percent x;
-      /// Percentage of acceleration in the Y-axis relative to the full-scale
-      percent y;
-      /// Percentage of acceleration in the Z-axis relative to the full-scale
-      percent z;
-
-      /**
-       * @brief Default operators for <, <=, >, >= and ==
-       *
-       * @return auto - result of the comparison
-       */
-      [[nodiscard]] constexpr auto operator<=>(const axis_t&) const noexcept =
-        default;
-    };
-
+    embed::microgravity full_scale;
     /// Acceleration in the XYZ axis
     axis_t axis;
-
     /**
      * @brief Default operators for <, <=, >, >= and ==
      *

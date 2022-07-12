@@ -4,7 +4,7 @@
 namespace embed {
 namespace {
 constexpr auto expected_sample = embed::accelerometer::sample{
-  .full_scale = nm_per_s2(1'000'000'000),
+  .full_scale = 1'000'000'000,
   .axis = {
     .x = percent::from_ratio(1, 2),
     .y = percent::from_ratio(1, 3),
