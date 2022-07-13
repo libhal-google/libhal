@@ -110,58 +110,37 @@ boost::ut::suite frequency_user_defined_literals_test = []() {
   };
 
   "frequency::cycles_per"_test = []() {
-    expect(that % 4 == (1_MHz).cycles_per(4us).value());
-    expect(that % 1680 == (140_MHz).cycles_per(12'000ns).value());
-    expect(that % 10 == (10_Hz).cycles_per(1s).value());
-    expect(that % 720 == (48_MHz).cycles_per(15us).value());
-    expect(that % 192 == (12_MHz).cycles_per(16us).value());
-    expect(that % 960'000'000 == (8_MHz).cycles_per(2min).value());
-    expect(that % 115'200'000 == (32_kHz).cycles_per(1h).value());
-    expect(that % 3'600'000'000'000 == (1000_MHz).cycles_per(1h).value());
+    expect(that % 4000 == (1_MHz).cycles_per(4ms));
+    expect(that % 1'680'000 == (140_MHz).cycles_per(12'000us));
+    expect(that % 10 == (10_Hz).cycles_per(1s));
+    expect(that % 720'000 == (48_MHz).cycles_per(15ms));
+    expect(that % 192'000 == (12_MHz).cycles_per(16ms));
+    expect(that % 960'000'000 == (8_MHz).cycles_per(2min));
+    expect(that % 57'600'000 == (32_kHz).cycles_per(30min));
+    expect(that % 600'000'000'000 == (1000_MHz).cycles_per(10min));
 
     // Result of zero means that the time period is smaller than the frequency's
     // period length
-    expect(that % 0 == (1_MHz).cycles_per(100ns).value());
-    expect(that % 0 == (100_Hz).cycles_per(1ms).value());
-    expect(that % 0 == (100_kHz).cycles_per(2us).value());
-  };
-
-  "frequency::cycles_per -> failure"_test = []() {
-    expect(throws([]() { (4200_MHz).cycles_per(80'000'000min).value(); }));
-    expect(throws([]() { (2500_MHz).cycles_per(160'000'000min).value(); }));
+    expect(that % 0 == (100_kHz).cycles_per(1us));
+    expect(that % 0 == (100_Hz).cycles_per(1ms));
   };
 
   "frequency::duration_from_cycles"_test = []() {
-    expect(that % 1400us == (1_MHz).duration_from_cycles(1400).value());
-    expect(that % 2380929ns == (14_MHz).duration_from_cycles(33333).value());
-    expect(that % 10'250ms == (1_kHz).duration_from_cycles(10'250).value());
-    expect(that % 12'000'000ns ==
-           (1000_MHz).duration_from_cycles(12'000'000).value());
-    expect(that % 0ns == (1000_MHz).duration_from_cycles(0).value());
+    expect(that % 1'400us == (1_MHz).duration_from_cycles(1400));
+    expect(that % 2380929ns == (14_MHz).duration_from_cycles(33333));
+    expect(that % 10'250ms == (1_kHz).duration_from_cycles(10'250));
+    expect(that % 12'000us == (1000_MHz).duration_from_cycles(12'000'000));
+    expect(that % 0us == (1000_MHz).duration_from_cycles(0));
 
-    expect(that % 1ns == (1000_MHz).duration_from_cycles(1).value());
-    expect(that % 1us == (1_MHz).duration_from_cycles(1).value());
-    expect(that % 1ms == (1_kHz).duration_from_cycles(1).value());
-    expect(that % 1s == (1_Hz).duration_from_cycles(1).value());
+    expect(that % 1ns == (1000_MHz).duration_from_cycles(1));
+    expect(that % 1us == (1_MHz).duration_from_cycles(1));
+    expect(that % 1ms == (1_kHz).duration_from_cycles(1));
+    expect(that % 1s == (1_Hz).duration_from_cycles(1));
 
-    expect(that % 1s == (1000_MHz).duration_from_cycles(1'000'000'000).value());
-    expect(that % 1000s ==
-           (1000_MHz).duration_from_cycles(1'000'000'000'000).value());
-    expect(that % 2500s ==
-           (4000_MHz).duration_from_cycles(10'000'000'000'000).value());
-    expect(that % 2000s ==
-           (500_kHz).duration_from_cycles(1'000'000'000).value());
-  };
-
-  "frequency::duration_from_cycles -> failure"_test = []() {
-    // Failure Condition: overflow on multiply cycles * std::nano::den
-    expect(throws([]() -> auto {
-      return (1_Hz).duration_from_cycles(1'000'000'000'000'000'000ULL).value();
-    }));
-    // Failure Condition: result cannot fit in uint64_t
-    expect(throws([]() -> auto {
-      return (1_Hz).duration_from_cycles(4'500'000'000'000ULL).value();
-    }));
+    expect(that % 2'000'000us == (500_kHz).duration_from_cycles(1'000'000));
+    expect(that % 1s == (1000_MHz).duration_from_cycles(1'000'000'000));
+    expect(that % 200ms == (1000_MHz).duration_from_cycles(200'000'000));
+    expect(that % 25ms == (2000_MHz).duration_from_cycles(50'000'000));
   };
 
   "frequency::duty_cycle"_test = []() {

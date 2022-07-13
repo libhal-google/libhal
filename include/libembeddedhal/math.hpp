@@ -5,10 +5,6 @@
 
 #include "error.hpp"
 
-#define WIDE_INTEGER_DISABLE_IOSTREAM
-#include "internal/third_party/uintwide_t.h"
-#undef WIDE_INTEGER_DISABLE_IOSTREAM
-
 namespace embed {
 /**
  * @brief Perform multiply operation and return an error code

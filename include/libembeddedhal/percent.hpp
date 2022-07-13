@@ -108,10 +108,6 @@ public:
   /// The overflow type must be 2x the size of int_t in order to perform
   /// multiplication against two int_t value and not lose any data.
   using overflow_t = std::int64_t;
-  /// Overflow type for int64_t must be 2x the size of int64_t in order to
-  /// perform multiplication against two int64_t value and not lose any data.
-  using int128_t = math::wide_integer::int128_t;
-
   static_assert(sizeof(overflow_t) >= sizeof(int_t),
                 "Overflow integer type must be equal to or greater ");
   /**
@@ -391,31 +387,12 @@ public:
   [[nodiscard]] friend constexpr auto operator*(T p_value,
                                                 percent p_scale) noexcept
   {
+    static_assert(sizeof(T) <= sizeof(std::int32_t),
+                  "T must not exceed 32 bits in width.");
     overflow_t arith_container = p_value;
     arith_container = arith_container * p_scale.raw_value();
     arith_container = rounding_division(arith_container, raw_max());
     return static_cast<T>(arith_container);
-  }
-
-  /**
-   * @brief Scale an integral value by a percent value.
-   *
-   * Returns a scaled down version of the input value. For example if the input
-   * is 100 and the scale value represents a percentage of 50%, then performing
-   * the following operation: `100 * percent_50_percent` is equivalent to `100 *
-   * 0.5f`.
-   *
-   * @param p_value - value to be scaled
-   * @param p_scale - value scalar
-   * @return auto - the scaled down result of p_value * p_scale.
-   */
-  [[nodiscard]] friend constexpr auto operator*(std::int64_t p_value,
-                                                percent p_scale) noexcept
-  {
-    int128_t arith_container = p_value;
-    arith_container = arith_container * p_scale.raw_value();
-    arith_container = arith_container / int128_t{ raw_max() };
-    return static_cast<decltype(p_value)>(arith_container);
   }
 
   /**
