@@ -7,8 +7,7 @@ namespace embed {
 boost::ut::suite counter_utility_test = []() {
   using namespace boost::ut;
 
-  static constexpr frequency expected_frequency =
-    embed::frequency(1'000'000'000);
+  static constexpr frequency expected_frequency = embed::frequency(1'000'000);
 
   class dummy_counter : public embed::counter
   {
@@ -32,7 +31,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::create_timeout(embed::counter, 0ns)"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(0);
+    static constexpr embed::time_duration expected(0);
     dummy_counter test_counter;
     bool success = false;
 
@@ -60,7 +59,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::create_timeout(embed::counter, 50ns)"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(50);
+    static constexpr embed::time_duration expected(50);
     dummy_counter test_counter;
     bool success = false;
 
@@ -91,7 +90,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::create_timeout(embed::counter, 1337ns)"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(1337);
+    static constexpr embed::time_duration expected(1337);
     dummy_counter test_counter;
     bool success = false;
 
@@ -122,7 +121,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::create_timeout(embed::counter, -5ns) returns error"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(-5);
+    static constexpr embed::time_duration expected(-5);
     dummy_counter test_counter;
 
     // Exercise
@@ -139,7 +138,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::delay(embed::counter, 0ns)"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(0);
+    static constexpr embed::time_duration expected(0);
     dummy_counter test_counter;
 
     // Exercise
@@ -157,7 +156,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::delay(embed::counter, 50ns)"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(50);
+    static constexpr embed::time_duration expected(50);
     dummy_counter test_counter;
 
     // Exercise
@@ -172,7 +171,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::delay(embed::counter, 1337ns)"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(1337);
+    static constexpr embed::time_duration expected(1'337);
     dummy_counter test_counter;
 
     // Exercise
@@ -187,7 +186,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "embed::delay(embed::counter, -5ns) returns error"_test = []() {
     // Setup
-    static constexpr std::chrono::nanoseconds expected(-5);
+    static constexpr embed::time_duration expected(-5);
     dummy_counter test_counter;
 
     // Exercise
