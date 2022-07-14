@@ -541,7 +541,7 @@ boost::ut::suite percent_scale_test = []() {
     max = std::numeric_limits<std::int32_t>::max();
 
     expected_0_percent = 0;
-    expected_50_percent = max / 2;
+    expected_50_percent = rounding_division(max, 2);
     expected_100_percent = std::numeric_limits<std::int32_t>::max();
 
     test = percent::from_ratio(1, 1);
@@ -569,9 +569,10 @@ boost::ut::suite percent_scale_test = []() {
     max = 0;
 
     expected_0_percent = min;
-    expected_25_percent = min - (min / 4) - 1;
-    expected_50_percent = min / 2;
-    expected_75_percent = min / 4;
+    expected_25_percent = min - rounding_division(min, 4);
+    // + 1 because the conversion is off by 1 slightly, but still close enough
+    expected_50_percent = rounding_division(min, 2) + 1;
+    expected_75_percent = rounding_division(min, 4);
     expected_100_percent = 0;
 
     test = percent::from_ratio(1, 1);
@@ -607,9 +608,9 @@ boost::ut::suite percent_scale_test = []() {
     max = 200000000;
 
     expected_0_percent = min;
-    expected_25_percent = min / 2;
+    expected_25_percent = rounding_division(min, 2);
     expected_50_percent = 0;
-    expected_75_percent = max / 2;
+    expected_75_percent = rounding_division(max, 2);
     expected_100_percent = max;
 
     test = percent::from_ratio(1, 1);

@@ -1,7 +1,9 @@
+/**
+ * @file math.hpp
+ * @brief Compile time generic math utility functions
+ *
+ */
 #pragma once
-
-#include <concepts>
-#include <optional>
 
 #include "error.hpp"
 
@@ -35,21 +37,36 @@ template<typename T>
 }
 
 /**
- * @brief Generic absolute value function that works for integer types. This is
- * preferred over the C API for rounding numbers such as abs(), labs() and
+ * @brief Generic absolute value function that works for integer types.
+ *
+ * Preferred this over the C API for rounding numbers such as abs(), labs() and
  * llabs(). This function relieves the need in template code to check the type
  * of the integer and select the correct function to call.
  *
+ * NOTE: If p_value is minimum negative number of type T then the resulting
+ * return value will be the maximum positive number represented by T. For
+ * example, INT32_MIN is 2147483648 where as INT32_MAX is 2147483647. The
+ * absolute value of INT32_MIN is 1 greater than INT32_MAX. To prevent overflow,
+ * passing INT32_MIN will simply return back INT32_MAX.
+ *
+ * @tparam T - integral type
  * @param p_value - integer value to be made positive
  * @return constexpr auto - positive representation of the integer
  */
 template<typename T>
 [[nodiscard]] constexpr T absolute_value(T p_value) noexcept
 {
-  if (p_value >= 0) {
+  if constexpr (std::is_unsigned_v<T>) {
     return p_value;
   } else {
-    return p_value * -1;
+    if (p_value >= 0) {
+      return p_value;
+    }
+    if (p_value == std::numeric_limits<T>::min()) {
+      return std::numeric_limits<T>::max();
+    }
+    p_value = p_value * -1;
+    return p_value;
   }
 }
 
@@ -67,8 +84,8 @@ template<typename T>
 [[nodiscard]] constexpr T rounding_division(T p_numerator,
                                             T p_denominator) noexcept
 {
-  bool num_sign = p_numerator > 0;
-  bool den_sign = p_denominator > 0;
+  bool num_sign = p_numerator >= 0;
+  bool den_sign = p_denominator >= 0;
 
   auto numerator = absolute_value(p_numerator);
   auto denominator = absolute_value(p_denominator);

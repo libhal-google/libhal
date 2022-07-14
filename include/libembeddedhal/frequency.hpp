@@ -45,8 +45,23 @@ struct duty_cycle
    */
   [[nodiscard]] explicit constexpr operator percent() const noexcept
   {
-    std::uint64_t total_cycles = high + low;
-    return percent::from_ratio(static_cast<std::uint64_t>(high), total_cycles);
+    std::uint32_t total_cycles = 0;
+    std::uint32_t scaled_high = 0;
+    // Convert high & low to int64_t to prevent overflow
+    std::uint64_t overflow_total = std::uint64_t{ high } + std::uint64_t{ low };
+
+    // If overflow_total is greater than what can fit within an uint32_t, then
+    // we can shift the values over by 1 to get them to fit. This effectively
+    // divides the two values in half, but the ratio will stay the same.
+    if (overflow_total > std::numeric_limits<decltype(high)>::max()) {
+      total_cycles = static_cast<std::uint32_t>(overflow_total >> 1);
+      scaled_high = high >> 1;
+    } else {
+      total_cycles = static_cast<std::uint32_t>(overflow_total);
+      scaled_high = high;
+    }
+
+    return percent::from_ratio(scaled_high, total_cycles);
   }
 };
 
