@@ -15,7 +15,7 @@ constexpr auto expected_sample = embed::accelerometer::sample{
 class test_accelerometer : public embed::accelerometer
 {
 private:
-  virtual boost::leaf::result<sample> driver_read() noexcept
+  boost::leaf::result<sample> driver_read() noexcept override
   {
     return expected_sample;
   }
