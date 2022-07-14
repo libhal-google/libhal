@@ -7,7 +7,7 @@ constexpr auto expected_temperature = 1'000'000'000;
 class test_temperature_sensor : public embed::temperature_sensor
 {
 private:
-  virtual boost::leaf::result<microkelvin> driver_read() noexcept
+  boost::leaf::result<microkelvin> driver_read() noexcept override
   {
     return expected_temperature;
   }

@@ -7,7 +7,7 @@ constexpr auto expected_rotations = 1'000'000'000;
 class test_rotary_encoder : public embed::rotary_encoder
 {
 private:
-  virtual boost::leaf::result<microrotation> driver_read() noexcept
+  boost::leaf::result<microrotation> driver_read() noexcept override
   {
     return expected_rotations;
   }

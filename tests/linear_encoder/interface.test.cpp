@@ -7,7 +7,7 @@ constexpr auto expected_linear_position = length(1000000);
 class test_linear_encoder : public embed::linear_encoder
 {
 private:
-  virtual boost::leaf::result<length> driver_read() noexcept
+  boost::leaf::result<length> driver_read() noexcept override
   {
     return expected_linear_position;
   }
