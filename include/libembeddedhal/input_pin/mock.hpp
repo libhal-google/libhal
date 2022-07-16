@@ -8,6 +8,10 @@
 
 namespace embed::mock {
 /**
+ * @addtogroup input_pin Input Pin
+ * @{
+ */
+/**
  * @brief mock input_pin implementation for use in unit tests and simulations.
  *
  */
@@ -56,4 +60,5 @@ private:
 
   std::queue<bool> m_levels{};
 };
+/** @} */
 }  // namespace embed::mock

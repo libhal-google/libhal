@@ -5,6 +5,10 @@
 
 namespace embed {
 /**
+ * @addtogroup counter
+ * @{
+ */
+/**
  * @brief Timeout object based on embed::counter
  *
  * Prefer to use `embed::create_timeout(embed::counter&)` instead of
@@ -81,4 +85,5 @@ private:
   std::int64_t m_cycles_until_timeout = 0;
   std::uint32_t m_previous_count = 0;
 };
+/** @} */
 }  // namespace embed

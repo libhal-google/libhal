@@ -1,9 +1,13 @@
+#pragma once
 #include "interface.hpp"
 
 namespace embed::mock {
 /**
+ * @addtogroup adc
+ * @{
+ */
+/**
  * @brief Mock adc implementation for use in unit tests and simulations.
- *
  */
 struct adc : public embed::adc
 {
@@ -32,4 +36,5 @@ private:
 
   embed::percent m_adc_value = embed::percent::from_ratio(0, 1);
 };
+/** @} */
 }  // namespace embed::mock

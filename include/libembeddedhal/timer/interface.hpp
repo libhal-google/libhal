@@ -7,6 +7,11 @@
 
 namespace embed {
 /**
+ * @addtogroup timer
+ * Available timer APIs
+ * @{
+ */
+/**
  * @brief Timer hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that have timer like
@@ -23,7 +28,7 @@ public:
    *
    * Usually this occurs if the time delay is too small or too big based on what
    * is possible with the driving frequency of the timer and along with any
-   * prescalars before the counting register.
+   * pre-scalars before the counting register.
    *
    * <b>How to handle these errors:</b>
    *
@@ -101,4 +106,5 @@ private:
     std::function<void(void)> p_callback,
     std::chrono::nanoseconds p_delay) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

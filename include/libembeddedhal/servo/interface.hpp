@@ -5,6 +5,11 @@
 
 namespace embed {
 /**
+ * @addtogroup servo
+ * Available servo APIs
+ * @{
+ */
+/**
  * @brief Hardware abstraction for closed loop positional rotary and linear
  * actuators.
  *
@@ -92,4 +97,5 @@ private:
   virtual boost::leaf::result<void> driver_position(
     percent p_position) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

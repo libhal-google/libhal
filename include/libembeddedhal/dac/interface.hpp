@@ -7,6 +7,11 @@
 
 namespace embed {
 /**
+ * @addtogroup dac
+ * Available Digital to Analog Converter (DAC) APIs
+ * @{
+ */
+/**
  * @brief Digital to Analog Converter (DAC) hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that can create arbitrary
@@ -35,4 +40,5 @@ public:
 private:
   virtual boost::leaf::result<void> driver_write(percent p_value) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

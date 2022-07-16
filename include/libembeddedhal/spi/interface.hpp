@@ -9,6 +9,11 @@
 
 namespace embed {
 /**
+ * @addtogroup spi
+ * Available spi APIs
+ * @{
+ */
+/**
  * @brief Serial peripheral interface (SPI) communication protocol hardware
  * abstract interface
  *
@@ -86,4 +91,5 @@ private:
     std::span<std::byte> p_data_in,
     std::byte p_filler) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

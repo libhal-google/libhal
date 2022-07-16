@@ -1,7 +1,3 @@
-/**
- * @file util.hpp
- * @brief Provide utility functions for the serial interface
- */
 #pragma once
 
 #include <optional>
@@ -12,7 +8,10 @@
 #include "interface.hpp"
 
 namespace embed {
-
+/**
+ * @addtogroup serial
+ * @{
+ */
 /**
  * @brief Delay execution until the serial buffer has reached a specific number
  * of buffered bytes.
@@ -136,4 +135,5 @@ write_then_read(serial& p_serial,
   BOOST_LEAF_CHECK(write_then_read(p_serial, p_data_out, buffer));
   return buffer;
 }
+/** @} */
 }  // namespace embed

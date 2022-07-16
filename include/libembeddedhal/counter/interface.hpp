@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <chrono>
@@ -8,10 +9,18 @@
 
 namespace embed {
 /**
- * @brief Counter hardware abstraction interface. Use this interface for devices
- * and peripherals that have counting capabilities. Such devices can count up or
- * down. Useful for keeping time. Expect counters to overflow when they reach
- * the end of counting register's limits.
+ * @addtogroup counter
+ * Available hardware counter APIs
+ * @{
+ *
+ */
+/**
+ * @brief Hardware Counter abstraction interface
+ *
+ * Use this interface for devices and peripherals that have counting
+ * capabilities. Such devices can count up or down. Useful for keeping time.
+ * Expect counters to overflow when they reach the end of counting register's
+ * limits.
  *
  */
 class counter
@@ -45,4 +54,5 @@ public:
 private:
   virtual boost::leaf::result<uptime_t> driver_uptime() noexcept = 0;
 };
+/** @} */
 }  // namespace embed

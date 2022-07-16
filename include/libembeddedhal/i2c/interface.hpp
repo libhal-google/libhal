@@ -1,3 +1,6 @@
+/**
+ * @file interface.hpp
+ */
 #pragma once
 
 #include <cstddef>
@@ -10,6 +13,11 @@
 #include "../percent.hpp"
 
 namespace embed {
+/**
+ * @addtogroup i2c
+ * Available Inter-integrated Circuit (I2C) APIs
+ * @{
+ */
 /**
  * @brief Inter-integrated Circuit (I2C) or Two Wire Interface (TWI)
  * communication protocol hardware abstract interface.
@@ -148,4 +156,5 @@ private:
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

@@ -7,6 +7,11 @@
 
 namespace embed {
 /**
+ * @addtogroup adc
+ * Available Analog to Digital Converter (ADC) APIs
+ * @{
+ */
+/**
  * @brief Analog to Digital Converter (ADC) hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that can convert analog
@@ -41,4 +46,5 @@ public:
 private:
   virtual boost::leaf::result<percent> driver_read() noexcept = 0;
 };
+/** @} */
 }  // namespace embed

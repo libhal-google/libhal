@@ -1,7 +1,13 @@
+#pragma once
+
 #include "../testing.hpp"
 #include "interface.hpp"
 
 namespace embed::mock {
+/**
+ * @addtogroup pwm
+ * @{
+ */
 /**
  * @brief Mock pwm implementation for use in unit tests and simulations with spy
  * functions for configure() and duty_cycle().
@@ -36,4 +42,5 @@ private:
     return spy_duty_cycle.record(p_duty_cycle);
   };
 };
+/** @} */
 }  // namespace embed::mock
