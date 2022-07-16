@@ -10,7 +10,15 @@
 #include "../frequency.hpp"
 
 namespace embed {
-/// Controller Area Network (CAN bus) hardware abstraction interface.
+/**
+ * @addtogroup can
+ * Available Controller Area Network (CAN bus) APIs
+ * @{
+ */
+/**
+ * @brief Controller Area Network (CAN bus) hardware abstraction interface.
+ *
+ */
 class can
 {
 public:
@@ -89,4 +97,5 @@ private:
     std::function<void(const message_t& p_message)>
       p_receive_handler) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

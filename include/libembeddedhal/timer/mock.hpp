@@ -5,6 +5,10 @@
 
 namespace embed::mock {
 /**
+ * @addtogroup timer
+ * @{
+ */
+/**
  * @brief Mock timer implementation for use in unit tests and simulations with
  * spy functions for schedule(), clear(), and is_running()
  *
@@ -52,4 +56,5 @@ private:
   }
   bool m_is_running = false;
 };
+/** @} */
 }  // namespace embed::mock

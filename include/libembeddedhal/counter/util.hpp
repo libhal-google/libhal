@@ -1,7 +1,3 @@
-/**
- * @file util.hpp
- * @brief Provide utilities for the counter interface
- */
 #pragma once
 
 #include <chrono>
@@ -13,6 +9,10 @@
 #include "timeout.hpp"
 
 namespace embed {
+/**
+ * @addtogroup counter
+ * @{
+ */
 /**
  * @brief Create a timeout object based on embed::counter.
  *
@@ -55,4 +55,5 @@ inline boost::leaf::result<embed::counter_timeout> create_timeout(
   auto timeout_object = BOOST_LEAF_CHECK(create_timeout(p_counter, p_duration));
   return delay(timeout_object);
 }
+/** @} */
 }  // namespace embed

@@ -9,6 +9,10 @@
 
 namespace embed {
 /**
+ * @addtogroup can
+ * @{
+ */
+/**
  * @brief Manage, store, and organize messages received on the can bus.
  *
  * Drivers use this can bus peripheral manager rather than can directly. This is
@@ -251,4 +255,5 @@ private:
   can* m_can{};
   std::pmr::unordered_map<uint32_t, node_t> m_messages{};
 };
+/** @} */
 }  // namespace embed

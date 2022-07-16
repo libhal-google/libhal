@@ -6,6 +6,10 @@
 
 namespace embed::mock {
 /**
+ * @addtogroup counter
+ * @{
+ */
+/**
  * @brief mock counter implementation for use in unit tests and
  * simulations.
  *
@@ -36,4 +40,5 @@ private:
 
   std::queue<uptime_t> m_uptimes{};
 };
+/** @} */
 }  // namespace embed::mock

@@ -4,6 +4,10 @@
 
 namespace embed {
 /**
+ * @addtogroup counter
+ * @{
+ */
+/**
  * @brief uptime counter takes a hardware counter and calculates the uptime in
  * nanoseconds.
  *
@@ -53,4 +57,5 @@ private:
   uint32_t m_previous_count{};
   std::chrono::nanoseconds m_last_uptime{};
 };
+/** @} */
 }  // namespace embed

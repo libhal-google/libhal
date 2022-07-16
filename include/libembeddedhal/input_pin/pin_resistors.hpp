@@ -2,6 +2,10 @@
 
 namespace embed {
 /**
+ * @addtogroup input_pin Input Pin
+ * @{
+ */
+/**
  * @brief Set of possible pin mode resistor settings.
  *
  * See each enumeration to get more details about when and how these should be
@@ -21,4 +25,5 @@ enum class pin_resistor
   /// also called VDD on some systems.
   pull_up,
 };
+/** @} */
 }  // namespace embed

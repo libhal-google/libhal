@@ -1,3 +1,7 @@
+/**
+ * @addtogroup dac
+ * @{
+ */
 #pragma once
 
 #include "../testing.hpp"
@@ -30,3 +34,5 @@ private:
   };
 };
 }  // namespace embed::mock
+
+/** @} */

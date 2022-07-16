@@ -1,7 +1,3 @@
-/**
- * @file util.hpp
- * @brief Provide utility functions for the spi interface
- */
 #pragma once
 
 #include <span>
@@ -10,6 +6,10 @@
 #include "interface.hpp"
 
 namespace embed {
+/**
+ * @addtogroup spi
+ * @{
+ */
 /**
  * @brief Write data to the SPI bus and ignore data sent from peripherals on the
  * bus.
@@ -117,4 +117,5 @@ write_then_read(spi& p_spi,
   BOOST_LEAF_CHECK(write(p_spi, p_data_out));
   return read<BytesToRead>(p_spi, p_filler);
 }
+/** @} */
 }  // namespace embed

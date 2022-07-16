@@ -7,7 +7,15 @@
 #include "../percent.hpp"
 
 namespace embed {
-/// Pulse Width Modulation (PWM) channel hardware abstraction.
+/**
+ * @addtogroup pwm
+ * Available pwm APIs
+ * @{
+ */
+/**
+ * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
+ *
+ */
 class pwm
 {
 public:
@@ -60,4 +68,5 @@ private:
   virtual boost::leaf::result<void> driver_duty_cycle(
     percent p_duty_cycle) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

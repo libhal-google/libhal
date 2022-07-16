@@ -9,6 +9,11 @@
 
 namespace embed {
 /**
+ * @addtogroup serial
+ * Available serial APIs
+ * @{
+ */
+/**
  * @brief Serial communication protocol hardware abstract interface.
  *
  * Use this interface for hardware that implements a serial protocol like UART,
@@ -222,4 +227,5 @@ private:
     std::span<std::byte> p_data) noexcept = 0;
   virtual boost::leaf::result<void> driver_flush() noexcept = 0;
 };
+/** @} */
 }  // namespace embed

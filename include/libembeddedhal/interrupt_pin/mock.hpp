@@ -8,6 +8,10 @@
 
 namespace embed::mock {
 /**
+ * @addtogroup interrupt_pin Interrupt Pin
+ * @{
+ */
+/**
  * @brief mock interrupt_pin implementation for use in unit tests and
  * simulations.
  *
@@ -71,4 +75,5 @@ private:
 
   std::queue<bool> m_levels{};
 };
+/** @} */
 }  // namespace embed::mock
