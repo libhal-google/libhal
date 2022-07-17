@@ -26,19 +26,25 @@
 
 # 📥 Install
 
-Install from conan:
+## Install using conan
 
 ```bash
 conan install libembeddedhal
 ```
 
-Installing from source locally:
+## Install from source
 
 ```bash
 git clone https://github.com/libembeddedhal/libembeddedhal.git
 cd libembeddedhal
 conan create .
 ```
+
+## Using libembeddedhal without conan
+
+libembeddedhal is a header only library so simply clone the repo into your
+project and add a `-I/path/to/libembeddedhal/include` in your GCC or Clang
+command that will bring all of the libraries into your project.
 
 # ℹ️ Overview
 
@@ -924,7 +930,7 @@ Some points to consider when seeing a library that uses floats:
   exceptions are redundant.
 - Exceptions require dynamic memory allocate.
 
-# 🔨 Development Guides
+# 📜 Library Standards & Guidlines
 
 All guides follow the [C++ Core
 Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
@@ -938,17 +944,17 @@ libembeddedhal interfaces, peripheral drivers, device drivers and soft drivers.
 
 The following files are a guide to how to write their respective driver:
 
-- [`example/interface.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/interface.hpp)
-- [`example/peripheral_driver.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/peripheral_driver.hpp)
-- [`example/device_driver.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/device_driver.hpp)
-- [`example/soft_driver.hpp`](https://github.com/libembeddedhal/libembeddedhal/blob/main/include/libembeddedhal/example/soft_driver.hpp)
+- Peripheral Drivers:
+  - TBD: [`lpc40xx:adc.hpp`]()
+- Device Drivers:
+  - TBD: [`mma8452q:accelerometer.hpp`]()
+- Soft Drivers;
+  - TBD: [`libembeddedhal:rc_servo.hpp`]()
 
-## 📜 Coding Policies
+Each of these files will include comments that document every portion of the
+code and explain why each line or block of code is present in the code.
 
-Listed below are the policies that every libembeddedhal implementation must
-follow to ensure consistent behavior, performance and size cost:
-
-### Style
+## 🎨 Style
 
 - Code shall follow libembeddedhal's `.clang-format` file, which uses the
   Mozilla C++ style format as a base with some adjustments.
@@ -960,50 +966,214 @@ follow to ensure consistent behavior, performance and size cost:
   - prefix `p_` for function parameters.
   - prefix `m_` for private/protected class member.
 - Refrain from variable names with abbreviations where it can be helped. `adc`
-  `pwm` and `i2c` are extremely common so it is fine to leave them
+  `pwm` and `i2c` are extremely common so it is fine to leave them as
   abbreviations. Most people know the abbreviations more than the words that
-  make them up. But words `cnt` should be `count` and `cdl` and `cdh` should be
-  written out as `clock_divider_low` and `clock_divider_high`. Registers do get
-  a pass if they directly reflect the names in the data sheet which will make
-  looking them up easier in the future.
+  make them up. But words like `cnt` should be `count` and `cdl` and `cdh`
+  should be written out as `clock_divider_low` and `clock_divider_high`.
+  Registers do get a pass if they directly reflect the names in the data sheet
+  which will make looking them up easier in the future.
 - Use `#pragma once` as the include guard for headers.
 - Every file must end with a newline character.
 - Every line in a file must stay within a 80 character limit.
-  - Exceptions to this rule are allowed. Use // NOLINT in these cases.
+  - Exceptions to this rule are allowed. Use `// NOLINT` in these cases.
 - Radix for bit manipulation:
   - Only use binary (`0b1000'0011`) or hex (`0x0FF0`) for bit manipulation.
-  - Never use decimal or octal as this is harder to reasonable about for most
+  - Never use decimal or octal as this is harder to reason about for most
     programmers.
 - Every public API must be documented with the doxygen style comments (CI will
   ensure that every public API is documented fully).
 - Include the C++ header version of C headers such as `<cstdint>` vs
   `<stdint.h>`.
 
-### Coding Restrictions
+## 🚫 Coding Restrictions
 
-- Use the `libxbitset` library to perform bitwise operations operations.
-- Only use macros if something cannot be done without using them. Usually macros
-  can be replaced with constexpr or const variables or function calls. A case
-  where macros are the only way is for BOOST_LEAF_CHECK() since there is no way
-  to automatically generate the boiler plate for returning if a function returns
-  and error in C++ and thus a macro is needed here to prevent possible mistakes
-  in writing out the boilerplate.
-- Only use preprocessor `#if` and the like if it is impossible to use
-  `if constexpr` to achieve the same behavior.
-- Never include `<iostream>` as it incurs an automatic 150kB space penalty even
-  if the application never uses any part of `<iostream>`.
-- Drivers should refrain from memory allocate as much as possible that includes
-  using STL libraries that allocate such as `std::string` or `std::vector`.
-- Logging within a library is prohibited for two reasons:
-  - String formatting libraries may not be the same across libraries and an
-    application including both will have to pay the space cost for two separate
-    formatting libraries.
-  - libembeddedhal libraries do not have the right to output to stdout/stderr,
-    that is the role and responsibility of the application.
-- Interfaces must follow the public API, private virtual method shown
-  [here](http://www.gotw.ca/publications/mill18.htm).
-- Inclusion of a C header file full of register map structures is not allowed as
-  it would pollute the global namespace and tends to result in name collisions.
+### Refrain from performing manual bit manipulation
+
+Use the `libxbitset` library to perform bitwise operations operations.
+
+### Refrain from using MACROS
+
+Only use macros if something cannot be done without using them. Usually macros
+can be replaced with constexpr or const variables or function calls. A case
+where macros are the only way is for BOOST_LEAF_CHECK() since there is no way
+to automatically generate the boiler plate for returning if a function returns
+and error in C++ and thus a macro is needed here to prevent possible mistakes
+in writing out the boilerplate.
+
+Only use preprocessor `#if` and the like if it is impossible to use
+`if constexpr` to achieve the same behavior.
+
+### Never include <iostream>
+
+Never include `<iostream>`.
+
+#### Rationale
+
+Applications incurs an automatic 150kB space penalty for including this header
+even if the application never uses any part of `<iostream>`.
+
+### Refrain from memory allocations
+
+Drivers should refrain from memory allocate as much as possible that includes
+using STL libraries that allocate such as `std::string` or `std::vector`.
+
+#### Rationale
+
+TBD
+
+### Drivers should not log to STDOUT or STDIN
+
+Peripheral driver must NOT log to stdout or stderr. This means no calls to
+
+- `std::printf`
+- `std::cout`
+- `std::print` (C++26 using std::format)
+
+#### Rationale
+
+Consider using the file I/O libraries in C, C++, python or some other
+language. Would you, as a developer, ever imagine that opening, reading,
+writing, or closing a file would to your console? Especially if there did not
+exist a way to turn off logging. Most users would be very upset as this would
+not seem like the role of the file I/O library to spam my console. This gets
+even worse if a particular application has thousands of files and each operation
+is logging.
+
+The role of logging should be held by the application developer, not their
+drivers or helper functions, unless the purpose of the helper functions or
+driver is to write to console.
+
+Instrumenting a driver with log statements IS allowable provided that they are
+controllable via a tweak configuration and that they are turned off by default
+AND turning off this configuration eliminates all logging code from the driver.
+
+Example of logging where logging can be disabled:
+
+```C++
+void my_driver_log([[maybe_unused]] std::string_view p_str,
+                   [[maybe_unused]] uint32_t argument)
+{
+  if constexpr (embed::lpc40xx::config::enable_logging)
+  {
+    std::printf("%s : %" PRIu32, p_str.data(), argument);
+  }
+}
+
+// ...
+
+my_driver_log("Control Register 1 = ", reg->control1);
+```
+
+Notice how, if `enable_logging` is false, the function body is empty and thus,
+the compiler will find it easy to eliminate the function itself. The parameters,
+specifically the `std::string_view` will be garbage collected at compile time
+since its use is a no-op.
+
+### Drivers should not purposefully halt the application
+
+Drivers are not entitled to halt the execution of the application and thus any
+code block that would effectively end or halt the execution of the program
+without giving control back to the application are prohibited.
+
+As an example drivers should never call:
+  - `std::abort()`
+  - `std::exit()`
+  - `std::terminate()`
+  - any of their variants
+
+This includes placing an **infinite loop block** in a driver.
+
+#### Rationale
+
+An application should have control over how their application ends. A
+driver should report severe errors to the application and let the application
+decide the next steps. If a particular operation cannot be executed as intended,
+then `boost::leaf::new_error()` should be called.
+
+Constructors would be the only valid place to put an exit statement, because
+they cannot return errors only themselves.
+
+The solution to this is to use a factory function like so:
+
+```C++
+class device_driver {
+  public:
+    boost::leaf::result<device_driver> create(/* ... */) {
+      // Perform operations that may fail here
+      return device_driver(/* ... */);
+    }
+
+  private:
+    device_driver(/* ... */) {
+      // Constructors should never fail and thus any work done here must not
+      // fail.
+    }
+};
+```
+
+For peripherals:
+
+```C++
+class peripheral_driver {
+  public:
+    // Since peripherals are constrained and have a finite set of values
+    // This also ensures that the driver is only constructed once and afterwards
+    // simply returns back a reference to that object.
+    template<size_t PortNumber>
+    // NOTE: Returns a reference not an object.
+    //       Objects are owned by the create function
+    boost::leaf::result<peripheral_driver&> create(/* ... */) {
+      // Perform operations that may fail here
+      static peripheral_driver driver(/* ... */);
+      return driver;
+    }
+
+  private:
+    peripheral_driver(/* ... */) {
+      // ...
+    }
+};
+```
+
+### Drivers should not pollute the global namespace
+
+All drivers must be within the `embed` namespace (RECOMMENDED) or within their
+own bespoke namespace.
+
+Inclusion of a C header file full of register map structures is not allowed as
+it pollutes the global namespace and tends to result in name collisions.
+
+Care should be taken to ensure that the `embed` namespace is also as clean as
+possible by placing structures, enums, const data, and any other symbols into
+the driver's class's namespace like so:
+
+```C++
+namespace embed::target
+{
+class target {
+  struct register_map {
+    std::uint32_t control1;
+    std::uint32_t control2;
+    std::uint32_t data;
+    std::uint32_t status;
+    // ..
+  };
+
+  struct control1_register {
+    static constexpr auto channel_enable = xstd::bitrange::from<0, 7>();
+    static constexpr auto peripheral_enable = xstd::bitrange::from<8>();
+    // ...
+  };
+
+  // ...
+};
+}
+```
+
+### Interface should follow the public private API
+
+See [private virtual method](http://www.gotw.ca/publications/mill18.htm)
+for more details. Rationale can be found within that link as well.
 
 # 📚 Libraries
 
