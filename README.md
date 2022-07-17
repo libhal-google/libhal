@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="150" src="docs/chip.svg">
+  <img height="150" src="docs/logo.svg">
 </p>
 
 # libembeddedhal
