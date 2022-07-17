@@ -9,6 +9,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief Perform multiply operation and return an error code
  * `std::errc::result_out_of_range` if the two values when multiplied would
  * overflow the containing value.
@@ -108,4 +113,5 @@ template<typename T>
 
   return quotient;
 }
+/** @} */
 }  // namespace embed

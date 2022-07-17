@@ -15,6 +15,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief Upscale an integer value of arbitrary bit resolution to a new fixed
  * with integer value.
  *
@@ -537,4 +542,5 @@ private:
 
   int_t m_value = 0;
 };
+/** @} */
 }  // namespace embed
