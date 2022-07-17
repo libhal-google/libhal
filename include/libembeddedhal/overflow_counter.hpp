@@ -4,6 +4,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief Extend a counter's count from an arbitrary bit width to 64-bits by
  * detecting overflows in the count. Each detected overflow is added to an
  * overflow counter which is combined with the current count in order create a
@@ -71,4 +76,5 @@ private:
   uint32_t m_previous_count = 0;
   uint32_t m_overflow_count = 0;
 };
+/** @} */
 }  // namespace embed

@@ -13,6 +13,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief Structure containing cycle count for the high and low side of a signal
  * duty cycle.
  *
@@ -381,4 +386,5 @@ namespace literals {
   return frequency{ static_cast<std::uint32_t>(value) };
 }
 }  // namespace literals
+/** @} */
 }  // namespace embed

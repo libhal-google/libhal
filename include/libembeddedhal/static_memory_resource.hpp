@@ -5,6 +5,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief The static_memory_resource is the polymorphic memory resource
  * allocator that allows libembeddedhal's libraries to use a C++ standard
  * container such as std::pmr::vector, std::pmr::string,
@@ -118,4 +123,5 @@ private:
   std::byte* m_unallocated_memory{};
   std::pmr::monotonic_buffer_resource m_resource{};
 };
+/** @} */
 }  // namespace embed

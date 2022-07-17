@@ -11,6 +11,10 @@
 #include "error.hpp"
 
 namespace embed {
+/**
+ * @addtogroup utility
+ * @{
+ */
 namespace error {
 /**
  * @brief An error indicating a timeout event.
@@ -66,4 +70,5 @@ template<typename Timeout = std::function<embed::timeout>>
 
   return {};
 }
+/** @} */
 }  // namespace embed

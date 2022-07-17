@@ -4,6 +4,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief concept for enumeration types
  *
  * @tparam T - enum type
@@ -24,4 +29,5 @@ concept enumeration = std::is_enum_v<T>;
   return static_cast<std::underlying_type_t<decltype(p_enum_value)>>(
     p_enum_value);
 }
+/** @} */
 }  // namespace embed
