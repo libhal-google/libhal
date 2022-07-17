@@ -53,6 +53,8 @@ add_executable(${TEST_NAME}
   tests/interrupt_pin/mock.test.cpp
   tests/servo/mock.test.cpp
 
+  tests/servo/rc.test.cpp
+
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp
   tests/enum.test.cpp
