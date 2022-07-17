@@ -22,7 +22,7 @@
 | [Contributing](#-contributing)
 |
 
-# [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/)
+# [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/api)
 
 # 📥 Install
 
