@@ -101,8 +101,7 @@ public:
    */
   explicit constexpr frequency(std::uint32_t p_value) noexcept
     : m_cycles_per_second(p_value)
-  {
-  }
+  {}
 
   /**
    * @brief Get the frequency as an integer
@@ -294,32 +293,37 @@ public:
   }
 
   /**
-   * @brief Calculate closest resulting frequency to target when using one of
-   * the provided dividers.
+   * @brief Calculate divider for the closest resulting frequency to target.
    *
-   * @param p_target - The target frequency to achieve by using one of the
-   * dividers
-   * @param p_dividers - The set of available dividers
-   * @param p_selection_mode - The selection mode for dividers. This can
+   * @tparam InputIt - iterator type from the container
+   * @param p_first - iterator to the first item in the search space.
+   * @param p_last - iterator after the last item in the search space.
+   * @param p_dividers - the set of available dividers.
+   * @param p_selection_mode - the selection mode for dividers. This can
    * restrict the dividers to result in a frequency less than or equal to the
    * target, higher than or equal to the target or not restrict the dividers at
    * all and get the closest value to the target.
-   * @return std::optional<frequency> - The resulting frequency or std::nullopt
-   * if no solution is found.
+   * @return InputIt - an iterator pointing to the resulting best divider if a
+   * solution is found. If no solution is found, p_last is returned.
    */
-  [[nodiscard]] constexpr std::optional<frequency> closest(
-    frequency p_target,
-    std::span<std::uint32_t> p_dividers,
-    selection_mode p_selection_mode)
+  template<typename InputIt>
+  [[nodiscard]] constexpr InputIt closest(InputIt p_first,
+                                          InputIt p_last,
+                                          frequency p_target,
+                                          selection_mode p_selection_mode)
   {
-    auto is_applicable = [&](std::uint32_t p_candidate) -> bool {
-      auto resulting_frequency = (*this / p_candidate);
+    auto cost = [p_target](frequency& p_candidate) -> std::uint32_t {
+      return distance(p_candidate.cycles_per_second(),
+                      p_target.cycles_per_second());
+    };
 
+    auto is_applicable = [p_target,
+                          p_selection_mode](frequency& p_candidate) -> bool {
       switch (p_selection_mode) {
         case selection_mode::lower:
-          return resulting_frequency <= p_target;
+          return p_candidate <= p_target;
         case selection_mode::higher:
-          return resulting_frequency >= p_target;
+          return p_candidate >= p_target;
         case selection_mode::closest:
           return true;
         default:
@@ -327,23 +331,17 @@ public:
       }
     };
 
-    auto cost = [&](std::uint32_t p_candidate) -> std::uint32_t {
-      return distance((*this / p_candidate).cycles_per_second(),
-                      p_target.cycles_per_second());
-    };
+    InputIt best = p_last;
+    auto best_cost = std::numeric_limits<uint32_t>::max();
 
-    auto best =
-      std::find_if(p_dividers.begin(), p_dividers.end(), is_applicable);
-    for (auto candidate = best; candidate != p_dividers.end(); candidate++) {
-      if (is_applicable(*candidate) && cost(*candidate) < cost(*best)) {
-        best = candidate;
+    for (InputIt it = p_first; it != p_last; it++) {
+      frequency candidate{ *this / *it };
+      if (is_applicable(candidate) && cost(candidate) < best_cost) {
+        best = it;
+        best_cost = cost(candidate);
       }
     }
-
-    if (best == p_dividers.end()) {
-      return std::nullopt;
-    }
-    return *this / *best;
+    return best;
   }
 
   /**
