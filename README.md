@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="150" src="docs/logo.svg">
+  <img height="150" src="logo.svg">
 </p>
 
 # libembeddedhal
@@ -20,7 +20,6 @@
 | [Libraries](#-libraries)
 | [Motivation](#-motivation)
 | [Contributing](#-contributing)
-|
 
 # [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/api)
 
