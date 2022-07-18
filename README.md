@@ -205,7 +205,7 @@ details.
 
 Using an lpc4078:
 
-```C++
+```cpp
 // Include driver code
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
@@ -237,7 +237,7 @@ can be ignored.
 
 Using stm32f10x:
 
-```C++
+```cpp
 #include <chrono>
 
 #include <libarmcortex/counter.hpp>
@@ -324,7 +324,7 @@ read/sample capabilities.
 
 Meaning that the following code should work for all three of these functions.
 
-```C++
+```cpp
 constexpr std::byte address(0x17);
 auto response_i2c = embed::read<1>(i2c, address);
 auto response_spi = embed::read<1>(spi);
@@ -341,7 +341,7 @@ as if they were free functions. Slated currently for C++26.
 
 An example of UFCS would be the following:
 
-```C++
+```cpp
 // These two will be equivalent in C++26
 auto c_style_call = embed::read<1>(spi);
 auto ufcs_style_call = spi.read<1>();
@@ -395,7 +395,7 @@ TBD
 
 Follow along with the example code below
 
-```C++
+```cpp
 #include <libexamplemcu/i2c.hpp>
 #include <libmpu6050/mpu6050.hpp>
 
@@ -441,7 +441,7 @@ signals or process received signals. `embed::bit_bang_spi` implements the
 Being software emulated this driver is far slower than using hardware driven
 spi.
 
-```C++
+```cpp
 #include <libembeddedhal/spi/bit_bang.hpp>
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
@@ -476,7 +476,7 @@ This can go even further. You don't need to use pins directly connected to the
 micro-controller. You could even use pins from a device driver such as an I/O
 expander:
 
-```C++
+```cpp
 #include <libembeddedhal/spi/bit_bang.hpp>
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
@@ -552,7 +552,7 @@ for details on how to use it in detail. It is generally favorable to enable
 embedded mode for LEAF as it greatly reduces the storage and memory requires of
 the system.
 
-```C++
+```cpp
 // Define this at the top of your main application file or in your compiler
 // arguments.
 #define BOOST_LEAF_EMBEDDED
@@ -565,7 +565,7 @@ LEAF also allows you to control how exceptions are handled by defining a
 this to simply execute `std::exit` when this occurs. To do this, simply add
 this snippet to one of the C++ files linked into the project.
 
-```C++
+```cpp
 namespace boost {
 void throw_exception(std::exception const& e)
 {
@@ -575,7 +575,7 @@ void throw_exception(std::exception const& e)
 
 ### Basic errors
 
-```C++
+```cpp
 #define BOOST_LEAF_EMBEDDED
 #define BOOST_LEAF_NO_THREADS
 
@@ -660,7 +660,7 @@ configuration. See [A New Approach to Build-Time Library
 Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html)
 for more details.
 
-```C++
+```cpp
 #pragma once
 #include <string_view>
 namespace embed::config {
@@ -724,7 +724,7 @@ but at the cost of increasing the binary size of the application.
 Here is an example of a soft driver for `embed::input_pin` which inverts the
 value of the read function using VSP.
 
-```C++
+```cpp
 namespace embed
 {
 template<typename T = embed::input_pin>
@@ -757,7 +757,7 @@ How is this useful? See the breakdown.
 In this scenario, the default class template type has not been explicitly
 changed and thus the code will call class functions in a virtual, indirect way.
 
-```C++
+```cpp
 embed::some_mcu::input_pin & input0 = embed::some_mcu::get_input_pin<0>();
 embed::invert_pin runtime_polymorphic(input0);
 auto result0 = runtime_polymorphic.read();
@@ -773,7 +773,7 @@ must perform a virtual call through the interface.
 Now lets look at a scenario where the default class template type has been
 explicitly set to the type of the input pin driver.
 
-```C++
+```cpp
 // Uses static (direct) function calls
 embed::some_mcu::input_pin & input1 = embed::some_mcu::get_input_pin<1>();
 embed::invert_pin<embed::some_mcu::input_pin> static_polymorphic(input1);
@@ -808,7 +808,7 @@ in the binary. For example, if a project has 3 drivers that implement the input
 pin interface and each requires an `embed::invert_pin` class to invert their
 read values, then you would have the following:
 
-```C++
+```cpp
 // using virtual calls
 embed::invert_pin<embed::input_pin>
 // direct calls to some_mcu::input_pin
@@ -831,7 +831,7 @@ libembeddedhal has a method of fixing this.
 The following section of code will explain in its comments how to support
 multiple platforms between lpc40xx and stm32f103
 
-```C++
+```cpp
 int main()
 {
   // Step 1. Create a set of interface pointers to each driver your application
@@ -1048,7 +1048,7 @@ AND turning off this configuration eliminates all logging code from the driver.
 
 Example of logging where logging can be disabled:
 
-```C++
+```cpp
 void my_driver_log([[maybe_unused]] std::string_view p_str,
                    [[maybe_unused]] uint32_t argument)
 {
@@ -1094,7 +1094,7 @@ they cannot return errors only themselves.
 
 The solution to this is to use a factory function like so:
 
-```C++
+```cpp
 class device_driver {
   public:
     boost::leaf::result<device_driver> create(/* ... */) {
@@ -1112,7 +1112,7 @@ class device_driver {
 
 For peripherals:
 
-```C++
+```cpp
 class peripheral_driver {
   public:
     // Since peripherals are constrained and have a finite set of values
@@ -1146,7 +1146,7 @@ Care should be taken to ensure that the `embed` namespace is also as clean as
 possible by placing structures, enums, const data, and any other symbols into
 the driver's class's namespace like so:
 
-```C++
+```cpp
 namespace embed::target
 {
 class target {
