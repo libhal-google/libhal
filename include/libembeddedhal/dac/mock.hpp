@@ -1,13 +1,13 @@
-/**
- * @addtogroup dac
- * @{
- */
 #pragma once
 
 #include "../testing.hpp"
 #include "interface.hpp"
 
 namespace embed::mock {
+/**
+ * @addtogroup dac
+ * @{
+ */
 /**
  * @brief Mock dac implementation for use in unit tests and simulations with a
  * spy function for write()
@@ -24,7 +24,7 @@ struct dac : public embed::dac
     spy_write.reset();
   }
 
-  /// Spy handler for embded::dac::write()
+  /// Spy handler for embed::dac::write()
   spy_handler<percent> spy_write;
 
 private:
@@ -33,6 +33,5 @@ private:
     return spy_write.record(p_value);
   };
 };
-}  // namespace embed::mock
-
 /** @} */
+}  // namespace embed::mock
