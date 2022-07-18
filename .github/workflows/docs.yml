@@ -45,7 +45,7 @@ jobs:
         run: cat doxygen_warn.log
 
       - name: Copy README.md to docs directory
-        run: cp README.md docs/
+        run: cp README.md logo.svg docs
 
       - name: Copy logo.svg to docs directory
         run: cp logo.svg docs/
