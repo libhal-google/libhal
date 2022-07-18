@@ -3,4 +3,4 @@ plugins:
 - jekyll-remote-theme
 markdown: kramdown
 highlighter: rouge
-    input: GFM
+input: GFM
