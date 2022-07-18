@@ -7,6 +7,11 @@
 
 namespace embed {
 /**
+ * @addtogroup interrupt_pin Interrupt Pin
+ * Available digital interrupt pin APIs
+ * @{
+ */
+/**
  * @brief Digital interrupt pin hardware abstraction.
  *
  * Use this to trigger an interrupt service routine (ISR) when a pin detects a
@@ -101,4 +106,5 @@ private:
     trigger_edge p_trigger) noexcept = 0;
   virtual boost::leaf::result<void> driver_detach_interrupt() noexcept = 0;
 };
+/** @} */
 }  // namespace embed

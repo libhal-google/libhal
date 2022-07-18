@@ -4,6 +4,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief General class which will be used to allow for signature to be used and
  * then split by the below class.
  *
@@ -75,4 +80,5 @@ private:
    */
   inline static std::function<return_t(args_t... p_args)> callback;
 };
+/** @} */
 }  // namespace embed

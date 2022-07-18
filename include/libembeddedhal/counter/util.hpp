@@ -1,17 +1,18 @@
-/**
- * @file util.hpp
- * @brief Provide utilities for the counter interface
- */
 #pragma once
 
 #include <chrono>
 
 #include "../error.hpp"
 #include "../timeout.hpp"
+#include "../units.hpp"
 #include "interface.hpp"
 #include "timeout.hpp"
 
 namespace embed {
+/**
+ * @addtogroup counter
+ * @{
+ */
 /**
  * @brief Create a timeout object based on embed::counter.
  *
@@ -24,13 +25,13 @@ namespace embed {
  */
 inline boost::leaf::result<embed::counter_timeout> create_timeout(
   embed::counter& p_counter,
-  std::chrono::nanoseconds p_duration)
+  embed::time_duration p_duration)
 {
-  if (p_duration < std::chrono::nanoseconds(0)) {
+  if (p_duration < embed::time_duration(0)) {
     return boost::leaf::new_error(std::errc::result_out_of_range);
   }
   const auto [frequency, count] = BOOST_LEAF_CHECK(p_counter.uptime());
-  auto cycles = BOOST_LEAF_CHECK(frequency.cycles_per(p_duration));
+  auto cycles = frequency.cycles_per(p_duration);
   return embed::counter_timeout(p_counter, cycles);
 }
 
@@ -46,12 +47,13 @@ inline boost::leaf::result<embed::counter_timeout> create_timeout(
  */
 [[nodiscard]] inline boost::leaf::result<void> delay(
   embed::counter& p_counter,
-  std::chrono::nanoseconds p_duration) noexcept
+  embed::time_duration p_duration) noexcept
 {
-  if (p_duration < std::chrono::nanoseconds(0)) {
+  if (p_duration < embed::time_duration(0)) {
     return boost::leaf::new_error(std::errc::result_out_of_range);
   }
   auto timeout_object = BOOST_LEAF_CHECK(create_timeout(p_counter, p_duration));
   return delay(timeout_object);
 }
+/** @} */
 }  // namespace embed

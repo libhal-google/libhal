@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <charconv>
 #include <climits>
+#include <cmath>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
@@ -13,6 +14,11 @@
 #include "to_array.hpp"
 
 namespace embed {
+/**
+ * @addtogroup utility
+ * @{
+ */
+
 /**
  * @brief Upscale an integer value of arbitrary bit resolution to a new fixed
  * with integer value.
@@ -108,10 +114,6 @@ public:
   /// The overflow type must be 2x the size of int_t in order to perform
   /// multiplication against two int_t value and not lose any data.
   using overflow_t = std::int64_t;
-  /// Overflow type for int64_t must be 2x the size of int64_t in order to
-  /// perform multiplication against two int64_t value and not lose any data.
-  using int128_t = math::wide_integer::int128_t;
-
   static_assert(sizeof(overflow_t) >= sizeof(int_t),
                 "Overflow integer type must be equal to or greater ");
   /**
@@ -178,7 +180,8 @@ public:
 
     overflow_t numerator = static_cast<overflow_t>(m_value) - min;
     overflow_t denominator = max - min;
-    overflow_t scaled_value = (numerator * raw_max()) / denominator;
+    overflow_t scaled_value =
+      rounding_division((numerator * raw_max()), denominator);
     scaled_value = std::clamp(scaled_value, raw_min(), raw_max());
     return percent(static_cast<int_t>(scaled_value));
   }
@@ -245,14 +248,6 @@ public:
   }
 
   /**
-   * @brief Default operators for <, <=, >, >= and ==
-   *
-   * @return auto - result of the comparison
-   */
-  [[nodiscard]] constexpr auto operator<=>(const percent&) const noexcept =
-    default;
-
-  /**
    * @brief Assignment operator for a percent object based on a floating point
    * value.
    *
@@ -269,7 +264,14 @@ public:
     constexpr float_t max = 1.0;
     constexpr float_t min = -1.0;
     p_ratio = std::clamp(p_ratio, min, max);
-    m_value = static_cast<int_t>(p_ratio * raw_max());
+
+    if constexpr (std::is_same_v<float_t, float>) {
+      m_value = static_cast<int_t>(std::roundf(p_ratio * raw_max()));
+    } else if constexpr (std::is_same_v<float_t, double>) {
+      m_value = static_cast<int_t>(std::round(p_ratio * raw_max()));
+    } else if constexpr (std::is_same_v<float_t, long double>) {
+      m_value = static_cast<int_t>(std::roundl(p_ratio * raw_max()));
+    }
 
     return *this;
   }
@@ -321,8 +323,19 @@ public:
   [[nodiscard]] static constexpr percent from_ratio(T p_progress,
                                                     T p_maximum) noexcept
   {
+    static_assert(sizeof(T) <= sizeof(std::int32_t),
+                  "T must not exceed 32 bits in width.");
     overflow_t result = p_progress;
-    result = (result * raw_max()) / overflow_t(p_maximum);
+    // Multiplication between result, which must be size 32-bits or lower times
+    // raw_max() which is defined as 32-bit can be held in the overflow type
+    // which is int64_t, thus no overflow can occur here.
+    result = (result * raw_max());
+    // If p_progress is less than p_maximum then the result value will fit
+    // within a 32-bit integer.
+    result = rounding_division(result, overflow_t(p_maximum));
+    // If p_progress was greater than p_maximum, then the end result will be
+    // greater than raw_max() or less than raw_min().
+    // This stage will clamp the result to between the 32-bit.
     result = std::clamp(result, raw_min(), raw_max());
 
     return percent(static_cast<int_t>(result));
@@ -391,31 +404,12 @@ public:
   [[nodiscard]] friend constexpr auto operator*(T p_value,
                                                 percent p_scale) noexcept
   {
+    static_assert(sizeof(T) <= sizeof(std::int32_t),
+                  "T must not exceed 32 bits in width.");
     overflow_t arith_container = p_value;
     arith_container = arith_container * p_scale.raw_value();
     arith_container = rounding_division(arith_container, raw_max());
     return static_cast<T>(arith_container);
-  }
-
-  /**
-   * @brief Scale an integral value by a percent value.
-   *
-   * Returns a scaled down version of the input value. For example if the input
-   * is 100 and the scale value represents a percentage of 50%, then performing
-   * the following operation: `100 * percent_50_percent` is equivalent to `100 *
-   * 0.5f`.
-   *
-   * @param p_value - value to be scaled
-   * @param p_scale - value scalar
-   * @return auto - the scaled down result of p_value * p_scale.
-   */
-  [[nodiscard]] friend constexpr auto operator*(std::int64_t p_value,
-                                                percent p_scale) noexcept
-  {
-    int128_t arith_container = p_value;
-    arith_container = arith_container * p_scale.raw_value();
-    arith_container = arith_container / int128_t{ raw_max() };
-    return static_cast<decltype(p_value)>(arith_container);
   }
 
   /**
@@ -512,6 +506,34 @@ public:
     return percent_string;
   }
 
+  /**
+   * @brief Default operators for <, <=, >, >= and ==
+   *
+   * @return auto - result of the comparison
+   */
+  [[nodiscard]] constexpr auto operator<=>(const percent&) const noexcept =
+    default;
+
+  /**
+   * @brief Comparison operator
+   *
+   * Percentages are considered equal if their raw values are equal plus or
+   * minus 2 values. This is to account for slight rounding errors between
+   * math operations. A distance of value 2 represents an error of
+   * 0.00000004657%.
+   *
+   * @param p_other - the other percent to compare to this one
+   * @return auto - result of the comparison
+   */
+  [[nodiscard]] constexpr auto operator==(const percent& p_other) const noexcept
+  {
+    auto delta = raw_value() - p_other.raw_value();
+    if (-2 <= delta && delta <= 2) {
+      return true;
+    }
+    return false;
+  }
+
 private:
   constexpr percent(int_t p_value) noexcept
     : m_value(p_value)
@@ -520,4 +542,5 @@ private:
 
   int_t m_value = 0;
 };
+/** @} */
 }  // namespace embed

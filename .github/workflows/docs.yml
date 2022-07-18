@@ -44,17 +44,16 @@ jobs:
         working-directory: docs
         run: cat doxygen_warn.log
 
-      - name: 📚 Run doxybook2
-        working-directory: docs
-        run: ../doxybook2/bin/doxybook2 --input doxygen/xml --output content/api --config doxybook2/config.json  --templates doxybook2
+      - name: Copy README.md to docs directory
+        run: cp README.md logo.svg docs
 
-      - name: 🔨 Build Doc Website
-        working-directory: docs
-        run: hugo --minify
+      - name: Copy logo.svg to docs directory
+        run: cp logo.svg docs/
 
       - name: 🚀 Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/public
+          publish_dir: docs/
+          enable_jekyll: true

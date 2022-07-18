@@ -1,0 +1,42 @@
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/adc/interface.hpp:49: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/adc/mock.hpp:41: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/can/interface.hpp:97: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/can/network.hpp:258: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/counter/interface.hpp:56: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/counter/mock.hpp:47: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/counter/timeout.hpp:92: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/counter/uptime_counter.hpp:63: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/counter/util.hpp:61: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/dac/interface.hpp:45: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/dac/mock.hpp:39: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/i2c/interface.hpp:156: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/i2c/util.hpp:109: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/input_pin/interface.hpp:66: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/input_pin/mock.hpp:64: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/input_pin/pin_resistors.hpp:29: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/interrupt_pin/interface.hpp:109: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/interrupt_pin/mock.hpp:79: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/motor/interface.hpp:65: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/motor/mock.hpp:35: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/output_pin/interface.hpp:88: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/output_pin/mock.hpp:50: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/pwm/interface.hpp:68: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/pwm/mock.hpp:44: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/serial/interface.hpp:230: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/serial/util.hpp:140: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/servo/interface.hpp:100: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/spi/interface.hpp:94: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/spi/mock.hpp:49: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/spi/util.hpp:121: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/timer/interface.hpp:109: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/timer/mock.hpp:60: warning: end of file while inside a group
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/internal/third_party/leaf.hpp:4459: warning: no uniquely matching class member found for 
+  template < A >
+  template < Tup >
+  BOOST_LEAF_CONSTEXPR handler_argument_traits_defaults< A, false >::error_type const  * boost::leaf::leaf_detail::handler_argument_traits_defaults< A >::check(Tup const &tup, error_info const &ei)
+
+/Users/kammce/Documents/Git/libembeddedhal-dev/libembeddedhal/include/libembeddedhal/internal/third_party/leaf.hpp:4470: warning: no uniquely matching class member found for 
+  template < A >
+  template < Tup >
+  BOOST_LEAF_CONSTEXPR handler_argument_traits_defaults< A, false >::error_type * boost::leaf::leaf_detail::handler_argument_traits_defaults< A >::check(Tup &tup, error_info const &ei)
+

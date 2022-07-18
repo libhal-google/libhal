@@ -7,6 +7,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief Convert a string_view into a std::array of N number of characters.
  *
  * Will always ensure that the array is null terminated
@@ -27,4 +32,5 @@ template<size_t N>
 
   return result;
 }
+/** @} */
 }  // namespace embed

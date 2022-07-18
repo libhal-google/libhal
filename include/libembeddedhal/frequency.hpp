@@ -3,14 +3,21 @@
 #include <algorithm>
 #include <chrono>
 #include <cinttypes>
+#include <cstdint>
 #include <limits>
 #include <ratio>
 #include <span>
 
 #include "math.hpp"
 #include "percent.hpp"
+#include "units.hpp"
 
 namespace embed {
+/**
+ * @addtogroup utility
+ * @{
+ */
+
 /**
  * @brief Structure containing cycle count for the high and low side of a signal
  * duty cycle.
@@ -44,8 +51,23 @@ struct duty_cycle
    */
   [[nodiscard]] explicit constexpr operator percent() const noexcept
   {
-    std::uint64_t total_cycles = high + low;
-    return percent::from_ratio(static_cast<std::uint64_t>(high), total_cycles);
+    std::uint32_t total_cycles = 0;
+    std::uint32_t scaled_high = 0;
+    // Convert high & low to int64_t to prevent overflow
+    std::uint64_t overflow_total = std::uint64_t{ high } + std::uint64_t{ low };
+
+    // If overflow_total is greater than what can fit within an uint32_t, then
+    // we can shift the values over by 1 to get them to fit. This effectively
+    // divides the two values in half, but the ratio will stay the same.
+    if (overflow_total > std::numeric_limits<decltype(high)>::max()) {
+      total_cycles = static_cast<std::uint32_t>(overflow_total >> 1);
+      scaled_high = high >> 1;
+    } else {
+      total_cycles = static_cast<std::uint32_t>(overflow_total);
+      scaled_high = high;
+    }
+
+    return percent::from_ratio(scaled_high, total_cycles);
   }
 };
 
@@ -135,16 +157,11 @@ public:
    * duration. This function is meant for timers to determine how many count
    * cycles are needed to reach a particular time duration at this frequency.
    *
-   * nanoseconds duration cannot exceed 4294967297000000000ns or ~136.1 average
-   * Gregorian years otherwise the output of this function is not defined.
-   *
    * @param p_duration - the amount of time to convert to cycles
-   * @return boost::leaf::result<std::int64_t> - number of cycles
-   * @throws std::errc::result_out_of_range - if the calculated cycle count
-   * exceeds std::int64_t.
+   * @return std::int64_t - number of cycles
    */
-  [[nodiscard]] boost::leaf::result<std::int64_t> cycles_per(
-    std::chrono::nanoseconds p_duration) const noexcept
+  [[nodiscard]] std::int64_t cycles_per(
+    embed::time_duration p_duration) const noexcept
   {
     // Full Equation:
     // =========================================================================
@@ -154,35 +171,23 @@ public:
     //                              \ ratio_den /
     //
     // std::chrono::nanoseconds::period::num == 1
-    // std::chrono::nanoseconds::period::den == 1,000,000,000
+    // std::chrono::nanoseconds::period::den == 1,000,000
 
-    using uint128_t = math::wide_integer::uint128_t;
-
-    constexpr uint128_t numerator = decltype(p_duration)::period::num;
-    constexpr uint128_t denominator = decltype(p_duration)::period::den;
-    // Storing 64-bit value in a uint128_t for later computation, no truncation
-    // possible.
-    const uint128_t duration = p_duration.count();
+    constexpr std::int64_t numerator = decltype(p_duration)::period::num;
+    constexpr std::int64_t denominator = decltype(p_duration)::period::den;
+    // Storing 32-bit value in a std::uint64_t for later computation, no
+    // truncation possible.
+    const std::int64_t duration = absolute_value(p_duration.count());
     // Duration contains at most a 64-bit number, cycles_per_second() is a
     // 32-bit number, and numerator is always the value 1.
     //
     // To contain the maximum resultant possible requires storage within an
-    // integer of size 96-bits, and thus will fit within a uint128_t variable,
-    // no overflow checks required.
-    const uint128_t count = duration * cycles_per_second() * numerator;
-    const uint128_t cycle_count = rounding_division(count, denominator);
+    // integer of size 64-bits, and thus will fit within a std::uint64_t
+    // variable, no overflow checks required.
+    const std::int64_t count = duration * cycles_per_second() * numerator;
+    const std::int64_t cycle_count = rounding_division(count, denominator);
 
-    // The nanoseconds denominator is 1,000,000,000. It's log2 value of ~29.897
-    // meaning one would need a 30 bit integer to represent it. Dividing a
-    // number by it will reduce the number of its it needs to be stored in by
-    // ~30. Because 96-bits - 30-bits is equal to 66-bits, it is possible that
-    // the resultant will not fit within a 64-bit unsigned integer, and thus a
-    // bounds check is required.
-    if (cycle_count > std::numeric_limits<std::int64_t>::max()) {
-      return boost::leaf::new_error(std::errc::result_out_of_range);
-    }
-
-    return static_cast<std::uint64_t>(cycle_count);
+    return cycle_count;
   }
 
   /**
@@ -222,16 +227,15 @@ public:
   }
 
   /**
-   * @brief Calculate the time duration based on the frequency and a number of
+   * @brief Calculate time duration based on the frequency and a number of
    * cycles.
    *
    * @param p_cycles - number of cycles within the time duration
-   * @return boost::leaf::result<std::chrono::nanoseconds> - time duration based
-   * on this frequency and the number of cycles or
-   * `std::errc::result_out_of_range`.
+   * @return std::chrono::nanoseconds - time duration based on this frequency
+   * and the number of cycles
    */
-  [[nodiscard]] boost::leaf::result<std::chrono::nanoseconds>
-  duration_from_cycles(std::uint64_t p_cycles) const noexcept
+  [[nodiscard]] std::chrono::nanoseconds duration_from_cycles(
+    std::int32_t p_cycles) const noexcept
   {
     // Full Equation (based on the equation in cycles_per()):
     // =========================================================================
@@ -240,19 +244,16 @@ public:
     //   |period| =  | ---------------------------|
     //                \ frequency_hz * ratio_num /
     //
-    using uint128_t = math::wide_integer::uint128_t;
+    constexpr auto time_duration_den = std::chrono::nanoseconds::period::den;
+    constexpr auto time_duration_num = std::chrono::nanoseconds::period::num;
+    constexpr auto scale_den = std::int64_t{ time_duration_den };
+    constexpr auto scale_num = std::int64_t{ time_duration_num };
 
-    uint128_t numerator = BOOST_LEAF_CHECK(multiply_with_overflow_detection(
-      uint128_t{ p_cycles }, uint128_t{ std::nano::den }));
+    std::int64_t numerator = std::int64_t{ p_cycles } * scale_den;
+    std::int64_t denominator = cycles_per_second() * scale_num;
+    std::int64_t nanoseconds = rounding_division(numerator, denominator);
 
-    uint128_t denominator = cycles_per_second() * std::nano::num;
-    uint128_t nanoseconds = rounding_division(numerator, denominator);
-
-    if (nanoseconds > std::numeric_limits<std::int64_t>::max()) {
-      return boost::leaf::new_error(std::errc::result_out_of_range);
-    }
-
-    return std::chrono::nanoseconds(static_cast<std::int64_t>(nanoseconds));
+    return std::chrono::nanoseconds(nanoseconds);
   }
 
   /**
@@ -265,10 +266,10 @@ public:
    * @return constexpr duty_cycle
    */
   [[nodiscard]] boost::leaf::result<duty_cycle> calculate_duty_cycle(
-    std::chrono::nanoseconds p_duration,
+    embed::time_duration p_duration,
     percent p_percent) const noexcept
   {
-    std::uint64_t cycles = BOOST_LEAF_CHECK(cycles_per(p_duration));
+    std::uint64_t cycles = cycles_per(p_duration);
     if (cycles > std::numeric_limits<std::uint32_t>::max()) {
       return boost::leaf::new_error(std::errc::value_too_large);
     }
@@ -449,4 +450,5 @@ namespace literals {
   return frequency{ static_cast<std::uint32_t>(value) };
 }
 }  // namespace literals
+/** @} */
 }  // namespace embed

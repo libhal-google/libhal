@@ -5,7 +5,12 @@
 
 namespace embed {
 /**
- * @brief Digital input pin hardware abstraction.
+ * @addtogroup input_pin Input Pin
+ * Available digital input pin APIs
+ * @{
+ */
+/**
+ * @brief Digital input pin hardware abstraction interface.
  *
  * Use this to read a pin and determine if the voltage on it is HIGH or LOW.
  *
@@ -58,4 +63,5 @@ private:
     const settings& p_settings) noexcept = 0;
   virtual boost::leaf::result<bool> driver_level() noexcept = 0;
 };
+/** @} */
 }  // namespace embed

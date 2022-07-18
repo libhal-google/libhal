@@ -5,6 +5,11 @@
 
 namespace embed {
 /**
+ * @addtogroup testing
+ * @{
+ */
+
+/**
  * @brief Helper utility for making mocks for class functions that return
  * boost::leaf::result<void>.
  *
@@ -80,4 +85,5 @@ private:
   std::vector<std::tuple<args_t...>> m_call_history{};
   int m_error_trigger = 0;
 };
+/** @} */
 }  // namespace embed

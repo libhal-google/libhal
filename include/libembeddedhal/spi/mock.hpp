@@ -1,7 +1,13 @@
+
+#pragma once
 #include "../testing.hpp"
 #include "interface.hpp"
 
 namespace embed::mock {
+/**
+ * @addtogroup spi
+ * @{
+ */
 /**
  * @brief Mock spi implementation for use in unit tests and simulations with a
  * spy functions for configure() and a record for the transfer() out data. The
@@ -40,4 +46,5 @@ private:
     return {};
   };
 };
+/** @} */
 }  // namespace embed::mock

@@ -1,6 +1,5 @@
 /**
  * @file util.hpp
- * @brief Provide utility functions for the i2c interface
  */
 #pragma once
 
@@ -8,6 +7,10 @@
 #include "interface.hpp"
 
 namespace embed {
+/**
+ * @addtogroup i2c
+ * @{
+ */
 /**
  * @brief write data to a target device on the i2c bus
  *
@@ -103,4 +106,5 @@ write_then_read(i2c& p_i2c,
   BOOST_LEAF_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer));
   return buffer;
 }
+/// @}
 }  // namespace embed

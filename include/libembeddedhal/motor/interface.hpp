@@ -5,6 +5,11 @@
 
 namespace embed {
 /**
+ * @addtogroup motor
+ * Available motor APIs
+ * @{
+ */
+/**
  * @brief Hardware abstraction for open loop continuous rotary and linear
  * actuators.
  *
@@ -22,9 +27,9 @@ public:
    * @brief Apply a percentage of power to the motor equal to the `p_power`
    * input parameter.
    *
-   * The power applied is unitless and thus cannot be used as a way to gauge how
-   * fast the motor is moving. In general applying more power means to increase
-   * speed and/or torque to the motor.
+   * Power is a percentage and thus cannot be used as a way to gauge how fast
+   * the motor is moving. In general applying more power means to increase speed
+   * and/or torque to the motor.
    *
    * - 0% power would mean that no power is being applied to the motor. In this
    *   situation an unloaded motor will not move. 0% power does not guarantee
@@ -57,4 +62,5 @@ public:
 private:
   virtual boost::leaf::result<void> driver_power(percent p_power) noexcept = 0;
 };
+/** @} */
 }  // namespace embed

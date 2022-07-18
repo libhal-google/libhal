@@ -5,6 +5,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * Available utilities for libembeddedhal
+ * @{
+ */
+/**
  * @brief Generate a mask of 1s at compile time
  *
  * @tparam BitWidth - number of 1s in the mask
@@ -80,4 +85,5 @@ struct bit_limits
     }
   }
 };
+/** @} */
 }  // namespace embed

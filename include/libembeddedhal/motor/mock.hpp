@@ -1,7 +1,13 @@
+#pragma once
+
 #include "../testing.hpp"
 #include "interface.hpp"
 
 namespace embed::mock {
+/**
+ * @addtogroup motor
+ * @{
+ */
 /**
  * @brief Mock motor implementation for use in unit tests and simulations with a
  * spy function for power()
@@ -27,4 +33,5 @@ private:
     return spy_power.record(p_power);
   };
 };
+/** @} */
 }  // namespace embed::mock

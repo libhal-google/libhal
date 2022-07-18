@@ -40,11 +40,8 @@ archives/
 
 # Artifacts
 build/
-docs/doxygen/
+docs/api/
 docs/doxygen_warn.log
-docs/content/api/
-!docs/content/api/_index.md
-docs/public/
 tools/
 
 # lint artifacts

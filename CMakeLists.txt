@@ -5,20 +5,7 @@ set(CMAKE_CXX_COMPILER "g++-11")
 
 project(libembeddedhal VERSION 0.0.1 LANGUAGES CXX)
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE include
-  include/${PROJECT_NAME}/internal/third_party/units/core/include/
-  include/${PROJECT_NAME}/internal/third_party/units/systems/isq/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/isq-iec80000/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/isq-natural/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-cgs/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-fps/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-hep/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-iau/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-imperial/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-international/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-typographic/include
-  include/${PROJECT_NAME}/internal/third_party/units/systems/si-uscs/include)
+target_include_directories(${PROJECT_NAME} INTERFACE include)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 install(TARGETS ${PROJECT_NAME}
@@ -36,30 +23,19 @@ set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(${TEST_NAME}
-  tests/accelerometer/interface.test.cpp
-  tests/can/interface.test.cpp
   tests/can/interface.test.cpp
   tests/pwm/interface.test.cpp
   tests/timer/interface.test.cpp
   tests/i2c/interface.test.cpp
-  tests/compass/interface.test.cpp
-  tests/gyroscope/interface.test.cpp
   tests/spi/interface.test.cpp
   tests/adc/interface.test.cpp
-  tests/rtc/interface.test.cpp
-  tests/temperature/interface.test.cpp
-  tests/pixel_display/interface.test.cpp
-  tests/text_display/interface.test.cpp
   tests/dac/interface.test.cpp
-  tests/counter/interface.test.cpp
   tests/counter/interface.test.cpp
   tests/input_pin/interface.test.cpp
   tests/interrupt_pin/interface.test.cpp
   tests/output_pin/interface.test.cpp
   tests/serial/interface.test.cpp
-  tests/rotary_encoder/interface.test.cpp
-  tests/linear_encoder/interface.test.cpp
-  tests/linear_potentiometer/interface.test.cpp
+  tests/servo/interface.test.cpp
 
   tests/i2c/util.test.cpp
   tests/spi/util.test.cpp
@@ -74,6 +50,9 @@ add_executable(${TEST_NAME}
   tests/adc/mock.test.cpp
   tests/output_pin/mock.test.cpp
   tests/input_pin/mock.test.cpp
+  tests/counter/mock.test.cpp
+  tests/interrupt_pin/mock.test.cpp
+  tests/servo/mock.test.cpp
 
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp
@@ -83,8 +62,7 @@ add_executable(${TEST_NAME}
   tests/static_callable.test.cpp
   tests/testing.test.cpp
   tests/main.test.cpp
-  tests/overflow_counter.test.cpp
-  tests/units.test.cpp)
+  tests/overflow_counter.test.cpp)
 
 enable_testing()
 add_test(NAME ${TEST_NAME} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

@@ -2,6 +2,7 @@
 
 #include <boost/ut.hpp>
 #include <chrono>
+#include <iomanip>
 
 #include <libembeddedhal/frequency.hpp>
 #include <libembeddedhal/percent.hpp>
@@ -31,6 +32,9 @@ inline std::ostream& operator<<(std::ostream& os, const duty_cycle& p_duty)
 
 inline std::ostream& operator<<(std::ostream& os, const percent& p_percent)
 {
-  return (os << "percent { " << static_cast<float>(p_percent) << " }");
+  return (os << "percent { " << std::fixed << std::setprecision(3)
+             << static_cast<float>(p_percent) << " : " << std::right
+             << std::setfill(' ') << std::setw(10) << p_percent.raw_value()
+             << " }");
 }
 }  // namespace embed
