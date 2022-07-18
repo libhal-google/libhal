@@ -12,11 +12,11 @@
 **🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
 
 | [Install](#-install)
-| [Overview](#-overview)
+| [Overview](#ℹ%EF%B8%8F-overview)
 | [Glossary](#-glossary)
-| [Usage](#-usage)
+| [Usage](#%EF%B8%8F-usage)
 | [Library Badges](#-library-badges)
-| [Development Guides](#-development-guides)
+| [Library Standards](#-library-standards)
 | [Libraries](#-libraries)
 | [Motivation](#-motivation)
 | [Contributing](#-contributing)
@@ -930,7 +930,7 @@ Some points to consider when seeing a library that uses floats:
   exceptions are redundant.
 - Exceptions require dynamic memory allocate.
 
-# 📜 Library Standards & Guidlines
+# 📜 Library Standards
 
 All guides follow the [C++ Core
 Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
