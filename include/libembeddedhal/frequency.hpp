@@ -297,8 +297,12 @@ public:
    * @brief Calculate divider for the closest resulting frequency to target.
    *
    * @tparam InputIt - iterator type from the container.
-   * @param p_first - iterator to the first item in the search space of available frequency dividers.
-   * @param p_last - iterator after the last item in search space of available frequency dividers.
+   * @param p_first - iterator to the first item in the search space of
+   * available frequency dividers.
+   * @param p_last - iterator after the last item in search space of available
+   * frequency dividers.
+   * @param p_target - the ideal frequency to be acheived by selecting one of
+   * the available frequency dividers.
    * @param p_selection_mode - the selection mode for dividers. This can
    * restrict the dividers to result in a frequency less than or equal to the
    * target, higher than or equal to the target or not restrict the dividers at
