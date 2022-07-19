@@ -52,6 +52,8 @@ add_executable(${TEST_NAME}
   tests/counter/mock.test.cpp
   tests/interrupt_pin/mock.test.cpp
   tests/servo/mock.test.cpp
+  
+  tests/spi/bit_bang.test.cpp
 
   tests/servo/rc.test.cpp
   tests/i2c/minimum_speed.test.cpp
