@@ -123,7 +123,8 @@ public:
    */
   explicit constexpr frequency(std::uint32_t p_value) noexcept
     : m_cycles_per_second(p_value)
-  {}
+  {
+  }
 
   /**
    * @brief Get the frequency as an integer
