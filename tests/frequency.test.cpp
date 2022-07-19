@@ -1,5 +1,6 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/frequency.hpp>
+#include <array>
 
 #include "ostreams.hpp"
 
@@ -184,6 +185,55 @@ boost::ut::suite frequency_user_defined_literals_test = []() {
                 duty_cycle{ std::numeric_limits<std::int32_t>::max(),
                             std::numeric_limits<std::int32_t>::max() }),
               percent(0.50)));
+  };
+
+  "frequency::closest"_test = []() {
+    auto dividers = std::array<uint32_t, 6>{1, 2, 4, 8, 16, 32};
+    auto dividers_no_order = std::array<uint32_t, 6>{16, 2, 4, 10, 1, 32};
+    auto no_dividers = std::array<uint32_t, 0>{};
+
+    // Test for empty span
+    expect(eq((14_MHz).closest(no_dividers.begin(), no_dividers.end(), 1_MHz, frequency::selection_mode::lower), no_dividers.end()));
+    expect(eq(((14_MHz).closest(no_dividers.begin(), no_dividers.end(), 1_MHz, frequency::selection_mode::higher)), no_dividers.end()));
+    expect(eq(((14_MHz).closest(no_dividers.begin(), no_dividers.end(), 1_MHz, frequency::selection_mode::closest)), no_dividers.end()));
+
+    // Test for no suitable candidates
+    expect(eq((64_MHz).closest(dividers.begin(), dividers.end(), 1_MHz, frequency::selection_mode::lower), dividers.end()));
+    expect(eq((64_MHz).closest(dividers.begin(), dividers.end(), 65_MHz, frequency::selection_mode::higher), dividers.end()));
+
+    // Test common cases
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 33_MHz, frequency::selection_mode::lower), 2));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 33_MHz, frequency::selection_mode::higher), 1));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 33_MHz, frequency::selection_mode::closest), 2));
+
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 7_MHz, frequency::selection_mode::lower), 16));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 7_MHz, frequency::selection_mode::higher), 8));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 7_MHz, frequency::selection_mode::closest), 8));
+    
+    expect(eq((64_MHz).closest(dividers.begin(), dividers.end(), 1_MHz, frequency::selection_mode::lower), dividers.end()));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 1_MHz, frequency::selection_mode::higher), 32));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 1_MHz, frequency::selection_mode::closest), 32));
+
+    // Test unordered span
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 33_MHz, frequency::selection_mode::lower), 2));
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 33_MHz, frequency::selection_mode::higher), 1));
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 33_MHz, frequency::selection_mode::closest), 2));
+
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 7_MHz, frequency::selection_mode::lower), 10));
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 7_MHz, frequency::selection_mode::higher), 4));
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 7_MHz, frequency::selection_mode::closest), 10));
+    
+    expect(eq((64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 1_MHz, frequency::selection_mode::lower), dividers_no_order.end()));
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 1_MHz, frequency::selection_mode::higher), 32));
+    expect(eq(*(64_MHz).closest(dividers_no_order.begin(), dividers_no_order.end(), 1_MHz, frequency::selection_mode::closest), 32));
+
+    // Test for exact value
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 2_MHz, frequency::selection_mode::lower), 32));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 2_MHz, frequency::selection_mode::higher), 32));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 2_MHz, frequency::selection_mode::closest), 32));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 32_MHz, frequency::selection_mode::lower), 2));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 32_MHz, frequency::selection_mode::higher), 2));
+    expect(eq(*(64_MHz).closest(dividers.begin(), dividers.end(), 32_MHz, frequency::selection_mode::closest), 2));
   };
 };
 }  // namespace embed
