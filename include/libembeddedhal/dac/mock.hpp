@@ -13,7 +13,7 @@ namespace embed::mock {
  * spy function for write()
  *
  */
-struct dac : public embed::dac
+struct dac : public embed::dac_interface
 {
   /**
    * @brief Reset spy information for write()
@@ -24,7 +24,7 @@ struct dac : public embed::dac
     spy_write.reset();
   }
 
-  /// Spy handler for embed::dac::write()
+  /// Spy handler for embed::dac_interface::write()
   spy_handler<percent> spy_write;
 
 private:

@@ -9,7 +9,7 @@ boost::ut::suite uptime_utility_test = []() {
   using namespace std::literals;
   using namespace embed::literals;
 
-  class mock_counter : public embed::counter
+  class mock_counter : public embed::counter_interface
   {
   public:
     boost::leaf::result<uptime_t> driver_uptime() noexcept override

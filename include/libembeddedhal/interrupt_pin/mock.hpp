@@ -16,7 +16,7 @@ namespace embed::mock {
  * simulations.
  *
  */
-struct interrupt_pin : public embed::interrupt_pin
+struct interrupt_pin : public embed::interrupt_pin_interface
 {
   /**
    * @brief Reset spy information for configure(), attach_interrupt(), and
@@ -39,11 +39,11 @@ struct interrupt_pin : public embed::interrupt_pin
     m_levels = p_levels;
   }
 
-  /// Spy handler for embed::interrupt_pin::configure()
+  /// Spy handler for embed::interrupt_pin_interface::configure()
   spy_handler<settings> spy_configure;
-  /// Spy handler for embed::interrupt_pin::attach_interrupt()
+  /// Spy handler for embed::interrupt_pin_interface::attach_interrupt()
   spy_handler<std::function<void(void)>, trigger_edge> spy_attach_interrupt;
-  /// Spy handler for embed::interrupt_pin::detach_interrupt()
+  /// Spy handler for embed::interrupt_pin_interface::detach_interrupt()
   spy_handler<bool> spy_detach_interrupt;
 
 private:

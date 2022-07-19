@@ -34,7 +34,7 @@ namespace embed {
  *     commanded to move to their center position, they will be able to move to
  *     that position no matter the original position of the rotor at power on.
  */
-class servo
+class servo_interface
 {
 public:
   /**
@@ -69,7 +69,7 @@ public:
    *
    *     // This is a made up servo has 180 degrees of movement and has absolute
    *     // positioning.
-   *     embed::example_servo servo;  // implements embed::servo
+   *     embed::example_servo servo;  // implements embed::servo_interface
    *     // Move to center position
    *     servo.position(embed::percent::from_ratio(0, 90));
    *     // ... delay ...
@@ -97,5 +97,13 @@ private:
   virtual boost::leaf::result<void> driver_position(
     percent p_position) noexcept = 0;
 };
+
+template<class T>
+concept servo = std::is_base_of_v<embed::servo_interface, T>;
+
+constexpr embed::servo_interface& to_interface(embed::servo auto& p_servo)
+{
+  return p_servo;
+}
 /** @} */
 }  // namespace embed

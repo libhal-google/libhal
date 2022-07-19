@@ -19,7 +19,7 @@ namespace embed {
  * event/interrupt/signal is generated.
  *
  */
-class timer
+class timer_interface
 {
 public:
   /**
@@ -106,5 +106,13 @@ private:
     std::function<void(void)> p_callback,
     std::chrono::nanoseconds p_delay) noexcept = 0;
 };
+
+template<class T>
+concept timer = std::is_base_of_v<embed::timer_interface, T>;
+
+constexpr embed::timer_interface& to_interface(embed::timer auto& p_timer)
+{
+  return p_timer;
+}
 /** @} */
 }  // namespace embed

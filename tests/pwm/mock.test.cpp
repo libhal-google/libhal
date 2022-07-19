@@ -7,10 +7,10 @@ boost::ut::suite pwm_mock_test = []() {
 
   "embed::mock::pwm::configure()"_test = []() {
     // Setup
-    constexpr embed::pwm::settings expected1 = {
+    constexpr embed::pwm_interface::settings expected1 = {
       .frequency = frequency(1'000),
     };
-    constexpr embed::pwm::settings expected2 = {
+    constexpr embed::pwm_interface::settings expected2 = {
       .frequency = frequency(10'000),
     };
     embed::mock::pwm mock;

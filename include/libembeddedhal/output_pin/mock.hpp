@@ -12,7 +12,7 @@ namespace embed::mock {
  * @brief mock output pin for use in unit tests and simulations
  *
  */
-struct output_pin : public embed::output_pin
+struct output_pin : public embed::output_pin_interface
 {
   /**
    * @brief Reset spy information for configure() and level()
@@ -24,7 +24,7 @@ struct output_pin : public embed::output_pin
     spy_level.reset();
   }
 
-  /// Spy handler for embed::output_pin::configure()
+  /// Spy handler for embed::output_pin_interface::configure()
   spy_handler<settings> spy_configure;
   /// Spy handler for emned::output_pin::level()
   spy_handler<bool> spy_level;

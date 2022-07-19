@@ -10,7 +10,7 @@ boost::ut::suite i2c_util_test = []() {
   static constexpr std::byte failure_address{ 0x33 };
   static constexpr std::byte filler_byte{ 0xA5 };
 
-  class dummy : public embed::i2c
+  class dummy : public embed::i2c_interface
   {
   public:
     [[nodiscard]] boost::leaf::result<void> driver_configure(
@@ -36,7 +36,9 @@ boost::ut::suite i2c_util_test = []() {
       return {};
     }
 
-    virtual ~dummy() {}
+    virtual ~dummy()
+    {
+    }
 
     std::byte m_address = std::byte{ 0 };
     std::span<const std::byte> m_out = std::span<const std::byte>{};

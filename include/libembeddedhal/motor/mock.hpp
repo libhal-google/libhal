@@ -13,7 +13,7 @@ namespace embed::mock {
  * spy function for power()
  *
  */
-struct motor : public embed::motor
+struct motor : public embed::motor_interface
 {
   /**
    * @brief Reset spy information for power()
@@ -24,7 +24,7 @@ struct motor : public embed::motor
     spy_power.reset();
   }
 
-  /// Spy handler for embed::motor::write()
+  /// Spy handler for embed::motor_interface::write()
   spy_handler<percent> spy_power;
 
 private:

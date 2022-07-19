@@ -22,7 +22,7 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors associated with the read call
  */
 [[nodiscard]] inline boost::leaf::result<void> write(
-  i2c& p_i2c,
+  embed::i2c auto& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out) noexcept
 {
@@ -38,8 +38,10 @@ namespace embed {
  * @param p_data_in - buffer to read bytes into from target device
  * @return boost::leaf::result<void> - any errors associated with the read call
  */
-[[nodiscard]] inline boost::leaf::result<void>
-read(i2c& p_i2c, std::byte p_address, std::span<std::byte> p_data_in) noexcept
+[[nodiscard]] inline boost::leaf::result<void> read(
+  embed::i2c auto& p_i2c,
+  std::byte p_address,
+  std::span<std::byte> p_data_in) noexcept
 {
   return p_i2c.transaction(p_address, std::span<std::byte>{}, p_data_in);
 }
@@ -56,7 +58,7 @@ read(i2c& p_i2c, std::byte p_address, std::span<std::byte> p_data_in) noexcept
  */
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
-  i2c& p_i2c,
+  embed::i2c auto& p_i2c,
   std::byte p_address) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
@@ -77,7 +79,7 @@ template<size_t BytesToRead>
  * @return boost::leaf::result<void> - any errors associated with the read call
  */
 [[nodiscard]] inline boost::leaf::result<void> write_then_read(
-  i2c& p_i2c,
+  embed::i2c auto& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in) noexcept
@@ -98,7 +100,7 @@ template<size_t BytesToRead>
  */
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
-write_then_read(i2c& p_i2c,
+write_then_read(embed::i2c auto& p_i2c,
                 std::byte p_address,
                 std::span<const std::byte> p_data_out) noexcept
 {

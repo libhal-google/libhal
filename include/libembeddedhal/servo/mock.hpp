@@ -13,7 +13,7 @@ namespace embed::mock {
  * simulations.
  *
  */
-struct servo : public embed::servo
+struct servo : public embed::servo_interface
 {
   /**
    * @brief Reset spy information for position()
@@ -24,7 +24,7 @@ struct servo : public embed::servo
     spy_position.reset();
   }
 
-  /// Spy handler for embed::servo::position()
+  /// Spy handler for embed::servo_interface::position()
   spy_handler<embed::percent> spy_position;
 
 private:

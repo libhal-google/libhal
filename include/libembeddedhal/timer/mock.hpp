@@ -13,7 +13,7 @@ namespace embed::mock {
  * spy functions for schedule(), clear(), and is_running()
  *
  */
-struct timer : public embed::timer
+struct timer : public embed::timer_interface
 {
   /**
    * @brief Reset spy information for schedule(), clear(), and is_running()
@@ -26,11 +26,11 @@ struct timer : public embed::timer
     spy_is_running.reset();
   }
 
-  /// Spy handler for embed::timer::schedule()
+  /// Spy handler for embed::timer_interface::schedule()
   spy_handler<std::function<void(void)>, std::chrono::nanoseconds> spy_schedule;
-  /// Spy handler for embed::timer::is_running()
+  /// Spy handler for embed::timer_interface::is_running()
   spy_handler<bool> spy_is_running;
-  /// Spy handler for embed::timer::clear()
+  /// Spy handler for embed::timer_interface::clear()
   spy_handler<bool> spy_clear;
 
 private:

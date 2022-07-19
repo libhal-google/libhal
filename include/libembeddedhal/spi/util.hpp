@@ -19,11 +19,11 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors associated with this call
  */
 [[nodiscard]] inline boost::leaf::result<void> write(
-  spi& p_spi,
+  embed::spi auto& p_spi,
   std::span<const std::byte> p_data_out) noexcept
 {
   return p_spi.transfer(
-    p_data_out, std::span<std::byte>{}, spi::default_filler);
+    p_data_out, std::span<std::byte>{}, embed::spi_interface::default_filler);
 }
 
 /**
@@ -38,9 +38,9 @@ namespace embed {
  * @return boost::leaf::result<void> - any errors associated with this call
  */
 [[nodiscard]] inline boost::leaf::result<void> read(
-  spi& p_spi,
+  embed::spi auto& p_spi,
   std::span<std::byte> p_data_in,
-  std::byte p_filler = spi::default_filler) noexcept
+  std::byte p_filler = embed::spi_interface::default_filler) noexcept
 {
   return p_spi.transfer(std::span<std::byte>{}, p_data_in, p_filler);
 }
@@ -58,8 +58,8 @@ namespace embed {
  */
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
-  spi& p_spi,
-  std::byte p_filler = spi::default_filler) noexcept
+  embed::spi auto& p_spi,
+  std::byte p_filler = embed::spi_interface::default_filler) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   BOOST_LEAF_CHECK(p_spi.transfer(std::span<std::byte>{}, buffer, p_filler));
@@ -86,10 +86,10 @@ template<size_t BytesToRead>
  * @return boost::leaf::result<void>
  */
 [[nodiscard]] inline boost::leaf::result<void> write_then_read(
-  spi& p_spi,
+  embed::spi auto& p_spi,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in,
-  std::byte p_filler = spi::default_filler) noexcept
+  std::byte p_filler = embed::spi_interface::default_filler) noexcept
 {
   BOOST_LEAF_CHECK(write(p_spi, p_data_out));
   BOOST_LEAF_CHECK(read(p_spi, p_data_in, p_filler));
@@ -110,9 +110,10 @@ template<size_t BytesToRead>
  */
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
-write_then_read(spi& p_spi,
-                std::span<const std::byte> p_data_out,
-                std::byte p_filler = spi::default_filler) noexcept
+write_then_read(
+  embed::spi auto& p_spi,
+  std::span<const std::byte> p_data_out,
+  std::byte p_filler = embed::spi_interface::default_filler) noexcept
 {
   BOOST_LEAF_CHECK(write(p_spi, p_data_out));
   return read<BytesToRead>(p_spi, p_filler);

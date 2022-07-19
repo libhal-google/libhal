@@ -16,7 +16,7 @@ namespace embed {
  * off or on an LED.
  *
  */
-class output_pin
+class output_pin_interface
 {
 public:
   /// Generic settings for output pins
@@ -85,5 +85,14 @@ private:
   virtual boost::leaf::result<void> driver_level(bool p_high) noexcept = 0;
   virtual boost::leaf::result<bool> driver_level() noexcept = 0;
 };
+
+template<class T>
+concept output_pin = std::is_base_of_v<embed::output_pin_interface, T>;
+
+constexpr embed::output_pin_interface& to_interface(
+  embed::output_pin auto& p_output_pin)
+{
+  return p_output_pin;
+}
 /** @} */
 }  // namespace embed

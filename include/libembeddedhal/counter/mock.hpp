@@ -14,7 +14,7 @@ namespace embed::mock {
  * simulations.
  *
  */
-struct counter : public embed::counter
+struct counter : public embed::counter_interface
 {
   /**
    * @brief Queues the uptimes to be returned for uptime()

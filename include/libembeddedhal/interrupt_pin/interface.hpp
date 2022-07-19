@@ -20,7 +20,7 @@ namespace embed {
  * of state on the pin.
  *
  */
-class interrupt_pin
+class interrupt_pin_interface
 {
 public:
   /// Generic settings for interrupt pins
@@ -106,5 +106,14 @@ private:
     trigger_edge p_trigger) noexcept = 0;
   virtual boost::leaf::result<void> driver_detach_interrupt() noexcept = 0;
 };
+
+template<class T>
+concept interrupt_pin = std::is_base_of_v<embed::interrupt_pin_interface, T>;
+
+constexpr embed::interrupt_pin_interface& to_interface(
+  embed::interrupt_pin auto& p_interrupt_pin)
+{
+  return p_interrupt_pin;
+}
 /** @} */
 }  // namespace embed

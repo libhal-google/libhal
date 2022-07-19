@@ -9,9 +9,9 @@ namespace embed {
  * @{
  */
 /**
- * @brief Timeout object based on embed::counter
+ * @brief Timeout object based on embed::counter_interface
  *
- * Prefer to use `embed::create_timeout(embed::counter&)` instead of
+ * Prefer to use `embed::create_timeout(embed::counter_interface&)` instead of
  * instantiating this class directly.
  *
  */
@@ -24,7 +24,7 @@ public:
    * @param p_counter - counter driver
    * @param p_cycles_until_timeout - number of cycles until timeout
    */
-  counter_timeout(embed::counter& p_counter,
+  counter_timeout(embed::counter_interface& p_counter,
                   std::int64_t p_cycles_until_timeout) noexcept
     : m_counter(&p_counter)
     , m_cycles_until_timeout(p_cycles_until_timeout)
@@ -81,7 +81,7 @@ public:
   }
 
 private:
-  embed::counter* m_counter;
+  embed::counter_interface* m_counter;
   std::int64_t m_cycles_until_timeout = 0;
   std::uint32_t m_previous_count = 0;
 };

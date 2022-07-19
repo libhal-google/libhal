@@ -9,7 +9,7 @@ boost::ut::suite counter_utility_test = []() {
 
   static constexpr frequency expected_frequency = embed::frequency(1'000'000);
 
-  class dummy_counter : public embed::counter
+  class dummy_counter : public embed::counter_interface
   {
   public:
     uptime_t get_internal_uptime()
@@ -29,7 +29,7 @@ boost::ut::suite counter_utility_test = []() {
 
   // =============== timeout ===============
 
-  "embed::create_timeout(embed::counter, 0ns)"_test = []() {
+  "embed::create_timeout(embed::counter_interface, 0ns)"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(0);
     dummy_counter test_counter;
@@ -57,7 +57,7 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::create_timeout(embed::counter, 50ns)"_test = []() {
+  "embed::create_timeout(embed::counter_interface, 50ns)"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(50);
     dummy_counter test_counter;
@@ -88,7 +88,7 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::create_timeout(embed::counter, 1337ns)"_test = []() {
+  "embed::create_timeout(embed::counter_interface, 1337ns)"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(1337);
     dummy_counter test_counter;
@@ -119,24 +119,25 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::create_timeout(embed::counter, -5ns) returns error"_test = []() {
-    // Setup
-    static constexpr embed::time_duration expected(-5);
-    dummy_counter test_counter;
+  "embed::create_timeout(embed::counter_interface, -5ns) returns error"_test =
+    []() {
+      // Setup
+      static constexpr embed::time_duration expected(-5);
+      dummy_counter test_counter;
 
-    // Exercise
-    auto result = create_timeout(test_counter, expected);
+      // Exercise
+      auto result = create_timeout(test_counter, expected);
 
-    // Verify
-    expect(!bool{ result });
-    expect(that % 0 == test_counter.get_internal_uptime().count);
-    expect(that % expected_frequency ==
-           test_counter.get_internal_uptime().frequency);
-  };
+      // Verify
+      expect(!bool{ result });
+      expect(that % 0 == test_counter.get_internal_uptime().count);
+      expect(that % expected_frequency ==
+             test_counter.get_internal_uptime().frequency);
+    };
 
   // =============== delay ===============
 
-  "embed::delay(embed::counter, 0ns)"_test = []() {
+  "embed::delay(embed::counter_interface, 0ns)"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(0);
     dummy_counter test_counter;
@@ -154,7 +155,7 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::delay(embed::counter, 50ns)"_test = []() {
+  "embed::delay(embed::counter_interface, 50ns)"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(50);
     dummy_counter test_counter;
@@ -169,7 +170,7 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::delay(embed::counter, 1337ns)"_test = []() {
+  "embed::delay(embed::counter_interface, 1337ns)"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(1'337);
     dummy_counter test_counter;
@@ -184,7 +185,7 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::delay(embed::counter, -5ns) returns error"_test = []() {
+  "embed::delay(embed::counter_interface, -5ns) returns error"_test = []() {
     // Setup
     static constexpr embed::time_duration expected(-5);
     dummy_counter test_counter;

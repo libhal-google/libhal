@@ -5,7 +5,7 @@
 
 namespace embed {
 /**
- * @brief Linear potentiometer driver that takes an embed::adc and a
+ * @brief Linear potentiometer driver that takes an embed::adc_interface and a
  * settings struct, and reads the distance the linear potentiometer has traveled
  * in micrometer.
  *
@@ -39,7 +39,7 @@ public:
    * @param p_adc ADC of linear potentiometer.
    * @param p_settings Settings for linear potentiometer.
    */
-  linear_potentiometer(embed::adc& p_adc, settings p_settings)
+  linear_potentiometer(embed::adc_interface& p_adc, settings p_settings)
     : m_adc(&p_adc)
     , m_settings(p_settings)
   {
@@ -62,7 +62,7 @@ public:
   }
 
 private:
-  embed::adc* m_adc = nullptr;
+  embed::adc_interface* m_adc = nullptr;
   settings m_settings{};
 };
 }  // namespace embed

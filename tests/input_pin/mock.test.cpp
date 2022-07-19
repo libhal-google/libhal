@@ -9,8 +9,8 @@ boost::ut::suite input_pin_mock_test = []() {
 
   "embed::mock::inputput_pin::configure()"_test = []() {
     // Setup
-    constexpr embed::input_pin::settings mock_settings_default{};
-    constexpr embed::input_pin::settings mock_settings_custom{
+    constexpr embed::input_pin_interface::settings mock_settings_default{};
+    constexpr embed::input_pin_interface::settings mock_settings_custom{
       .resistor = pin_resistor::pull_down,
     };
     embed::mock::input_pin mock;
@@ -44,7 +44,7 @@ boost::ut::suite input_pin_mock_test = []() {
   };
   "embed::mock::input_pin::reset()"_test = []() {
     // Setup
-    constexpr embed::input_pin::settings mock_settings_default{};
+    constexpr embed::input_pin_interface::settings mock_settings_default{};
     embed::mock::input_pin mock;
     (void)mock.configure(mock_settings_default);
     expect(that % 1 == mock.spy_configure.call_history().size());

@@ -20,7 +20,7 @@ namespace embed {
  *   - A servo with open loop motor control
  *
  */
-class motor
+class motor_interface
 {
 public:
   /**
@@ -62,5 +62,13 @@ public:
 private:
   virtual boost::leaf::result<void> driver_power(percent p_power) noexcept = 0;
 };
+
+template<class T>
+concept motor = std::is_base_of_v<embed::motor_interface, T>;
+
+constexpr embed::motor_interface& to_interface(embed::motor auto& p_motor)
+{
+  return p_motor;
+}
 /** @} */
 }  // namespace embed

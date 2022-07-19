@@ -7,8 +7,8 @@ boost::ut::suite output_pin_mock_test = []() {
 
   "embed::mock::output_pin::configure()"_test = []() {
     // Setup
-    constexpr embed::output_pin::settings mock_settings_default{};
-    constexpr embed::output_pin::settings mock_settings_custom{
+    constexpr embed::output_pin_interface::settings mock_settings_default{};
+    constexpr embed::output_pin_interface::settings mock_settings_custom{
       .resistor = pin_resistor::pull_down,
       .open_drain = true,
       .starting_level = false,
@@ -62,7 +62,7 @@ boost::ut::suite output_pin_mock_test = []() {
 
   "embed::mock::output_pin::reset()"_test = []() {
     // Setup
-    constexpr embed::output_pin::settings mock_settings_default{};
+    constexpr embed::output_pin_interface::settings mock_settings_default{};
     embed::mock::output_pin mock;
     (void)mock.configure(mock_settings_default);
     (void)mock.level(false);

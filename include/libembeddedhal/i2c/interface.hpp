@@ -23,7 +23,7 @@ namespace embed {
  * communication protocol hardware abstract interface.
  *
  */
-class i2c
+class i2c_interface
 {
 public:
   /**
@@ -156,5 +156,13 @@ private:
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in) noexcept = 0;
 };
+
+template<class T>
+concept i2c = std::is_base_of_v<embed::i2c_interface, T>;
+
+constexpr embed::i2c_interface& to_interface(embed::i2c auto& p_i2c)
+{
+  return p_i2c;
+}
 /** @} */
 }  // namespace embed

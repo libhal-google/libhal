@@ -212,9 +212,9 @@ Using an lpc4078:
 
 int main() {
   // Get pin P0[2] as an output pin
-  embed::output_pin & led = embed::lpc40xx::output_pin::get<0, 2>();
+  embed::output_pin_interface & led = embed::lpc40xx::output_pin::get<0, 2>();
   // Get pin P1[6] as an input pin
-  embed::input_pin & button = embed::lpc40xx::input_pin::get<1, 6>();
+  embed::input_pin_interface & button = embed::lpc40xx::input_pin::get<1, 6>();
 
   while (true)
   {
@@ -247,9 +247,9 @@ Using stm32f10x:
 
 int main() {
   // Get pin A2 as an output pin
-  embed::output_pin & led = embed::stm32f10x::output_pin::get<'A', 2>();
+  embed::output_pin_interface & led = embed::stm32f10x::output_pin::get<'A', 2>();
   // Construct a hardware counter
-  embed::counter & counter = embed::cortex_m::dwt_counter::get(
+  embed::counter_interface & counter = embed::cortex_m::dwt_counter::get(
       embed::stm32f10x::clock::cpu());
 
   while (true)
@@ -295,9 +295,9 @@ libembeddedhal/
 │   ├── unit.hpp (contains any units associated with the interface)
 │   └── util.hpp (utilities for the interface can be found here)
 ├── i2c (example interface)
-│   ├── interface.hpp (holds the embed::i2c interface)
-│   ├── thread_safe.hpp (holds a soft driver implementing embed::i2c but with lock support)
-│   └── util.hpp (holds embed::i2c utilities)
+│   ├── interface.hpp (holds the embed::i2c_interface interface)
+│   ├── thread_safe.hpp (holds a soft driver implementing embed::i2c_interface but with lock support)
+│   └── util.hpp (holds embed::i2c_interface utilities)
 ├── internal (internal code that should NOT be accessed directly)
 │   └── third_party (dependencies for libembeddedhal)
 │       ├── leaf.hpp (add Boost.LEAF for error handling and transport)
@@ -350,7 +350,7 @@ auto ufcs_style_call = spi.read<1>();
 ### Finding Utilities
 
 Utility headers can be found within interface folders with the name `util.hpp`.
-For example if you want to use utilities for `embed::adc` then you would
+For example if you want to use utilities for `embed::adc_interface` then you would
 include `#include <libembeddedhal/adc/util.hpp>`.
 
 ### Common Utility Functions
@@ -400,7 +400,7 @@ Follow along with the example code below
 #include <libmpu6050/mpu6050.hpp>
 
 int main() {
-  embed::i2c & i2c = /* some i2c driver provided here */;
+  embed::i2c_interface & i2c = /* some i2c driver provided here */;
   // Create an mpu6050 driver and pass the i2c associated with the physical i2c
   // bus that is connected to the mpu6050's SDA and SCL lines.
   embed::mpu6050 mpu6050(i2c);
@@ -436,7 +436,7 @@ peripheral or cannot use one of the available spi busses, is the
 `embed::bit_bang_spi`. "bit bang" refers to any method of data transmission that
 employs software as a substitute for dedicated hardware to generate transmitted
 signals or process received signals. `embed::bit_bang_spi` implements the
-`embed::spi` interface using 2 `embed::output_pins` and 1 `embed::input_pin`.
+`embed::spi_interface` interface using 2 `embed::output_pin_interfaces` and 1 `embed::input_pin_interface`.
 
 Being software emulated this driver is far slower than using hardware driven
 spi.
@@ -448,11 +448,11 @@ spi.
 
 int main() {
   // Get references to all of the pins you want to use for spi emulation
-  embed::output_pin & clock = embed::lpc40xx::output_pin::get<0, 1>();
-  embed::output_pin & data_out = embed::lpc40xx::output_pin::get<0, 2>();
-  embed::input_pin & data_in = embed::lpc40xx::input_pin::get<0, 3>();
+  embed::output_pin_interface & clock = embed::lpc40xx::output_pin::get<0, 1>();
+  embed::output_pin_interface & data_out = embed::lpc40xx::output_pin::get<0, 2>();
+  embed::input_pin_interface & data_in = embed::lpc40xx::input_pin::get<0, 3>();
   // Get an output_pin and have it act like a chip select
-  embed::output_pin & chip_select = embed::lpc40xx::output_pin::get<0, 4>();
+  embed::output_pin_interface & chip_select = embed::lpc40xx::output_pin::get<0, 4>();
 
   // Construct the bit_bang_spi object using the implementations above
   embed::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
@@ -482,14 +482,14 @@ expander:
 #include <liblpc40xx/input_pin.hpp>
 
 int main() {
-  embed::i2c & i2c0 = embed::lpc40xx::i2c::get<0>();
+  embed::i2c_interface & i2c0 = embed::lpc40xx::i2c::get<0>();
   embed::pca9536 io_expander(i2c0);
 
   // Get references to all of the pins you want to use for spi emulation
-  embed::output_pin & clock = io_expander.get_as_output_pin<1>();
-  embed::output_pin & data_out = io_expander.get_as_output_pin<2>();
-  embed::input_pin & data_in = io_expander.get_as_input_pin<3>();
-  embed::output_pin & chip_select = io_expander.get_as_output_pin<4>();
+  embed::output_pin_interface & clock = io_expander.get_as_output_pin<1>();
+  embed::output_pin_interface & data_out = io_expander.get_as_output_pin<2>();
+  embed::input_pin_interface & data_in = io_expander.get_as_input_pin<3>();
+  embed::output_pin_interface & chip_select = io_expander.get_as_output_pin<4>();
 
   // NOTICE: That the code below doesn't have to change even if the pin
   // implementations change.
@@ -524,7 +524,7 @@ Examples of this would be `embed::can_network` which takes an `embed::can`
 implementation and manages a map of the messages the device has received on the
 can bus.
 
-Another example is `embed::uptime_counter` which takes an `embed::counter` and
+Another example is `embed::uptime_counter` which takes an `embed::counter_interface` and
 for each call for uptime on the uptime counter, the class checks if the 32-bit
 counter has overflowed. If it has, then increment another 32-bit number with the
 number of overflows counted. Return the result as a 64-bit number which is the
@@ -611,13 +611,13 @@ int main()
       return {};
     },
     // Functions after the first are the handlers.
-    // In this case, we only check for embed::i2c::errors.
-    [](embed::i2c::errors p_error) {
+    // In this case, we only check for embed::i2c_interface::errors.
+    [](embed::i2c_interface::errors p_error) {
       switch(p_error) {
-        case embed::i2c::errors::address_not_acknowledged:
+        case embed::i2c_interface::errors::address_not_acknowledged:
           // Handle this case here...
           break;
-        case embed::i2c::errors::bus_error:
+        case embed::i2c_interface::errors::bus_error:
           // Handle this case here...
           break;
       }
@@ -721,14 +721,14 @@ but at the cost of increasing the binary size of the application.
 
 ### Writing Device Drivers with this Technique
 
-Here is an example of a soft driver for `embed::input_pin` which inverts the
+Here is an example of a soft driver for `embed::input_pin_interface` which inverts the
 value of the read function using VSP.
 
 ```cpp
 namespace embed
 {
-template<typename T = embed::input_pin>
-class invert_read : public embed::input_pin {
+template<typename T = embed::input_pin_interface>
+class invert_read : public embed::input_pin_interface {
 public:
   template<typename U>
   invert_read(U & p_input_pin) : m_input_pin(p_input_pin) {}
@@ -765,7 +765,7 @@ auto result0 = runtime_polymorphic.read();
 
 The information about the original class object and its internal implementation
 is not visible to the `runtime_polymorphic` object. So when read is called,
-because the type of the internal pointer is `T = embed::input_pin`, the code
+because the type of the internal pointer is `T = embed::input_pin_interface`, the code
 must perform a virtual call through the interface.
 
 ### Scenario #2: Direct call
@@ -810,7 +810,7 @@ read values, then you would have the following:
 
 ```cpp
 // using virtual calls
-embed::invert_pin<embed::input_pin>
+embed::invert_pin<embed::input_pin_interface>
 // direct calls to some_mcu::input_pin
 embed::invert_pin<embed::some_mcu::input_pin>
 // direct calls to io_expander::input_pin
@@ -836,8 +836,8 @@ int main()
 {
   // Step 1. Create a set of interface pointers to each driver your application
   //         will needed.
-  embed::input_pin * button{};
-  embed::output_pin * led{};
+  embed::input_pin_interface * button{};
+  embed::output_pin_interface * led{};
 
   // Step 2. Map each pointer to their respective peripheral on either device.
   //         `if constexpr` is required to prevent leaking implementation

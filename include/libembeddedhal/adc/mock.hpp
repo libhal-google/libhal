@@ -9,7 +9,7 @@ namespace embed::mock {
 /**
  * @brief Mock adc implementation for use in unit tests and simulations.
  */
-struct adc : public embed::adc
+struct adc : public embed::adc_interface
 {
   /**
    * @brief Construct a new adc object

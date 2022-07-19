@@ -30,7 +30,7 @@ namespace embed {
  * needs of the application.
  *
  */
-class serial
+class serial_interface
 {
 public:
   /// Generic settings for a standard serial device.
@@ -227,5 +227,13 @@ private:
     std::span<std::byte> p_data) noexcept = 0;
   virtual boost::leaf::result<void> driver_flush() noexcept = 0;
 };
+
+template<class T>
+concept serial = std::is_base_of_v<embed::serial_interface, T>;
+
+constexpr embed::serial_interface& to_interface(embed::serial auto& p_serial)
+{
+  return p_serial;
+}
 /** @} */
 }  // namespace embed

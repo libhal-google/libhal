@@ -9,8 +9,8 @@ boost::ut::suite interrupt_pin_mock_test = []() {
 
   "embed::mock::interrupt_pin::configure()"_test = []() {
     // Setup
-    constexpr embed::interrupt_pin::settings mock_settings_default{};
-    constexpr embed::interrupt_pin::settings mock_settings_custom{
+    constexpr embed::interrupt_pin_interface::settings mock_settings_default{};
+    constexpr embed::interrupt_pin_interface::settings mock_settings_custom{
       .resistor = pin_resistor::pull_down,
     };
     embed::mock::interrupt_pin mock;
@@ -56,12 +56,12 @@ boost::ut::suite interrupt_pin_mock_test = []() {
   "embed::mock::interrupt_pin::attach_interrupt()"_test = []() {
     // Setup
     const std::function<void(void)> expected_callback = []() {};
-    const embed::interrupt_pin::trigger_edge expected_falling =
-      embed::interrupt_pin::trigger_edge::falling;
-    const embed::interrupt_pin::trigger_edge expected_rising =
-      embed::interrupt_pin::trigger_edge::rising;
-    const embed::interrupt_pin::trigger_edge expected_both =
-      embed::interrupt_pin::trigger_edge::both;
+    const embed::interrupt_pin_interface::trigger_edge expected_falling =
+      embed::interrupt_pin_interface::trigger_edge::falling;
+    const embed::interrupt_pin_interface::trigger_edge expected_rising =
+      embed::interrupt_pin_interface::trigger_edge::rising;
+    const embed::interrupt_pin_interface::trigger_edge expected_both =
+      embed::interrupt_pin_interface::trigger_edge::both;
     embed::mock::interrupt_pin mock;
 
     // Exercise
@@ -82,10 +82,10 @@ boost::ut::suite interrupt_pin_mock_test = []() {
   };
   "embed::mock::interrupt_pin::reset()"_test = []() {
     // Setup
-    constexpr embed::interrupt_pin::settings mock_settings_default{};
+    constexpr embed::interrupt_pin_interface::settings mock_settings_default{};
     const std::function<void(void)> expected_callback = []() {};
-    const embed::interrupt_pin::trigger_edge expected_trigger =
-      embed::interrupt_pin::trigger_edge::falling;
+    const embed::interrupt_pin_interface::trigger_edge expected_trigger =
+      embed::interrupt_pin_interface::trigger_edge::falling;
     embed::mock::interrupt_pin mock;
     (void)mock.configure(mock_settings_default);
     expect(that % 1 == mock.spy_configure.call_history().size());

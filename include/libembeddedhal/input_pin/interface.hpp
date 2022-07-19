@@ -15,7 +15,7 @@ namespace embed {
  * Use this to read a pin and determine if the voltage on it is HIGH or LOW.
  *
  */
-class input_pin
+class input_pin_interface
 {
 public:
   /// Generic settings for input pins
@@ -63,5 +63,14 @@ private:
     const settings& p_settings) noexcept = 0;
   virtual boost::leaf::result<bool> driver_level() noexcept = 0;
 };
+
+template<class T>
+concept input_pin = std::is_base_of_v<embed::input_pin_interface, T>;
+
+constexpr embed::input_pin_interface& to_interface(
+  embed::input_pin auto& p_input_pin)
+{
+  return p_input_pin;
+}
 /** @} */
 }  // namespace embed

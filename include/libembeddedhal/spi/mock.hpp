@@ -14,7 +14,7 @@ namespace embed::mock {
  * record ignores the in buffer and just stores the data being sent so it can be
  * inspected later.
  */
-struct write_only_spi : public embed::spi
+struct write_only_spi : public embed::spi_interface
 {
   /**
    * @brief Reset spy information for both configure() and transfer()
@@ -26,9 +26,9 @@ struct write_only_spi : public embed::spi
     write_record.clear();
   }
 
-  /// Spy handler for embed::spi::configure()
+  /// Spy handler for embed::spi_interface::configure()
   spy_handler<settings> spy_configure;
-  /// Record of the out data from embed::spi::transfer()
+  /// Record of the out data from embed::spi_interface::transfer()
   std::vector<std::vector<std::byte>> write_record;
 
 private:

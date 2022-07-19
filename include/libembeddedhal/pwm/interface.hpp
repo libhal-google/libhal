@@ -16,7 +16,7 @@ namespace embed {
  * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
  *
  */
-class pwm
+class pwm_interface
 {
 public:
   /// Generic settings for a hardware Pulse Width Modulation (PWM) generating
@@ -68,5 +68,14 @@ private:
   virtual boost::leaf::result<void> driver_duty_cycle(
     percent p_duty_cycle) noexcept = 0;
 };
+
+template<class T>
+concept pwm = std::is_base_of_v<embed::pwm_interface, T>;
+
+constexpr embed::pwm_interface& to_interface(embed::pwm auto& p_pwm)
+{
+  return p_pwm;
+}
+
 /** @} */
 }  // namespace embed

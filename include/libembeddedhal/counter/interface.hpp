@@ -23,7 +23,7 @@ namespace embed {
  * limits.
  *
  */
-class counter
+class counter_interface
 {
 public:
   /**
@@ -54,5 +54,13 @@ public:
 private:
   virtual boost::leaf::result<uptime_t> driver_uptime() noexcept = 0;
 };
+
+template<class T>
+concept counter = std::is_base_of_v<embed::counter_interface, T>;
+
+constexpr embed::counter_interface& to_interface(embed::counter auto& p_counter)
+{
+  return p_counter;
+}
 /** @} */
 }  // namespace embed

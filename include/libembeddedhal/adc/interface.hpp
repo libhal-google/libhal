@@ -18,7 +18,7 @@ namespace embed {
  * voltage signals into a digital number.
  *
  */
-class adc
+class adc_interface
 {
 public:
   /**
@@ -46,5 +46,13 @@ public:
 private:
   virtual boost::leaf::result<percent> driver_read() noexcept = 0;
 };
+
+template<class T>
+concept adc = std::is_base_of_v<embed::adc_interface, T>;
+
+constexpr embed::adc_interface& to_interface(embed::adc auto& p_adc)
+{
+  return p_adc;
+}
 /** @} */
 }  // namespace embed

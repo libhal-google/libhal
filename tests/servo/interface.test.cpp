@@ -7,7 +7,7 @@ namespace embed {
 namespace {
 constexpr percent expected_value = percent::from_ratio(1, 2);
 
-class test_servo : public embed::servo
+class test_servo : public embed::servo_interface
 {
 public:
   percent m_passed_position;

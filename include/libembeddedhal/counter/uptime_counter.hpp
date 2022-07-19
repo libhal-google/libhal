@@ -27,7 +27,7 @@ public:
    *
    * @param p_counter - hardware counter
    */
-  uptime_counter(counter& p_counter)
+  uptime_counter(embed::counter_interface& p_counter)
     : m_counter(&p_counter)
   {
   }

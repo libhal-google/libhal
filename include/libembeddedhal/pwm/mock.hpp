@@ -13,7 +13,7 @@ namespace embed::mock {
  * functions for configure() and duty_cycle().
  *
  */
-struct pwm : public embed::pwm
+struct pwm : public embed::pwm_interface
 {
   /**
    * @brief Reset spy information for both configure() and duty_cycle()
@@ -25,9 +25,9 @@ struct pwm : public embed::pwm
     spy_duty_cycle.reset();
   }
 
-  /// Spy handler for embed::pwm::configure()
+  /// Spy handler for embed::pwm_interface::configure()
   spy_handler<settings> spy_configure;
-  /// Spy handler for embed::pwm::duty_cycle()
+  /// Spy handler for embed::pwm_interface::duty_cycle()
   spy_handler<percent> spy_duty_cycle;
 
 private:

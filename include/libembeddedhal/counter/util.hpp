@@ -14,17 +14,17 @@ namespace embed {
  * @{
  */
 /**
- * @brief Create a timeout object based on embed::counter.
+ * @brief Create a timeout object based on embed::counter_interface.
  *
  * NOTE: that multiple timeout objects can be made from a single counter without
  * any influence on other timeout objects.
  *
- * @param p_counter - embed::counter implementation
+ * @param p_counter - embed::counter_interface implementation
  * @param p_duration - amount of time until timeout
  * @return boost::leaf::result<embed::counter_timeout>
  */
 inline boost::leaf::result<embed::counter_timeout> create_timeout(
-  embed::counter& p_counter,
+  embed::counter_interface& p_counter,
   embed::time_duration p_duration)
 {
   if (p_duration < embed::time_duration(0)) {
@@ -41,12 +41,12 @@ inline boost::leaf::result<embed::counter_timeout> create_timeout(
  * @param p_counter - counter driver
  * @param p_duration - the amount of time to delay for, must be positive
  * @return boost::leaf::result<void> - returns any errors that result from
- * embed::counter::uptime(), otherwise returns success.
+ * embed::counter_interface::uptime(), otherwise returns success.
  * @throws std::errc::result_out_of_range - if the calculated cycle count
  * exceeds std::int64_t.
  */
 [[nodiscard]] inline boost::leaf::result<void> delay(
-  embed::counter& p_counter,
+  embed::counter_interface& p_counter,
   embed::time_duration p_duration) noexcept
 {
   if (p_duration < embed::time_duration(0)) {

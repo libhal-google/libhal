@@ -15,7 +15,7 @@ namespace embed::mock {
  * @brief mock input_pin implementation for use in unit tests and simulations.
  *
  */
-struct input_pin : public embed::input_pin
+struct input_pin : public embed::input_pin_interface
 {
   /**
    * @brief Reset spy information for configure()

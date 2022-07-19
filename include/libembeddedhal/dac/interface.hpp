@@ -18,7 +18,7 @@ namespace embed {
  * analog voltages between a defined LOW and HIGH voltage.
  *
  */
-class dac
+class dac_interface
 {
 public:
   /**
@@ -40,5 +40,13 @@ public:
 private:
   virtual boost::leaf::result<void> driver_write(percent p_value) noexcept = 0;
 };
+
+template<class T>
+concept dac = std::is_base_of_v<embed::dac_interface, T>;
+
+constexpr embed::dac_interface& to_interface(embed::dac auto& p_dac)
+{
+  return p_dac;
+}
 /** @} */
 }  // namespace embed

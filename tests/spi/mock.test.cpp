@@ -8,16 +8,17 @@ boost::ut::suite spi_mock_test = []() {
 
   "embed::mock::write_only_spi::configure()"_test = []() {
     // Setup
-    constexpr embed::spi::settings expected1 = { .clock_rate = frequency(1'000),
-                                                 .clock_idles_high = false,
-                                                 .data_valid_on_trailing_edge =
-                                                   false };
+    constexpr embed::spi_interface::settings expected1 = {
+      .clock_rate = frequency(1'000),
+      .clock_idles_high = false,
+      .data_valid_on_trailing_edge = false
+    };
 
-    constexpr embed::spi::settings expected2 = { .clock_rate =
-                                                   frequency(10'000),
-                                                 .clock_idles_high = true,
-                                                 .data_valid_on_trailing_edge =
-                                                   true };
+    constexpr embed::spi_interface::settings expected2 = {
+      .clock_rate = frequency(10'000),
+      .clock_idles_high = true,
+      .data_valid_on_trailing_edge = true
+    };
 
     embed::mock::write_only_spi mock;
     mock.spy_configure.trigger_error_on_call(3);

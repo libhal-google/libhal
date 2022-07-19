@@ -25,8 +25,9 @@ namespace embed {
  * @return boost::leaf::result<void> - return an error if a call to
  * serial::bytes_available returns an error from the serial port.
  */
-[[nodiscard]] inline boost::leaf::result<void> delay(serial& p_serial,
-                                                     size_t p_length) noexcept
+[[nodiscard]] inline boost::leaf::result<void> delay(
+  embed::serial auto& p_serial,
+  size_t p_length) noexcept
 {
   size_t bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
   while (bytes_available < p_length) {
@@ -44,7 +45,7 @@ namespace embed {
  * serial::write returns an error from the serial port.
  */
 [[nodiscard]] inline boost::leaf::result<void> write(
-  serial& p_serial,
+  embed::serial auto& p_serial,
   std::span<const std::byte> p_data_out) noexcept
 {
   return p_serial.write(p_data_out);
@@ -61,7 +62,7 @@ namespace embed {
  * are.
  */
 [[nodiscard]] inline boost::leaf::result<std::span<const std::byte>> read(
-  serial& p_serial,
+  embed::serial auto& p_serial,
   std::span<std::byte> p_data_in)
 {
   BOOST_LEAF_CHECK(delay(p_serial, p_data_in.size()));
@@ -83,7 +84,7 @@ namespace embed {
  */
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
-  serial& p_serial) noexcept
+  embed::serial auto& p_serial) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   BOOST_LEAF_CHECK(delay(p_serial, BytesToRead));
@@ -104,7 +105,7 @@ template<size_t BytesToRead>
  * or serial::write() returns an error from the serial port or success.
  */
 [[nodiscard]] inline boost::leaf::result<void> write_then_read(
-  serial& p_serial,
+  embed::serial auto& p_serial,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in) noexcept
 {
@@ -128,7 +129,7 @@ template<size_t BytesToRead>
  */
 template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
-write_then_read(serial& p_serial,
+write_then_read(embed::serial auto& p_serial,
                 std::span<const std::byte> p_data_out) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;

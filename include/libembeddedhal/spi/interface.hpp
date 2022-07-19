@@ -18,7 +18,7 @@ namespace embed {
  * abstract interface
  *
  */
-class spi
+class spi_interface
 {
 public:
   /// Generic settings for a standard SPI device.
@@ -91,5 +91,13 @@ private:
     std::span<std::byte> p_data_in,
     std::byte p_filler) noexcept = 0;
 };
+
+template<class T>
+concept spi = std::is_base_of_v<embed::spi_interface, T>;
+
+constexpr embed::spi_interface& to_interface(embed::spi auto& p_spi)
+{
+  return p_spi;
+}
 /** @} */
 }  // namespace embed
