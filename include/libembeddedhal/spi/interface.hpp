@@ -58,7 +58,7 @@ public:
     return driver_configure(p_settings);
   }
   /**
-   * @brief Send and receieve data between a selected device on the spi bus.
+   * @brief Send and receive data between a selected device on the spi bus.
    * This function will block until the entire transfer is finished.
    *
    * @param p_data_out - buffer to write data to the bus. If this is set to

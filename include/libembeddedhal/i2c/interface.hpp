@@ -60,9 +60,9 @@ public:
      * found and then store that address.
      *
      * - In the case where the address is consistently NACK'ed but the driver
-     *   expects a specific address, this is typically not handleable and
-     *   indicates that the application or driver is incorrect in the device
-     *   address.
+     *   expects a specific address, this is typically not something that can be
+     *   handled and indicates that the application or driver is incorrect in
+     *   the device address.
      *
      * - In the case where NACK's are spurious, then this may indicate that the
      *   i2c line is faulty or the device is misbehaving. This is not fixable in

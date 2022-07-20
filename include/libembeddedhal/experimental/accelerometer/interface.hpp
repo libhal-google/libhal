@@ -40,10 +40,10 @@ public:
   /**
    * @brief Representation of a sample of accelerometer data
    *
-   * embed::percent was choosen for representing the x, y, and z data of an
+   * embed::percent was chosen for representing the x, y, and z data of an
    * accelerometer because conversion from N-bit register to percent is fast
    * compared to the math required to convert it to
-   * embed::nanometre_per_second_sq. This means that multiple samples can be
+   * embed::nanometer_per_second_sq. This means that multiple samples can be
    * gathered quickly to be converted to data at a later time.
    *
    */
