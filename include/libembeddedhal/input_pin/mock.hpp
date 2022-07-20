@@ -26,7 +26,7 @@ struct input_pin : public embed::input_pin
     spy_configure.reset();
   }
 
-  /// Spy handler for embedd:input_pin::configure()
+  /// Spy handler for embed:input_pin::configure()
   spy_handler<settings> spy_configure;
 
   /**

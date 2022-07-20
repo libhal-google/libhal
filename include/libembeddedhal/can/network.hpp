@@ -126,7 +126,7 @@ public:
     void update(const can::message_t& p_new_data) noexcept
     {
       // Atomic increment of the access counter to notify any threads that are
-      // using GetMesage() that the value of this node is changing.
+      // using GetMessage() that the value of this node is changing.
       m_access_counter++;
 
       // Copy the contents of the new message into the map.
@@ -168,7 +168,7 @@ public:
   }
 
   /**
-   * @brief Assocate a can id with a node in the can network.
+   * @brief Associate a can id with a node in the can network.
    *
    * To store can message with an associated ID in the can_network, it must be
    * declared using this method. For example if you expect to get the following
@@ -184,8 +184,8 @@ public:
    * @param p_id - Associated ID of messages to be stored.
    * @throw std::bad_alloc if this static storage allocated for this object is
    * not enough to hold
-   * @return node_t* - reference to the CANBUS network node_t which can be used
-   * at anytime to retreive the latest received message from the CANBUS that is
+   * @return node_t* - reference to the CAN BUS network node_t which can be used
+   * at anytime to retrieve the latest received message from the CAN BUS that is
    * associated with the set ID.
    *
    */

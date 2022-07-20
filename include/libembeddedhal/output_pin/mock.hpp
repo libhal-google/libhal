@@ -26,7 +26,7 @@ struct output_pin : public embed::output_pin
 
   /// Spy handler for embed::output_pin::configure()
   spy_handler<settings> spy_configure;
-  /// Spy handler for emned::output_pin::level()
+  /// Spy handler for embed::output_pin::level()
   spy_handler<bool> spy_level;
 
 private:

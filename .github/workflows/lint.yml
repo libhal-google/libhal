@@ -69,4 +69,4 @@ jobs:
       - name: 🔤 Check Spelling
         shell: bash
         if: always()
-        run: cspell include/**/*.hpp
+        run: cspell **/*
