@@ -33,7 +33,7 @@ public:
   struct settings
   {
     /// @brief The serial clock rate in hertz.
-    frequency clock_rate = default_clock_rate;
+    frequency clock_rate{};
   };
 
   /**

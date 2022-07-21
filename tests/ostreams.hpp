@@ -21,7 +21,7 @@ inline std::ostream& operator<<(
 namespace embed {
 inline std::ostream& operator<<(std::ostream& os, const frequency& p_frequency)
 {
-  return (os << p_frequency.cycles_per_second() << "_Hz");
+  return (os << p_frequency.value_hz << "_Hz");
 }
 
 inline std::ostream& operator<<(std::ostream& os, const duty_cycle& p_duty)
