@@ -26,7 +26,7 @@ public:
   struct settings
   {
     /// Bus clock rate
-    frequency clock_rate = default_clock_rate;
+    frequency clock_rate{};
   };
 
   /// Can message ID type trait

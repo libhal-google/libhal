@@ -25,8 +25,7 @@ namespace embed {
  * `std::errc::result_out_of_range`
  */
 template<typename T>
-[[nodiscard]] boost::leaf::result<T> multiply_with_overflow_detection(T p_lhs,
-                                                                      T p_rhs)
+[[nodiscard]] boost::leaf::result<T> multiply(T p_lhs, T p_rhs) noexcept
 {
   if (p_lhs == 0 || p_rhs == 0) {
     return T{ 0 };

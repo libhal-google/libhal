@@ -7,7 +7,7 @@ namespace embed {
 boost::ut::suite counter_utility_test = []() {
   using namespace boost::ut;
 
-  static constexpr frequency expected_frequency = embed::frequency(1'000'000);
+  static constexpr frequency expected_frequency{ 1'000'000 };
 
   class dummy_counter : public embed::counter
   {

@@ -25,7 +25,7 @@ public:
   struct settings
   {
     /// Serial clock frequency
-    frequency clock_rate = default_clock_rate;
+    frequency clock_rate{};
     /// The polarity of the pins when the signal is idle
     bool clock_idles_high = false;
     /// The phase of the clock signal when communicating
