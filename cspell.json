@@ -13,6 +13,7 @@
         "cmake",
         "xlink",
         "Werror",
+        "ZOMB",
         "Wextra",
         "Wconversion",
         "vcpkg",

@@ -266,10 +266,10 @@ boost::ut::suite percent_to_string_test = []() {
 
   percent value;
   std::string_view expected_string;
-  decltype(value.to_string()) string;
+  decltype(to_string(value)) string;
 
   auto get_actual_string = [&]() -> std::string_view {
-    string = value.to_string();
+    string = to_string(value);
     return std::string_view(string.data(), string.size() - 1);
   };
 

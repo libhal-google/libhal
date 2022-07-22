@@ -116,6 +116,7 @@ public:
   using overflow_t = std::int64_t;
   static_assert(sizeof(overflow_t) >= sizeof(int_t),
                 "Overflow integer type must be equal to or greater ");
+
   /**
    * @brief Get the 100% value in its raw representation
    *
@@ -145,135 +146,34 @@ public:
   {
     return int_t{ 0 };
   }
-
   /**
-   * @brief Get the percent after it is scaled to a range. The output percent is
-   * bound within the given range. If the percent is greater than or equal to
-   * the maximum bounds of the range, then 100 percent is returned. Likewise, if
-   * the percent is less than or equal to the minimum bounds of the range, then
-   * 0 percent is returned.
+   * @brief Get +100% percentage
    *
-   * Examples:
-   * If the range is [0, 100] and the percent is 50, output should be 50%
-   * If the range is [-100, 100] and the percent is -50, output should be 25%
-   * If the range is [-100, 100] and the percent is 0, output should be 50%
-   * If the range is [-100, 100] and the percent is 50, output should be 75%
-   * If the range is [-10, 100] and the percent is 45, output should be 50%
-   *
-   * @param p_value1 - first value of the range
-   * @param p_value2 - second value of the range
-   * @return percent - percent after it has been scaled
+   * @return constexpr percent - maximum positive percentage
    */
-  [[nodiscard]] constexpr percent scale(percent p_value1, percent p_value2)
+  [[nodiscard]] static constexpr percent max() noexcept
   {
-    overflow_t min =
-      static_cast<overflow_t>(std::min(p_value1, p_value2).m_value);
-    overflow_t max =
-      static_cast<overflow_t>(std::max(p_value1, p_value2).m_value);
-
-    if (m_value >= max) {
-      return from_ratio(1, 1);
-    }
-    if (m_value <= min) {
-      return from_ratio(0, 1);
-    }
-
-    overflow_t numerator = static_cast<overflow_t>(m_value) - min;
-    overflow_t denominator = max - min;
-    overflow_t scaled_value =
-      rounding_division((numerator * raw_max()), denominator);
-    scaled_value = std::clamp(scaled_value, raw_min(), raw_max());
-    return percent(static_cast<int_t>(scaled_value));
+    return percent(raw_max());
   }
 
   /**
-   * @brief Get the value of the percent after it is scaled to a range. The
-   * output value is bound within the given range. If the percent is greater
-   * than or equal to 100 percent, then the maximum value of the range is
-   * returned. Likewise, if the value is less than or equal to 0 percent, then
-   * the minimum value of the range is returned.
+   * @brief Get -100% percentage
    *
-   * Examples:
-   * If the range is [0, 100] and the percent is 25, output should be 25
-   * If the range is [0, 100] and the percent is 75, output should be 75
-   * If the range is [-100, 0] and the percent is 25, output should be -75
-   * If the range is [-100, 0] and the percent is 75, output should be -25
-   * If the range is [-100, 100] and the percent is 25, output should be -50
-   * If the range is [-100, 100] and the percent is 75, output should be 50
-   * If the range is [-100, 100] and the percent is 0, output should be -100
-   * If the range is [-100, 100] and the percent is 100, output should be 100
-   *
-   * @tparam T - types for range and return value
-   * @param p_value1 - first value of the range
-   * @param p_value2 - second value of the range
-   * @return T - value after it has been scaled
+   * @return constexpr percent - maximum negative percentage
    */
-  template<std::integral T>
-  [[nodiscard]] T scale(T p_value1, T p_value2)
+  [[nodiscard]] static constexpr percent min() noexcept
   {
-    T min = std::min(p_value1, p_value2);
-    T max = std::max(p_value1, p_value2);
-
-    if (m_value == raw_max()) {
-      return max;
-    } else if (m_value <= raw_zero()) {
-      return min;
-    }
-
-    T scaled_max = (*this) * max;
-    T scaled_min = (*this) * min;
-    T scaled_output = min + scaled_max - scaled_min;
-    return scaled_output;
+    return percent(raw_min());
   }
 
   /**
-   * @brief Construct 0% percent object
+   * @brief Get 0% percentage
    *
+   * @return constexpr percent - zero percentage
    */
-  constexpr percent() noexcept
-    : m_value(0)
+  [[nodiscard]] static constexpr percent zero() noexcept
   {
-  }
-
-  /**
-   * @brief Construct a percent based on a floating point percentage value.
-   *
-   * @param p_ratio - floating point ratio value. For signed numbers this is
-   * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
-   * to 1.0.
-   */
-  constexpr percent(std::floating_point auto p_ratio) noexcept
-  {
-    *this = p_ratio;
-  }
-
-  /**
-   * @brief Assignment operator for a percent object based on a floating point
-   * value.
-   *
-   * @param p_ratio - floating point ratio value. For signed numbers this is
-   * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
-   * to 1.0.
-   * @return constexpr percent& - integer percent object based on the floating
-   * point percent value.
-   */
-  constexpr percent& operator=(std::floating_point auto p_ratio) noexcept
-  {
-    using float_t = decltype(p_ratio);
-
-    constexpr float_t max = 1.0;
-    constexpr float_t min = -1.0;
-    p_ratio = std::clamp(p_ratio, min, max);
-
-    if constexpr (std::is_same_v<float_t, float>) {
-      m_value = static_cast<int_t>(std::roundf(p_ratio * raw_max()));
-    } else if constexpr (std::is_same_v<float_t, double>) {
-      m_value = static_cast<int_t>(std::round(p_ratio * raw_max()));
-    } else if constexpr (std::is_same_v<float_t, long double>) {
-      m_value = static_cast<int_t>(std::roundl(p_ratio * raw_max()));
-    }
-
-    return *this;
+    return percent{};
   }
 
   /**
@@ -341,14 +241,59 @@ public:
     return percent(static_cast<int_t>(result));
   }
 
-  /**
-   * @brief Get raw integral value
-   *
-   * @return T - percent value
-   */
-  [[nodiscard]] constexpr auto raw_value() const noexcept
+  [[nodiscard]] static constexpr percent from_raw(int_t p_raw_value)
   {
-    return m_value;
+    return percent(p_raw_value);
+  }
+
+  /**
+   * @brief Construct 0% percent object
+   *
+   */
+  constexpr percent() noexcept
+    : m_value(0)
+  {
+  }
+
+  /**
+   * @brief Construct a percent based on a floating point percentage value.
+   *
+   * @param p_ratio - floating point ratio value. For signed numbers this is
+   * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
+   * to 1.0.
+   */
+  constexpr percent(std::floating_point auto p_ratio) noexcept
+  {
+    *this = p_ratio;
+  }
+
+  /**
+   * @brief Assignment operator for a percent object based on a floating point
+   * value.
+   *
+   * @param p_ratio - floating point ratio value. For signed numbers this is
+   * clamped between 0.0 and 1.0. For signed numbers it is clamped between -1.0
+   * to 1.0.
+   * @return constexpr percent& - integer percent object based on the floating
+   * point percent value.
+   */
+  constexpr percent& operator=(std::floating_point auto p_ratio) noexcept
+  {
+    using float_t = decltype(p_ratio);
+
+    constexpr float_t max = 1.0;
+    constexpr float_t min = -1.0;
+    p_ratio = std::clamp(p_ratio, min, max);
+
+    if constexpr (std::is_same_v<float_t, float>) {
+      m_value = static_cast<int_t>(std::roundf(p_ratio * raw_max()));
+    } else if constexpr (std::is_same_v<float_t, double>) {
+      m_value = static_cast<int_t>(std::round(p_ratio * raw_max()));
+    } else if constexpr (std::is_same_v<float_t, long double>) {
+      m_value = static_cast<int_t>(std::roundl(p_ratio * raw_max()));
+    }
+
+    return *this;
   }
 
   /**
@@ -427,83 +372,100 @@ public:
     return p_value * p_scale;
   }
 
-  /**
-   * @brief convert this percentage value into a string from -1.0 to +1.0
-   *
-   * Strings are computed using integer arithmetic only.
-   *
-   * The format of the string will follow these rules:
-   *   - Will always have a leading + or - sign
-   *   - Will always be 13 characters where the last character is the '\0'
-   *   - Will start with either a '1' or a '0' character
-   *
-   * Example string:
-   *
-   *   - +1.000000000
-   *   - +0.250000000
-   *   - +0.125000000
-   *   - -0.333333333
-   *   - -0.111111111
-   *   - -0.666666667
-   *
-   * @return auto - string representation of the percent.
-   */
-  [[nodiscard]] auto to_string() const noexcept
+  percent operator-() const
   {
-    constexpr int_t fixed_percent_scalar = 1000000000;
-    // Based on the number of characters needed to hold "fixed_percent_scalar"
-    // as well as a '.' and a '-' sign
-    constexpr size_t scalar_length = 12;
+    percent negated_percent(-m_value);
+    return negated_percent;
+  }
 
-    if (raw_value() >= raw_max() - 2) {
-      return to_array<scalar_length>("+1.000000000");
-    } else if (raw_value() <= raw_min() + 2) {
-      return to_array<scalar_length>("-1.000000000");
+  /**
+   * @brief Get the percent after it is scaled to a range. The output percent
+   * is bound within the given range. If the percent is greater than or equal
+   * to the maximum bounds of the range, then 100 percent is returned.
+   * Likewise, if the percent is less than or equal to the minimum bounds of
+   * the range, then 0 percent is returned.
+   *
+   * Examples:
+   * If the range is [0, 100] and the percent is 50, output should be 50%
+   * If the range is [-100, 100] and the percent is -50, output should be 25%
+   * If the range is [-100, 100] and the percent is 0, output should be 50%
+   * If the range is [-100, 100] and the percent is 50, output should be 75%
+   * If the range is [-10, 100] and the percent is 45, output should be 50%
+   *
+   * @param p_value1 - first value of the range
+   * @param p_value2 - second value of the range
+   * @return percent - percent after it has been scaled
+   */
+  [[nodiscard]] constexpr percent scale(percent p_value1, percent p_value2)
+  {
+    overflow_t min =
+      static_cast<overflow_t>(std::min(p_value1, p_value2).m_value);
+    overflow_t max =
+      static_cast<overflow_t>(std::max(p_value1, p_value2).m_value);
+
+    if (m_value >= max) {
+      return from_ratio(1, 1);
+    }
+    if (m_value <= min) {
+      return from_ratio(0, 1);
     }
 
-    // Make a copy of the percent value
-    percent absolute_percent = *this;
-    // Check and save if the number is negative
-    bool negative = absolute_percent.raw_value() < 0;
-    // If negative absolute, make the percent positive
-    if (negative) {
-      absolute_percent.m_value = absolute_percent.raw_value() * -1;
+    overflow_t numerator = static_cast<overflow_t>(m_value) - min;
+    overflow_t denominator = max - min;
+    overflow_t scaled_value =
+      rounding_division((numerator * raw_max()), denominator);
+    scaled_value = std::clamp(scaled_value, raw_min(), raw_max());
+    return percent(static_cast<int_t>(scaled_value));
+  }
+
+  /**
+   * @brief Get the value of the percent after it is scaled to a range. The
+   * output value is bound within the given range. If the percent is greater
+   * than or equal to 100 percent, then the maximum value of the range is
+   * returned. Likewise, if the value is less than or equal to 0 percent, then
+   * the minimum value of the range is returned.
+   *
+   * Examples:
+   * If the range is [0, 100] and the percent is 25, output should be 25
+   * If the range is [0, 100] and the percent is 75, output should be 75
+   * If the range is [-100, 0] and the percent is 25, output should be -75
+   * If the range is [-100, 0] and the percent is 75, output should be -25
+   * If the range is [-100, 100] and the percent is 25, output should be -50
+   * If the range is [-100, 100] and the percent is 75, output should be 50
+   * If the range is [-100, 100] and the percent is 0, output should be -100
+   * If the range is [-100, 100] and the percent is 100, output should be 100
+   *
+   * @tparam T - types for range and return value
+   * @param p_value1 - first value of the range
+   * @param p_value2 - second value of the range
+   * @return T - value after it has been scaled
+   */
+  template<std::integral T>
+  [[nodiscard]] T scale(T p_value1, T p_value2)
+  {
+    T min = std::min(p_value1, p_value2);
+    T max = std::max(p_value1, p_value2);
+
+    if (m_value == raw_max()) {
+      return max;
+    } else if (m_value <= raw_zero()) {
+      return min;
     }
 
-    // +1 for a '\0' at the end
-    std::array<char, scalar_length + 1> buffer{ '\0' };
-    // +2 for a '.' and a '\0' character at the end
-    std::array<char, scalar_length + 1> percent_string{ '\0' };
+    T scaled_max = (*this) * max;
+    T scaled_min = (*this) * min;
+    T scaled_output = min + scaled_max - scaled_min;
+    return scaled_output;
+  }
 
-    // Scale "fixed_percent_scalar" by the absolute_percent value
-    int_t decimal_percent = absolute_percent * fixed_percent_scalar;
-
-    // Convert to characters
-    auto char_conversion_result =
-      std::to_chars(buffer.begin(), buffer.end(), decimal_percent);
-
-    size_t string_length = char_conversion_result.ptr - buffer.data();
-    size_t leading_zeros = scalar_length - string_length;
-
-    // Add the leading +/- sign
-    percent_string[0] = (negative) ? '-' : '+';
-
-    // Add the '0' and '.'. We know that the value must be below 1.0 and above
-    // -1.0 because if the values were 1.0 or -1.0 then we would have returned
-    // them at the start of the function.
-    percent_string[1] = '0';
-    percent_string[2] = '.';
-
-    // Add any leading zeros into the percent string array
-    for (size_t i = 3; i < leading_zeros; i++) {
-      percent_string[i] = '0';
-    }
-    // Now copy the contents of the character buffer into the percent string
-    // offset by the number of leading zeros.
-    std::copy_n(
-      buffer.begin(), string_length, percent_string.begin() + leading_zeros);
-
-    return percent_string;
+  /**
+   * @brief Get raw integral value
+   *
+   * @return T - percent value
+   */
+  [[nodiscard]] constexpr auto raw_value() const noexcept
+  {
+    return m_value;
   }
 
   /**
@@ -527,8 +489,8 @@ public:
    */
   [[nodiscard]] constexpr auto operator==(const percent& p_other) const noexcept
   {
-    auto delta = raw_value() - p_other.raw_value();
-    if (-2 <= delta && delta <= 2) {
+    auto delta = distance(raw_value(), p_other.raw_value());
+    if (delta <= 2) {
       return true;
     }
     return false;
@@ -542,5 +504,84 @@ private:
 
   int_t m_value = 0;
 };
+
+/**
+ * @brief convert this percentage value into a string from -1.0 to +1.0
+ *
+ * Strings are computed using integer arithmetic only.
+ *
+ * The format of the string will follow these rules:
+ *   - Will always have a leading + or - sign
+ *   - Will always be 13 characters where the last character is the '\0'
+ *   - Will start with either a '1' or a '0' character
+ *
+ * Example string:
+ *
+ *   - +1.000000000
+ *   - +0.250000000
+ *   - +0.125000000
+ *   - -0.333333333
+ *   - -0.111111111
+ *   - -0.666666667
+ *
+ * @return auto - string representation of the percent.
+ */
+[[nodiscard]] constexpr auto to_string(const percent& p_percent) noexcept
+{
+  using int_t = percent::int_t;
+
+  constexpr int_t fixed_percent_scalar = 1000000000;
+  // Based on the number of characters needed to hold "fixed_percent_scalar"
+  // as well as a '.' and a '-' sign
+  constexpr size_t scalar_length = 12;
+
+  if (p_percent == percent::max()) {
+    return to_array<scalar_length>("+1.000000000");
+  } else if (p_percent == percent::min()) {
+    return to_array<scalar_length>("-1.000000000");
+  }
+
+  percent positive_percent = p_percent;
+  // If negative absolute, make the percent positive
+  bool negative = p_percent.raw_value() < 0;
+  if (negative) {
+    positive_percent = -p_percent;
+  }
+
+  // +1 for a '\0' at the end
+  std::array<char, scalar_length + 1> buffer{ '\0' };
+  // +2 for a '.' and a '\0' character at the end
+  std::array<char, scalar_length + 1> percent_string{ '\0' };
+
+  // Scale "fixed_percent_scalar" by the absolute_percent value
+  int_t decimal_percent = positive_percent * fixed_percent_scalar;
+
+  // Convert to characters
+  auto char_conversion_result =
+    std::to_chars(buffer.begin(), buffer.end(), decimal_percent);
+
+  size_t string_length = char_conversion_result.ptr - buffer.data();
+  size_t leading_zeros = scalar_length - string_length;
+
+  // Add the leading +/- sign
+  percent_string[0] = (negative) ? '-' : '+';
+
+  // Add the '0' and '.'. We know that the value must be below 1.0 and above
+  // -1.0 because if the values were 1.0 or -1.0 then we would have returned
+  // them at the start of the function.
+  percent_string[1] = '0';
+  percent_string[2] = '.';
+
+  // Add any leading zeros into the percent string array
+  for (size_t i = 3; i < leading_zeros; i++) {
+    percent_string[i] = '0';
+  }
+  // Now copy the contents of the character buffer into the percent string
+  // offset by the number of leading zeros.
+  std::copy_n(
+    buffer.begin(), string_length, percent_string.begin() + leading_zeros);
+
+  return percent_string;
+}
 /** @} */
 }  // namespace embed
