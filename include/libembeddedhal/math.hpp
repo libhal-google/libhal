@@ -136,17 +136,20 @@ template<typename T>
  * @brief Calculates the distance between two values (L1 Norm or Manhattan
  * distance), the absolute value of their difference.
  *
+ * NOTE: Values cannot exceed int32_t.
+ *
  * @tparam T - integral type of the two values
  * @param p_left - the first point of the distance calculation
  * @param p_right - the second point of the distance calculation
  * @returns constexpr T - absolute value of the difference between the two
  * points.
  */
-
 template<std::integral T>
 [[nodiscard]] constexpr std::make_unsigned_t<T> distance(T p_left,
                                                          T p_right) noexcept
 {
+  static_assert(sizeof(T) <= sizeof(int32_t));
+
   using unsigned_t = std::make_unsigned_t<T>;
   // Put left and right values into 64-bit containers to prevent overflow
   int64_t left{ p_left };
