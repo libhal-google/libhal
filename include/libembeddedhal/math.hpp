@@ -69,8 +69,7 @@ template<typename T>
     if (p_value == std::numeric_limits<T>::min()) {
       return std::numeric_limits<T>::max();
     }
-    p_value = p_value * -1;
-    return p_value;
+    return -p_value;
   }
 }
 
@@ -130,6 +129,43 @@ template<typename T>
     return p_right - p_left;
   } else {
     return p_left - p_right;
+  }
+}
+
+/**
+ * @brief Calculates the distance between two values (L1 Norm or Manhattan
+ * distance), the absolute value of their difference.
+ *
+ * @tparam T - integral type of the two values
+ * @param p_left - the first point of the distance calculation
+ * @param p_right - the second point of the distance calculation
+ * @returns constexpr T - absolute value of the difference between the two
+ * points.
+ */
+
+template<std::integral T>
+[[nodiscard]] constexpr std::make_unsigned_t<T> distance(T p_left,
+                                                         T p_right) noexcept
+{
+  using unsigned_t = std::make_unsigned_t<T>;
+  // Put left and right values into 64-bit containers to prevent overflow
+  int64_t left{ p_left };
+  int64_t right{ p_right };
+
+  if (right > left) {
+    // Subtraction operation on right to left in this order can never overflow
+    // because the maximum resultant of left and right being INT32_MAX and
+    // INT32_MIN, will equal UINT32_MAX which can be stored within an int64_t
+    // value.
+    int64_t difference = right - left;
+    // Casting this value to the unsigned variant will always fit as the
+    // distance between any 32-bit signed numbers can always fit in a 32-bit
+    // unsigned number.
+    return static_cast<unsigned_t>(difference);
+  } else {
+    // Same logic as the if statement block above.
+    int64_t difference = left - right;
+    return static_cast<unsigned_t>(difference);
   }
 }
 /** @} */
