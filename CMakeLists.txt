@@ -17,7 +17,6 @@ install(TARGETS ${PROJECT_NAME}
 
 find_package(ut)
 find_package(libembeddedhal)
-find_package(gsl-lite)
 
 set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
@@ -63,7 +62,8 @@ add_executable(${TEST_NAME}
   tests/testing.test.cpp
   tests/main.test.cpp
   tests/overflow_counter.test.cpp
-  tests/math.test.cpp)
+  tests/math.test.cpp
+  tests/map.test.cpp)
 
 enable_testing()
 add_test(NAME ${TEST_NAME} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -75,5 +75,4 @@ target_compile_options(${TEST_NAME} PRIVATE -Werror -Wall -Wextra
 set_target_properties(${TEST_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
 target_compile_features(${TEST_NAME} PRIVATE cxx_std_20)
 set_target_properties(${TEST_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME}
-  boost::ut gsl::gsl-lite)
+target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME} boost::ut)

@@ -28,11 +28,5 @@ class libembeddedhal_conan(ConanFile):
     def package_id(self):
         self.info.header_only()
 
-    def requirements(self):
-        # Uncomment this back when 0.8.0 is released
-        # self.requires("mp-units/0.8.0@")
-        self.requires("gsl-lite/0.38.0")
-        pass
-
     def build_requirements(self):
         self.test_requires("boost-ext-ut/1.1.8@")

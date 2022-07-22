@@ -223,7 +223,7 @@ public:
   [[nodiscard]] static constexpr percent from_ratio(T p_progress,
                                                     T p_maximum) noexcept
   {
-    static_assert(sizeof(T) <= sizeof(std::int32_t),
+    static_assert(sizeof(T) <= sizeof(std::uint32_t),
                   "T must not exceed 32 bits in width.");
     overflow_t result = p_progress;
     // Multiplication between result, which must be size 32-bits or lower times
@@ -583,5 +583,6 @@ private:
 
   return percent_string;
 }
+
 /** @} */
 }  // namespace embed
