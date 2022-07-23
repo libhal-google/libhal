@@ -7,6 +7,11 @@
 
 namespace embed {
 /**
+ * @addtogroup utility
+ * @{
+ */
+
+/**
  * @brief Structure that contains a range from x to y or y to x.
  *
  * @tparam T - integral, percent or iterator types
@@ -140,4 +145,5 @@ template<typename T>
 
   return scaled_value_with_offset;
 }
+/** @} */
 }  // namespace embed
