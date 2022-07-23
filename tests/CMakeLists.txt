@@ -2,20 +2,20 @@ cmake_minimum_required(VERSION 3.15)
 
 project(unit_test VERSION 0.0.1 LANGUAGES CXX)
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   # require at least gcc 11
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11.0)
     message(FATAL_ERROR "GCC version must be at least 11!")
   endif()
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # require at least clang 13
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
-    message(FATAL_ERROR "Clang version must be at least 13!")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  # require at least clang 14
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
+    message(FATAL_ERROR "Clang version must be at least 14!")
   endif()
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-  # require at least clang 13
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
-    message(FATAL_ERROR "Clang version must be at least 13!")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+  # require at least clang 14
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
+    message(FATAL_ERROR "Clang version must be at least 14!")
   endif()
 else()
   message(WARNING "You are using an unsupported compiler! Compilation has only been tested with Clang and GCC, detected ${CMAKE_CXX_COMPILER_ID}.")
@@ -74,14 +74,21 @@ add_executable(${PROJECT_NAME}
   main.test.cpp
   move_interceptor.test.cpp
   overflow_counter.test.cpp
+  resumable.test.cpp
   math.test.cpp
   error.test.cpp
   map.test.cpp
   units.test.cpp)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES Clang)
+  target_compile_options(${PROJECT_NAME} PRIVATE -fcoroutines-ts -Werror -Wall
+    -Wextra -Wno-unused-function -Wconversion -Wno-psabi)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES GNU)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall
+    -Wextra -Wno-unused-function -Wconversion -Wno-psabi)
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC . ../include)
-target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra
-  -Wno-unused-function -Wconversion -Wno-psabi)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut libhal::libhal)
