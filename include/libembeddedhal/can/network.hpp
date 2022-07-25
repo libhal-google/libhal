@@ -23,9 +23,9 @@ namespace embed {
  * single device. Messages may come at an arbitrary time, but their origin is
  * always known. Typically a single device driver holds control over a UART
  * peripheral. I2C is a multi device us but the controller is always the
- * initiator of the communication. Once an i2c controller successfully starts a
+ * initiator of the communication. Once an I2C controller successfully starts a
  * conversation with another device on the bus, the response should always come
- * from that device. CAN has this problem where messages can come in at any time
+ * from that device. can has this problem where messages can come in at any time
  * from any device on the bus, making writing a driver that accepts the can
  * interface directly impossible as there would be no way to coordinate which
  * driver gets what data when the can interface has only a singular receive
@@ -87,7 +87,7 @@ public:
      */
     [[nodiscard]] can::message_t secure_get() noexcept
     {
-      // Continuously check if the received CAN message is valid. NOTE: that, in
+      // Continuously check if the received can message is valid. NOTE: that, in
       // general, the looping logic for this function almost never occurs as
       // copies from RAM/cache are fast between receive_handler and GetMessage()
       while (true) {
@@ -172,34 +172,39 @@ public:
    *
    * To store can message with an associated ID in the can_network, it must be
    * declared using this method. For example if you expect to get the following
-   * IDs 0x140, 0x7AA, and 0x561 from the CAN bus, then this method must be
+   * IDs 0x140, 0x7AA, and 0x561 from the can bus, then this method must be
    * called as such:
    *
    * ```C++
-   * node_t* motor_node = can_network.register_message_id(0x140);
-   * node_t* encoder_node = can_network.register_message_id(0x561);
-   * node_t* temperature_node = can_network.register_message_id(0x7AA);
+   * auto* motor_node   = BOOST_LEAF_CHECK(network.register_message_id(0x140));
+   * auto* encoder_node = BOOST_LEAF_CHECK(network.register_message_id(0x561));
+   * auto* fan_node     = BOOST_LEAF_CHECK(network.register_message_id(0x7AA));
    * ```
    *
    * @param p_id - Associated ID of messages to be stored.
    * @throw std::bad_alloc if this static storage allocated for this object is
    * not enough to hold
-   * @return node_t* - reference to the CAN BUS network node_t which can be used
-   * at anytime to retrieve the latest received message from the CAN BUS that is
-   * associated with the set ID.
-   *
+   * @return boost::leaf::result<node_t*> - reference to the can BUS network
+   * node_t which can be used at anytime to retrieve the latest received message
+   * from the can BUS that is associated with the set ID.
+   * @throws std::errc::not_enough_memory if the internal network map does not
+   * have enough space to add this additional node.
    */
   [[nodiscard]] boost::leaf::result<node_t*> register_message_id(
     can::id_t p_id) noexcept
   {
     node_t empty_node;
 
-    // Insert an empty node_t into the map with the following ID as
-    // the key. This is how each ID is remembered when calls to
-    // receive_handler() and GetMessage() are performed. receive_handler()
-    // will ignore messages with IDs that are not already keys within the map.
-    // GetMessage() will throw an exception.
-    m_messages.emplace(std::make_pair(p_id, empty_node));
+    // Insert an empty node_t into the map with the following ID as the key.
+    // This is how each ID is remembered when calls to receive_handler() are
+    // performed. The receive_handler will ignore messages with IDs that are not
+    // already keys within the map.
+    auto result = m_messages.emplace(std::make_pair(p_id, empty_node));
+    auto was_successful = result.second;
+
+    if (!was_successful) {
+      return boost::leaf::new_error(std::errc::not_enough_memory);
+    }
 
     // Return reference to the newly made node_t.
     return &m_messages[p_id];
@@ -235,10 +240,10 @@ private:
   void receive_handler(const can::message_t& p_message) noexcept
   {
     // Check if the map already has a value for this ID. This acts as the last
-    // stage of the CAN filter for the CANBUS Network module. If the key
+    // stage of the can filter for the can bus network module. If the key
     // does NOT exist in the map, then this message will not be saved.
     // Typically, this only happens when the hardware filter has not been setup
-    // properly to eliminate CAN messages that should be ignored.
+    // properly to eliminate can messages that should be ignored.
     //
     // Map lookups can be costly, especially in a interrupt context, so only
     // needing to hash/lookup the ID once is preferred. To prevent multiple
