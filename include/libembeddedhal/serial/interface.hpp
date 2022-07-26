@@ -67,71 +67,6 @@ public:
     /// Number of bits in each frame. Typically between 5 to 9.
     uint8_t frame_size = 8;
   };
-  /**
-   * @brief Error indicating that packets were lost during reception. This
-   * occurs when the buffer is overrun and reaches the end of the circular
-   * buffer. This error is returned when calling bytes_available().
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - This sort of error is very context heavy. If the packet lengths are short
-   *   and numerous and with a consistent format, then the application may be
-   *   able to pull out all but the last few packets of data from the buffer and
-   *   treat the ones at the end as lost packets.
-   *
-   * - In most other cases where data lost was crucial, then the whole buffer
-   *   may need to be flushed and the data received again.
-   *
-   * - A way to fix this is to enlarge the receive buffer. This can be done with
-   *   dynamic memory allocation, but generally, its better to simply increase
-   *   the buffer size by updating the application rather than growing with
-   *   need.
-   *
-   */
-  struct packets_lost
-  {
-    /// The number of packets dropped. This value is optional because some
-    /// drivers cannot provide a number for the number of packets dropped.
-    std::optional<size_t> packets_dropped;
-    /// The number of bytes the serial port has buffered up.
-    size_t bytes_available;
-  };
-
-  /**
-   * @brief Error type indicating that a frame error occurred during reception.
-   * This error is returned when calling bytes_available().
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - In general, the exact nature of a specific frame error is not knowable.
-   *   The number of bytes that are effected could be 1 or more, thus the only
-   *   real way to handle this is to flush receive buffer and attempt reception
-   *   again. Note that the read function should still work to read out which
-   *   ever bytes were received and this can be used/logged in order for
-   *   developers to get insight into where the error occurred and how to fix
-   * it.
-   *
-   */
-  struct frame_error
-  {
-    /// The number of bytes the serial port has buffered up.
-    size_t bytes_available;
-  };
-  /**
-   * @brief Error type indicating that a parity error occurred during reception.
-   * This error is returned when calling bytes_available().
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - The nature of this error is almost exactly the same as frame_error. See
-   *   frame_error's description on how to handle this.
-   *
-   */
-  struct parity_error
-  {
-    /// The number of bytes the serial port has buffered up.
-    size_t bytes_available;
-  };
 
   /**
    * @brief Configure serial to match the settings supplied
@@ -179,6 +114,10 @@ public:
    *
    * @return boost::leaf::result<size_t> - number of buffered by the serial
    * driver and are available to be read by the read() function.
+   * @throws protocol_error indicates that a parity error occurred during
+   * reception.
+   * @throws io_error indicates that a frame error occurred during reception.
+   * This error is returned when calling bytes_available().
    */
   [[nodiscard]] boost::leaf::result<size_t> bytes_available() noexcept
   {
