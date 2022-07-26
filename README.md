@@ -612,12 +612,12 @@ int main()
     },
     // Functions after the first are the handlers.
     // In this case, we only check for embed::i2c::errors.
-    [](embed::i2c::errors p_error) {
+    [](std::errc p_error) {
       switch(p_error) {
-        case embed::i2c::errors::address_not_acknowledged:
+        case std::errc::no_such_device_or_address:
           // Handle this case here...
           break;
-        case embed::i2c::errors::bus_error:
+        case std::errc::io_error:
           // Handle this case here...
           break;
       }
