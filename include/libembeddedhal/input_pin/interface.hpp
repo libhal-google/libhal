@@ -37,9 +37,8 @@ public:
    * @brief Configure the input pin to match the settings supplied
    *
    * @param p_settings - settings to apply to input pin
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation. Will return embed::error::invalid_settings if the settings could
-   * not be achieved.
+   * @return boost::leaf::result<void>
+   * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] boost::leaf::result<void> configure(
     const settings& p_settings) noexcept

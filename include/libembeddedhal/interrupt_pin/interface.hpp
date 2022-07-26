@@ -48,9 +48,8 @@ public:
    * @brief Configure the interrupt pin to match the settings supplied
    *
    * @param p_settings - settings to apply to interrupt pin
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation. Will return embed::error::invalid_settings if the settings could
-   * not be achieved.
+   * @return boost::leaf::result<void>
+   * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] boost::leaf::result<void> configure(
     const settings& p_settings) noexcept
@@ -60,8 +59,7 @@ public:
   /**
    * @brief Return the voltage level of the pin
    *
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
+   * @return boost::leaf::result<void>
    */
   [[nodiscard]] boost::leaf::result<bool> level() noexcept
   {
@@ -77,8 +75,7 @@ public:
    * @param p_callback function to execute when the trigger condition is met
    * @param p_trigger the trigger condition that will signal the system to run
    * the callback.
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
+   * @return boost::leaf::result<void>
    */
   [[nodiscard]] boost::leaf::result<void> attach_interrupt(
     std::function<void(void)> p_callback,

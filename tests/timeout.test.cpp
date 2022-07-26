@@ -12,7 +12,7 @@ boost::ut::suite timeout_test = []() {
     auto timeout_function = [&counts]() mutable -> boost::leaf::result<void> {
       counts++;
       if (counts >= timeout_call_limit) {
-        return boost::leaf::new_error(embed::error::timeout{});
+        return boost::leaf::new_error(std::errc::timed_out);
       }
       return {};
     };

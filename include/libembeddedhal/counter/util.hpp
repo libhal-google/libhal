@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <system_error>
 
 #include "../error.hpp"
 #include "../timeout.hpp"

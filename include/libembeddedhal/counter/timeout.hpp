@@ -1,5 +1,7 @@
 #pragma once
 
+#include <system_error>
+
 #include "../frequency.hpp"
 #include "interface.hpp"
 
@@ -62,7 +64,7 @@ public:
    * @brief Call this object to check if it has timed out.
    *
    * @return boost::leaf::result<void>
-   * @throws embed::error::timeout - if the number of cycles until timeout has
+   * @throws std::errc::timed_out - if the number of cycles until timeout has
    * been exceeded.
    */
   boost::leaf::result<void> operator()() noexcept
@@ -72,7 +74,7 @@ public:
     m_cycles_until_timeout -= delta_count;
 
     if (m_cycles_until_timeout <= 0) {
-      return boost::leaf::new_error(embed::error::timeout{});
+      return boost::leaf::new_error(std::errc::timed_out);
     }
 
     m_previous_count = current_count;

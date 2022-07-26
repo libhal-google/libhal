@@ -23,7 +23,4 @@ struct invalid_option_t : std::false_type
  */
 template<auto... options>
 inline constexpr bool invalid_option = invalid_option_t<options...>::value;
-
-struct invalid_settings
-{};
 }  // namespace embed::error

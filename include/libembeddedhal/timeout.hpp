@@ -7,6 +7,7 @@
 #pragma once
 
 #include <functional>
+#include <system_error>
 
 #include "error.hpp"
 
@@ -15,19 +16,6 @@ namespace embed {
  * @addtogroup utility
  * @{
  */
-namespace error {
-/**
- * @brief An error indicating a timeout event.
- *
- * Timeouts occur when a particular operation is given an amount of time to
- * complete. If the operation cannot be completed in that time, this object
- * should be thrown.
- *
- */
-struct timeout
-{};
-}  // namespace error
-
 /**
  * @brief Timeout is a callable object or function that signals to a procedure
  * that the procedure has exceeded its time allotment and should return control
@@ -44,28 +32,29 @@ using timeout = boost::leaf::result<void>(void) noexcept;
  * time.
  *
  * @tparam Timeout - timeout type
- * @param p_timeout_function - timeout callable
- * @return boost::leaf::result<void> - returns an error if an error other than
- * embed::error::timeout is returned, otherwise returns success.
+ * @param p_timeout - callable timeout object
+ * @return boost::leaf::result<void> - success
  */
 template<typename Timeout = std::function<embed::timeout>>
-[[nodiscard]] inline boost::leaf::result<void> delay(
-  Timeout p_timeout_function) noexcept
+[[nodiscard]] inline boost::leaf::result<void> delay(Timeout p_timeout) noexcept
 {
   bool waiting = true;
 
+  // This lambda catches a `std::errc::timed_out` handle them by changing
+  // `waiting` from true to false in order to break the while loop below.
+  auto timeout_catcher =
+    [&waiting](boost::leaf::match<std::errc, std::errc::timed_out> p_errc)
+    -> boost::leaf::result<void> {
+    (void)p_errc;
+    // Simply change the waiting bool
+    waiting = false;
+    // return successful
+    return {};
+  };
+
   while (waiting) {
-    // If any error other than `embed::error::timeout` is thrown, return an
-    // error flag from this function.
-    BOOST_LEAF_CHECK(boost::leaf::try_handle_some(
-      p_timeout_function,
-      // Catch `embed::error::timeout` errors and handle them by changing
-      // `waiting` from true to false.
-      [&waiting]([[maybe_unused]] embed::error::timeout p_timeout_error)
-        -> boost::leaf::result<void> {
-        waiting = false;
-        return {};
-      }));
+    // Rethrow any error that isn't `std::errc::timed_out`
+    BOOST_LEAF_CHECK(boost::leaf::try_handle_some(p_timeout, timeout_catcher));
   }
 
   return {};

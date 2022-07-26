@@ -96,7 +96,7 @@ public:
    *
    * @param p_settings - settings to apply to i2c driver
    * @return boost::leaf::result<void> - any error that occurred during this
-   * operation. Will return embed::error::invalid_settings if the settings could
+   * operation. Will return std::errc::invalid_argument if the settings could
    * not be achieved.
    */
   [[nodiscard]] boost::leaf::result<void> configure(
