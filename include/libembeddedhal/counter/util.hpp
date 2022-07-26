@@ -28,12 +28,7 @@ inline boost::leaf::result<embed::counter_timeout> create_timeout(
   embed::counter& p_counter,
   embed::time_duration p_duration)
 {
-  if (p_duration < embed::time_duration(0)) {
-    return boost::leaf::new_error(std::errc::result_out_of_range);
-  }
-  const auto [frequency, count] = BOOST_LEAF_CHECK(p_counter.uptime());
-  auto cycles = cycles_per(frequency, p_duration);
-  return embed::counter_timeout(p_counter, cycles);
+  return embed::counter_timeout::create(p_counter, p_duration);
 }
 
 /**

@@ -3,6 +3,7 @@
 #include <system_error>
 
 #include "../frequency.hpp"
+#include "../units.hpp"
 #include "interface.hpp"
 
 namespace embed {
@@ -21,17 +22,25 @@ class counter_timeout
 {
 public:
   /**
-   * @brief Construct a new counter timeout object
+   * @brief Create a counter_timeout
    *
-   * @param p_counter - counter driver
-   * @param p_cycles_until_timeout - number of cycles until timeout
+   * @return boost::leaf::result<counter_timeout> - counter_timeout object
+   * @throws std::errc::result_out_of_range if time duration is negative
    */
-  counter_timeout(embed::counter& p_counter,
-                  std::int64_t p_cycles_until_timeout) noexcept
-    : m_counter(&p_counter)
-    , m_cycles_until_timeout(p_cycles_until_timeout)
+  static boost::leaf::result<counter_timeout> create(
+    embed::counter& p_counter,
+    embed::time_duration p_duration)
   {
+    if (p_duration < embed::time_duration(0)) {
+      return boost::leaf::new_error(std::errc::result_out_of_range);
+    }
+
+    const auto [frequency, count] = BOOST_LEAF_CHECK(p_counter.uptime());
+    auto cycles = cycles_per(frequency, p_duration);
+
+    return counter_timeout(p_counter, cycles);
   }
+
   /**
    * @brief Construct a new counter timeout object
    *
@@ -83,6 +92,19 @@ public:
   }
 
 private:
+  /**
+   * @brief Construct a new counter timeout object
+   *
+   * @param p_counter - counter driver
+   * @param p_cycles_until_timeout - number of cycles until timeout
+   */
+  counter_timeout(embed::counter& p_counter,
+                  std::int64_t p_cycles_until_timeout) noexcept
+    : m_counter(&p_counter)
+    , m_cycles_until_timeout(p_cycles_until_timeout)
+  {
+  }
+
   embed::counter* m_counter;
   std::int64_t m_cycles_until_timeout = 0;
   std::uint32_t m_previous_count = 0;
