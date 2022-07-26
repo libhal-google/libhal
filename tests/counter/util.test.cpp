@@ -42,13 +42,13 @@ boost::ut::suite counter_utility_test = []() {
       [&timeout_object]() -> boost::leaf::result<void> {
         return timeout_object();
       },
-      [&success]([[maybe_unused]] embed::error::timeout p_error) {
+      [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
         success = true;
       },
-      []() { expect(false) << "embed::error::timeout was not thrown!"; });
+      []() { expect(false) << "std::errc::timed_out was not thrown!"; });
 
     // Verify
-    expect(that % success) << "embed::error::timeout handler was not called!";
+    expect(that % success) << "std::errc::timed_out handler was not called!";
     // Verify: subtract 2 because 2 invocations are required in order to get
     //         the start uptime and another to check what the latest uptime is.
     expect(that % expected.count() ==
@@ -75,13 +75,13 @@ boost::ut::suite counter_utility_test = []() {
         }
         return timeout_object();
       },
-      [&success]([[maybe_unused]] embed::error::timeout p_error) {
+      [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
         success = true;
       },
-      []() { expect(false) << "embed::error::timeout was not thrown!"; });
+      []() { expect(false) << "std::errc::timed_out was not thrown!"; });
 
     // Verify
-    expect(that % success) << "embed::error::timeout handler was not called!";
+    expect(that % success) << "std::errc::timed_out handler was not called!";
     expect(that % expected.count() ==
            (test_counter.get_internal_uptime().count));
     expect(that % expected_frequency ==
@@ -106,13 +106,13 @@ boost::ut::suite counter_utility_test = []() {
         }
         return timeout_object();
       },
-      [&success]([[maybe_unused]] embed::error::timeout p_error) {
+      [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
         success = true;
       },
-      []() { expect(false) << "embed::error::timeout was not thrown!"; });
+      []() { expect(false) << "std::errc::timed_out was not thrown!"; });
 
     // Verify
-    expect(that % success) << "embed::error::timeout handler was not called!";
+    expect(that % success) << "std::errc::timed_out handler was not called!";
     expect(that % expected.count() ==
            (test_counter.get_internal_uptime().count));
     expect(that % expected_frequency ==

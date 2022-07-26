@@ -137,9 +137,8 @@ public:
    * @brief Configure serial to match the settings supplied
    *
    * @param p_settings - settings to apply to serial driver
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation. Will return embed::error::invalid_settings if the settings could
-   * not be achieved.
+   * @return boost::leaf::result<void>
+   * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] boost::leaf::result<void> configure(
     const settings& p_settings) noexcept
@@ -165,8 +164,7 @@ public:
    *
    * @param p_data - data to be transmitted over the serial port transmitter
    * line
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
+   * @return boost::leaf::result<void>
    */
   [[nodiscard]] boost::leaf::result<void> write(
     std::span<const std::byte> p_data) noexcept
@@ -209,8 +207,7 @@ public:
    * @brief Set bytes_available() to zero and clear any received data stored in
    * hardware registers.
    *
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
+   * @return boost::leaf::result<void>
    */
   [[nodiscard]] boost::leaf::result<void> flush() noexcept
   {
