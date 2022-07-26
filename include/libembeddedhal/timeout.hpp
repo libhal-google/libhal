@@ -25,7 +25,7 @@ namespace embed {
  * @returns boost::leaf::result<void> - sets error flag set when timeout
  * condition has been met, otherwise returns success.
  */
-using timeout = boost::leaf::result<void>(void) noexcept;
+using timeout = boost::leaf::result<void>(void);
 
 /**
  * @brief Delay the execution of the application or thread for a duration of
@@ -58,6 +58,16 @@ template<typename Timeout = std::function<embed::timeout>>
   }
 
   return {};
+}
+
+/**
+ * @brief Create a timeout that will never time out
+ *
+ * @return auto - callable that will never return timeout
+ */
+[[nodiscard]] inline auto never_timeout() noexcept
+{
+  return []() -> boost::leaf::result<void> { return {}; };
 }
 /** @} */
 }  // namespace embed

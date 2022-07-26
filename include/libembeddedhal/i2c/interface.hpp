@@ -4,13 +4,13 @@
 #pragma once
 
 #include <cstddef>
-#include <cstdint>
+#include <functional>
 #include <span>
 #include <system_error>
 
 #include "../error.hpp"
 #include "../frequency.hpp"
-#include "../percent.hpp"
+#include "../timeout.hpp"
 
 namespace embed {
 /**
@@ -37,67 +37,11 @@ public:
   };
 
   /**
-   * @brief General errors associated with I2C communication failures
-   *
-   */
-  enum class errors
-  {
-    /**
-     * @brief Error type indicating that the i2c transaction resulted in a NACK,
-     * meaning "not acknowledge". NACKs occur when an address has been placed on
-     * the i2c bus and no device connected to the bus returned an acknowledge
-     * signal.
-     *
-     * <b>How to handle these errors:</b>
-     *
-     * - In cases where the program is scanning for available addresses, this
-     *   error is expected behaviour. This is less of an error to handle but an
-     *   expected return status.
-     *
-     * - If a driver has a set of possible addresses that it can use, and for
-     * that driver it makes sense to attempt to search for the valid address,
-     * then a handler can keep performing transactions until a valid address is
-     * found and then store that address.
-     *
-     * - In the case where the address is consistently NACK'ed but the driver
-     *   expects a specific address, this is typically not something that can be
-     *   handled and indicates that the application or driver is incorrect in
-     *   the device address.
-     *
-     * - In the case where NACK's are spurious, then this may indicate that the
-     *   i2c line is faulty or the device is misbehaving. This is not fixable in
-     *   the application. But in some cases, if a software solution is required,
-     *   the driver or application can simply retry again until a valid response
-     *   is returned, but results may vary and are very specific to the devices
-     *   and context of the situation.
-     *
-     */
-    address_not_acknowledged,
-
-    /**
-     * @brief Error type indicating that the i2c lines were put into an invalid
-     * state during the transaction due to interference, misconfiguration of the
-     * i2c peripheral or the addressed device or something else.
-     *
-     * <b>How to handle these errors:</b>
-     *
-     * - In the event of this type of error, state the addressed device
-     * undefined. In the case of data reception, the data coming from the
-     * addressed device should be considered invalid. Any deeper handling will
-     * require deep context regarding the addressed device the transaction
-     * taking place.
-     *
-     */
-    bus_error,
-  };
-
-  /**
    * @brief Configure i2c to match the settings supplied
    *
    * @param p_settings - settings to apply to i2c driver
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation. Will return std::errc::invalid_argument if the settings could
-   * not be achieved.
+   * @return boost::leaf::result<void>
+   * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] boost::leaf::result<void> configure(
     const settings& p_settings) noexcept
@@ -137,15 +81,27 @@ public:
    * nullptr with length zero in order to skip writing.
    * @param p_data_in buffer to store read data from the addressed device. Set
    * to nullptr with length 0 in order to skip reading.
-   * @return boost::leaf::result<void> - any error that occurred during this
-   * operation.
+   * @param p_timeout callable which notifies the i2c driver that it has run out
+   * of time to perform the transaction and must stop and return control to the
+   * caller.
+   * @return boost::leaf::result<void>
+   * @throws std::errc::io_error indicates that the i2c lines were put into an
+   * invalid state during the transaction due to interference, misconfiguration
+   * of the i2c peripheral or the addressed device or something else.
+   * @throws std::errc::no_such_device_or_address indicates that no devices on
+   * the bus acknowledge the address in this transaction, which could mean that
+   * the device is not connected to the bus, is not powered, not available to
+   * respond, broken or many other possible outcomes.
+   * @throws std::errc::timed_out if the transaction exceeded its time allotment
+   * indicated by p_timeout.
    */
   [[nodiscard]] boost::leaf::result<void> transaction(
     std::byte p_address,
     std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in) noexcept
+    std::span<std::byte> p_data_in,
+    std::function<embed::timeout> p_timeout) noexcept
   {
-    return driver_transaction(p_address, p_data_out, p_data_in);
+    return driver_transaction(p_address, p_data_out, p_data_in, p_timeout);
   }
 
 private:
@@ -154,7 +110,8 @@ private:
   virtual boost::leaf::result<void> driver_transaction(
     std::byte p_address,
     std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in) noexcept = 0;
+    std::span<std::byte> p_data_in,
+    std::function<embed::timeout> p_timeout) noexcept = 0;
 };
 /** @} */
 }  // namespace embed
