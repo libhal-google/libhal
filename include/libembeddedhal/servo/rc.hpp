@@ -43,8 +43,8 @@ public:
     static_assert(
       (1000.0 / Frequency) > (MaxMicroseconds / 1000.0),
       "The maximum microseconds is greater than the period of the frequency");
-    auto frequency = embed::frequency{ Frequency };
-    embed::pwm::settings settings{ .frequency = frequency };
+    constexpr embed::frequency frequency = embed::frequency{ Frequency };
+    constexpr embed::pwm::settings settings{ .frequency = frequency };
     BOOST_LEAF_CHECK(p_pwm.configure(settings));
 
     auto frequency_wavelength =
