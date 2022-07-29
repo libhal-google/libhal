@@ -1,6 +1,7 @@
 #pragma once
 
 namespace embed::config {
-constexpr bool get_stacktrace_on_error = true;
-constexpr bool get_source_position_on_error = true;
+inline int callback_call_count = 0;
+constexpr bool on_error_callback_enabled = true;
+constexpr auto on_error_callback = []() { callback_call_count++; };
 }  // namespace embed::config
