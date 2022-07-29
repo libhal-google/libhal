@@ -14,20 +14,28 @@ namespace embed {
  * @{
  */
 /**
- * @brief Serial communication protocol hardware abstract interface.
+ * @brief Hardware abstract interface for the serial communication protocol
  *
  * Use this interface for hardware that implements a serial protocol like UART,
- * RS232, RS485 and many others that use a similar communication protocol but
- * may use different voltage schemes.
+ * RS232, RS485 and others that use a similar communication protocol but may use
+ * different voltage schemes.
+ *
+ * This interface only works 8-bit serial data frames.
  *
  * Due to the asynchronous nature of serial communication protocols, all
- * implementations of serial devices MUST buffer received bytes using DMA or
- * interrupts. A thread should not be used as this generally greatly increases
- * the ROM and RAM cost of using library.
+ * implementations of serial devices must be buffered. Buffered, in this case,
+ * is defined as automatic storage of received bytes without direct application
+ * intervention.
  *
  * All implementations MUST allow the user to supply their own buffer of
- * arbitrary size, such that the amount of buffered data can be tailored to the
- * needs of the application.
+ * arbitrary size up to the limits of what hardware can support. This allows a
+ * developer the ability to tailored the buffer size to the needs of the
+ * application.
+ *
+ * Examples of buffering schemes are:
+ *
+ * - Using DMA to copy data from a serial peripheral to a region of memory
+ * - Using interrupts when a serial peripheral's queue has filled to a point
  *
  */
 class serial
@@ -60,20 +68,22 @@ public:
 
     /// The operating speed of the baud rate (in units of bits per second)
     uint32_t baud_rate = 115200;
-    /// Parity bit type for each frame
-    parity parity = parity::none;
     /// Number of stop bits for each frame
     stop_bits stop = stop_bits::one;
-    /// Number of bits in each frame. Typically between 5 to 9.
-    uint8_t frame_size = 8;
+    /// Parity bit type for each frame
+    parity parity = parity::none;
   };
 
   /**
    * @brief Configure serial to match the settings supplied
    *
+   * Implementing drivers must verify if the settings can be applied to hardware
+   * before modifying the hardware. This will ensure that if this operation
+   * fails, the state of the serial device has not changed.
+   *
    * @param p_settings - settings to apply to serial driver
    * @return boost::leaf::result<void>
-   * @throws std::errc::invalid_argument if the settings could not be achieved.
+   * @throws std::errc::invalid_argument if the settings could not be achieved
    */
   [[nodiscard]] boost::leaf::result<void> configure(
     const settings& p_settings) noexcept
@@ -82,23 +92,11 @@ public:
   }
 
   /**
-   * @brief Write data on the transmitter line of the port. This function will
-   * block until the entire transfer is finished.
+   * @brief Write data on the transmitter line of the port
    *
-   * Data frames are not compact when frame size is less than 8 bits. Meaning
-   * that, if you want to send three 5-bit frames, then you will need to use a
-   * span of at least 3 bytes to hold each value.
+   * This function will block until the entire transfer is finished.
    *
-   * When writing data with frame size greater than 8 is in little endian order.
-   * Meaning that the first byte in the sequence is the lower byte and the next
-   * is the greater byte. If you wanted to send a 9-bit frame with value 0x14A,
-   * the first byte must be 0x4A and the next 0x01.
-   *
-   * serial ports will report `transmit_error` will an error occurs. Any other
-   * reported error will bubble up come from
-   *
-   * @param p_data - data to be transmitted over the serial port transmitter
-   * line
+   * @param p_data - data to be transmitted over the serial port
    * @return boost::leaf::result<void>
    */
   [[nodiscard]] boost::leaf::result<void> write(
@@ -107,33 +105,31 @@ public:
     return driver_write(p_data);
   }
   /**
-   * @brief The number of bytes that have been buffered. For frames less than
-   * 8-bits, each byte holds a frame. For frames above 8-bits the number of
-   * bytes returned indicates the number of bytes a buffer needs to be to return
-   * all of the data held in the buffer.
+   * @brief The number of bytes that have been buffered
    *
-   * @return boost::leaf::result<size_t> - number of buffered by the serial
-   * driver and are available to be read by the read() function.
-   * @throws protocol_error indicates that a parity error occurred during
+   * @return boost::leaf::result<size_t> - number of bytes that can be read out
+   * of this serial port.
+   * @throws std::errc::protocol_error indicates that a parity error occurred
+   * during reception.
+   * @throws std::errc::io_error indicates that a frame error occurred during
    * reception.
-   * @throws io_error indicates that a frame error occurred during reception.
-   * This error is returned when calling bytes_available().
    */
   [[nodiscard]] boost::leaf::result<size_t> bytes_available() noexcept
   {
     return driver_bytes_available();
   }
   /**
-   * @brief Read the bytes received over the ports receiver line and stored in
-   * the serial implementations buffer. The number of bytes read will subtract
-   * the number of bytes available until it reaches zero.
+   * @brief Read the bytes received over the receiver line into buffer
+   *
+   * This operation copies the bytes from the serial driver's internal buffer to
+   * the buffer supplied. This call will subtract from the number returned from
+   * bytes_available() function.
    *
    * @param p_data - Buffer to read bytes back from. If the length of this
-   * buffer is greater than the value returned by bytes_available() then buffer
-   * is filled up to the length returned by bytes_available(). The rest of the
-   * buffer is left untouched.
-   * @return boost::leaf::result<std::span<const std::byte>> - provides a means
-   * to get the length of bytes read into the buffer p_data. The address will
+   * buffer is greater than bytes available, then the buffer is filled up to the
+   * length returned by bytes_available(). The rest of the buffer is left
+   * untouched.
+   * @return boost::leaf::result<std::span<const std::byte>> - The address will
    * ALWAYS be the same as p_data and the length will be equal to the number of
    * bytes read from the buffer.
    */
