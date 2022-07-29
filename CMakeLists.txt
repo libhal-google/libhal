@@ -66,6 +66,7 @@ add_executable(${TEST_NAME}
   tests/main.test.cpp
   tests/overflow_counter.test.cpp
   tests/math.test.cpp
+  tests/error.test.cpp
   tests/map.test.cpp)
 
 enable_testing()
