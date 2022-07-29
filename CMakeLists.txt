@@ -59,6 +59,7 @@ add_executable(${TEST_NAME}
   tests/frequency.test.cpp
   tests/enum.test.cpp
   tests/percent.test.cpp
+  tests/percentage.test.cpp
   tests/timeout.test.cpp
   tests/static_callable.test.cpp
   tests/testing.test.cpp
