@@ -40,11 +40,10 @@ public:
    * @brief Configure i2c to match the settings supplied
    *
    * @param p_settings - settings to apply to i2c driver
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(
-    const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -84,7 +83,7 @@ public:
    * @param p_timeout callable which notifies the i2c driver that it has run out
    * of time to perform the transaction and must stop and return control to the
    * caller.
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::io_error indicates that the i2c lines were put into an
    * invalid state during the transaction due to interference, misconfiguration
    * of the i2c peripheral or the addressed device or something else.
@@ -95,7 +94,7 @@ public:
    * @throws std::errc::timed_out if the transaction exceeded its time allotment
    * indicated by p_timeout.
    */
-  [[nodiscard]] boost::leaf::result<void> transaction(
+  [[nodiscard]] status transaction(
     std::byte p_address,
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
@@ -105,9 +104,8 @@ public:
   }
 
 private:
-  virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept = 0;
-  virtual boost::leaf::result<void> driver_transaction(
+  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_transaction(
     std::byte p_address,
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,

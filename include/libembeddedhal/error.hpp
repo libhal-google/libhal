@@ -11,7 +11,7 @@ namespace hal {
 
 template<class T>
 using result = boost::leaf::result<T>;
-using status = boost::leaf::result<void>;
+using status = result<void>;
 
 template<class TryBlock, class... H>
 [[nodiscard]] constexpr auto attempt(TryBlock&& p_try_block, H&&... p_handlers)

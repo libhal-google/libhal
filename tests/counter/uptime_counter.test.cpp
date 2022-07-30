@@ -12,7 +12,7 @@ boost::ut::suite uptime_utility_test = []() {
   class mock_counter : public hal::counter
   {
   public:
-    boost::leaf::result<uptime_t> driver_uptime() noexcept override
+    result<uptime_t> driver_uptime() noexcept override
     {
       auto count = uptime_sequence.front();
       uptime_sequence.pop();

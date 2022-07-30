@@ -70,15 +70,14 @@ struct map_range
  * output range.
  * @param p_input_range - the input range of p_target
  * @param p_output_range - the output range to map p_target to
- * @return constexpr boost::leaf::result<T> - value mapped from input range to
+ * @return constexpr result<T> - value mapped from input range to
  * the output range.
  * @throws std::errc::invalid_argument if input_range has a distance of zero.
  */
 template<typename T>
-[[nodiscard]] constexpr boost::leaf::result<T> map(
-  T p_target,
-  map_range<T> p_input_range,
-  map_range<T> p_output_range) noexcept
+[[nodiscard]] constexpr result<T> map(T p_target,
+                                      map_range<T> p_input_range,
+                                      map_range<T> p_output_range) noexcept
 {
   static_assert(sizeof(T) <= sizeof(std::uint32_t));
 

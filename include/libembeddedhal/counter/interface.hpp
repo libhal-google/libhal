@@ -46,13 +46,13 @@ public:
    *
    * @return uptime_t - the current uptime since the counter has started.
    */
-  [[nodiscard]] boost::leaf::result<uptime_t> uptime() noexcept
+  [[nodiscard]] result<uptime_t> uptime() noexcept
   {
     return driver_uptime();
   }
 
 private:
-  virtual boost::leaf::result<uptime_t> driver_uptime() noexcept = 0;
+  virtual result<uptime_t> driver_uptime() noexcept = 0;
 };
 /** @} */
 }  // namespace hal

@@ -48,11 +48,10 @@ public:
    * @brief Configure spi to match the settings supplied
    *
    * @param p_settings - settings to apply to spi
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(
-    const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -71,24 +70,21 @@ public:
    * dropped.
    * @param p_filler - filler data placed on the bus in place of actual write
    * data when p_data_out has been exhausted.
-   * @return boost::leaf::result<void> - any error that occurred during this
+   * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> transfer(
-    std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in,
-    std::byte p_filler = default_filler) noexcept
+  [[nodiscard]] status transfer(std::span<const std::byte> p_data_out,
+                                std::span<std::byte> p_data_in,
+                                std::byte p_filler = default_filler) noexcept
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
 
 private:
-  virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept = 0;
-  virtual boost::leaf::result<void> driver_transfer(
-    std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in,
-    std::byte p_filler) noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_transfer(std::span<const std::byte> p_data_out,
+                                 std::span<std::byte> p_data_in,
+                                 std::byte p_filler) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

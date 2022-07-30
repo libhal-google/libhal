@@ -27,7 +27,7 @@ struct counter : public hal::counter
   }
 
 private:
-  boost::leaf::result<uptime_t> driver_uptime() noexcept
+  result<uptime_t> driver_uptime() noexcept
   {
     if (m_uptimes.size() == 0) {
       return boost::leaf::new_error(

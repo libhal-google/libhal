@@ -31,13 +31,11 @@ struct pwm : public hal::pwm
   spy_handler<percent> spy_duty_cycle;
 
 private:
-  boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   };
-  boost::leaf::result<void> driver_duty_cycle(
-    percent p_duty_cycle) noexcept override
+  status driver_duty_cycle(percent p_duty_cycle) noexcept override
   {
     return spy_duty_cycle.record(p_duty_cycle);
   };

@@ -22,9 +22,9 @@ namespace hal {
  *
  * @param p_counter - hal::counter implementation
  * @param p_duration - amount of time until timeout
- * @return boost::leaf::result<hal::counter_timeout>
+ * @return result<hal::counter_timeout>
  */
-inline boost::leaf::result<hal::counter_timeout> create_timeout(
+inline result<hal::counter_timeout> create_timeout(
   hal::counter& p_counter,
   hal::time_duration p_duration)
 {
@@ -36,19 +36,18 @@ inline boost::leaf::result<hal::counter_timeout> create_timeout(
  *
  * @param p_counter - counter driver
  * @param p_duration - the amount of time to delay for, must be positive
- * @return boost::leaf::result<void> - returns any errors that result from
+ * @return status - returns any errors that result from
  * hal::counter::uptime(), otherwise returns success.
  * @throws std::errc::result_out_of_range - if the calculated cycle count
  * exceeds std::int64_t.
  */
-[[nodiscard]] inline boost::leaf::result<void> delay(
-  hal::counter& p_counter,
-  hal::time_duration p_duration) noexcept
+[[nodiscard]] inline status delay(hal::counter& p_counter,
+                                  hal::time_duration p_duration) noexcept
 {
   if (p_duration < hal::time_duration(0)) {
     return boost::leaf::new_error(std::errc::result_out_of_range);
   }
-  auto timeout_object = BOOST_LEAF_CHECK(create_timeout(p_counter, p_duration));
+  auto timeout_object = HAL_CHECK(create_timeout(p_counter, p_duration));
   return delay(timeout_object);
 }
 /** @} */

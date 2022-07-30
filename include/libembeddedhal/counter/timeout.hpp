@@ -24,18 +24,17 @@ public:
   /**
    * @brief Create a counter_timeout
    *
-   * @return boost::leaf::result<counter_timeout> - counter_timeout object
+   * @return result<counter_timeout> - counter_timeout object
    * @throws std::errc::result_out_of_range if time duration is negative
    */
-  static boost::leaf::result<counter_timeout> create(
-    hal::counter& p_counter,
-    hal::time_duration p_duration)
+  static result<counter_timeout> create(hal::counter& p_counter,
+                                        hal::time_duration p_duration)
   {
     if (p_duration < hal::time_duration(0)) {
       return boost::leaf::new_error(std::errc::result_out_of_range);
     }
 
-    const auto [frequency, count] = BOOST_LEAF_CHECK(p_counter.uptime());
+    const auto [frequency, count] = HAL_CHECK(p_counter.uptime());
     auto cycles = cycles_per(frequency, p_duration);
 
     return counter_timeout(p_counter, cycles);
@@ -72,13 +71,13 @@ public:
   /**
    * @brief Call this object to check if it has timed out.
    *
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::timed_out - if the number of cycles until timeout has
    * been exceeded.
    */
-  boost::leaf::result<void> operator()() noexcept
+  status operator()() noexcept
   {
-    auto current_count = BOOST_LEAF_CHECK(m_counter->uptime()).count;
+    auto current_count = HAL_CHECK(m_counter->uptime()).count;
     std::uint32_t delta_count = current_count - m_previous_count;
     m_cycles_until_timeout -= delta_count;
 

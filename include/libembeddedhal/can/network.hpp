@@ -176,22 +176,21 @@ public:
    * called as such:
    *
    * ```C++
-   * auto* motor_node   = BOOST_LEAF_CHECK(network.register_message_id(0x140));
-   * auto* encoder_node = BOOST_LEAF_CHECK(network.register_message_id(0x561));
-   * auto* fan_node     = BOOST_LEAF_CHECK(network.register_message_id(0x7AA));
+   * auto* motor_node   = HAL_CHECK(network.register_message_id(0x140));
+   * auto* encoder_node = HAL_CHECK(network.register_message_id(0x561));
+   * auto* fan_node     = HAL_CHECK(network.register_message_id(0x7AA));
    * ```
    *
    * @param p_id - Associated ID of messages to be stored.
    * @throw std::bad_alloc if this static storage allocated for this object is
    * not enough to hold
-   * @return boost::leaf::result<node_t*> - reference to the can BUS network
+   * @return result<node_t*> - reference to the can BUS network
    * node_t which can be used at anytime to retrieve the latest received message
    * from the can BUS that is associated with the set ID.
    * @throws std::errc::not_enough_memory if the internal network map does not
    * have enough space to add this additional node.
    */
-  [[nodiscard]] boost::leaf::result<node_t*> register_message_id(
-    can::id_t p_id) noexcept
+  [[nodiscard]] result<node_t*> register_message_id(can::id_t p_id) noexcept
   {
     node_t empty_node;
 

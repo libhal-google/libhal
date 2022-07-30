@@ -23,7 +23,7 @@ struct temperature_sensor : public hal::temperature_sensor
   }
 
 private:
-  boost::leaf::result<microkelvin> driver_read() noexcept
+  result<microkelvin> driver_read() noexcept
   {
     if (m_temperatures.size() == 0) {
       return boost::leaf::new_error(

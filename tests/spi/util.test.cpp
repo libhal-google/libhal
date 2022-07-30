@@ -13,15 +13,13 @@ boost::ut::suite spi_util_test = []() {
   class dummy : public hal::spi
   {
   public:
-    [[nodiscard]] boost::leaf::result<void> driver_configure(
-      const settings&) noexcept override
+    [[nodiscard]] status driver_configure(const settings&) noexcept override
     {
       return {};
     }
-    [[nodiscard]] boost::leaf::result<void> driver_transfer(
-      std::span<const std::byte> p_out,
-      std::span<std::byte> p_in,
-      std::byte p_filler) noexcept override
+    [[nodiscard]] status driver_transfer(std::span<const std::byte> p_out,
+                                         std::span<std::byte> p_in,
+                                         std::byte p_filler) noexcept override
     {
       if (!p_out.empty()) {
         m_out = p_out;

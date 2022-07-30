@@ -30,17 +30,16 @@ struct output_pin : public hal::output_pin
   spy_handler<bool> spy_level;
 
 private:
-  boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   }
-  boost::leaf::result<void> driver_level(bool p_high) noexcept override
+  status driver_level(bool p_high) noexcept override
   {
     m_current_level = p_high;
     return spy_level.record(p_high);
   }
-  boost::leaf::result<bool> driver_level() noexcept override
+  result<bool> driver_level() noexcept override
   {
     return m_current_level;
   }

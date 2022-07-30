@@ -47,12 +47,11 @@ struct interrupt_pin : public hal::interrupt_pin
   spy_handler<bool> spy_detach_interrupt;
 
 private:
-  boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   }
-  boost::leaf::result<bool> driver_level() noexcept override
+  result<bool> driver_level() noexcept override
   {
     if (m_levels.size() == 0) {
       return boost::leaf::new_error(
@@ -62,13 +61,12 @@ private:
     m_levels.pop();
     return m_current_value;
   }
-  boost::leaf::result<void> driver_attach_interrupt(
-    std::function<void(void)> p_callback,
-    trigger_edge p_trigger) noexcept override
+  status driver_attach_interrupt(std::function<void(void)> p_callback,
+                                 trigger_edge p_trigger) noexcept override
   {
     return spy_attach_interrupt.record(p_callback, p_trigger);
   }
-  boost::leaf::result<void> driver_detach_interrupt() noexcept override
+  status driver_detach_interrupt() noexcept override
   {
     return spy_detach_interrupt.record(true);
   }

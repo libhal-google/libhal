@@ -57,10 +57,10 @@ public:
   /**
    * @brief Determine if the timer is currently running
    *
-   * @return boost::leaf::result<bool> - true if timer is currently running
-   * @return boost::leaf::result<bool> - driver specific error, if any.
+   * @return result<bool> - true if timer is currently running
+   * @return result<bool> - driver specific error, if any.
    */
-  [[nodiscard]] boost::leaf::result<bool> is_running() noexcept
+  [[nodiscard]] result<bool> is_running() noexcept
   {
     return driver_is_running();
   }
@@ -74,9 +74,9 @@ public:
    * schedule event expires, this function may not complete before the hardware
    * calls the callback.
    *
-   * @return boost::leaf::result<void> - driver specific error, if any.
+   * @return status - driver specific error, if any.
    */
-  [[nodiscard]] boost::leaf::result<void> clear() noexcept
+  [[nodiscard]] status clear() noexcept
   {
     return driver_clear();
   }
@@ -89,22 +89,20 @@ public:
    *
    * @param p_callback - callback function to be called when the timer expires
    * @param p_delay - the amount of time before the timer expires
-   * @return boost::leaf::result<void> - returns `delay_too_small` or
+   * @return status - returns `delay_too_small` or
    * `delay_too_large` if p_interval cannot be reached.
    */
-  [[nodiscard]] boost::leaf::result<void> schedule(
-    std::function<void(void)> p_callback,
-    std::chrono::nanoseconds p_delay) noexcept
+  [[nodiscard]] status schedule(std::function<void(void)> p_callback,
+                                std::chrono::nanoseconds p_delay) noexcept
   {
     return driver_schedule(p_callback, p_delay);
   }
 
 private:
-  virtual boost::leaf::result<bool> driver_is_running() noexcept = 0;
-  virtual boost::leaf::result<void> driver_clear() noexcept = 0;
-  virtual boost::leaf::result<void> driver_schedule(
-    std::function<void(void)> p_callback,
-    std::chrono::nanoseconds p_delay) noexcept = 0;
+  virtual result<bool> driver_is_running() noexcept = 0;
+  virtual status driver_clear() noexcept = 0;
+  virtual status driver_schedule(std::function<void(void)> p_callback,
+                                 std::chrono::nanoseconds p_delay) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

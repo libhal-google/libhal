@@ -28,7 +28,7 @@ struct dac : public hal::dac
   spy_handler<percent> spy_write;
 
 private:
-  boost::leaf::result<void> driver_write(percent p_value) noexcept override
+  status driver_write(percent p_value) noexcept override
   {
     return spy_write.record(p_value);
   };

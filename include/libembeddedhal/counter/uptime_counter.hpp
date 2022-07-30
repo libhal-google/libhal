@@ -38,15 +38,15 @@ public:
    * To get the correct uptime, this function must be called within a 15
    * week time period to hold accuracy.
    *
-   * @return boost::leaf::result<std::chrono::nanoseconds> - returns the
+   * @return result<std::chrono::nanoseconds> - returns the
    */
-  boost::leaf::result<std::chrono::nanoseconds> uptime()
+  result<std::chrono::nanoseconds> uptime()
   {
-    const auto [frequency, new_uptime] = BOOST_LEAF_CHECK(m_counter->uptime());
+    const auto [frequency, new_uptime] = HAL_CHECK(m_counter->uptime());
     auto time_delta =
       static_cast<decltype(m_previous_count)>(new_uptime - m_previous_count);
     auto nanosecond_delta =
-      BOOST_LEAF_CHECK(frequency.duration_from_cycles(time_delta));
+      HAL_CHECK(frequency.duration_from_cycles(time_delta));
     m_last_uptime += nanosecond_delta;
     m_previous_count = new_uptime;
     return m_last_uptime;

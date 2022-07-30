@@ -22,9 +22,9 @@ namespace hal {
  * @param p_address - target address
  * @param p_data_out - buffer of bytes to write to the target device
  * @param p_timeout - amount of time to execute the transaction
- * @return boost::leaf::result<void> - any errors associated with the read call
+ * @return status - any errors associated with the read call
  */
-[[nodiscard]] inline boost::leaf::result<void> write(
+[[nodiscard]] inline status write(
   i2c& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
@@ -42,9 +42,9 @@ namespace hal {
  * @param p_address - target address
  * @param p_data_in - buffer to read bytes into from target device
  * @param p_timeout - amount of time to execute the transaction
- * @return boost::leaf::result<void> - any errors associated with the read call
+ * @return status - any errors associated with the read call
  */
-[[nodiscard]] inline boost::leaf::result<void> read(
+[[nodiscard]] inline status read(
   i2c& p_i2c,
   std::byte p_address,
   std::span<std::byte> p_data_in,
@@ -62,17 +62,17 @@ namespace hal {
  * @param p_i2c - i2c driver
  * @param p_address - target address
  * @param p_timeout - amount of time to execute the transaction
- * @return boost::leaf::result<std::array<std::byte, BytesToRead>> - array of
+ * @return result<std::array<std::byte, BytesToRead>> - array of
  * bytes from target device or an error.
  */
 template<size_t BytesToRead>
-[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
+[[nodiscard]] result<std::array<std::byte, BytesToRead>> read(
   i2c& p_i2c,
   std::byte p_address,
   std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  BOOST_LEAF_CHECK(read(p_i2c, p_address, buffer, p_timeout));
+  HAL_CHECK(read(p_i2c, p_address, buffer, p_timeout));
   return buffer;
 }
 /**
@@ -87,9 +87,9 @@ template<size_t BytesToRead>
  * @param p_data_in - buffer to read bytes into from target device
  * @param p_timeout - amount of time to execute the transaction
  *
- * @return boost::leaf::result<void> - any errors associated with the read call
+ * @return status - any errors associated with the read call
  */
-[[nodiscard]] inline boost::leaf::result<void> write_then_read(
+[[nodiscard]] inline status write_then_read(
   i2c& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
@@ -109,19 +109,17 @@ template<size_t BytesToRead>
  * @param p_address - target address
  * @param p_data_out - buffer of bytes to write to the target device
  * @param p_timeout - amount of time to execute the transaction
- * @return boost::leaf::result<std::array<std::byte, BytesToRead>>
+ * @return result<std::array<std::byte, BytesToRead>>
  */
 template<size_t BytesToRead>
-[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
-write_then_read(
+[[nodiscard]] result<std::array<std::byte, BytesToRead>> write_then_read(
   i2c& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
   std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  BOOST_LEAF_CHECK(
-    write_then_read(p_i2c, p_address, p_data_out, buffer, p_timeout));
+  HAL_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer, p_timeout));
   return buffer;
 }
 /// @}

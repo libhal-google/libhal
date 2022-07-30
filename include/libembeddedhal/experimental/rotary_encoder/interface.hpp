@@ -28,15 +28,15 @@ public:
    * stored rotations than allowed, then external support will need to be added
    * to allow for an additional counter of storage.
    *
-   * @return boost::leaf::result<microrotation> - current angular position
+   * @return result<microrotation> - current angular position
    * reading or an error.
    */
-  [[nodiscard]] boost::leaf::result<microrotation> read() noexcept
+  [[nodiscard]] result<microrotation> read() noexcept
   {
     return driver_read();
   }
 
 private:
-  virtual boost::leaf::result<microrotation> driver_read() noexcept = 0;
+  virtual result<microrotation> driver_read() noexcept = 0;
 };
 }  // namespace hal

@@ -51,16 +51,16 @@ public:
    *   0%.
    *
    * @param p_power - the amount of power to apply to the motor
-   * @return boost::leaf::result<void> - success or an error that occurred when
+   * @return status - success or an error that occurred when
    * attempting to set the power output of the motor.
    */
-  [[nodiscard]] boost::leaf::result<void> power(percent p_power) noexcept
+  [[nodiscard]] status power(percent p_power) noexcept
   {
     return driver_power(p_power);
   }
 
 private:
-  virtual boost::leaf::result<void> driver_power(percent p_power) noexcept = 0;
+  virtual status driver_power(percent p_power) noexcept = 0;
 };
 /** @} */
 }  // namespace hal
