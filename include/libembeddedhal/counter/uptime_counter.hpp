@@ -2,7 +2,7 @@
 
 #include "interface.hpp"
 
-namespace embed::experimental {
+namespace hal::experimental {
 /**
  * @addtogroup counter
  * @{
@@ -53,9 +53,9 @@ public:
   }
 
 private:
-  embed::counter_interface* m_counter = nullptr;
+  hal::counter_interface* m_counter = nullptr;
   uint32_t m_previous_count{};
   std::chrono::nanoseconds m_last_uptime{};
 };
 /** @} */
-}  // namespace embed::experimental
+}  // namespace hal::experimental

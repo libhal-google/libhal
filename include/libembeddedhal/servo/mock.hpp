@@ -3,7 +3,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup servo
  * @{
@@ -13,7 +13,7 @@ namespace embed::mock {
  * simulations.
  *
  */
-struct servo : public embed::servo
+struct servo : public hal::servo
 {
   /**
    * @brief Reset spy information for position()
@@ -24,8 +24,8 @@ struct servo : public embed::servo
     spy_position.reset();
   }
 
-  /// Spy handler for embed::servo::position()
-  spy_handler<embed::percent> spy_position;
+  /// Spy handler for hal::servo::position()
+  spy_handler<hal::percent> spy_position;
 
 private:
   boost::leaf::result<void> driver_position(
@@ -35,4 +35,4 @@ private:
   }
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

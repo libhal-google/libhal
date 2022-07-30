@@ -5,7 +5,7 @@
 
 #include "../error.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup timer
  * Available timer APIs
@@ -107,4 +107,4 @@ private:
     std::chrono::nanoseconds p_delay) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

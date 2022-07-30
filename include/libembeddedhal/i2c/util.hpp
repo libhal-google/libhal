@@ -8,7 +8,7 @@
 #include "../error.hpp"
 #include "interface.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup i2c
  * @{
@@ -28,7 +28,7 @@ namespace embed {
   i2c& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
-  std::function<embed::timeout> p_timeout = embed::never_timeout()) noexcept
+  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   return p_i2c.transaction(
     p_address, p_data_out, std::span<std::byte>{}, p_timeout);
@@ -48,7 +48,7 @@ namespace embed {
   i2c& p_i2c,
   std::byte p_address,
   std::span<std::byte> p_data_in,
-  std::function<embed::timeout> p_timeout = embed::never_timeout()) noexcept
+  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   return p_i2c.transaction(
     p_address, std::span<std::byte>{}, p_data_in, p_timeout);
@@ -69,7 +69,7 @@ template<size_t BytesToRead>
 [[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
   i2c& p_i2c,
   std::byte p_address,
-  std::function<embed::timeout> p_timeout = embed::never_timeout()) noexcept
+  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   BOOST_LEAF_CHECK(read(p_i2c, p_address, buffer, p_timeout));
@@ -94,7 +94,7 @@ template<size_t BytesToRead>
   std::byte p_address,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in,
-  std::function<embed::timeout> p_timeout = embed::never_timeout()) noexcept
+  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   return p_i2c.transaction(p_address, p_data_out, p_data_in, p_timeout);
 }
@@ -117,7 +117,7 @@ write_then_read(
   i2c& p_i2c,
   std::byte p_address,
   std::span<const std::byte> p_data_out,
-  std::function<embed::timeout> p_timeout = embed::never_timeout()) noexcept
+  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
   BOOST_LEAF_CHECK(
@@ -125,4 +125,4 @@ write_then_read(
   return buffer;
 }
 /// @}
-}  // namespace embed
+}  // namespace hal

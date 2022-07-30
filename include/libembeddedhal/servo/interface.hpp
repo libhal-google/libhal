@@ -3,7 +3,7 @@
 #include "../error.hpp"
 #include "../percent.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup servo
  * Available servo APIs
@@ -69,21 +69,21 @@ public:
    *
    *     // This is a made up servo has 180 degrees of movement and has absolute
    *     // positioning.
-   *     embed::example_servo servo;  // implements embed::servo
+   *     hal::example_servo servo;  // implements hal::servo
    *     // Move to center position
-   *     servo.position(embed::percent::from_ratio(0, 90));
+   *     servo.position(hal::percent::from_ratio(0, 90));
    *     // ... delay ...
    *     // Move to the +45 degrees position
-   *     servo.position(embed::percent::from_ratio(45, 90));
+   *     servo.position(hal::percent::from_ratio(45, 90));
    *     // ... delay ...
    *     // Move to the -45 degrees position
-   *     servo.position(embed::percent::from_ratio(-45, 90));
+   *     servo.position(hal::percent::from_ratio(-45, 90));
    *     // ... delay ...
    *     // Move to the -90 degrees position
-   *     servo.position(embed::percent::from_ratio(-90, 90));
+   *     servo.position(hal::percent::from_ratio(-90, 90));
    *     // ... delay ...
    *     // Move to the +90 degrees position
-   *     servo.position(embed::percent::from_ratio(90, 90));
+   *     servo.position(hal::percent::from_ratio(90, 90));
    *
    * @param p_position - position to move the servo to
    * @return boost::leaf::result<void> - success or error flag
@@ -98,4 +98,4 @@ private:
     percent p_position) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

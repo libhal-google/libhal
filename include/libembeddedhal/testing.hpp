@@ -3,7 +3,7 @@
 #include <tuple>
 #include <vector>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup testing
  * @{
@@ -86,4 +86,4 @@ private:
   int m_error_trigger = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

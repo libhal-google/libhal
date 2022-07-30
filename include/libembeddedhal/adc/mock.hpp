@@ -1,7 +1,7 @@
 #pragma once
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup adc
  * @{
@@ -9,21 +9,21 @@ namespace embed::mock {
 /**
  * @brief Mock adc implementation for use in unit tests and simulations.
  */
-struct adc : public embed::adc
+struct adc : public hal::adc
 {
   /**
    * @brief Construct a new adc object
    *
    * @param p_adc_value - percent value for adc
    */
-  adc(embed::percent p_adc_value)
+  adc(hal::percent p_adc_value)
     : m_adc_value(p_adc_value){};
   /**
    * @brief Set the mock adc to a given value
    *
    * @param p_adc_value - percent value to set adc to
    */
-  void set(embed::percent p_adc_value)
+  void set(hal::percent p_adc_value)
   {
     m_adc_value = p_adc_value;
   }
@@ -34,7 +34,7 @@ private:
     return m_adc_value;
   }
 
-  embed::percent m_adc_value = embed::percent::from_ratio(0, 1);
+  hal::percent m_adc_value = hal::percent::from_ratio(0, 1);
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

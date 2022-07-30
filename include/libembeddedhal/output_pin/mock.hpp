@@ -3,7 +3,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup output_pin Output Pin
  * @{
@@ -12,7 +12,7 @@ namespace embed::mock {
  * @brief mock output pin for use in unit tests and simulations
  *
  */
-struct output_pin : public embed::output_pin
+struct output_pin : public hal::output_pin
 {
   /**
    * @brief Reset spy information for configure() and level()
@@ -24,9 +24,9 @@ struct output_pin : public embed::output_pin
     spy_level.reset();
   }
 
-  /// Spy handler for embed::output_pin::configure()
+  /// Spy handler for hal::output_pin::configure()
   spy_handler<settings> spy_configure;
-  /// Spy handler for embed::output_pin::level()
+  /// Spy handler for hal::output_pin::level()
   spy_handler<bool> spy_level;
 
 private:
@@ -47,4 +47,4 @@ private:
   bool m_current_level = false;
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

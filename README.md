@@ -212,9 +212,9 @@ Using an lpc4078:
 
 int main() {
   // Get pin P0[2] as an output pin
-  embed::output_pin & led = embed::lpc40xx::output_pin::get<0, 2>();
+  hal::output_pin & led = hal::lpc40xx::output_pin::get<0, 2>();
   // Get pin P1[6] as an input pin
-  embed::input_pin & button = embed::lpc40xx::input_pin::get<1, 6>();
+  hal::input_pin & button = hal::lpc40xx::input_pin::get<1, 6>();
 
   while (true)
   {
@@ -230,7 +230,7 @@ int main() {
 NOTE: that normally you wouldn't just get the value out of the function
 `button.level()` using the `::value()` function because this exits the
 application if the response contains an error. Luckily
-`embed::lpc40xx::input_pin` never returns an error so the error handling check
+`hal::lpc40xx::input_pin` never returns an error so the error handling check
 can be ignored.
 
 ## Blink Example
@@ -247,18 +247,18 @@ Using stm32f10x:
 
 int main() {
   // Get pin A2 as an output pin
-  embed::output_pin & led = embed::stm32f10x::output_pin::get<'A', 2>();
+  hal::output_pin & led = hal::stm32f10x::output_pin::get<'A', 2>();
   // Construct a hardware counter
-  embed::counter & counter = embed::cortex_m::dwt_counter::get(
-      embed::stm32f10x::clock::cpu());
+  hal::counter & counter = hal::cortex_m::dwt_counter::get(
+      hal::stm32f10x::clock::cpu());
 
   while (true)
   {
     using std::chrono::literals;
     led.level(true);
-    embed::delay(counter, 500ms);
+    hal::delay(counter, 500ms);
     led.level(false);
-    embed::delay(counter, 500ms);
+    hal::delay(counter, 500ms);
   }
 }
 ```
@@ -295,9 +295,9 @@ libembeddedhal/
 │   ├── unit.hpp (contains any units associated with the interface)
 │   └── util.hpp (utilities for the interface can be found here)
 ├── i2c (example interface)
-│   ├── interface.hpp (holds the embed::i2c interface)
-│   ├── thread_safe.hpp (holds a soft driver implementing embed::i2c but with lock support)
-│   └── util.hpp (holds embed::i2c utilities)
+│   ├── interface.hpp (holds the hal::i2c interface)
+│   ├── thread_safe.hpp (holds a soft driver implementing hal::i2c but with lock support)
+│   └── util.hpp (holds hal::i2c utilities)
 ├── internal (internal code that should NOT be accessed directly)
 │   └── third_party (dependencies for libembeddedhal)
 │       ├── leaf.hpp (add Boost.LEAF for error handling and transport)
@@ -319,16 +319,16 @@ libembeddedhal/
 
 Utility functions help eliminate boilerplate code for the application and driver
 writers. They provide common semantics for drivers such as being able to
-call `embed::read(/* insert interface here */)` on interfaces that have
+call `hal::read(/* insert interface here */)` on interfaces that have
 read/sample capabilities.
 
 Meaning that the following code should work for all three of these functions.
 
 ```cpp
 constexpr std::byte address(0x17);
-auto response_i2c = embed::read<1>(i2c, address);
-auto response_spi = embed::read<1>(spi);
-auto response_uart = embed::read<1>(uart);
+auto response_i2c = hal::read<1>(i2c, address);
+auto response_spi = hal::read<1>(spi);
+auto response_uart = hal::read<1>(uart);
 ```
 
 Utility functions are always "free" functions. "Free" means a non-class member
@@ -343,20 +343,20 @@ An example of UFCS would be the following:
 
 ```cpp
 // These two will be equivalent in C++26
-auto c_style_call = embed::read<1>(spi);
+auto c_style_call = hal::read<1>(spi);
 auto ufcs_style_call = spi.read<1>();
 ```
 
 ### Finding Utilities
 
 Utility headers can be found within interface folders with the name `util.hpp`.
-For example if you want to use utilities for `embed::adc` then you would
+For example if you want to use utilities for `hal::adc` then you would
 include `#include <libembeddedhal/adc/util.hpp>`.
 
 ### Common Utility Functions
 
 To keep the semantics consistent almost every driver will have either or both a
-`embed::read()` or `embed::write()` free function. These functions should do
+`hal::read()` or `hal::write()` free function. These functions should do
 what a typical developer should expect, read from the device for input devices
 or write to the device for output devices. The exact behavior depends on the
 interface.
@@ -400,15 +400,15 @@ Follow along with the example code below
 #include <libmpu6050/mpu6050.hpp>
 
 int main() {
-  embed::i2c & i2c = /* some i2c driver provided here */;
+  hal::i2c & i2c = /* some i2c driver provided here */;
   // Create an mpu6050 driver and pass the i2c associated with the physical i2c
   // bus that is connected to the mpu6050's SDA and SCL lines.
-  embed::mpu6050 mpu6050(i2c);
+  hal::mpu6050 mpu6050(i2c);
 
   // Get a reference to the accelerometer portion of the mpu6050
-  embed::accelerometer & accelerometer = mpu6050.as_accelerometer();
+  hal::accelerometer & accelerometer = mpu6050.as_accelerometer();
   // Get a reference to the gyroscope portion of the mpu6050
-  embed::gyroscope & gyroscope = mpu6050.as_gyroscope();
+  hal::gyroscope & gyroscope = mpu6050.as_gyroscope();
 
   // Read a sample from the acceleration of the mpu6050
   auto accelerometer_sample = accelerometer.read();
@@ -433,10 +433,10 @@ generic.
 
 A useful soft driver that can be used when a target does not have an spi
 peripheral or cannot use one of the available spi busses, is the
-`embed::bit_bang_spi`. "bit bang" refers to any method of data transmission that
+`hal::bit_bang_spi`. "bit bang" refers to any method of data transmission that
 employs software as a substitute for dedicated hardware to generate transmitted
-signals or process received signals. `embed::bit_bang_spi` implements the
-`embed::spi` interface using 2 `embed::output_pins` and 1 `embed::input_pin`.
+signals or process received signals. `hal::bit_bang_spi` implements the
+`hal::spi` interface using 2 `hal::output_pins` and 1 `hal::input_pin`.
 
 Being software emulated this driver is far slower than using hardware driven
 spi.
@@ -448,14 +448,14 @@ spi.
 
 int main() {
   // Get references to all of the pins you want to use for spi emulation
-  embed::output_pin & clock = embed::lpc40xx::output_pin::get<0, 1>();
-  embed::output_pin & data_out = embed::lpc40xx::output_pin::get<0, 2>();
-  embed::input_pin & data_in = embed::lpc40xx::input_pin::get<0, 3>();
+  hal::output_pin & clock = hal::lpc40xx::output_pin::get<0, 1>();
+  hal::output_pin & data_out = hal::lpc40xx::output_pin::get<0, 2>();
+  hal::input_pin & data_in = hal::lpc40xx::input_pin::get<0, 3>();
   // Get an output_pin and have it act like a chip select
-  embed::output_pin & chip_select = embed::lpc40xx::output_pin::get<0, 4>();
+  hal::output_pin & chip_select = hal::lpc40xx::output_pin::get<0, 4>();
 
   // Construct the bit_bang_spi object using the implementations above
-  embed::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
+  hal::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
 
   std::array<std::byte, 4> payload = {
     std::byte(0x11),
@@ -465,7 +465,7 @@ int main() {
   };
 
   chip_select.level(false);
-  embed::write(bit_bang_spi, payload);
+  hal::write(bit_bang_spi, payload);
   chip_select.level(true);
 
   return 0;
@@ -482,20 +482,20 @@ expander:
 #include <liblpc40xx/input_pin.hpp>
 
 int main() {
-  embed::i2c & i2c0 = embed::lpc40xx::i2c::get<0>();
-  embed::pca9536 io_expander(i2c0);
+  hal::i2c & i2c0 = hal::lpc40xx::i2c::get<0>();
+  hal::pca9536 io_expander(i2c0);
 
   // Get references to all of the pins you want to use for spi emulation
-  embed::output_pin & clock = io_expander.get_as_output_pin<1>();
-  embed::output_pin & data_out = io_expander.get_as_output_pin<2>();
-  embed::input_pin & data_in = io_expander.get_as_input_pin<3>();
-  embed::output_pin & chip_select = io_expander.get_as_output_pin<4>();
+  hal::output_pin & clock = io_expander.get_as_output_pin<1>();
+  hal::output_pin & data_out = io_expander.get_as_output_pin<2>();
+  hal::input_pin & data_in = io_expander.get_as_input_pin<3>();
+  hal::output_pin & chip_select = io_expander.get_as_output_pin<4>();
 
   // NOTICE: That the code below doesn't have to change even if the pin
   // implementations change.
 
   // Construct the bit_bang_spi object using the implementations above
-  embed::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
+  hal::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
 
   // Get an output_pin and have it act like a chip select
 
@@ -507,7 +507,7 @@ int main() {
   };
 
   chip_select.level(false);
-  embed::write(bit_bang_spi, payload);
+  hal::write(bit_bang_spi, payload);
   chip_select.level(true);
 
   return 0;
@@ -520,11 +520,11 @@ Utility classes are like soft drivers except they do not implement hardware
 interfaces. Utility classes are generally used to manage an interface and
 extend a driver's usefulness.
 
-Examples of this would be `embed::can_network` which takes an `embed::can`
+Examples of this would be `hal::can_network` which takes an `hal::can`
 implementation and manages a map of the messages the device has received on the
 can bus.
 
-Another example is `embed::uptime_counter` which takes an `embed::counter` and
+Another example is `hal::uptime_counter` which takes an `hal::counter` and
 for each call for uptime on the uptime counter, the class checks if the 32-bit
 counter has overflowed. If it has, then increment another 32-bit number with the
 number of overflows counted. Return the result as a 64-bit number which is the
@@ -532,11 +532,11 @@ concatenation of both 32-bit numbers. This driver, so long as it is checked
 often enough, can take a 32-bit hardware counter and extend it to a 64-bit
 counter.
 
-### embed::percent
+### hal::percent
 
 (TODO)
 
-### embed::frequency
+### hal::frequency
 
 (TODO)
 
@@ -588,7 +588,7 @@ void throw_exception(std::exception const& e)
 int main()
 {
   // Get an i2c peripheral implementation
-  auto& i2c0 = embed::lpc40xx::i2c::get<0>();
+  auto& i2c0 = hal::lpc40xx::i2c::get<0>();
 
   // Default configure the i2c0 bus (100kHz clock)
   i2c0.configure({});
@@ -607,11 +607,11 @@ int main()
       // To make sure that errors are transported up the stack each call to a
       // function returning a boost::leaf::result must be wrapped in a
       // BOOST_LEAF_CHECK() macro call.
-      BOOST_LEAF_CHECK(embed::write(i2c, address, dummy_payload));
+      BOOST_LEAF_CHECK(hal::write(i2c, address, dummy_payload));
       return {};
     },
     // Functions after the first are the handlers.
-    // In this case, we only check for embed::i2c::errors.
+    // In this case, we only check for hal::i2c::errors.
     [](std::errc p_error) {
       switch(p_error) {
         case std::errc::no_such_device_or_address:
@@ -663,7 +663,7 @@ for more details.
 ```cpp
 #pragma once
 #include <string_view>
-namespace embed::config {
+namespace hal::config {
 // Defaults to "test". Indicates that the current running platform is a
 // unit/integration test. Change this to the target platform you are building
 // for. For example, if you are targeting the LPC4078 chip, you should change
@@ -674,7 +674,7 @@ constexpr std::string_view platform = "test";
 constexpr bool get_stacktrace_on_error = true;
 // Defaults to "32". The maximum depth a stack trace can reach before it stops
 // adding entries to the stack trace. Changing this effects the amount of space
-// that the embed::stacktrace object takes up in a functions stack when used
+// that the hal::stacktrace object takes up in a functions stack when used
 // with Boost.LEAF.
 constexpr size_t stacktrace_depth_limit = 32;
 // Defaults to "false". If set to false, only the fully qualified function name
@@ -683,7 +683,7 @@ constexpr size_t stacktrace_depth_limit = 32;
 // the file names will increase the binary size of the application as the file
 // name strings need to be stored in ROM.
 constexpr bool get_source_position_on_error = false;
-}  // namespace embed::config
+}  // namespace hal::config
 ```
 
 Create a `libembeddedhal.tweak.hpp` file somewhere in your application and make
@@ -721,14 +721,14 @@ but at the cost of increasing the binary size of the application.
 
 ### Writing Device Drivers with this Technique
 
-Here is an example of a soft driver for `embed::input_pin` which inverts the
+Here is an example of a soft driver for `hal::input_pin` which inverts the
 value of the read function using VSP.
 
 ```cpp
-namespace embed
+namespace hal
 {
-template<typename T = embed::input_pin>
-class invert_read : public embed::input_pin {
+template<typename T = hal::input_pin>
+class invert_read : public hal::input_pin {
 public:
   template<typename U>
   invert_read(U & p_input_pin) : m_input_pin(p_input_pin) {}
@@ -758,14 +758,14 @@ In this scenario, the default class template type has not been explicitly
 changed and thus the code will call class functions in a virtual, indirect way.
 
 ```cpp
-embed::some_mcu::input_pin & input0 = embed::some_mcu::get_input_pin<0>();
-embed::invert_pin runtime_polymorphic(input0);
+hal::some_mcu::input_pin & input0 = hal::some_mcu::get_input_pin<0>();
+hal::invert_pin runtime_polymorphic(input0);
 auto result0 = runtime_polymorphic.read();
 ```
 
 The information about the original class object and its internal implementation
 is not visible to the `runtime_polymorphic` object. So when read is called,
-because the type of the internal pointer is `T = embed::input_pin`, the code
+because the type of the internal pointer is `T = hal::input_pin`, the code
 must perform a virtual call through the interface.
 
 ### Scenario #2: Direct call
@@ -775,13 +775,13 @@ explicitly set to the type of the input pin driver.
 
 ```cpp
 // Uses static (direct) function calls
-embed::some_mcu::input_pin & input1 = embed::some_mcu::get_input_pin<1>();
-embed::invert_pin<embed::some_mcu::input_pin> static_polymorphic(input1);
+hal::some_mcu::input_pin & input1 = hal::some_mcu::get_input_pin<1>();
+hal::invert_pin<hal::some_mcu::input_pin> static_polymorphic(input1);
 auto result1 = runtime_polymorphic.read();
 ```
 
-Now `embed::invert_pin` is no longer dealing with an interface as type `T` is
-now `embed::some_mcu::input_pin`. As far as `embed::invert_pin` is concerned, we
+Now `hal::invert_pin` is no longer dealing with an interface as type `T` is
+now `hal::some_mcu::input_pin`. As far as `hal::invert_pin` is concerned, we
 never used an interface in this case. Note that the constructor's type `U` is
 now equal to the type `T` and thus there is no down casting occurring. Now when
 read is called, the class has full context regarding the implementation of the
@@ -803,18 +803,18 @@ performance. And if you stack these multiple levels deep the performance
 improves stack.
 
 The CONS of this is that for each different unique explicit instantiation of
-`embed::invert_pin`, there will be multiple implementations of the same driver
+`hal::invert_pin`, there will be multiple implementations of the same driver
 in the binary. For example, if a project has 3 drivers that implement the input
-pin interface and each requires an `embed::invert_pin` class to invert their
+pin interface and each requires an `hal::invert_pin` class to invert their
 read values, then you would have the following:
 
 ```cpp
 // using virtual calls
-embed::invert_pin<embed::input_pin>
+hal::invert_pin<hal::input_pin>
 // direct calls to some_mcu::input_pin
-embed::invert_pin<embed::some_mcu::input_pin>
+hal::invert_pin<hal::some_mcu::input_pin>
 // direct calls to io_expander::input_pin
-embed::invert_pin<embed::io_expander::input_pin>
+hal::invert_pin<hal::io_expander::input_pin>
 ```
 
 The cost of all of these driver instantiations can be large for large projects
@@ -836,23 +836,23 @@ int main()
 {
   // Step 1. Create a set of interface pointers to each driver your application
   //         will needed.
-  embed::input_pin * button{};
-  embed::output_pin * led{};
+  hal::input_pin * button{};
+  hal::output_pin * led{};
 
   // Step 2. Map each pointer to their respective peripheral on either device.
   //         `if constexpr` is required to prevent leaking implementation
   //         details from one platform to another. This is important because a
   //         lpc40xx driver can never work on stm32f10 and thus leaking code
   //         into a binary meant for another platform results in code bloat.
-  if constexpr (embed::is_platform("lpc40"))
+  if constexpr (hal::is_platform("lpc40"))
   {
-    button = &embed::lpc40xx::input_pin<0, 1>();
-    led = &embed::lpc40xx::output_pin<0, 2>();
+    button = &hal::lpc40xx::input_pin<0, 1>();
+    led = &hal::lpc40xx::output_pin<0, 2>();
   }
-  else if (embed::is_platform("stm32f10"))
+  else if (hal::is_platform("stm32f10"))
   {
-    button = &embed::stm32f103::input_pin<'A', 1>();
-    led = &embed::stm32f103::output_pin<'B', 2>();
+    button = &hal::stm32f103::input_pin<'A', 1>();
+    led = &hal::stm32f103::output_pin<'B', 2>();
   }
   else
   {
@@ -1052,7 +1052,7 @@ Example of logging where logging can be disabled:
 void my_driver_log([[maybe_unused]] std::string_view p_str,
                    [[maybe_unused]] uint32_t argument)
 {
-  if constexpr (embed::lpc40xx::config::enable_logging)
+  if constexpr (hal::lpc40xx::config::enable_logging)
   {
     std::printf("%s : %" PRIu32, p_str.data(), argument);
   }
@@ -1147,7 +1147,7 @@ possible by placing structures, enums, const data, and any other symbols into
 the driver's class's namespace like so:
 
 ```cpp
-namespace embed::target
+namespace hal::target
 {
 class target {
   struct register_map {

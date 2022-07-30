@@ -5,7 +5,7 @@
 #include "math.hpp"
 #include "percent.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -43,7 +43,7 @@ struct map_range
    */
   auto distance()
   {
-    return embed::distance(x, y);
+    return hal::distance(x, y);
   }
 };
 
@@ -121,7 +121,7 @@ template<typename T>
   auto slope_remainder = output_distance % input_distance;
 
   // Operation is well defined for integers 32-bit and below
-  auto decimal = embed::percent::from_ratio(slope_remainder, input_distance);
+  auto decimal = hal::percent::from_ratio(slope_remainder, input_distance);
 
   // p_target has already been bounds checked and shown to be within the bounds
   // of p_input_range, thus this subtracts operation will never yield an
@@ -132,7 +132,7 @@ template<typename T>
   // confined to the integral type T times the zero aligned target value will
   // never exceed the bounds of T.
   auto quotient_scaled_value = slope_quotient * align_target_to_zero;
-  // Multiplication between embed::percent & a 32-bit number is always a safe
+  // Multiplication between hal::percent & a 32-bit number is always a safe
   // operation.
   auto remainder_scaled_value = decimal * align_target_to_zero;
 
@@ -146,4 +146,4 @@ template<typename T>
   return scaled_value_with_offset;
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal

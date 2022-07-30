@@ -1,11 +1,11 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/math.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite math_test = []() {
   using namespace boost::ut;
 
-  "embed::multiply()"_test = []() {
+  "hal::multiply()"_test = []() {
     "Zero"_test = []() { expect(that % 0 == multiply(0, 0).value()); };
     "One"_test = []() { expect(that % 1 == multiply(1, 1).value()); };
     "Boundaries"_test = []() {
@@ -31,7 +31,7 @@ boost::ut::suite math_test = []() {
     };
   };
 
-  "embed::distance()"_test = []() {
+  "hal::distance()"_test = []() {
     "Zero"_test = []() { expect(that % 0 == distance(0, 0)); };
     "One"_test = []() { expect(that % 1 == distance(0, 1)); };
     "Boundaries"_test = []() {

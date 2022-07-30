@@ -3,13 +3,13 @@
 
 #include "../ostreams.hpp"
 
-namespace embed {
+namespace hal {
 boost::ut::suite counter_utility_test = []() {
   using namespace boost::ut;
 
   static constexpr frequency expected_frequency{ 1'000'000 };
 
-  class dummy_counter : public embed::counter
+  class dummy_counter : public hal::counter
   {
   public:
     uptime_t get_internal_uptime()
@@ -29,9 +29,9 @@ boost::ut::suite counter_utility_test = []() {
 
   // =============== timeout ===============
 
-  "embed::create_timeout(embed::counter, 0ns)"_test = []() {
+  "hal::create_timeout(hal::counter, 0ns)"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(0);
+    static constexpr hal::time_duration expected(0);
     dummy_counter test_counter;
     bool success = false;
 
@@ -57,9 +57,9 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::create_timeout(embed::counter, 50ns)"_test = []() {
+  "hal::create_timeout(hal::counter, 50ns)"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(50);
+    static constexpr hal::time_duration expected(50);
     dummy_counter test_counter;
     bool success = false;
 
@@ -88,9 +88,9 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::create_timeout(embed::counter, 1337ns)"_test = []() {
+  "hal::create_timeout(hal::counter, 1337ns)"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(1337);
+    static constexpr hal::time_duration expected(1337);
     dummy_counter test_counter;
     bool success = false;
 
@@ -119,9 +119,9 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::create_timeout(embed::counter, -5ns) returns error"_test = []() {
+  "hal::create_timeout(hal::counter, -5ns) returns error"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(-5);
+    static constexpr hal::time_duration expected(-5);
     dummy_counter test_counter;
 
     // Exercise
@@ -136,9 +136,9 @@ boost::ut::suite counter_utility_test = []() {
 
   // =============== delay ===============
 
-  "embed::delay(embed::counter, 0ns)"_test = []() {
+  "hal::delay(hal::counter, 0ns)"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(0);
+    static constexpr hal::time_duration expected(0);
     dummy_counter test_counter;
 
     // Exercise
@@ -154,9 +154,9 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::delay(embed::counter, 50ns)"_test = []() {
+  "hal::delay(hal::counter, 50ns)"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(50);
+    static constexpr hal::time_duration expected(50);
     dummy_counter test_counter;
 
     // Exercise
@@ -169,9 +169,9 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::delay(embed::counter, 1337ns)"_test = []() {
+  "hal::delay(hal::counter, 1337ns)"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(1'337);
+    static constexpr hal::time_duration expected(1'337);
     dummy_counter test_counter;
 
     // Exercise
@@ -184,9 +184,9 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 
-  "embed::delay(embed::counter, -5ns) returns error"_test = []() {
+  "hal::delay(hal::counter, -5ns) returns error"_test = []() {
     // Setup
-    static constexpr embed::time_duration expected(-5);
+    static constexpr hal::time_duration expected(-5);
     dummy_counter test_counter;
 
     // Exercise
@@ -199,4 +199,4 @@ boost::ut::suite counter_utility_test = []() {
            test_counter.get_internal_uptime().frequency);
   };
 };
-}  // namespace embed
+}  // namespace hal

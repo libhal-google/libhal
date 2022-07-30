@@ -3,25 +3,25 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/accelerometer/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite accelerometer_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::accelerometer::read()"_test = []() {
+  "hal::mock::accelerometer::read()"_test = []() {
     // Setup
-    embed::mock::accelerometer mock;
-    embed::accelerometer::sample expected1;
-    expected1.axis.x = embed::percent::from_ratio(1, 4);
-    expected1.axis.y = embed::percent::from_ratio(1, 4);
-    expected1.axis.z = embed::percent::from_ratio(1, 4);
-    embed::accelerometer::sample expected2;
-    expected2.axis.x = embed::percent::from_ratio(1, 2);
-    expected2.axis.y = embed::percent::from_ratio(1, 2);
-    expected2.axis.z = embed::percent::from_ratio(1, 2);
-    embed::accelerometer::sample expected3;
-    expected3.axis.x = embed::percent::from_ratio(1, 1);
-    expected3.axis.y = embed::percent::from_ratio(1, 1);
-    expected3.axis.z = embed::percent::from_ratio(1, 1);
+    hal::mock::accelerometer mock;
+    hal::accelerometer::sample expected1;
+    expected1.axis.x = hal::percent::from_ratio(1, 4);
+    expected1.axis.y = hal::percent::from_ratio(1, 4);
+    expected1.axis.z = hal::percent::from_ratio(1, 4);
+    hal::accelerometer::sample expected2;
+    expected2.axis.x = hal::percent::from_ratio(1, 2);
+    expected2.axis.y = hal::percent::from_ratio(1, 2);
+    expected2.axis.z = hal::percent::from_ratio(1, 2);
+    hal::accelerometer::sample expected3;
+    expected3.axis.x = hal::percent::from_ratio(1, 1);
+    expected3.axis.y = hal::percent::from_ratio(1, 1);
+    expected3.axis.z = hal::percent::from_ratio(1, 1);
 
     std::deque samples{ expected1, expected2, expected3 };
     std::queue queue(samples);
@@ -36,4 +36,4 @@ boost::ut::suite accelerometer_mock_test = []() {
     expect(throws([&mock] { mock.read().value(); }));
   };
 };
-}  // namespace embed
+}  // namespace hal

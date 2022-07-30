@@ -5,7 +5,7 @@
 #include "../pwm/interface.hpp"
 #include "interface.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup servo
  * @{
@@ -14,7 +14,7 @@ namespace embed {
  * @brief Generic RC servo driver.
  *
  */
-class rc_servo : public embed::servo
+class rc_servo : public hal::servo
 {
 public:
   /**
@@ -33,7 +33,7 @@ public:
   template<uint32_t Frequency = 50,
            uint32_t MinMicroseconds = 1000,
            uint32_t MaxMicroseconds = 2000>
-  static boost::leaf::result<rc_servo> create(embed::pwm& p_pwm)
+  static boost::leaf::result<rc_servo> create(hal::pwm& p_pwm)
   {
     // Check that MinMicroseconds is less than MaxMicroseconds
     static_assert(
@@ -43,8 +43,8 @@ public:
     static_assert(
       (1000.0 / Frequency) > (MaxMicroseconds / 1000.0),
       "The maximum microseconds is greater than the period of the frequency");
-    constexpr embed::frequency frequency = embed::frequency{ Frequency };
-    constexpr embed::pwm::settings settings{ .frequency = frequency };
+    constexpr hal::frequency frequency = hal::frequency{ Frequency };
+    constexpr hal::pwm::settings settings{ .frequency = frequency };
     BOOST_LEAF_CHECK(p_pwm.configure(settings));
 
     auto frequency_wavelength =
@@ -57,7 +57,7 @@ public:
   }
 
 private:
-  constexpr rc_servo(embed::pwm& p_pwm,
+  constexpr rc_servo(hal::pwm& p_pwm,
                      frequency p_frequency,
                      percent p_min_percent,
                      percent p_max_percent)
@@ -81,10 +81,10 @@ private:
     return m_pwm->duty_cycle(scaled_percent);
   }
 
-  embed::pwm* m_pwm;
-  embed::frequency m_frequency = frequency(50);
+  hal::pwm* m_pwm;
+  hal::frequency m_frequency = frequency(50);
   percent m_min_percent = percent::from_ratio(1, 10);
   percent m_max_percent = percent::from_ratio(2, 10);
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

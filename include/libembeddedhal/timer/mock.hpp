@@ -3,7 +3,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup timer
  * @{
@@ -13,7 +13,7 @@ namespace embed::mock {
  * spy functions for schedule(), clear(), and is_running()
  *
  */
-struct timer : public embed::timer
+struct timer : public hal::timer
 {
   /**
    * @brief Reset spy information for schedule(), clear(), and is_running()
@@ -26,11 +26,11 @@ struct timer : public embed::timer
     spy_is_running.reset();
   }
 
-  /// Spy handler for embed::timer::schedule()
+  /// Spy handler for hal::timer::schedule()
   spy_handler<std::function<void(void)>, std::chrono::nanoseconds> spy_schedule;
-  /// Spy handler for embed::timer::is_running()
+  /// Spy handler for hal::timer::is_running()
   spy_handler<bool> spy_is_running;
-  /// Spy handler for embed::timer::clear()
+  /// Spy handler for hal::timer::clear()
   spy_handler<bool> spy_clear;
 
 private:
@@ -57,4 +57,4 @@ private:
   bool m_is_running = false;
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

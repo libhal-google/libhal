@@ -7,7 +7,7 @@
 #include "../error.hpp"
 #include "interface.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup serial
  * @{
@@ -136,4 +136,4 @@ write_then_read(serial& p_serial,
   return buffer;
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal

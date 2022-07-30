@@ -1,7 +1,7 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/overflow_counter.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite overflow_counter_test = []() {
   using namespace boost::ut;
 
@@ -106,4 +106,4 @@ boost::ut::suite overflow_counter_test = []() {
     expect(that % 0x00A == counter.update(0xA));
   };
 };
-}  // namespace embed
+}  // namespace hal

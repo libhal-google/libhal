@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <concepts>
 
-namespace embed {
+namespace hal {
 /**
  * @brief A type representing a percentage value
  *
@@ -69,4 +69,4 @@ private:
   }
   float_t m_value{ 0.0 };
 };
-}  // namespace embed
+}  // namespace hal

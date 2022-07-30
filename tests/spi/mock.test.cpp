@@ -2,24 +2,23 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/spi/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite spi_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::write_only_spi::configure()"_test = []() {
+  "hal::mock::write_only_spi::configure()"_test = []() {
     // Setup
-    constexpr embed::spi::settings expected1 = { .clock_rate = frequency(1'000),
-                                                 .clock_idles_high = false,
-                                                 .data_valid_on_trailing_edge =
-                                                   false };
+    constexpr hal::spi::settings expected1 = { .clock_rate = frequency(1'000),
+                                               .clock_idles_high = false,
+                                               .data_valid_on_trailing_edge =
+                                                 false };
 
-    constexpr embed::spi::settings expected2 = { .clock_rate =
-                                                   frequency(10'000),
-                                                 .clock_idles_high = true,
-                                                 .data_valid_on_trailing_edge =
-                                                   true };
+    constexpr hal::spi::settings expected2 = { .clock_rate = frequency(10'000),
+                                               .clock_idles_high = true,
+                                               .data_valid_on_trailing_edge =
+                                                 true };
 
-    embed::mock::write_only_spi mock;
+    hal::mock::write_only_spi mock;
     mock.spy_configure.trigger_error_on_call(3);
 
     // Exercise + Verify
@@ -33,7 +32,7 @@ boost::ut::suite spi_mock_test = []() {
     expect(expected2 == std::get<0>(mock.spy_configure.call_history().at(2)));
   };
 
-  "embed::mock::write_only_spi::transfer()"_test = []() {
+  "hal::mock::write_only_spi::transfer()"_test = []() {
     // Setup
     constexpr std::array<const std::byte, 1> out_1{ std::byte{ 0xAA } };
     constexpr std::array<const std::byte, 2> out_2{ std::byte{ 0xDD },
@@ -41,7 +40,7 @@ boost::ut::suite spi_mock_test = []() {
     constexpr std::span<std::byte> dummy{};
     constexpr std::byte filler{ 0xFF };
 
-    embed::mock::write_only_spi mock;
+    hal::mock::write_only_spi mock;
 
     // Exercise + Verify
     expect(bool{ mock.transfer(out_1, dummy, filler) });
@@ -55,4 +54,4 @@ boost::ut::suite spi_mock_test = []() {
     expect(mock.write_record.size() == 0);
   };
 };
-}  // namespace embed
+}  // namespace hal

@@ -3,7 +3,7 @@
 #include <concepts>
 #include <cstddef>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * Available utilities for libembeddedhal
@@ -86,4 +86,4 @@ struct bit_limits
   }
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

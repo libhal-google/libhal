@@ -2,14 +2,14 @@
 #include <libembeddedhal/counter/uptime_counter.hpp>
 #include <queue>
 
-namespace embed {
+namespace hal {
 
 boost::ut::suite uptime_utility_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
-  using namespace embed::literals;
+  using namespace hal::literals;
 
-  class mock_counter : public embed::counter
+  class mock_counter : public hal::counter
   {
   public:
     boost::leaf::result<uptime_t> driver_uptime() noexcept override
@@ -22,7 +22,7 @@ boost::ut::suite uptime_utility_test = []() {
     std::queue<std::uint32_t> uptime_sequence{};
 
   private:
-    embed::frequency m_frequency{ 1'000_MHz };
+    hal::frequency m_frequency{ 1'000_MHz };
   };
 
   "[uptime_counter] zero"_test = []() {
@@ -145,4 +145,4 @@ boost::ut::suite uptime_utility_test = []() {
     // None at the moment
   };
 };
-}  // namespace embed
+}  // namespace hal

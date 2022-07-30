@@ -3,7 +3,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup dac
  * @{
@@ -13,7 +13,7 @@ namespace embed::mock {
  * spy function for write()
  *
  */
-struct dac : public embed::dac
+struct dac : public hal::dac
 {
   /**
    * @brief Reset spy information for write()
@@ -24,7 +24,7 @@ struct dac : public embed::dac
     spy_write.reset();
   }
 
-  /// Spy handler for embed::dac::write()
+  /// Spy handler for hal::dac::write()
   spy_handler<percent> spy_write;
 
 private:
@@ -34,4 +34,4 @@ private:
   };
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

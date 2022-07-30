@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <string_view>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -33,4 +33,4 @@ template<size_t N>
   return result;
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal

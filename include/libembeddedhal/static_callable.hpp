@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -81,4 +81,4 @@ private:
   inline static std::function<return_t(args_t... p_args)> callback;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

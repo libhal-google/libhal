@@ -3,7 +3,7 @@
 #include "../error.hpp"
 #include "unit.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @brief Hardware abstraction interface for devices that report rotational
  * position of an actuator, knob, or some other system.
@@ -39,4 +39,4 @@ public:
 private:
   virtual boost::leaf::result<microrotation> driver_read() noexcept = 0;
 };
-}  // namespace embed
+}  // namespace hal

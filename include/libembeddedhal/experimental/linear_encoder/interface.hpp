@@ -3,7 +3,7 @@
 #include "../error.hpp"
 #include "unit.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @brief Hardware abstraction interface for devices that report
  * position of a linear encoder.
@@ -32,4 +32,4 @@ public:
 private:
   virtual boost::leaf::result<length> driver_read() noexcept = 0;
 };
-}  // namespace embed
+}  // namespace hal

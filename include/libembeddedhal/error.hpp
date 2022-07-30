@@ -5,7 +5,7 @@
 #include "config.hpp"
 #include "internal/third_party/leaf.hpp"
 
-namespace embed {
+namespace hal {
 
 template<class T>
 using result = boost::leaf::result<T>;
@@ -56,4 +56,4 @@ struct invalid_option_t : std::false_type
 template<auto... options>
 inline constexpr bool invalid_option = invalid_option_t<options...>::value;
 }  // namespace error
-}  // namespace embed
+}  // namespace hal

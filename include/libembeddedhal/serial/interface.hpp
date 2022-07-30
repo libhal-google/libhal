@@ -7,7 +7,7 @@
 #include <optional>
 #include <span>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup serial
  * Available serial APIs
@@ -160,4 +160,4 @@ private:
   virtual boost::leaf::result<void> driver_flush() noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

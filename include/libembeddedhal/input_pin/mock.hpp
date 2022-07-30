@@ -6,7 +6,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup input_pin Input Pin
  * @{
@@ -15,7 +15,7 @@ namespace embed::mock {
  * @brief mock input_pin implementation for use in unit tests and simulations.
  *
  */
-struct input_pin : public embed::input_pin
+struct input_pin : public hal::input_pin
 {
   /**
    * @brief Reset spy information for configure()
@@ -61,4 +61,4 @@ private:
   std::queue<bool> m_levels{};
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

@@ -6,7 +6,7 @@
 #include "../frequency.hpp"
 #include "../percent.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup pwm
  * Available pwm APIs
@@ -24,7 +24,7 @@ public:
   struct settings
   {
     /// The target channel PWM frequency.
-    embed::frequency frequency = embed::frequency(1'000);
+    hal::frequency frequency = hal::frequency(1'000);
 
     /**
      * @brief Default operators for <, <=, >, >= and ==
@@ -68,4 +68,4 @@ private:
     percent p_duty_cycle) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

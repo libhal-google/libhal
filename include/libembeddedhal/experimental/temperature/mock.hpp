@@ -4,13 +4,13 @@
 
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @brief Mock temperature sensor implementation for use in unit tests and
  * simulations.
  *
  */
-struct temperature_sensor : public embed::temperature_sensor
+struct temperature_sensor : public hal::temperature_sensor
 {
   /**
    * @brief Queues the temperature values to be returned for read()
@@ -36,4 +36,4 @@ private:
 
   std::queue<microkelvin> m_temperatures{};
 };
-}  // namespace embed::mock
+}  // namespace hal::mock

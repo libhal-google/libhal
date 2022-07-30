@@ -3,9 +3,9 @@
 #include "../adc/interface.hpp"
 #include "../math.hpp"
 
-namespace embed {
+namespace hal {
 /**
- * @brief Linear potentiometer driver that takes an embed::adc and a
+ * @brief Linear potentiometer driver that takes an hal::adc and a
  * settings struct, and reads the distance the linear potentiometer has traveled
  * in micrometer.
  *
@@ -28,9 +28,9 @@ public:
     /// Maximum travel distance in micrometer
     micrometer p_max_distance = 0;
     /// Minimum percent that can be read from ADC
-    embed::percent p_min_adc_output = embed::percent::from_ratio(0, 1);
+    hal::percent p_min_adc_output = hal::percent::from_ratio(0, 1);
     /// Maximum percent that can be read from ADC
-    embed::percent p_max_adc_output = embed::percent::from_ratio(1, 1);
+    hal::percent p_max_adc_output = hal::percent::from_ratio(1, 1);
   };
 
   /**
@@ -39,7 +39,7 @@ public:
    * @param p_adc ADC of linear potentiometer.
    * @param p_settings Settings for linear potentiometer.
    */
-  linear_potentiometer(embed::adc& p_adc, settings p_settings)
+  linear_potentiometer(hal::adc& p_adc, settings p_settings)
     : m_adc(&p_adc)
     , m_settings(p_settings)
   {
@@ -62,7 +62,7 @@ public:
   }
 
 private:
-  embed::adc* m_adc = nullptr;
+  hal::adc* m_adc = nullptr;
   settings m_settings{};
 };
-}  // namespace embed
+}  // namespace hal

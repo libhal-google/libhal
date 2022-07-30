@@ -5,7 +5,7 @@
 #include "../error.hpp"
 #include "../input_pin/pin_resistors.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup interrupt_pin Interrupt Pin
  * Available digital interrupt pin APIs
@@ -104,4 +104,4 @@ private:
   virtual boost::leaf::result<void> driver_detach_interrupt() noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

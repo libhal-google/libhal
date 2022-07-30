@@ -12,7 +12,7 @@
 #include "../frequency.hpp"
 #include "../timeout.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup i2c
  * Available Inter-integrated Circuit (I2C) APIs
@@ -99,7 +99,7 @@ public:
     std::byte p_address,
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::function<embed::timeout> p_timeout) noexcept
+    std::function<hal::timeout> p_timeout) noexcept
   {
     return driver_transaction(p_address, p_data_out, p_data_in, p_timeout);
   }
@@ -111,7 +111,7 @@ private:
     std::byte p_address,
     std::span<const std::byte> p_data_out,
     std::span<std::byte> p_data_in,
-    std::function<embed::timeout> p_timeout) noexcept = 0;
+    std::function<hal::timeout> p_timeout) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

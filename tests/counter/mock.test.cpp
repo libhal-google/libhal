@@ -3,16 +3,16 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/counter/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite counter_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::counter::uptime()"_test = []() {
+  "hal::mock::counter::uptime()"_test = []() {
     // Setup
-    embed::mock::counter mock;
-    constexpr embed::counter::uptime_t expected1{ frequency{ 1'000'000 }, 0 };
-    embed::counter::uptime_t expected2{ frequency{ 8'000'000 }, 1 };
-    embed::counter::uptime_t expected3{ frequency{ 48'000'000 }, 2 };
+    hal::mock::counter mock;
+    constexpr hal::counter::uptime_t expected1{ frequency{ 1'000'000 }, 0 };
+    hal::counter::uptime_t expected2{ frequency{ 8'000'000 }, 1 };
+    hal::counter::uptime_t expected3{ frequency{ 48'000'000 }, 2 };
     std::deque samples{ expected1, expected2, expected3 };
     std::queue queue(samples);
 
@@ -33,4 +33,4 @@ boost::ut::suite counter_mock_test = []() {
     expect(throws([&mock] { mock.uptime().value(); }));
   };
 };
-}  // namespace embed
+}  // namespace hal

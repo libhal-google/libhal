@@ -1,9 +1,9 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/accelerometer/interface.hpp>
 
-namespace embed {
+namespace hal {
 namespace {
-constexpr auto expected_sample = embed::accelerometer::sample{
+constexpr auto expected_sample = hal::accelerometer::sample{
   .full_scale = 1'000'000'000,
   .axis = {
     .x = percent::from_ratio(1, 2),
@@ -12,7 +12,7 @@ constexpr auto expected_sample = embed::accelerometer::sample{
   },
 };
 
-class test_accelerometer : public embed::accelerometer
+class test_accelerometer : public hal::accelerometer
 {
 private:
   boost::leaf::result<sample> driver_read() noexcept override
@@ -33,4 +33,4 @@ boost::ut::suite accelerometer_test = []() {
   // Verify
   expect(expected_sample == sample);
 };
-}  // namespace embed
+}  // namespace hal

@@ -19,7 +19,7 @@ inline std::ostream& operator<<(
 }
 }  // namespace
 
-namespace embed {
+namespace hal {
 inline std::ostream& operator<<(std::ostream& os, const frequency& p_frequency)
 {
   return (os << p_frequency.value_hz << "_Hz");
@@ -47,4 +47,4 @@ inline std::ostream& operator<<(std::ostream& os,
              << std::setfill(' ') << std::setw(10) << p_percent.value()
              << " }");
 }
-}  // namespace embed
+}  // namespace hal

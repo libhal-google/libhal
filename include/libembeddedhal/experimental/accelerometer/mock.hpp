@@ -4,13 +4,13 @@
 
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @brief mock accelerometer implementation for use in unit tests and
  * simulations.
  *
  */
-struct accelerometer : public embed::accelerometer
+struct accelerometer : public hal::accelerometer
 {
   /**
    * @brief Queues the samples to be returned for read()
@@ -36,4 +36,4 @@ private:
 
   std::queue<sample> m_samples{};
 };
-}  // namespace embed::mock
+}  // namespace hal::mock

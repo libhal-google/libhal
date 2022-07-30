@@ -5,7 +5,7 @@
 #include "../error.hpp"
 #include "unit.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @brief Hardware abstraction interface for temperature sensing devices.
  *
@@ -27,4 +27,4 @@ public:
 private:
   virtual boost::leaf::result<microkelvin> driver_read() noexcept = 0;
 };
-}  // namespace embed
+}  // namespace hal
