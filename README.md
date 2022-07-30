@@ -593,21 +593,21 @@ int main()
   // Default configure the i2c0 bus (100kHz clock)
   i2c0.configure({});
 
-  boost::leaf::try_handle_all(
+  hal::attempt_all(
     // First function can be considered the "try" portion of the code. If an
     // error result is returned from this function the handlers below will be
     // called.
-    [&i2c0]() -> boost::leaf::result<void> {
+    [&i2c0]() -> status {
       constexpr std::byte address(0x11);
       std::array<std::byte, 1> dummy_payload{ std::byte{ 0xAA } };
       // Functions that return boost::leaf::result must have their result
-      // checked and handled. To do this we use the BOOST_LEAF_CHECK to remove
+      // checked and handled. To do this we use the HAL_CHECK to remove
       // the boiler plate in doing this.
       //
       // To make sure that errors are transported up the stack each call to a
       // function returning a boost::leaf::result must be wrapped in a
-      // BOOST_LEAF_CHECK() macro call.
-      BOOST_LEAF_CHECK(hal::write(i2c, address, dummy_payload));
+      // HAL_CHECK() macro call.
+      HAL_CHECK(hal::write(i2c, address, dummy_payload));
       return {};
     },
     // Functions after the first are the handlers.
@@ -734,15 +734,15 @@ public:
   invert_read(U & p_input_pin) : m_input_pin(p_input_pin) {}
 
 private:
-  boost::leaf::result<void> driver_configure(
+  status driver_configure(
     const settings& p_settings) noexcept override
   {
     return m_input_pin->configure(p_settings);
   }
 
-  boost::leaf::result<bool> driver_level() noexcept override
+  result<bool> driver_level() noexcept override
   {
-    return !BOOST_LEAF_CHECK(m_input_pin->level());
+    return !HAL_CHECK(m_input_pin->level());
   }
 
   T * m_input_pin;
@@ -994,7 +994,7 @@ Use the `libxbitset` library to perform bitwise operations operations.
 
 Only use macros if something cannot be done without using them. Usually macros
 can be replaced with constexpr or const variables or function calls. A case
-where macros are the only way is for BOOST_LEAF_CHECK() since there is no way
+where macros are the only way is for HAL_CHECK() since there is no way
 to automatically generate the boiler plate for returning if a function returns
 and error in C++ and thus a macro is needed here to prevent possible mistakes
 in writing out the boilerplate.
@@ -1097,7 +1097,7 @@ The solution to this is to use a factory function like so:
 ```cpp
 class device_driver {
   public:
-    boost::leaf::result<device_driver> create(/* ... */) {
+    result<device_driver> create(/* ... */) {
       // Perform operations that may fail here
       return device_driver(/* ... */);
     }
@@ -1121,7 +1121,7 @@ class peripheral_driver {
     template<size_t PortNumber>
     // NOTE: Returns a reference not an object.
     //       Objects are owned by the create function
-    boost::leaf::result<peripheral_driver&> create(/* ... */) {
+    result<peripheral_driver&> create(/* ... */) {
       // Perform operations that may fail here
       static peripheral_driver driver(/* ... */);
       return driver;

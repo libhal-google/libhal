@@ -45,11 +45,10 @@ public:
    * @brief Configure the output pin to match the settings supplied
    *
    * @param p_settings - settings to apply to output pin
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(
-    const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -58,10 +57,10 @@ public:
    *
    * @param p_high - if true then the pin state is set to HIGH voltage. If
    * false, the pin state is set to LOW voltage.
-   * @return boost::leaf::result<void> - any error that occurred during this
+   * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> level(bool p_high) noexcept
+  [[nodiscard]] status level(bool p_high) noexcept
   {
     return driver_level(p_high);
   }
@@ -70,19 +69,18 @@ public:
    * state from hardware and will not simply cache the results from running
    * level(bool).
    *
-   * @return boost::leaf::result<bool> - true indicates HIGH voltage and false
+   * @return result<bool> - true indicates HIGH voltage and false
    * indicates LOW voltage
    */
-  [[nodiscard]] boost::leaf::result<bool> level() noexcept
+  [[nodiscard]] result<bool> level() noexcept
   {
     return driver_level();
   }
 
 private:
-  virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept = 0;
-  virtual boost::leaf::result<void> driver_level(bool p_high) noexcept = 0;
-  virtual boost::leaf::result<bool> driver_level() noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_level(bool p_high) noexcept = 0;
+  virtual result<bool> driver_level() noexcept = 0;
 };
 /** @} */
 }  // namespace hal

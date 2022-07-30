@@ -22,14 +22,14 @@ public:
    * non-zero value at initialization. This interface does not distinguish
    * between these two encoder schemes.
    *
-   * @return boost::leaf::result<length> - current position reading or an error
+   * @return result<length> - current position reading or an error
    */
-  [[nodiscard]] boost::leaf::result<length> read() noexcept
+  [[nodiscard]] result<length> read() noexcept
   {
     return driver_read();
   }
 
 private:
-  virtual boost::leaf::result<length> driver_read() noexcept = 0;
+  virtual result<length> driver_read() noexcept = 0;
 };
 }  // namespace hal

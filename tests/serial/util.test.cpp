@@ -14,12 +14,11 @@ boost::ut::suite serial_util_test = []() {
   class dummy : public hal::serial
   {
   public:
-    [[nodiscard]] boost::leaf::result<void> driver_configure(
-      const settings&) noexcept override
+    [[nodiscard]] status driver_configure(const settings&) noexcept override
     {
       return {};
     }
-    [[nodiscard]] boost::leaf::result<void> driver_write(
+    [[nodiscard]] status driver_write(
       std::span<const std::byte> p_data) noexcept override
     {
       if (p_data[0] == write_failure_byte) {
@@ -29,8 +28,7 @@ boost::ut::suite serial_util_test = []() {
       return {};
     }
 
-    [[nodiscard]] boost::leaf::result<size_t> driver_bytes_available() noexcept
-      override
+    [[nodiscard]] result<size_t> driver_bytes_available() noexcept override
     {
       if (m_bytes_available_fails) {
         return boost::leaf::new_error();
@@ -38,7 +36,7 @@ boost::ut::suite serial_util_test = []() {
       return ++m_bytes_available;
     }
 
-    [[nodiscard]] boost::leaf::result<std::span<const std::byte>> driver_read(
+    [[nodiscard]] result<std::span<const std::byte>> driver_read(
       std::span<std::byte> p_data) noexcept override
     {
       if (m_read_fails) {
@@ -49,7 +47,7 @@ boost::ut::suite serial_util_test = []() {
       return p_data;
     }
 
-    [[nodiscard]] boost::leaf::result<void> driver_flush() noexcept override
+    [[nodiscard]] status driver_flush() noexcept override
     {
       m_flush_called = true;
       return {};

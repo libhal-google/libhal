@@ -7,7 +7,7 @@ constexpr auto expected_temperature = 1'000'000'000;
 class test_temperature_sensor : public hal::temperature_sensor
 {
 private:
-  boost::leaf::result<microkelvin> driver_read() noexcept override
+  result<microkelvin> driver_read() noexcept override
   {
     return expected_temperature;
   }

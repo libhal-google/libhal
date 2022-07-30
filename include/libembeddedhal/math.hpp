@@ -21,11 +21,11 @@ namespace hal {
  * @tparam T - integer arithmetic type
  * @param p_lhs - left hand side integer
  * @param p_rhs - right hand side integer
- * @return boost::leaf::result<T> - either the resultant or an error
+ * @return result<T> - either the resultant or an error
  * `std::errc::result_out_of_range`
  */
 template<typename T>
-[[nodiscard]] boost::leaf::result<T> multiply(T p_lhs, T p_rhs) noexcept
+[[nodiscard]] result<T> multiply(T p_lhs, T p_rhs) noexcept
 {
   if (p_lhs == 0 || p_rhs == 0) {
     return T{ 0 };

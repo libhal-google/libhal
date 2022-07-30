@@ -29,16 +29,16 @@ public:
    * voltage is 0V and the high voltage reference is VCC.
    *
    * @param p_value - percentage scale from LOW to HIGH voltage
-   * @return boost::leaf::result<void> - any error that occurred during this
+   * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> write(percent p_value) noexcept
+  [[nodiscard]] status write(percent p_value) noexcept
   {
     return driver_write(p_value);
   }
 
 private:
-  virtual boost::leaf::result<void> driver_write(percent p_value) noexcept = 0;
+  virtual status driver_write(percent p_value) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

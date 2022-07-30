@@ -9,7 +9,7 @@ boost::ut::suite timeout_test = []() {
     // Setup
     constexpr int timeout_call_limit = 10;
     int counts = 0;
-    auto timeout_function = [&counts]() mutable -> boost::leaf::result<void> {
+    auto timeout_function = [&counts]() mutable -> status {
       counts++;
       if (counts >= timeout_call_limit) {
         return boost::leaf::new_error(std::errc::timed_out);
@@ -33,7 +33,7 @@ boost::ut::suite timeout_test = []() {
 
   "hal::delay(timeout) returns error"_test = []() {
     // Setup
-    auto timeout_function = []() mutable -> boost::leaf::result<void> {
+    auto timeout_function = []() mutable -> status {
       return boost::leaf::new_error();
     };
 

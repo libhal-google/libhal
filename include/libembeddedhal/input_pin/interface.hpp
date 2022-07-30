@@ -37,11 +37,10 @@ public:
    * @brief Configure the input pin to match the settings supplied
    *
    * @param p_settings - settings to apply to input pin
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(
-    const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -49,18 +48,17 @@ public:
   /**
    * @brief Read the state of the input pin
    *
-   * @return boost::leaf::result<bool> - true indicates HIGH voltage and false
+   * @return result<bool> - true indicates HIGH voltage and false
    * indicates LOW voltage
    */
-  [[nodiscard]] boost::leaf::result<bool> level() noexcept
+  [[nodiscard]] result<bool> level() noexcept
   {
     return driver_level();
   }
 
 private:
-  virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept = 0;
-  virtual boost::leaf::result<bool> driver_level() noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual result<bool> driver_level() noexcept = 0;
 };
 /** @} */
 }  // namespace hal

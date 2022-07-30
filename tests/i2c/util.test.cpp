@@ -12,7 +12,7 @@ boost::ut::suite i2c_util_test = []() {
 
   struct test_timeout_t
   {
-    boost::leaf::result<void> operator()()
+    status operator()()
     {
       was_called = true;
       return {};
@@ -23,12 +23,11 @@ boost::ut::suite i2c_util_test = []() {
   class test_i2c : public hal::i2c
   {
   public:
-    [[nodiscard]] boost::leaf::result<void> driver_configure(
-      const settings&) noexcept override
+    [[nodiscard]] status driver_configure(const settings&) noexcept override
     {
       return {};
     }
-    [[nodiscard]] boost::leaf::result<void> driver_transaction(
+    [[nodiscard]] status driver_transaction(
       std::byte p_address,
       std::span<const std::byte> p_out,
       std::span<std::byte> p_in,

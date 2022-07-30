@@ -128,11 +128,10 @@ struct frequency
  * @return constexpr frequency
  */
 template<std::unsigned_integral Integer>
-[[nodiscard]] inline boost::leaf::result<frequency> operator*(
-  const frequency& p_source,
-  Integer p_scalar) noexcept
+[[nodiscard]] inline result<frequency> operator*(const frequency& p_source,
+                                                 Integer p_scalar) noexcept
 {
-  return frequency{ BOOST_LEAF_CHECK(multiply(p_source.value_hz, p_scalar)) };
+  return frequency{ HAL_CHECK(multiply(p_source.value_hz, p_scalar)) };
 }
 
 /**
@@ -277,7 +276,7 @@ constexpr std::chrono::duration<int64_t, Period> wavelength(
  * @param p_percent - ratio of the duty cycle high time
  * @return constexpr duty_cycle
  */
-[[nodiscard]] inline boost::leaf::result<duty_cycle> calculate_duty_cycle(
+[[nodiscard]] inline result<duty_cycle> calculate_duty_cycle(
   const frequency& p_source_clock,
   hal::time_duration p_duration,
   percent p_percent) noexcept

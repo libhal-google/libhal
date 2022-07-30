@@ -28,8 +28,7 @@ struct servo : public hal::servo
   spy_handler<hal::percent> spy_position;
 
 private:
-  boost::leaf::result<void> driver_position(
-    percent p_position) noexcept override
+  status driver_position(percent p_position) noexcept override
   {
     return spy_position.record(p_position);
   }

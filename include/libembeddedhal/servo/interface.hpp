@@ -86,16 +86,15 @@ public:
    *     servo.position(hal::percent::from_ratio(90, 90));
    *
    * @param p_position - position to move the servo to
-   * @return boost::leaf::result<void> - success or error flag
+   * @return status - success or error flag
    */
-  [[nodiscard]] boost::leaf::result<void> position(percent p_position) noexcept
+  [[nodiscard]] status position(percent p_position) noexcept
   {
     return driver_position(p_position);
   }
 
 private:
-  virtual boost::leaf::result<void> driver_position(
-    percent p_position) noexcept = 0;
+  virtual status driver_position(percent p_position) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

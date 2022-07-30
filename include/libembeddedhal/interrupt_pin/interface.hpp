@@ -48,20 +48,19 @@ public:
    * @brief Configure the interrupt pin to match the settings supplied
    *
    * @param p_settings - settings to apply to interrupt pin
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(
-    const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
   /**
    * @brief Return the voltage level of the pin
    *
-   * @return boost::leaf::result<void>
+   * @return status
    */
-  [[nodiscard]] boost::leaf::result<bool> level() noexcept
+  [[nodiscard]] result<bool> level() noexcept
   {
     return driver_level();
   }
@@ -75,33 +74,30 @@ public:
    * @param p_callback function to execute when the trigger condition is met
    * @param p_trigger the trigger condition that will signal the system to run
    * the callback.
-   * @return boost::leaf::result<void>
+   * @return status
    */
-  [[nodiscard]] boost::leaf::result<void> attach_interrupt(
-    std::function<void(void)> p_callback,
-    trigger_edge p_trigger) noexcept
+  [[nodiscard]] status attach_interrupt(std::function<void(void)> p_callback,
+                                        trigger_edge p_trigger) noexcept
   {
     return driver_attach_interrupt(p_callback, p_trigger);
   }
   /**
    * @brief Disable interrupts for this pin
    *
-   * @return boost::leaf::result<void> - any error that occurred during this
+   * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> detach_interrupt() noexcept
+  [[nodiscard]] status detach_interrupt() noexcept
   {
     return driver_detach_interrupt();
   }
 
 private:
-  virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept = 0;
-  virtual boost::leaf::result<bool> driver_level() noexcept = 0;
-  virtual boost::leaf::result<void> driver_attach_interrupt(
-    std::function<void(void)> p_callback,
-    trigger_edge p_trigger) noexcept = 0;
-  virtual boost::leaf::result<void> driver_detach_interrupt() noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual result<bool> driver_level() noexcept = 0;
+  virtual status driver_attach_interrupt(std::function<void(void)> p_callback,
+                                         trigger_edge p_trigger) noexcept = 0;
+  virtual status driver_detach_interrupt() noexcept = 0;
 };
 /** @} */
 }  // namespace hal

@@ -28,12 +28,12 @@ public:
    * @tparam MinMicroseconds - Minimum pulse width
    * @tparam MaxMicroseconds - Maximum pulse width
    * @param p_pwm - Pwm signal of rc_servo
-   * @return boost::leaf::result<rc_servo> - Constructed rc_servo object
+   * @return result<rc_servo> - Constructed rc_servo object
    */
   template<uint32_t Frequency = 50,
            uint32_t MinMicroseconds = 1000,
            uint32_t MaxMicroseconds = 2000>
-  static boost::leaf::result<rc_servo> create(hal::pwm& p_pwm)
+  static result<rc_servo> create(hal::pwm& p_pwm)
   {
     // Check that MinMicroseconds is less than MaxMicroseconds
     static_assert(
@@ -45,7 +45,7 @@ public:
       "The maximum microseconds is greater than the period of the frequency");
     constexpr hal::frequency frequency = hal::frequency{ Frequency };
     constexpr hal::pwm::settings settings{ .frequency = frequency };
-    BOOST_LEAF_CHECK(p_pwm.configure(settings));
+    HAL_CHECK(p_pwm.configure(settings));
 
     auto frequency_wavelength =
       static_cast<uint32_t>(wavelength<std::micro>(frequency).count());
@@ -68,10 +68,9 @@ private:
   {
   }
 
-  boost::leaf::result<void> driver_position(
-    percent p_position) noexcept override
+  status driver_position(percent p_position) noexcept override
   {
-    auto scaled_percent_raw = BOOST_LEAF_CHECK(
+    auto scaled_percent_raw = HAL_CHECK(
       map(p_position.raw_value() / 2,
           { .x = percent::raw_min() / 2, .y = percent::raw_max() / 2 },
           { .x = m_min_percent.raw_value(), .y = m_max_percent.raw_value() }));

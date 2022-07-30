@@ -48,12 +48,12 @@ public:
   /**
    * @brief Read the distance the linear potentiometer has traveled.
    *
-   * @return boost::leaf::result<length> - the distance traveled of the
+   * @return result<length> - the distance traveled of the
    * potentiometer in micrometer.
    */
-  boost::leaf::result<micrometer> read()
+  result<micrometer> read()
   {
-    auto adc_percent = BOOST_LEAF_CHECK(m_adc->read());
+    auto adc_percent = HAL_CHECK(m_adc->read());
     auto scaled_percent = adc_percent.scale(m_settings.p_min_adc_output,
                                             m_settings.p_max_adc_output);
     auto scaled_distance = scaled_percent.scale(m_settings.p_min_distance,

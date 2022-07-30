@@ -74,14 +74,14 @@ public:
   /**
    * @brief Read the current acceleration from the accelerometer.
    *
-   * @return boost::leaf::result<sample> - a sample of data or an error
+   * @return result<sample> - a sample of data or an error
    */
-  [[nodiscard]] boost::leaf::result<sample> read() noexcept
+  [[nodiscard]] result<sample> read() noexcept
   {
     return driver_read();
   }
 
 private:
-  virtual boost::leaf::result<sample> driver_read() noexcept = 0;
+  virtual result<sample> driver_read() noexcept = 0;
 };
 }  // namespace hal

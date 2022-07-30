@@ -11,7 +11,7 @@ namespace hal {
 
 /**
  * @brief Helper utility for making mocks for class functions that return
- * boost::leaf::result<void>.
+ * status.
  *
  * This class stores records of a functions call history in order to be
  * recovered later for inspection in tests and simulations.
@@ -44,10 +44,10 @@ public:
    * @brief Record the arguments of a function being spied on.
    *
    * @param p_args - arguments to record
-   * @return boost::leaf::result<void> - returns success or an error if the
+   * @return status - returns success or an error if the
    * error trigger has been reached.
    */
-  [[nodiscard]] boost::leaf::result<void> record(args_t... p_args)
+  [[nodiscard]] status record(args_t... p_args)
   {
     m_call_history.push_back(std::make_tuple(p_args...));
 

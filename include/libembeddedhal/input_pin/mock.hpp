@@ -40,12 +40,11 @@ struct input_pin : public hal::input_pin
   }
 
 private:
-  boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   }
-  boost::leaf::result<bool> driver_level() noexcept
+  result<bool> driver_level() noexcept
   {
     // This comparison performs bounds checking because front() and pop() do
     // not bounds check and results in undefined behavior if the queue is empty.

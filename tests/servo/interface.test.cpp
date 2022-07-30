@@ -13,8 +13,7 @@ public:
   percent m_passed_position;
 
 private:
-  boost::leaf::result<void> driver_position(
-    percent p_position) noexcept override
+  status driver_position(percent p_position) noexcept override
   {
     m_passed_position = p_position;
     return {};

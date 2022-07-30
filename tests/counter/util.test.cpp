@@ -18,7 +18,7 @@ boost::ut::suite counter_utility_test = []() {
     }
 
   private:
-    boost::leaf::result<uptime_t> driver_uptime() noexcept override
+    result<uptime_t> driver_uptime() noexcept override
     {
       m_uptime.count++;
       return m_uptime;
@@ -38,10 +38,8 @@ boost::ut::suite counter_utility_test = []() {
     // Exercise
     auto timeout_object = create_timeout(test_counter, expected).value();
 
-    boost::leaf::try_handle_all(
-      [&timeout_object]() -> boost::leaf::result<void> {
-        return timeout_object();
-      },
+    hal::attempt_all(
+      [&timeout_object]() -> status { return timeout_object(); },
       [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
         success = true;
       },
@@ -66,8 +64,8 @@ boost::ut::suite counter_utility_test = []() {
     // Exercise
     auto timeout_object = create_timeout(test_counter, expected).value();
 
-    boost::leaf::try_handle_all(
-      [&timeout_object]() -> boost::leaf::result<void> {
+    hal::attempt_all(
+      [&timeout_object]() -> status {
         for (std::int64_t i = 0; i < expected.count() - 2; i++) {
           if (!timeout_object()) {
             return boost::leaf::new_error();
@@ -97,8 +95,8 @@ boost::ut::suite counter_utility_test = []() {
     // Exercise
     auto timeout_object = create_timeout(test_counter, expected).value();
 
-    boost::leaf::try_handle_all(
-      [&timeout_object]() -> boost::leaf::result<void> {
+    hal::attempt_all(
+      [&timeout_object]() -> status {
         for (std::int64_t i = 0; i < expected.count() - 2; i++) {
           if (!timeout_object()) {
             return boost::leaf::new_error();

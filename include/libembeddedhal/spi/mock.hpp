@@ -32,15 +32,13 @@ struct write_only_spi : public hal::spi
   std::vector<std::vector<std::byte>> write_record;
 
 private:
-  boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   };
-  boost::leaf::result<void> driver_transfer(
-    std::span<const std::byte> p_data_out,
-    [[maybe_unused]] std::span<std::byte> p_data_in,
-    [[maybe_unused]] std::byte p_filler) noexcept override
+  status driver_transfer(std::span<const std::byte> p_data_out,
+                         [[maybe_unused]] std::span<std::byte> p_data_in,
+                         [[maybe_unused]] std::byte p_filler) noexcept override
   {
     write_record.push_back({ p_data_out.begin(), p_data_out.end() });
     return {};

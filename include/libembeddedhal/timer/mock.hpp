@@ -34,14 +34,13 @@ struct timer : public hal::timer
   spy_handler<bool> spy_clear;
 
 private:
-  boost::leaf::result<void> driver_schedule(
-    std::function<void(void)> p_callback,
-    std::chrono::nanoseconds p_delay) noexcept override
+  status driver_schedule(std::function<void(void)> p_callback,
+                         std::chrono::nanoseconds p_delay) noexcept override
   {
     m_is_running = true;
     return spy_schedule.record(p_callback, p_delay);
   };
-  boost::leaf::result<bool> driver_is_running() noexcept override
+  result<bool> driver_is_running() noexcept override
   {
     auto result = spy_is_running.record(true);
     if (!result) {
@@ -49,7 +48,7 @@ private:
     }
     return m_is_running;
   }
-  boost::leaf::result<void> driver_clear() noexcept override
+  status driver_clear() noexcept override
   {
     m_is_running = false;
     return spy_clear.record(true);

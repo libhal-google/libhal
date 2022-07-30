@@ -49,11 +49,10 @@ public:
    * @brief Configure can to match the settings supplied
    *
    * @param p_settings - settings to apply to can driver
-   * @return boost::leaf::result<void>
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] boost::leaf::result<void> configure(
-    const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings) noexcept
   {
     return driver_configure(p_settings);
   }
@@ -62,11 +61,10 @@ public:
    *
    * @param p_message - the message to be sent
    *
-   * @return boost::leaf::result<void> - any error that occurred during this
+   * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> send(
-    const message_t& p_message) noexcept
+  [[nodiscard]] status send(const message_t& p_message) noexcept
   {
     return driver_send(p_message);
   }
@@ -78,21 +76,19 @@ public:
    *
    * @param p_receive_handler - this handler will be called when the can device
    * receives a message. Set to nullptr to disable receive interrupts.
-   * @return boost::leaf::result<void> - any error that occurred during this
+   * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] boost::leaf::result<void> attach_interrupt(
+  [[nodiscard]] status attach_interrupt(
     std::function<void(const message_t& p_message)> p_receive_handler) noexcept
   {
     return driver_attach_interrupt(p_receive_handler);
   }
 
 private:
-  virtual boost::leaf::result<void> driver_configure(
-    const settings& p_settings) noexcept = 0;
-  virtual boost::leaf::result<void> driver_send(
-    const message_t& p_message) noexcept = 0;
-  virtual boost::leaf::result<void> driver_attach_interrupt(
+  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_send(const message_t& p_message) noexcept = 0;
+  virtual status driver_attach_interrupt(
     std::function<void(const message_t& p_message)>
       p_receive_handler) noexcept = 0;
 };

@@ -22,15 +22,14 @@ namespace hal {
  * @param p_serial - serial port to wait for
  * @param p_length - the number of bytes that need to be buffered before this
  * function returns.
- * @return boost::leaf::result<void> - return an error if a call to
+ * @return status - return an error if a call to
  * serial::bytes_available returns an error from the serial port.
  */
-[[nodiscard]] inline boost::leaf::result<void> delay(serial& p_serial,
-                                                     size_t p_length) noexcept
+[[nodiscard]] inline status delay(serial& p_serial, size_t p_length) noexcept
 {
-  size_t bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
+  size_t bytes_available = HAL_CHECK(p_serial.bytes_available());
   while (bytes_available < p_length) {
-    bytes_available = BOOST_LEAF_CHECK(p_serial.bytes_available());
+    bytes_available = HAL_CHECK(p_serial.bytes_available());
   }
   return {};
 }
@@ -40,10 +39,10 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be written to
  * @param p_data_out - the data to be written out the port
- * @return boost::leaf::result<void> - return an error if a call to
+ * @return status - return an error if a call to
  * serial::write returns an error from the serial port.
  */
-[[nodiscard]] inline boost::leaf::result<void> write(
+[[nodiscard]] inline status write(
   serial& p_serial,
   std::span<const std::byte> p_data_out) noexcept
 {
@@ -55,16 +54,16 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be read from
  * @param p_data_in - buffer to have bytes from the serial port read into
- * @return boost::leaf::result<std::span<const std::byte>> - return an error if
+ * @return result<std::span<const std::byte>> - return an error if
  * a call to serial::read or delay() returns an error from the serial port or
  * a span with the number of bytes read and a pointer to where the read bytes
  * are.
  */
-[[nodiscard]] inline boost::leaf::result<std::span<const std::byte>> read(
+[[nodiscard]] inline result<std::span<const std::byte>> read(
   serial& p_serial,
   std::span<std::byte> p_data_in)
 {
-  BOOST_LEAF_CHECK(delay(p_serial, p_data_in.size()));
+  HAL_CHECK(delay(p_serial, p_data_in.size()));
   return p_serial.read(p_data_in);
 }
 
@@ -76,18 +75,18 @@ namespace hal {
  *
  * @tparam BytesToRead - the number of bytes to be read from the serial port.
  * @param p_serial - the serial port to be read from
- * @return boost::leaf::result<std::array<std::byte, BytesToRead>> - return an
+ * @return result<std::array<std::byte, BytesToRead>> - return an
  * error if a call to serial::read or delay() returns an error from the
  * serial port or a span with the number of bytes read and a pointer to where
  * the read bytes are.
  */
 template<size_t BytesToRead>
-[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>> read(
+[[nodiscard]] result<std::array<std::byte, BytesToRead>> read(
   serial& p_serial) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  BOOST_LEAF_CHECK(delay(p_serial, BytesToRead));
-  BOOST_LEAF_CHECK(p_serial.read(buffer));
+  HAL_CHECK(delay(p_serial, BytesToRead));
+  HAL_CHECK(p_serial.read(buffer));
   return buffer;
 }
 
@@ -100,16 +99,16 @@ template<size_t BytesToRead>
  * @param p_serial - the serial port to have the transaction occur on
  * @param p_data_out - the data to be written to the port
  * @param p_data_in - a buffer to receive the bytes back from the port
- * @return boost::leaf::result<void> - return an error if a call to serial::read
+ * @return status - return an error if a call to serial::read
  * or serial::write() returns an error from the serial port or success.
  */
-[[nodiscard]] inline boost::leaf::result<void> write_then_read(
+[[nodiscard]] inline status write_then_read(
   serial& p_serial,
   std::span<const std::byte> p_data_out,
   std::span<std::byte> p_data_in) noexcept
 {
-  BOOST_LEAF_CHECK(write(p_serial, p_data_out));
-  BOOST_LEAF_CHECK(read(p_serial, p_data_in));
+  HAL_CHECK(write(p_serial, p_data_out));
+  HAL_CHECK(read(p_serial, p_data_in));
   return {};
 }
 
@@ -122,17 +121,17 @@ template<size_t BytesToRead>
  * @tparam BytesToRead - the number of bytes to read back
  * @param p_serial - the serial port to have the transaction occur on
  * @param p_data_out - the data to be written to the port
- * @return boost::leaf::result<std::array<std::byte, BytesToRead>> - return an
+ * @return result<std::array<std::byte, BytesToRead>> - return an
  * error if a call to serial::read or serial::write() returns an error from the
  * serial port or an array of read bytes.
  */
 template<size_t BytesToRead>
-[[nodiscard]] boost::leaf::result<std::array<std::byte, BytesToRead>>
-write_then_read(serial& p_serial,
-                std::span<const std::byte> p_data_out) noexcept
+[[nodiscard]] result<std::array<std::byte, BytesToRead>> write_then_read(
+  serial& p_serial,
+  std::span<const std::byte> p_data_out) noexcept
 {
   std::array<std::byte, BytesToRead> buffer;
-  BOOST_LEAF_CHECK(write_then_read(p_serial, p_data_out, buffer));
+  HAL_CHECK(write_then_read(p_serial, p_data_out, buffer));
   return buffer;
 }
 /** @} */

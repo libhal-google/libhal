@@ -23,7 +23,7 @@ struct accelerometer : public hal::accelerometer
   }
 
 private:
-  boost::leaf::result<sample> driver_read() noexcept
+  result<sample> driver_read() noexcept
   {
     if (m_samples.size() == 0) {
       return boost::leaf::new_error(

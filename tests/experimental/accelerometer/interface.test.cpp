@@ -15,7 +15,7 @@ constexpr auto expected_sample = hal::accelerometer::sample{
 class test_accelerometer : public hal::accelerometer
 {
 private:
-  boost::leaf::result<sample> driver_read() noexcept override
+  result<sample> driver_read() noexcept override
   {
     return expected_sample;
   }

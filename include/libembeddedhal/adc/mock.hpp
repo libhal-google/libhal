@@ -29,7 +29,7 @@ struct adc : public hal::adc
   }
 
 private:
-  boost::leaf::result<percent> driver_read() noexcept
+  result<percent> driver_read() noexcept
   {
     return m_adc_value;
   }

@@ -28,7 +28,7 @@ struct motor : public hal::motor
   spy_handler<percent> spy_power;
 
 private:
-  boost::leaf::result<void> driver_power(percent p_power) noexcept override
+  status driver_power(percent p_power) noexcept override
   {
     return spy_power.record(p_power);
   };
