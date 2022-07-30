@@ -5,6 +5,8 @@
 #include "config.hpp"
 #include "internal/third_party/leaf.hpp"
 
+#define HAL_CHECK BOOST_LEAF_CHECK
+
 namespace hal {
 
 template<class T>
