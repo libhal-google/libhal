@@ -1,10 +1,10 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/linear_encoder/interface.hpp>
 
-namespace embed {
+namespace hal {
 namespace {
 constexpr auto expected_linear_position = length(1000000);
-class test_linear_encoder : public embed::linear_encoder
+class test_linear_encoder : public hal::linear_encoder
 {
 private:
   boost::leaf::result<length> driver_read() noexcept override
@@ -25,4 +25,4 @@ boost::ut::suite linear_encoder_test = []() {
   // Verify
   expect(expected_linear_position == sample);
 };
-}  // namespace embed
+}  // namespace hal

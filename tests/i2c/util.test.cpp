@@ -2,7 +2,7 @@
 #include <libembeddedhal/i2c/util.hpp>
 #include <span>
 
-namespace embed {
+namespace hal {
 boost::ut::suite i2c_util_test = []() {
   using namespace boost::ut;
 
@@ -20,7 +20,7 @@ boost::ut::suite i2c_util_test = []() {
     bool was_called = false;
   };
 
-  class test_i2c : public embed::i2c
+  class test_i2c : public hal::i2c
   {
   public:
     [[nodiscard]] boost::leaf::result<void> driver_configure(
@@ -32,7 +32,7 @@ boost::ut::suite i2c_util_test = []() {
       std::byte p_address,
       std::span<const std::byte> p_out,
       std::span<std::byte> p_in,
-      std::function<embed::timeout> p_timeout) noexcept override
+      std::function<hal::timeout> p_timeout) noexcept override
     {
       m_address = p_address;
       m_out = p_out;
@@ -275,4 +275,4 @@ boost::ut::suite i2c_util_test = []() {
     expect(that % false == test_timeout.was_called);
   };
 };
-}  // namespace embed
+}  // namespace hal

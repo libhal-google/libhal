@@ -3,7 +3,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup motor
  * @{
@@ -13,7 +13,7 @@ namespace embed::mock {
  * spy function for power()
  *
  */
-struct motor : public embed::motor
+struct motor : public hal::motor
 {
   /**
    * @brief Reset spy information for power()
@@ -24,7 +24,7 @@ struct motor : public embed::motor
     spy_power.reset();
   }
 
-  /// Spy handler for embed::motor::write()
+  /// Spy handler for hal::motor::write()
   spy_handler<percent> spy_power;
 
 private:
@@ -34,4 +34,4 @@ private:
   };
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

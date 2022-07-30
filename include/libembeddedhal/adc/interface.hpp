@@ -5,7 +5,7 @@
 #include "../error.hpp"
 #include "../percent.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup adc
  * Available Analog to Digital Converter (ADC) APIs
@@ -35,7 +35,7 @@ public:
    *
    * @return boost::leaf::result<percent> - Return the value of the
    * ADC as a full_scale value. Typical implementation for a 12-bit adc would
-   * look like: `return embed::bit_depth<uint32_t, 12>(adc_value);`.
+   * look like: `return hal::bit_depth<uint32_t, 12>(adc_value);`.
    *
    */
   [[nodiscard]] boost::leaf::result<percent> read() noexcept
@@ -47,4 +47,4 @@ private:
   virtual boost::leaf::result<percent> driver_read() noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

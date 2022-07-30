@@ -2,7 +2,7 @@
 #include <libembeddedhal/spi/util.hpp>
 #include <span>
 
-namespace embed {
+namespace hal {
 boost::ut::suite spi_util_test = []() {
   using namespace boost::ut;
 
@@ -10,7 +10,7 @@ boost::ut::suite spi_util_test = []() {
   static constexpr std::byte failure_filler{ 0x33 };
   static constexpr std::byte filler_byte{ 0xA5 };
 
-  class dummy : public embed::spi
+  class dummy : public hal::spi
   {
   public:
     [[nodiscard]] boost::leaf::result<void> driver_configure(
@@ -41,7 +41,9 @@ boost::ut::suite spi_util_test = []() {
       return {};
     }
 
-    virtual ~dummy() {}
+    virtual ~dummy()
+    {
+    }
 
     std::span<const std::byte> m_out = std::span<const std::byte>{};
     std::span<std::byte> m_in = std::span<std::byte>{};
@@ -213,4 +215,4 @@ boost::ut::suite spi_util_test = []() {
     expect(that % expected_payload.size() == spi.m_out.size());
   };
 };
-}  // namespace embed
+}  // namespace hal

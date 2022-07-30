@@ -7,7 +7,7 @@
 
 #include "error.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -172,4 +172,4 @@ template<std::integral T>
   }
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal

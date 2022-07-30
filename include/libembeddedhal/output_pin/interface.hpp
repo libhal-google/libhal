@@ -3,7 +3,7 @@
 #include "../error.hpp"
 #include "../input_pin/pin_resistors.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup output_pin Output Pin
  * Available output pin APIs
@@ -85,4 +85,4 @@ private:
   virtual boost::leaf::result<bool> driver_level() noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

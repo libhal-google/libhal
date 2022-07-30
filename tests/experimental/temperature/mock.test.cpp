@@ -3,13 +3,13 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/temperature/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite temperature_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::temperature::read()"_test = []() {
+  "hal::mock::temperature::read()"_test = []() {
     // Setup
-    embed::mock::temperature_sensor mock;
+    hal::mock::temperature_sensor mock;
     auto expected1 = 0;
     auto expected2 = 1000;
     auto expected3 = 2000;
@@ -26,4 +26,4 @@ boost::ut::suite temperature_mock_test = []() {
     expect(throws([&mock] { mock.read().value(); }));
   };
 };
-}  // namespace embed
+}  // namespace hal

@@ -1,6 +1,6 @@
 /**
  * @file timeout.hpp
- * @brief Provides the embed::timeout type and utility functions that use that
+ * @brief Provides the hal::timeout type and utility functions that use that
  * type.
  *
  */
@@ -11,7 +11,7 @@
 
 #include "error.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -21,7 +21,7 @@ namespace embed {
  * that the procedure has exceeded its time allotment and should return control
  * to the calling function.
  *
- * @throws embed::timeout - when the timeout condition has been met.
+ * @throws hal::timeout - when the timeout condition has been met.
  * @returns boost::leaf::result<void> - sets error flag set when timeout
  * condition has been met, otherwise returns success.
  */
@@ -35,7 +35,7 @@ using timeout = boost::leaf::result<void>(void);
  * @param p_timeout - callable timeout object
  * @return boost::leaf::result<void> - success
  */
-template<typename Timeout = std::function<embed::timeout>>
+template<typename Timeout = std::function<hal::timeout>>
 [[nodiscard]] inline boost::leaf::result<void> delay(Timeout p_timeout) noexcept
 {
   bool waiting = true;
@@ -70,4 +70,4 @@ template<typename Timeout = std::function<embed::timeout>>
   return []() -> boost::leaf::result<void> { return {}; };
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal

@@ -2,7 +2,7 @@
 
 #include <cstdio>
 
-namespace embed {
+namespace hal {
 /// Universal unit for temperature
 using microkelvin = std::int32_t;
-}  // namespace embed
+}  // namespace hal

@@ -3,7 +3,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup spi
  * @{
@@ -14,7 +14,7 @@ namespace embed::mock {
  * record ignores the in buffer and just stores the data being sent so it can be
  * inspected later.
  */
-struct write_only_spi : public embed::spi
+struct write_only_spi : public hal::spi
 {
   /**
    * @brief Reset spy information for both configure() and transfer()
@@ -26,9 +26,9 @@ struct write_only_spi : public embed::spi
     write_record.clear();
   }
 
-  /// Spy handler for embed::spi::configure()
+  /// Spy handler for hal::spi::configure()
   spy_handler<settings> spy_configure;
-  /// Record of the out data from embed::spi::transfer()
+  /// Record of the out data from hal::spi::transfer()
   std::vector<std::vector<std::byte>> write_record;
 
 private:
@@ -47,4 +47,4 @@ private:
   };
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

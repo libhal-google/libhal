@@ -6,7 +6,7 @@
 #include "../testing.hpp"
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup interrupt_pin Interrupt Pin
  * @{
@@ -16,7 +16,7 @@ namespace embed::mock {
  * simulations.
  *
  */
-struct interrupt_pin : public embed::interrupt_pin
+struct interrupt_pin : public hal::interrupt_pin
 {
   /**
    * @brief Reset spy information for configure(), attach_interrupt(), and
@@ -39,11 +39,11 @@ struct interrupt_pin : public embed::interrupt_pin
     m_levels = p_levels;
   }
 
-  /// Spy handler for embed::interrupt_pin::configure()
+  /// Spy handler for hal::interrupt_pin::configure()
   spy_handler<settings> spy_configure;
-  /// Spy handler for embed::interrupt_pin::attach_interrupt()
+  /// Spy handler for hal::interrupt_pin::attach_interrupt()
   spy_handler<std::function<void(void)>, trigger_edge> spy_attach_interrupt;
-  /// Spy handler for embed::interrupt_pin::detach_interrupt()
+  /// Spy handler for hal::interrupt_pin::detach_interrupt()
   spy_handler<bool> spy_detach_interrupt;
 
 private:
@@ -76,4 +76,4 @@ private:
   std::queue<bool> m_levels{};
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

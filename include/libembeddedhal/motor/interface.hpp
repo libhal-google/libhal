@@ -3,7 +3,7 @@
 #include "../error.hpp"
 #include "../percent.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup motor
  * Available motor APIs
@@ -63,4 +63,4 @@ private:
   virtual boost::leaf::result<void> driver_power(percent p_power) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

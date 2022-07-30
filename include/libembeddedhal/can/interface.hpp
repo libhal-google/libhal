@@ -9,7 +9,7 @@
 #include "../error.hpp"
 #include "../frequency.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup can
  * Available Controller Area Network (CAN bus) APIs
@@ -97,4 +97,4 @@ private:
       p_receive_handler) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

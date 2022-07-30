@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <memory_resource>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -124,4 +124,4 @@ private:
   std::pmr::monotonic_buffer_resource m_resource{};
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

@@ -4,7 +4,7 @@
 
 #include "interface.hpp"
 
-namespace embed::mock {
+namespace hal::mock {
 /**
  * @addtogroup counter
  * @{
@@ -14,7 +14,7 @@ namespace embed::mock {
  * simulations.
  *
  */
-struct counter : public embed::counter
+struct counter : public hal::counter
 {
   /**
    * @brief Queues the uptimes to be returned for uptime()
@@ -41,4 +41,4 @@ private:
   std::queue<uptime_t> m_uptimes{};
 };
 /** @} */
-}  // namespace embed::mock
+}  // namespace hal::mock

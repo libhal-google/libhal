@@ -1,11 +1,11 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/timeout.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite timeout_test = []() {
   using namespace boost::ut;
 
-  "embed::delay(timeout)"_test = []() {
+  "hal::delay(timeout)"_test = []() {
     // Setup
     constexpr int timeout_call_limit = 10;
     int counts = 0;
@@ -20,28 +20,28 @@ boost::ut::suite timeout_test = []() {
 
     // Exercise
     // Exercise: direct
-    auto result = embed::delay<timeout_type>(timeout_function);
+    auto result = hal::delay<timeout_type>(timeout_function);
     // Exercise: Reset
     counts = 0;
     // Exercise: polymorphic
-    result = embed::delay(timeout_function);
+    result = hal::delay(timeout_function);
 
     // Verify
     expect(that % timeout_call_limit == counts);
     expect(bool{ result });
   };
 
-  "embed::delay(timeout) returns error"_test = []() {
+  "hal::delay(timeout) returns error"_test = []() {
     // Setup
     auto timeout_function = []() mutable -> boost::leaf::result<void> {
       return boost::leaf::new_error();
     };
 
     // Exercise
-    auto result = embed::delay(timeout_function);
+    auto result = hal::delay(timeout_function);
 
     // Verify
     expect(!bool{ result });
   };
 };
-}  // namespace embed
+}  // namespace hal

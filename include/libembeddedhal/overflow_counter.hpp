@@ -2,7 +2,7 @@
 
 #include "bit_limits.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -77,4 +77,4 @@ private:
   uint32_t m_overflow_count = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

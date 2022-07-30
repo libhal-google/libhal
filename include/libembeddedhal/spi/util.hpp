@@ -5,7 +5,7 @@
 #include "../error.hpp"
 #include "interface.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup spi
  * @{
@@ -118,4 +118,4 @@ write_then_read(spi& p_spi,
   return read<BytesToRead>(p_spi, p_filler);
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal

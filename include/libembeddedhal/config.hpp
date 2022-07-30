@@ -2,33 +2,33 @@
 
 #include <string_view>
 
-namespace embed::config {
+namespace hal::config {
 namespace defaults {
 constexpr std::string_view platform = "test";
 constexpr bool on_error_callback_enabled = false;
 constexpr auto on_error_callback = []() {};
 }  // namespace defaults
 using namespace defaults;
-}  // namespace embed::config
+}  // namespace hal::config
 
 // Pull the tweaks
 #if __has_include(<libembeddedhal.tweaks.hpp>)
 #include <libembeddedhal.tweaks.hpp>
 #endif
 
-namespace embed {
+namespace hal {
 /**
  * @brief Determines if the current application was built for a specific
  * platform. For example:
  *
- *    embed::is_platform("lpc4078");
+ *    hal::is_platform("lpc4078");
  *
  * Will return true if the PLATFORM macro defined at compile time was equal to
  * lpc4078. If the developer wants to be less specific, let say, to just
  * determine if the platform is in the lpc40xx family then the following example
  * will work.
  *
- *    embed::is_platform("lpc40");
+ *    hal::is_platform("lpc40");
  *
  * @param p_platform - platform string pattern to check against
  * @return true - matches the platform string
@@ -51,4 +51,4 @@ namespace embed {
           config::platform.starts_with("unittest") ||
           config::platform.starts_with("test"));
 }
-};  // namespace embed
+};  // namespace hal

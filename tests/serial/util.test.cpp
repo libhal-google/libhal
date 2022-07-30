@@ -2,7 +2,7 @@
 #include <libembeddedhal/serial/util.hpp>
 #include <span>
 
-namespace embed {
+namespace hal {
 boost::ut::suite serial_util_test = []() {
   using namespace boost::ut;
   using namespace std::chrono_literals;
@@ -11,7 +11,7 @@ boost::ut::suite serial_util_test = []() {
   static constexpr std::byte write_failure_byte{ 0x33 };
   static constexpr std::byte filler_byte{ 0xA5 };
 
-  class dummy : public embed::serial
+  class dummy : public hal::serial
   {
   public:
     [[nodiscard]] boost::leaf::result<void> driver_configure(
@@ -55,7 +55,9 @@ boost::ut::suite serial_util_test = []() {
       return {};
     }
 
-    virtual ~dummy() {}
+    virtual ~dummy()
+    {
+    }
 
     std::span<const std::byte> m_out{};
     std::span<std::byte> m_in{};
@@ -382,4 +384,4 @@ boost::ut::suite serial_util_test = []() {
     expect(that % 5 == serial.m_bytes_available);
   };
 };
-}  // namespace embed
+}  // namespace hal

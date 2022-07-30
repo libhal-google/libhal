@@ -2,6 +2,6 @@
 
 #include <cstdint>
 
-namespace embed {
+namespace hal {
 using microgravity = std::int32_t;
-}  // namespace embed
+}  // namespace hal

@@ -1,13 +1,13 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/servo/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite servo_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::servo::position()"_test = []() {
+  "hal::mock::servo::position()"_test = []() {
     // Setup
-    embed::mock::servo mock;
+    hal::mock::servo mock;
     percent expected1 = percent::from_ratio(1, 2);
     percent expected2 = percent::from_ratio(1, 4);
 
@@ -22,4 +22,4 @@ boost::ut::suite servo_mock_test = []() {
     expect(expected2 == std::get<0>(mock.spy_position.call_history().at(1)));
   };
 };
-}  // namespace embed
+}  // namespace hal

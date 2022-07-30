@@ -3,7 +3,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -14,4 +14,4 @@ namespace embed {
 using time_duration = std::chrono::duration<std::int32_t, std::micro>;
 
 /** @} */
-}  // namespace embed
+}  // namespace hal

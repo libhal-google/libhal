@@ -5,7 +5,7 @@
 #include "../error.hpp"
 #include "../percent.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup dac
  * Available Digital to Analog Converter (DAC) APIs
@@ -41,4 +41,4 @@ private:
   virtual boost::leaf::result<void> driver_write(percent p_value) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

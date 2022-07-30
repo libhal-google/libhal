@@ -1,11 +1,11 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/error.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite error_test = []() {
   using namespace boost::ut;
 
-  "[success] embed::on_error calls callback"_test = []() {
+  "[success] hal::on_error calls callback"_test = []() {
     // Setup
     auto current_call_count = config::callback_call_count;
     expect(that % current_call_count == config::callback_call_count);
@@ -18,7 +18,7 @@ boost::ut::suite error_test = []() {
     expect(that % current_call_count < config::callback_call_count);
   };
 
-  "[success] embed::attempt calls handler"_test = []() {
+  "[success] hal::attempt calls handler"_test = []() {
     // Setup
     constexpr int expected = 123456789;
     int value_to_be_change = 0;
@@ -37,7 +37,7 @@ boost::ut::suite error_test = []() {
     expect(that % true == bool{ result });
   };
 
-  "[success] embed::attempt calls handler"_test = []() {
+  "[success] hal::attempt calls handler"_test = []() {
     // Setup
     constexpr int expected = 123456789;
     int value_to_be_change = 0;
@@ -54,4 +54,4 @@ boost::ut::suite error_test = []() {
     expect(that % value_to_be_change == expected);
   };
 };
-}  // namespace embed
+}  // namespace hal

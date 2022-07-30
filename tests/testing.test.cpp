@@ -1,7 +1,7 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/pwm/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite testing_utilities_test = []() {
   using namespace boost::ut;
 
@@ -79,4 +79,4 @@ boost::ut::suite testing_utilities_test = []() {
   expect(that % 4 == std::get<0>(spy.call_history().at(3)));
   expect(that % 'D' == std::get<1>(spy.call_history().at(3)));
 };
-}  // namespace embed
+}  // namespace hal

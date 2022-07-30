@@ -12,7 +12,7 @@
 #include "percent.hpp"
 #include "units.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -170,7 +170,7 @@ template<std::unsigned_integral Integer>
  */
 [[nodiscard]] constexpr std::int64_t cycles_per(
   const frequency& p_source,
-  embed::time_duration p_duration) noexcept
+  hal::time_duration p_duration) noexcept
 {
   // Full Equation:
   // =========================================================================
@@ -279,7 +279,7 @@ constexpr std::chrono::duration<int64_t, Period> wavelength(
  */
 [[nodiscard]] inline boost::leaf::result<duty_cycle> calculate_duty_cycle(
   const frequency& p_source_clock,
-  embed::time_duration p_duration,
+  hal::time_duration p_duration,
   percent p_percent) noexcept
 {
   std::uint64_t cycles = cycles_per(p_source_clock, p_duration);
@@ -404,4 +404,4 @@ namespace literals {
 }
 }  // namespace literals
 /** @} */
-}  // namespace embed
+}  // namespace hal

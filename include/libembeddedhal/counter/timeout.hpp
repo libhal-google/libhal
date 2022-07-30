@@ -6,15 +6,15 @@
 #include "../units.hpp"
 #include "interface.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup counter
  * @{
  */
 /**
- * @brief Timeout object based on embed::counter
+ * @brief Timeout object based on hal::counter
  *
- * Prefer to use `embed::create_timeout(embed::counter&)` instead of
+ * Prefer to use `hal::create_timeout(hal::counter&)` instead of
  * instantiating this class directly.
  *
  */
@@ -28,10 +28,10 @@ public:
    * @throws std::errc::result_out_of_range if time duration is negative
    */
   static boost::leaf::result<counter_timeout> create(
-    embed::counter& p_counter,
-    embed::time_duration p_duration)
+    hal::counter& p_counter,
+    hal::time_duration p_duration)
   {
-    if (p_duration < embed::time_duration(0)) {
+    if (p_duration < hal::time_duration(0)) {
       return boost::leaf::new_error(std::errc::result_out_of_range);
     }
 
@@ -98,16 +98,16 @@ private:
    * @param p_counter - counter driver
    * @param p_cycles_until_timeout - number of cycles until timeout
    */
-  counter_timeout(embed::counter& p_counter,
+  counter_timeout(hal::counter& p_counter,
                   std::int64_t p_cycles_until_timeout) noexcept
     : m_counter(&p_counter)
     , m_cycles_until_timeout(p_cycles_until_timeout)
   {
   }
 
-  embed::counter* m_counter;
+  hal::counter* m_counter;
   std::int64_t m_cycles_until_timeout = 0;
   std::uint32_t m_previous_count = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

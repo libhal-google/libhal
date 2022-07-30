@@ -3,11 +3,11 @@
 
 #include "../ostreams.hpp"
 
-namespace embed {
+namespace hal {
 namespace {
 constexpr percent expected_value = percent::from_ratio(1, 2);
 
-class test_servo : public embed::servo
+class test_servo : public hal::servo
 {
 public:
   percent m_passed_position;
@@ -34,4 +34,4 @@ boost::ut::suite servo_test = []() {
   expect(bool{ result });
   expect(that % expected_value == test.m_passed_position);
 };
-}  // namespace embed
+}  // namespace hal

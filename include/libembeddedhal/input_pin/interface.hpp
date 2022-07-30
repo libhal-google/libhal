@@ -3,7 +3,7 @@
 #include "../error.hpp"
 #include "pin_resistors.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup input_pin Input Pin
  * Available digital input pin APIs
@@ -63,4 +63,4 @@ private:
   virtual boost::leaf::result<bool> driver_level() noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

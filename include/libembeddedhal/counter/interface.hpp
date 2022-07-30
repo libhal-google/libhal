@@ -7,7 +7,7 @@
 #include "../error.hpp"
 #include "../frequency.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup counter
  * Available hardware counter APIs
@@ -33,7 +33,7 @@ public:
   struct uptime_t
   {
     /// Current operating frequency of the counter
-    embed::frequency frequency;
+    hal::frequency frequency;
     /// The current count of the counter
     std::uint32_t count;
   };
@@ -55,4 +55,4 @@ private:
   virtual boost::leaf::result<uptime_t> driver_uptime() noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

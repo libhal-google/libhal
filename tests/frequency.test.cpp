@@ -4,11 +4,11 @@
 
 #include "ostreams.hpp"
 
-namespace embed {
+namespace hal {
 boost::ut::suite frequency_user_defined_literals_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
-  using namespace embed::literals;
+  using namespace hal::literals;
 
   "frequency::user defined literals"_test = []() {
     expect(that % 1'000'000 == (1_MHz).value_hz);
@@ -357,4 +357,4 @@ boost::ut::suite frequency_user_defined_literals_test = []() {
               2));
   };
 };
-}  // namespace embed
+}  // namespace hal

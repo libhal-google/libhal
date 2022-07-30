@@ -6,7 +6,7 @@
 #include "../percent.hpp"
 #include "unit.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @brief Accelerometer hardware abstraction interface.
  *
@@ -40,10 +40,10 @@ public:
   /**
    * @brief Representation of a sample of accelerometer data
    *
-   * embed::percent was chosen for representing the x, y, and z data of an
+   * hal::percent was chosen for representing the x, y, and z data of an
    * accelerometer because conversion from N-bit register to percent is fast
    * compared to the math required to convert it to
-   * embed::nanometer_per_second_sq. This means that multiple samples can be
+   * hal::nanometer_per_second_sq. This means that multiple samples can be
    * gathered quickly to be converted to data at a later time.
    *
    */
@@ -59,7 +59,7 @@ public:
     /// driver changes the full_scale between samples. This is uncommon and many
     /// applications will simply save the full scale once and drop saving it for
     /// subsequent calls.
-    embed::microgravity full_scale;
+    hal::microgravity full_scale;
     /// Acceleration in the XYZ axis
     axis_t axis;
     /**
@@ -84,4 +84,4 @@ public:
 private:
   virtual boost::leaf::result<sample> driver_read() noexcept = 0;
 };
-}  // namespace embed
+}  // namespace hal

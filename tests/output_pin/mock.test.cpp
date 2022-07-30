@@ -1,19 +1,19 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/output_pin/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite output_pin_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::output_pin::configure()"_test = []() {
+  "hal::mock::output_pin::configure()"_test = []() {
     // Setup
-    constexpr embed::output_pin::settings mock_settings_default{};
-    constexpr embed::output_pin::settings mock_settings_custom{
+    constexpr hal::output_pin::settings mock_settings_default{};
+    constexpr hal::output_pin::settings mock_settings_custom{
       .resistor = pin_resistor::pull_down,
       .open_drain = true,
       .starting_level = false,
     };
-    embed::mock::output_pin mock;
+    hal::mock::output_pin mock;
 
     // Exercise
     auto result1 = mock.configure(mock_settings_default);
@@ -28,9 +28,9 @@ boost::ut::suite output_pin_mock_test = []() {
     expect(bool{ result2 });
   };
 
-  "embed::mock::output_pin::driver_level(bool)"_test = []() {
+  "hal::mock::output_pin::driver_level(bool)"_test = []() {
     // Setup
-    embed::mock::output_pin mock;
+    hal::mock::output_pin mock;
 
     // Exercise
     auto result1 = mock.level(true);
@@ -43,9 +43,9 @@ boost::ut::suite output_pin_mock_test = []() {
     expect(that % false == std::get<0>(mock.spy_level.call_history().at(1)));
   };
 
-  "embed::mock::output_pin::driver_level()"_test = []() {
+  "hal::mock::output_pin::driver_level()"_test = []() {
     // Setup
-    embed::mock::output_pin mock;
+    hal::mock::output_pin mock;
 
     // Exercise
     (void)mock.level(true);
@@ -60,10 +60,10 @@ boost::ut::suite output_pin_mock_test = []() {
     expect(that % false == result2.value());
   };
 
-  "embed::mock::output_pin::reset()"_test = []() {
+  "hal::mock::output_pin::reset()"_test = []() {
     // Setup
-    constexpr embed::output_pin::settings mock_settings_default{};
-    embed::mock::output_pin mock;
+    constexpr hal::output_pin::settings mock_settings_default{};
+    hal::mock::output_pin mock;
     (void)mock.configure(mock_settings_default);
     (void)mock.level(false);
 
@@ -75,4 +75,4 @@ boost::ut::suite output_pin_mock_test = []() {
     expect(that % 0 == mock.spy_level.call_history().size());
   };
 };
-}  // namespace embed
+}  // namespace hal

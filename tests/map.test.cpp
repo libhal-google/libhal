@@ -1,11 +1,11 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/map.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite map_test = []() {
   using namespace boost::ut;
 
-  "embed::map()"_test = []() {
+  "hal::map()"_test = []() {
     "Zero"_test = []() {
       expect(that % 0 ==
              map(0, { .x = 0, .y = 10 }, { .x = 0, .y = 100 }).value());

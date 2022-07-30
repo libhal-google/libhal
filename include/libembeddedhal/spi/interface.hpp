@@ -7,7 +7,7 @@
 #include "../error.hpp"
 #include "../frequency.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup spi
  * Available spi APIs
@@ -91,4 +91,4 @@ private:
     std::byte p_filler) noexcept = 0;
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

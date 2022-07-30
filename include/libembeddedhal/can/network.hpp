@@ -7,7 +7,7 @@
 
 #include "interface.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup can
  * @{
@@ -261,4 +261,4 @@ private:
   std::pmr::unordered_map<uint32_t, node_t> m_messages{};
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

@@ -13,7 +13,7 @@
 #include "math.hpp"
 #include "to_array.hpp"
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -202,11 +202,11 @@ public:
    *
    * Examples:
    *
-   *    To generate 50%, use embed::percent::from_ratio(1, 2);
-   *    To generate 50%, use embed::percent::from_ratio(50, 100);
-   *    To generate 50%, use embed::percent::from_ratio(250, 500);
-   *    To generate 20%, use embed::percent::from_ratio(20, 100);
-   *    To generate 14%, use embed::percent::from_ratio(35, 250);
+   *    To generate 50%, use hal::percent::from_ratio(1, 2);
+   *    To generate 50%, use hal::percent::from_ratio(50, 100);
+   *    To generate 50%, use hal::percent::from_ratio(250, 500);
+   *    To generate 20%, use hal::percent::from_ratio(20, 100);
+   *    To generate 14%, use hal::percent::from_ratio(35, 250);
    *
    * @tparam T - integral types for the numerator and denominator
    * @param p_progress - the number in which a percentage will be generated
@@ -585,4 +585,4 @@ private:
 }
 
 /** @} */
-}  // namespace embed
+}  // namespace hal

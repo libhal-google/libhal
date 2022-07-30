@@ -1,6 +1,6 @@
 #pragma once
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup input_pin Input Pin
  * @{
@@ -26,4 +26,4 @@ enum class pin_resistor
   pull_up,
 };
 /** @} */
-}  // namespace embed
+}  // namespace hal

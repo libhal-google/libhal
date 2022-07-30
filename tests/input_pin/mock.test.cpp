@@ -3,17 +3,17 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/input_pin/mock.hpp>
 
-namespace embed {
+namespace hal {
 boost::ut::suite input_pin_mock_test = []() {
   using namespace boost::ut;
 
-  "embed::mock::inputput_pin::configure()"_test = []() {
+  "hal::mock::inputput_pin::configure()"_test = []() {
     // Setup
-    constexpr embed::input_pin::settings mock_settings_default{};
-    constexpr embed::input_pin::settings mock_settings_custom{
+    constexpr hal::input_pin::settings mock_settings_default{};
+    constexpr hal::input_pin::settings mock_settings_custom{
       .resistor = pin_resistor::pull_down,
     };
-    embed::mock::input_pin mock;
+    hal::mock::input_pin mock;
 
     // Exercise
     auto result1 = mock.configure(mock_settings_default);
@@ -27,9 +27,9 @@ boost::ut::suite input_pin_mock_test = []() {
     expect(mock_settings_custom ==
            std::get<0>(mock.spy_configure.call_history().at(1)));
   };
-  "embed::mock::input_pin::set() + level()"_test = []() {
+  "hal::mock::input_pin::set() + level()"_test = []() {
     // Setup
-    embed::mock::input_pin mock;
+    hal::mock::input_pin mock;
     std::deque inputs{ true, false, true };
     std::queue queue(inputs);
 
@@ -42,10 +42,10 @@ boost::ut::suite input_pin_mock_test = []() {
     expect(that % true == mock.level().value());
     expect(throws([&mock] { mock.level().value(); }));
   };
-  "embed::mock::input_pin::reset()"_test = []() {
+  "hal::mock::input_pin::reset()"_test = []() {
     // Setup
-    constexpr embed::input_pin::settings mock_settings_default{};
-    embed::mock::input_pin mock;
+    constexpr hal::input_pin::settings mock_settings_default{};
+    hal::mock::input_pin mock;
     (void)mock.configure(mock_settings_default);
     expect(that % 1 == mock.spy_configure.call_history().size());
 
@@ -56,4 +56,4 @@ boost::ut::suite input_pin_mock_test = []() {
     expect(that % 0 == mock.spy_configure.call_history().size());
   };
 };
-}  // namespace embed
+}  // namespace hal

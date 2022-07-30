@@ -1,10 +1,10 @@
 #include <boost/ut.hpp>
 #include <libembeddedhal/rotary_encoder/interface.hpp>
 
-namespace embed {
+namespace hal {
 namespace {
 constexpr auto expected_rotations = 1'000'000'000;
-class test_rotary_encoder : public embed::rotary_encoder
+class test_rotary_encoder : public hal::rotary_encoder
 {
 private:
   boost::leaf::result<microrotation> driver_read() noexcept override
@@ -25,4 +25,4 @@ boost::ut::suite rotary_encoder_test = []() {
   // Verify
   expect(expected_rotations == sample);
 };
-}  // namespace embed
+}  // namespace hal

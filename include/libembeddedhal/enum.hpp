@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-namespace embed {
+namespace hal {
 /**
  * @addtogroup utility
  * @{
@@ -30,4 +30,4 @@ concept enumeration = std::is_enum_v<T>;
     p_enum_value);
 }
 /** @} */
-}  // namespace embed
+}  // namespace hal
