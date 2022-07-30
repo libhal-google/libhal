@@ -7,6 +7,7 @@ namespace defaults {
 constexpr std::string_view platform = "test";
 constexpr bool on_error_callback_enabled = false;
 constexpr auto on_error_callback = []() {};
+using float_t = float;
 }  // namespace defaults
 using namespace defaults;
 }  // namespace hal::config
