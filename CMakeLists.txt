@@ -23,36 +23,41 @@ set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(${TEST_NAME}
   tests/can/interface.test.cpp
-  tests/pwm/interface.test.cpp
+
+  # tests/pwm/interface.test.cpp
   tests/timer/interface.test.cpp
   tests/i2c/interface.test.cpp
   tests/spi/interface.test.cpp
-  tests/adc/interface.test.cpp
-  tests/dac/interface.test.cpp
+  tests/motor/interface.test.cpp
+
+  # tests/adc/interface.test.cpp
+  # tests/dac/interface.test.cpp
   tests/counter/interface.test.cpp
   tests/input_pin/interface.test.cpp
   tests/interrupt_pin/interface.test.cpp
   tests/output_pin/interface.test.cpp
   tests/serial/interface.test.cpp
-  tests/servo/interface.test.cpp
 
+  # tests/servo/interface.test.cpp
   tests/i2c/util.test.cpp
   tests/spi/util.test.cpp
   tests/counter/util.test.cpp
   tests/serial/util.test.cpp
 
   tests/motor/mock.test.cpp
-  tests/pwm/mock.test.cpp
+
+  # tests/pwm/mock.test.cpp
   tests/timer/mock.test.cpp
   tests/spi/mock.test.cpp
-  tests/dac/mock.test.cpp
-  tests/adc/mock.test.cpp
+
+  # tests/dac/mock.test.cpp
+  # tests/adc/mock.test.cpp
   tests/output_pin/mock.test.cpp
   tests/input_pin/mock.test.cpp
   tests/counter/mock.test.cpp
   tests/interrupt_pin/mock.test.cpp
-  tests/servo/mock.test.cpp
 
+  # tests/servo/mock.test.cpp
   tests/servo/rc.test.cpp
 
   tests/static_memory_resource.test.cpp

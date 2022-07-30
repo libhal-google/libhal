@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <concepts>
 
+#include "config.hpp"
+
 namespace hal {
 /**
  * @brief A type representing a percentage value
@@ -26,12 +28,21 @@ public:
   {
     set_and_constrain(p_value);
   }
-  constexpr percentage& operator=(const percentage& p_percent)
+  constexpr percentage(const percentage<float_t>& p_percent)
+  {
+    m_value = p_percent.value();
+  }
+  constexpr percentage(const percentage<float_t>&& p_percent)
+  {
+    m_value = p_percent.value();
+  }
+  constexpr percentage<float_t>& operator=(const percentage<float_t>& p_percent)
   {
     m_value = p_percent.value();
     return *this;
   }
-  constexpr percentage&& operator=(const percentage&& p_percent)
+  constexpr percentage<float_t>&& operator=(
+    const percentage<float_t>&& p_percent)
   {
     m_value = p_percent.value();
     return *this;
@@ -41,15 +52,7 @@ public:
     set_and_constrain(p_value);
     return *this;
   }
-  constexpr percentage(const percentage& p_percent)
-  {
-    m_value = p_percent.value();
-  }
-  constexpr percentage(const percentage&& p_percent)
-  {
-    m_value = p_percent.value();
-  }
-  constexpr auto value() const
+  auto value() const
   {
     return m_value;
   }

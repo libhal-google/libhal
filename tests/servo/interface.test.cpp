@@ -5,15 +5,16 @@
 
 namespace hal {
 namespace {
-constexpr percent expected_value = percent::from_ratio(1, 2);
+constexpr percentage<double> expected_value(0.5);
 
-class test_servo : public hal::servo
+template<std::floating_point float_t = config::float_type>
+class test_servo : public hal::servo<float_t>
 {
 public:
   percent m_passed_position;
 
 private:
-  status driver_position(percent p_position) noexcept override
+  status driver_position(percentage<float_t> p_position) noexcept override
   {
     m_passed_position = p_position;
     return {};

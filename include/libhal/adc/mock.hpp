@@ -1,4 +1,7 @@
 #pragma once
+
+#include <concepts>
+
 #include "interface.hpp"
 
 namespace hal::mock {
@@ -9,32 +12,33 @@ namespace hal::mock {
 /**
  * @brief Mock adc implementation for use in unit tests and simulations.
  */
-struct adc : public hal::adc
+template<std::floating_point float_t = config::float_type>
+struct adc : public hal::adc<float_t>
 {
   /**
    * @brief Construct a new adc object
    *
    * @param p_adc_value - percent value for adc
    */
-  adc(hal::percent p_adc_value)
+  adc(hal::percentage<float_t> p_adc_value)
     : m_adc_value(p_adc_value){};
   /**
    * @brief Set the mock adc to a given value
    *
    * @param p_adc_value - percent value to set adc to
    */
-  void set(hal::percent p_adc_value)
+  void set(hal::percent<float_t> p_adc_value)
   {
     m_adc_value = p_adc_value;
   }
 
 private:
-  result<percent> driver_read() noexcept
+  result<percentage<float_t>> driver_read() noexcept
   {
     return m_adc_value;
   }
 
-  hal::percent m_adc_value = hal::percent::from_ratio(0, 1);
+  hal::percentage<float_t> m_adc_value{ 0.5 };
 };
 /** @} */
 }  // namespace hal::mock

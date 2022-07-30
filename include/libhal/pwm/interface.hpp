@@ -1,10 +1,11 @@
 #pragma once
 
+#include <concepts>
 #include <cstdint>
 
 #include "../error.hpp"
 #include "../frequency.hpp"
-#include "../percent.hpp"
+#include "../percentage.hpp"
 
 namespace hal {
 /**
@@ -16,6 +17,7 @@ namespace hal {
  * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
  *
  */
+template<std::floating_point float_t = config::float_type>
 class pwm
 {
 public:
@@ -54,14 +56,15 @@ public:
    * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] status duty_cycle(percent p_duty_cycle) noexcept
+  [[nodiscard]] status duty_cycle(percentage<float_t> p_duty_cycle) noexcept
   {
     return driver_duty_cycle(p_duty_cycle);
   }
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual status driver_duty_cycle(percent p_duty_cycle) noexcept = 0;
+  virtual status driver_duty_cycle(
+    percentage<float_t> p_duty_cycle) noexcept = 0;
 };
 /** @} */
 }  // namespace hal
