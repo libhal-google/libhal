@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/temperature/interface.hpp>
+#include <libhal/temperature/interface.hpp>
 
 namespace hal {
 namespace {

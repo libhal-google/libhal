@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/spi/util.hpp>
+#include <libhal/spi/util.hpp>
 #include <span>
 
 namespace hal {

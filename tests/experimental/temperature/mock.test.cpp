@@ -1,7 +1,7 @@
 #include <deque>
 
 #include <boost/ut.hpp>
-#include <libembeddedhal/temperature/mock.hpp>
+#include <libhal/temperature/mock.hpp>
 
 namespace hal {
 boost::ut::suite temperature_mock_test = []() {

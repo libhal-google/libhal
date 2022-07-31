@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/servo/mock.hpp>
+#include <libhal/servo/mock.hpp>
 
 namespace hal {
 boost::ut::suite servo_mock_test = []() {

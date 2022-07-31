@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/adc/mock.hpp>
+#include <libhal/adc/mock.hpp>
 
 namespace hal {
 boost::ut::suite adc_mock_test = []() {

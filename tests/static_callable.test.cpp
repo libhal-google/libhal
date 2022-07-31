@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/static_callable.hpp>
+#include <libhal/static_callable.hpp>
 
 namespace hal {
 boost::ut::suite static_callable_test = []() {

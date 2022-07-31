@@ -6,7 +6,7 @@
 namespace hal {
 /**
  * @addtogroup utility
- * Available utilities for libembeddedhal
+ * Available utilities for libhal
  * @{
  */
 /**

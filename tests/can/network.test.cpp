@@ -1,1 +1,1 @@
-#include <libembeddedhal/can/network.hpp>
+#include <libhal/can/network.hpp>

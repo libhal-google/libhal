@@ -1,1 +1,1 @@
-#include <libembeddedhal/i2c/interface.hpp>
+#include <libhal/i2c/interface.hpp>

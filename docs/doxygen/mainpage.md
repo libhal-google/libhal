@@ -1,6 +1,6 @@
 # API Documentation
 
-Here you will find the full documentation for libembeddedhal.
+Here you will find the full documentation for libhal.
 
 # Modules
 

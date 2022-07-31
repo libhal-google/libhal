@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/counter/util.hpp>
+#include <libhal/counter/util.hpp>
 
 #include "../ostreams.hpp"
 

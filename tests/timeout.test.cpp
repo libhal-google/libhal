@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/timeout.hpp>
+#include <libhal/timeout.hpp>
 
 namespace hal {
 boost::ut::suite timeout_test = []() {

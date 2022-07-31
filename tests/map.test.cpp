@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/map.hpp>
+#include <libhal/map.hpp>
 
 namespace hal {
 boost::ut::suite map_test = []() {

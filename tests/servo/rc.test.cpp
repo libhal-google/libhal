@@ -1,6 +1,6 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/pwm/mock.hpp>
-#include <libembeddedhal/servo/rc.hpp>
+#include <libhal/pwm/mock.hpp>
+#include <libhal/servo/rc.hpp>
 
 #include "ostreams.hpp"
 

@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/rotary_encoder/interface.hpp>
+#include <libhal/rotary_encoder/interface.hpp>
 
 namespace hal {
 namespace {

@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/timer/mock.hpp>
+#include <libhal/timer/mock.hpp>
 
 namespace hal {
 boost::ut::suite timer_mock_test = []() {

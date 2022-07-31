@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/pwm/mock.hpp>
+#include <libhal/pwm/mock.hpp>
 
 namespace hal {
 boost::ut::suite pwm_mock_test = []() {

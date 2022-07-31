@@ -1,1 +1,1 @@
-#include <libembeddedhal/serial/interface.hpp>
+#include <libhal/serial/interface.hpp>

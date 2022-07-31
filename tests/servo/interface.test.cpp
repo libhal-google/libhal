@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/servo/interface.hpp>
+#include <libhal/servo/interface.hpp>
 
 #include "../ostreams.hpp"
 

@@ -1,7 +1,7 @@
 #include <deque>
 
 #include <boost/ut.hpp>
-#include <libembeddedhal/interrupt_pin/mock.hpp>
+#include <libhal/interrupt_pin/mock.hpp>
 
 namespace hal {
 boost::ut::suite interrupt_pin_mock_test = []() {
