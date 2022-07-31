@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/counter/uptime_counter.hpp>
+#include <libhal/counter/uptime_counter.hpp>
 #include <queue>
 
 namespace hal {

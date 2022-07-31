@@ -13,8 +13,8 @@ using namespace defaults;
 }  // namespace hal::config
 
 // Pull the tweaks
-#if __has_include(<libembeddedhal.tweaks.hpp>)
-#include <libembeddedhal.tweaks.hpp>
+#if __has_include(<libhal.tweaks.hpp>)
+#include <libhal.tweaks.hpp>
 #endif
 
 namespace hal {

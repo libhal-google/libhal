@@ -1,6 +1,6 @@
 #include <array>
 #include <boost/ut.hpp>
-#include <libembeddedhal/frequency.hpp>
+#include <libhal/frequency.hpp>
 
 #include "ostreams.hpp"
 

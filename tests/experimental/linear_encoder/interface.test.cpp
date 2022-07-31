@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/linear_encoder/interface.hpp>
+#include <libhal/linear_encoder/interface.hpp>
 
 namespace hal {
 namespace {

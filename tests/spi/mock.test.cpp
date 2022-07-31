@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <boost/ut.hpp>
-#include <libembeddedhal/spi/mock.hpp>
+#include <libhal/spi/mock.hpp>
 
 namespace hal {
 boost::ut::suite spi_mock_test = []() {

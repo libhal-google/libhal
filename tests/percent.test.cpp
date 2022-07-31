@@ -1,6 +1,6 @@
 #include "ostreams.hpp"
 #include <boost/ut.hpp>
-#include <libembeddedhal/percent.hpp>
+#include <libhal/percent.hpp>
 
 namespace hal {
 boost::ut::suite percent_ratio_and_cast_test = []() {

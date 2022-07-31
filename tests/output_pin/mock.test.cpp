@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/output_pin/mock.hpp>
+#include <libhal/output_pin/mock.hpp>
 
 namespace hal {
 boost::ut::suite output_pin_mock_test = []() {

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.1...3.21)
 set(CMAKE_C_COMPILER "gcc-11")
 set(CMAKE_CXX_COMPILER "g++-11")
 
-project(libembeddedhal VERSION 0.0.1 LANGUAGES CXX)
+project(libhal VERSION 0.0.1 LANGUAGES CXX)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE include)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
@@ -16,7 +16,7 @@ install(TARGETS ${PROJECT_NAME}
   PUBLIC_HEADER DESTINATION include)
 
 find_package(ut)
-find_package(libembeddedhal)
+find_package(libhal)
 
 set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)

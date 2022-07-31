@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/overflow_counter.hpp>
+#include <libhal/overflow_counter.hpp>
 
 namespace hal {
 boost::ut::suite overflow_counter_test = []() {

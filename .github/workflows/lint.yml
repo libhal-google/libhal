@@ -39,11 +39,11 @@ jobs:
         run: python3 -m pip install clang==11.1 pyyaml
 
       # Because inputs.library is required for workflow_calls, if this value is
-      # blank it means that the workflow was ran in libembeddedhal and not
+      # blank it means that the workflow was ran in libhal and not
       # remotely.
-      - name: 🖨️ Cloning .naming.style from libembeddedhal
+      - name: 🖨️ Cloning .naming.style from libhal
         if: ${{ inputs.library != '' }}
-        run: wget https://raw.githubusercontent.com/libembeddedhal/libembeddedhal/main/.naming.style -O .naming.style
+        run: wget https://raw.githubusercontent.com/libhal/libhal/main/.naming.style -O .naming.style
 
       - name: 📃 Naming Convention Check
         shell: bash
@@ -55,9 +55,9 @@ jobs:
               --style .naming.style | tee ncc.stderr
               [ ! -s ncc.stderr ]
 
-      - name: 🖨️ Cloning .clang-format from libembeddedhal
+      - name: 🖨️ Cloning .clang-format from libhal
         if: ${{ inputs.library != '' }}
-        run: wget https://raw.githubusercontent.com/libembeddedhal/libembeddedhal/main/.clang-format -O .clang-format
+        run: wget https://raw.githubusercontent.com/libhal/libhal/main/.clang-format -O .clang-format
 
       - name: 🧹 Format Check
         shell: bash

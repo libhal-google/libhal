@@ -1,7 +1,7 @@
 #include <deque>
 
 #include <boost/ut.hpp>
-#include <libembeddedhal/input_pin/mock.hpp>
+#include <libhal/input_pin/mock.hpp>
 
 namespace hal {
 boost::ut::suite input_pin_mock_test = []() {

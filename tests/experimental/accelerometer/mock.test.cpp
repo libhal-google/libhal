@@ -1,7 +1,7 @@
 #include <deque>
 
 #include <boost/ut.hpp>
-#include <libembeddedhal/accelerometer/mock.hpp>
+#include <libhal/accelerometer/mock.hpp>
 
 namespace hal {
 boost::ut::suite accelerometer_mock_test = []() {

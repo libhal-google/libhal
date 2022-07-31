@@ -1,1 +1,1 @@
-#include <libembeddedhal/output_pin/interface.hpp>
+#include <libhal/output_pin/interface.hpp>

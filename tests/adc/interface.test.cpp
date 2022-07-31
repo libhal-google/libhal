@@ -1,1 +1,1 @@
-#include <libembeddedhal/adc/interface.hpp>
+#include <libhal/adc/interface.hpp>

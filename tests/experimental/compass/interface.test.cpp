@@ -1,1 +1,1 @@
-#include <libembeddedhal/compass/interface.hpp>
+#include <libhal/compass/interface.hpp>

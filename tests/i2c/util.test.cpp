@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/i2c/util.hpp>
+#include <libhal/i2c/util.hpp>
 #include <span>
 
 namespace hal {

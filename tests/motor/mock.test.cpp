@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/motor/mock.hpp>
+#include <libhal/motor/mock.hpp>
 
 namespace hal {
 boost::ut::suite motor_mock_test = []() {

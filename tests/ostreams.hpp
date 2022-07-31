@@ -4,9 +4,9 @@
 #include <chrono>
 #include <iomanip>
 
-#include <libembeddedhal/frequency.hpp>
-#include <libembeddedhal/percent.hpp>
-#include <libembeddedhal/percentage.hpp>
+#include <libhal/frequency.hpp>
+#include <libhal/percent.hpp>
+#include <libhal/percentage.hpp>
 
 namespace {
 template<typename Rep, typename Period>

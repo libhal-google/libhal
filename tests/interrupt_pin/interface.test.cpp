@@ -1,1 +1,1 @@
-#include <libembeddedhal/interrupt_pin/interface.hpp>
+#include <libhal/interrupt_pin/interface.hpp>

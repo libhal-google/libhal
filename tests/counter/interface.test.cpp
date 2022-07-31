@@ -1,1 +1,1 @@
-#include <libembeddedhal/counter/interface.hpp>
+#include <libhal/counter/interface.hpp>

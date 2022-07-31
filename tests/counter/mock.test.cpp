@@ -1,7 +1,7 @@
 #include <deque>
 
 #include <boost/ut.hpp>
-#include <libembeddedhal/counter/mock.hpp>
+#include <libhal/counter/mock.hpp>
 
 namespace hal {
 boost::ut::suite counter_mock_test = []() {

@@ -2,12 +2,12 @@
   <img height="150" src="logo.svg">
 </p>
 
-# libembeddedhal
+# libhal
 
 [![Discord](https://img.shields.io/discord/800515757871726622?color=7389D8&logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/p5A6vzv8tm)
-[![docs](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/docs.yml)
-[![lint](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/lint.yml)
-[![tests](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/libembeddedhal/libembeddedhal/actions/workflows/tests.yml)
+[![docs](https://github.com/libhal/libhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/docs.yml)
+[![lint](https://github.com/libhal/libhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/lint.yml)
+[![tests](https://github.com/libhal/libhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/tests.yml)
 
 **🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
 
@@ -21,33 +21,33 @@
 | [Motivation](#-motivation)
 | [Contributing](#-contributing)
 
-# [📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/api)
+# [📚 Software APIs](https://libhal.github.io/libhal/api)
 
 # 📥 Install
 
 ## Install using conan
 
 ```bash
-conan install libembeddedhal
+conan install libhal
 ```
 
 ## Install from source
 
 ```bash
-git clone https://github.com/libembeddedhal/libembeddedhal.git
-cd libembeddedhal
+git clone https://github.com/libhal/libhal.git
+cd libhal
 conan create .
 ```
 
-## Using libembeddedhal without conan
+## Using libhal without conan
 
-libembeddedhal is a header only library so simply clone the repo into your
-project and add a `-I/path/to/libembeddedhal/include` in your GCC or Clang
+libhal is a header only library so simply clone the repo into your
+project and add a `-I/path/to/libhal/include` in your GCC or Clang
 command that will bring all of the libraries into your project.
 
 # ℹ️ Overview
 
-libembeddedhal exists to make hardware drivers:
+libhal exists to make hardware drivers:
 
 - **🚚 portable**
 - **🦾 flexible**
@@ -65,7 +65,7 @@ libembeddedhal exists to make hardware drivers:
 - Dependencies:
   - C++20 or above
   - [Boost.LEAF](https://boostorg.github.io/leaf/) for error handling
-  - [libxbitset](https://github.com/libembeddedhal/libxbitset/)
+  - [libxbitset](https://github.com/libhal/libxbitset/)
   - [mp-units](https://mpusz.github.io/units/)
   - [uintwide_t.h](https://github.com/ckormanyos/wide-integer)
 - System agnostic
@@ -73,8 +73,8 @@ libembeddedhal exists to make hardware drivers:
 
 # 📃 Glossary
 
-Here is a list of terms used in libembeddedhal. It is HIGHLY RECOMMENDED that
-new users of libembeddedhal read this section.
+Here is a list of terms used in libhal. It is HIGHLY RECOMMENDED that
+new users of libhal read this section.
 
 ## Target
 
@@ -106,7 +106,7 @@ operating systems, or operating systems running on a particular SBC
 
 ## Interface
 
-Interfaces are the basic building block of libembeddedhal and enables the
+Interfaces are the basic building block of libhal and enables the
 flexibility needed to be portable and flexible.
 
 An interface is a contract of functions that an implementing class must adhere
@@ -115,7 +115,7 @@ function should have on hardware regardless of the implementation. When a
 program is compiled and a driver implements an interface, the compiler detects
 if any of the functions have not been provided and if so, will report an error.
 
-In libembeddedhal each interface corresponds to a type of embedded systems
+In libhal each interface corresponds to a type of embedded systems
 primitive which can be things such as:
 
 - Digital I/O (input/output pins)
@@ -196,9 +196,9 @@ specific functions are as follows:
 
 # ✍️ Usage
 
-This section will go over how to use libembeddedhal in general. For details
+This section will go over how to use libhal in general. For details
 pertaining to specific interfaces see the
-[📚 Software APIs](https://libembeddedhal.github.io/libembeddedhal/) for more
+[📚 Software APIs](https://libhal.github.io/libhal/) for more
 details.
 
 ## Button & LED Example
@@ -241,7 +241,7 @@ Using stm32f10x:
 #include <chrono>
 
 #include <libarmcortex/counter.hpp>
-#include <libembeddedhal/counter/util.hpp>
+#include <libhal/counter/util.hpp>
 #include <libstm32f10x/output_pin.hpp>
 #include <libarmcortex/dwt_counter.hpp>
 
@@ -265,28 +265,28 @@ int main() {
 
 ## Library file structure
 
-libembeddedhal attempts to keep the organization of source code simple and
+libhal attempts to keep the organization of source code simple and
 consistent in order to make including libraries easy to remember.
 
 The file organization follows these rules:
 
 1. Only 2 layers deep, excluding the `internal/` directory.
 2. Non-hardware related utilities are placed at the root of the directory.
-3. Each interface has a directory at the root of the libembeddedhal directory.
+3. Each interface has a directory at the root of the libhal directory.
 4. Each interface directory will have an `interface.hpp` file.
-    - Example: `#include <libembeddedhal/adc/interface.hpp>`
-    - Example: `#include <libembeddedhal/dac/interface.hpp>`
+    - Example: `#include <libhal/adc/interface.hpp>`
+    - Example: `#include <libhal/dac/interface.hpp>`
 5. Any files associated/extending a particular interface will reside in that
    interfaces directory such as soft drivers or utilities.
 6. Any hardware/interface files that extend to multiple interfaces will be
    placed in one interface directories. The choice should be the directory that
    makes the most sense, but this can be very arbitrary.
-    - Example: `#include <libembeddedhal/input_pin/pin_resistor.hpp>`, this file
+    - Example: `#include <libhal/input_pin/pin_resistor.hpp>`, this file
       could be in `output_pin` or `interrupt_pin` but `input_pin` seems like the
       best choice but is effectively arbitrary.
 
 ```
-libembeddedhal/
+libhal/
 ├── config.hpp
 ├── <interface_1> (the name of an example interface)
 │   ├── interface.hpp (REQUIRED: the interface definition is found here)
@@ -299,7 +299,7 @@ libembeddedhal/
 │   ├── thread_safe.hpp (holds a soft driver implementing hal::i2c but with lock support)
 │   └── util.hpp (holds hal::i2c utilities)
 ├── internal (internal code that should NOT be accessed directly)
-│   └── third_party (dependencies for libembeddedhal)
+│   └── third_party (dependencies for libhal)
 │       ├── leaf.hpp (add Boost.LEAF for error handling and transport)
 │       ├── uintwide_t.h (add support for integers above 64-bits in width)
 │       └── units (add physical unit support)
@@ -351,7 +351,7 @@ auto ufcs_style_call = spi.read<1>();
 
 Utility headers can be found within interface folders with the name `util.hpp`.
 For example if you want to use utilities for `hal::adc` then you would
-include `#include <libembeddedhal/adc/util.hpp>`.
+include `#include <libhal/adc/util.hpp>`.
 
 ### Common Utility Functions
 
@@ -362,7 +362,7 @@ or write to the device for output devices. The exact behavior depends on the
 interface.
 
 To find more, see the
-[📚 Software APIs](#📚-software-apishttpslibembeddedhalgithubiolibembeddedhal).
+[📚 Software APIs](#📚-software-apishttpslibhalgithubiolibhal).
 
 ## Using Device Drivers
 
@@ -442,7 +442,7 @@ Being software emulated this driver is far slower than using hardware driven
 spi.
 
 ```cpp
-#include <libembeddedhal/spi/bit_bang.hpp>
+#include <libhal/spi/bit_bang.hpp>
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
 
@@ -477,7 +477,7 @@ micro-controller. You could even use pins from a device driver such as an I/O
 expander:
 
 ```cpp
-#include <libembeddedhal/spi/bit_bang.hpp>
+#include <libhal/spi/bit_bang.hpp>
 #include <liblpc40xx/output_pin.hpp>
 #include <liblpc40xx/input_pin.hpp>
 
@@ -540,13 +540,13 @@ counter.
 
 (TODO)
 
-## ⚖️ Using mp-units with libembeddedhal
+## ⚖️ Using mp-units with libhal
 
 (TODO)
 
 ## ☔️ Handling errors
 
-Errors are handled in libembeddedhal using
+Errors are handled in libhal using
 [Boost.LEAF](https://boostorg.github.io/leaf/). Check out their documentation
 for details on how to use it in detail. It is generally favorable to enable
 embedded mode for LEAF as it greatly reduces the storage and memory requires of
@@ -582,7 +582,7 @@ void throw_exception(std::exception const& e)
 #include <array>
 #include <span>
 
-#include <libembeddedhal/i2c/util.hpp>
+#include <libhal/i2c/util.hpp>
 #include <liblpc40xx/i2c.hpp>
 
 int main()
@@ -655,7 +655,7 @@ void throw_exception(std::exception const& e)
 
 ## 🎛️ Customization
 
-libembeddedhal uses `tweak.hpp` header files for customization and
+libhal uses `tweak.hpp` header files for customization and
 configuration. See [A New Approach to Build-Time Library
 Configuration](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html)
 for more details.
@@ -686,7 +686,7 @@ constexpr bool get_source_position_on_error = false;
 }  // namespace hal::config
 ```
 
-Create a `libembeddedhal.tweak.hpp` file somewhere in your application and make
+Create a `libhal.tweak.hpp` file somewhere in your application and make
 sure it is within one of the compiler's include paths. For GCC/Clang you'd use
 the `-I` flag to specify directories where headers can be found. The file must
 be at the root of the directory listed within the `-I` include path.
@@ -700,7 +700,7 @@ calls.
 
 ### Discussion
 
-Each interface in libembeddedhal uses the keyword `virtual` to support runtime
+Each interface in libhal uses the keyword `virtual` to support runtime
 polymorphism. There are consequences to using the `virtual` keyword such as the
 generation of a "vtable". This article
 [Demystifying virtual functions, Vtable and VPTR in
@@ -708,7 +708,7 @@ C++](https://medium.com/@abhichavhan/demystifying-virtual-functions-vtable-and-v
 explains how vtables work in detail.
 
 Whether or not vtables use too much space for an application is up for debate
-depending on the application. libembeddedhal mitigates this by trying to keep
+depending on the application. libhal mitigates this by trying to keep
 the number of virtual functions for each interface as small as is reasonable.
 
 The real concern regarding `virtual` keyword use is the function call
@@ -826,7 +826,7 @@ Peripherals are platform specific, thus an lpc40xx output pin driver will not
 work on an stm32f10x device. Because each implements the peripherals in a
 different and unique way there needs to be a separate driver for each. This is
 the crux of why embedded software is not portable across multiple devices. But
-libembeddedhal has a method of fixing this.
+libhal has a method of fixing this.
 
 The following section of code will explain in its comments how to support
 multiple platforms between lpc40xx and stm32f103
@@ -872,11 +872,11 @@ int main()
 
 # 🪪 Library Badges
 
-![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fsupported.json)
-![safety critical](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fsafety_critical.json)
-![allocates](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fallocates.json)
-![floats](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Ffloats.json)
-![throws](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibembeddedhal%2Flibembeddedhal%2Fmain%2Fbadges%2Fthrows.json)
+![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fsupported.json)
+![safety critical](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fsafety_critical.json)
+![allocates](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fallocates.json)
+![floats](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Ffloats.json)
+![throws](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fthrows.json)
 
 The badges above are displayed in a library's README.md right below the title to
 indicate attributes of the library. When searching for a library to use for your
@@ -885,7 +885,7 @@ requirements.
 
 ## Supported
 
-All libraries that implement libembeddedhal interfaces should have this badge to
+All libraries that implement libhal interfaces should have this badge to
 indicate library users/consumers.
 
 ## 🦺 SAFETY CRITICAL
@@ -934,12 +934,12 @@ Some points to consider when seeing a library that uses floats:
 All guides follow the [C++ Core
 Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
 
-## Making your own libembeddedhal Interfaces and Drivers
+## Making your own libhal Interfaces and Drivers
 
 In order to demonstrate how to create an interface a thoroughly
 documented/commented set of example code has been written. The comments in these
 files acts as guides to help new developers learn how to create their own
-libembeddedhal interfaces, peripheral drivers, device drivers and soft drivers.
+libhal interfaces, peripheral drivers, device drivers and soft drivers.
 
 The following files are a guide to how to write their respective driver:
 
@@ -948,16 +948,16 @@ The following files are a guide to how to write their respective driver:
 - Device Drivers:
   - TBD: [`mma8452q:accelerometer.hpp`]()
 - Soft Drivers;
-  - TBD: [`libembeddedhal:rc_servo.hpp`]()
+  - TBD: [`libhal:rc_servo.hpp`]()
 
 Each of these files will include comments that document every portion of the
 code and explain why each line or block of code is present in the code.
 
 ## 🎨 Style
 
-- Code shall follow libembeddedhal's `.clang-format` file, which uses the
+- Code shall follow libhal's `.clang-format` file, which uses the
   Mozilla C++ style format as a base with some adjustments.
-- Code shall follow libembeddedhal's `.naming.style` file, which is very
+- Code shall follow libhal's `.naming.style` file, which is very
   similar to the standard library naming convention:
   - CamelCase for template parameters.
   - CAP_CASE for macros.
@@ -1178,27 +1178,27 @@ for more details. Rationale can be found within that link as well.
 
 ## Processors
 
-- [libarmcortex](https://github.com/libembeddedhal/libarmcortex): Drivers for
+- [libarmcortex](https://github.com/libhal/libarmcortex): Drivers for
   the ARM Cortex M series of processors.
-- [libriscvi32](https://github.com/libembeddedhal/libriscvi32): Coming soon.
+- [libriscvi32](https://github.com/libhal/libriscvi32): Coming soon.
   Drivers for 32-bit RISC-V processors
 
 ## Targets
 
-- [liblpc40xx](https://github.com/libembeddedhal/liblpc40xx): Drivers the lpc40xx
+- [liblpc40xx](https://github.com/libhal/liblpc40xx): Drivers the lpc40xx
   series of microcontrollers. This includes startup code, linker scripts, and
   peripheral drivers.
-- [libstm32f1xx](https://github.com/libembeddedhal/libstm32f1xx): Coming soon.
+- [libstm32f1xx](https://github.com/libhal/libstm32f1xx): Coming soon.
   Drivers for atmega328 micro-controller
 
 ### Drivers
 
-- [libesp8266](https://github.com/libembeddedhal/libesp8266): Drivers for the
+- [libesp8266](https://github.com/libhal/libesp8266): Drivers for the
   esp8266 micro-controller as well as drivers for the WiFi/Internet firmware AT
   client.
-- [libmpu6050](https://github.com/libembeddedhal/libmpu6050): Coming soon.
+- [libmpu6050](https://github.com/libhal/libmpu6050): Coming soon.
   Accelerometer and gyroscope device. Requires an i2c driver.
-- [libatmega328](https://github.com/libembeddedhal/libatmega328): Coming soon.
+- [libatmega328](https://github.com/libhal/libatmega328): Coming soon.
   Drivers for atmega328 micro-controller
 
 
@@ -1219,18 +1219,18 @@ some cases you may also be limited to just their toolchain. You as the developer
 are locked in to this one specific setup. And if you move to another platform,
 you must do the work of rewriting all of your code again.
 
-libembeddedhal seeks to solve this issue by creating a set of generic interfaces
+libhal seeks to solve this issue by creating a set of generic interfaces
 for embedded system concepts such as serial communication (UART), analog to
 digital conversion (ADC), inertial measurement units (IMU), pulse width
 modulation (PWM) and much more. The advantage of building a system on top of
-libembeddedhal is that higher level drivers can be used with any target platform
+libhal is that higher level drivers can be used with any target platform
 whether it is an stm32, an nxp micro controller, an RISC-V or is on an
 embedded linux.
 
 This project is inspired by the work of Rust's embedded_hal and follows many of
 the same design goals.
 
-libembeddedhal's design goals:
+libhal's design goals:
 
 1. Serve as a foundation for building an ecosystem of platform agnostic drivers.
 2. Must abstract away device specific details like registers and bitmaps.

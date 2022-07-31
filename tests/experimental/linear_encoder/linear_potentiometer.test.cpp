@@ -1,6 +1,6 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/adc/mock.hpp>
-#include <libembeddedhal/linear_potentiometer/interface.hpp>
+#include <libhal/adc/mock.hpp>
+#include <libhal/linear_potentiometer/interface.hpp>
 
 namespace hal {
 boost::ut::suite linear_pot_test = []() {

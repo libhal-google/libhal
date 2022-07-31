@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/accelerometer/interface.hpp>
+#include <libhal/accelerometer/interface.hpp>
 
 namespace hal {
 namespace {

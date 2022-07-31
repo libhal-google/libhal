@@ -1,6 +1,6 @@
 #include "ostreams.hpp"
 #include <boost/ut.hpp>
-#include <libembeddedhal/percentage.hpp>
+#include <libhal/percentage.hpp>
 
 namespace hal {
 boost::ut::suite percentage_test = []() {

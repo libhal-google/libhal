@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/error.hpp>
+#include <libhal/error.hpp>
 
 namespace hal {
 boost::ut::suite error_test = []() {

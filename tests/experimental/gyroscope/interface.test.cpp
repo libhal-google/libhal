@@ -1,1 +1,1 @@
-#include <libembeddedhal/gyroscope/interface.hpp>
+#include <libhal/gyroscope/interface.hpp>

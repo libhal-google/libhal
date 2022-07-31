@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/serial/util.hpp>
+#include <libhal/serial/util.hpp>
 #include <span>
 
 namespace hal {

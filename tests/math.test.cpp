@@ -1,5 +1,5 @@
 #include <boost/ut.hpp>
-#include <libembeddedhal/math.hpp>
+#include <libhal/math.hpp>
 
 namespace hal {
 boost::ut::suite math_test = []() {

@@ -11,7 +11,7 @@ namespace hal {
 
 /**
  * @brief The static_memory_resource is the polymorphic memory resource
- * allocator that allows libembeddedhal's libraries to use a C++ standard
+ * allocator that allows libhal's libraries to use a C++ standard
  * container such as std::pmr::vector, std::pmr::string,
  * std::pmr::unordered_map, and more without requiring dynamic memory allocation
  * from the heap. It provides a simple way to create an allocator with built in
