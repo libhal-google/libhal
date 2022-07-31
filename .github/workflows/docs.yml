@@ -22,16 +22,15 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: 📥 Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: 'latest'
+      - name: Copy README.md to docs directory
+        run: cp README.md logo.svg docs
 
-      - name: 📥 Download doxybook2
-        run: wget https://github.com/matusnovak/doxybook2/releases/download/v1.4.0/doxybook2-linux-amd64-v1.4.0.zip
+      - name: Copy logo.svg to docs directory
+        run: cp logo.svg docs/
 
-      - name: 📤 Extract doxybook2
-        run: unzip doxybook2-linux-amd64-v1.4.0.zip -d doxybook2
+      - name: Apply repo name to 'doxygen.conf' project name
+        working-directory: docs
+        run: echo PROJECT_NAME = ${{ github.event.repository.name }} >> doxygen.conf
 
       - name: 📖 Run Doxygen
         uses: mattnotmitt/doxygen-action@v1
@@ -43,12 +42,6 @@ jobs:
         if: always()
         working-directory: docs
         run: cat doxygen_warn.log
-
-      - name: Copy README.md to docs directory
-        run: cp README.md logo.svg docs
-
-      - name: Copy logo.svg to docs directory
-        run: cp logo.svg docs/
 
       - name: 🚀 Deploy
         uses: peaceiris/actions-gh-pages@v3
