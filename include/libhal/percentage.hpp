@@ -49,21 +49,21 @@ public:
   {
     m_value = p_percent.value();
   }
-  auto value()
+  constexpr auto value() const
   {
     return m_value;
   }
-  constexpr explicit operator double()
+  constexpr explicit operator double() const
   {
     return static_cast<double>(m_value);
   }
-  constexpr explicit operator float()
+  constexpr explicit operator float() const
   {
     return static_cast<float>(m_value);
   }
 
 private:
-  void set_and_constrain(float_t p_value)
+  constexpr void set_and_constrain(float_t p_value)
   {
     m_value = std::clamp(p_value, min, max);
   }
