@@ -1136,13 +1136,13 @@ class peripheral_driver {
 
 ### Drivers should not pollute the global namespace
 
-All drivers must be within the `embed` namespace (RECOMMENDED) or within their
+All drivers must be within the `hal` namespace (RECOMMENDED) or within their
 own bespoke namespace.
 
 Inclusion of a C header file full of register map structures is not allowed as
 it pollutes the global namespace and tends to result in name collisions.
 
-Care should be taken to ensure that the `embed` namespace is also as clean as
+Care should be taken to ensure that the `hal` namespace is also as clean as
 possible by placing structures, enums, const data, and any other symbols into
 the driver's class's namespace like so:
 
@@ -1181,7 +1181,7 @@ for more details. Rationale can be found within that link as well.
 - [libarmcortex](https://github.com/libhal/libarmcortex): Drivers for
   the ARM Cortex M series of processors.
 - [libriscvi32](https://github.com/libhal/libriscvi32): Coming soon.
-  Drivers for 32-bit RISC-V processors
+  Drivers for 32-bit RISC-V processors.
 
 ## Targets
 
@@ -1189,7 +1189,7 @@ for more details. Rationale can be found within that link as well.
   series of microcontrollers. This includes startup code, linker scripts, and
   peripheral drivers.
 - [libstm32f1xx](https://github.com/libhal/libstm32f1xx): Coming soon.
-  Drivers for atmega328 micro-controller
+  Drivers the stm32f1xx series of microcontrollers.
 
 ### Drivers
 
@@ -1199,7 +1199,7 @@ for more details. Rationale can be found within that link as well.
 - [libmpu6050](https://github.com/libhal/libmpu6050): Coming soon.
   Accelerometer and gyroscope device. Requires an i2c driver.
 - [libatmega328](https://github.com/libhal/libatmega328): Coming soon.
-  Drivers for atmega328 micro-controller
+  Drivers for atmega328 micro-controller.
 
 
 # 💡 Motivation
