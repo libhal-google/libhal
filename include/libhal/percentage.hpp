@@ -61,6 +61,8 @@ public:
   {
     return static_cast<float>(m_value);
   }
+  constexpr bool operator<=>(const percentage& p_percent) const = default;
+  constexpr bool operator==(const percentage& p_percent) = delete;
 
 private:
   constexpr void set_and_constrain(float_t p_value)
