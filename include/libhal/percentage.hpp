@@ -26,12 +26,12 @@ public:
   {
     set_and_constrain(p_value);
   }
-  constexpr percentage& operator=(percentage& p_percent)
+  constexpr percentage& operator=(const percentage& p_percent)
   {
     m_value = p_percent.value();
     return *this;
   }
-  constexpr percentage&& operator=(percentage&& p_percent)
+  constexpr percentage&& operator=(const percentage&& p_percent)
   {
     m_value = p_percent.value();
     return *this;
@@ -41,11 +41,11 @@ public:
     set_and_constrain(p_value);
     return *this;
   }
-  constexpr percentage(percentage& p_percent)
+  constexpr percentage(const percentage& p_percent)
   {
     m_value = p_percent.value();
   }
-  constexpr percentage(percentage&& p_percent)
+  constexpr percentage(const percentage&& p_percent)
   {
     m_value = p_percent.value();
   }
