@@ -13,8 +13,10 @@ namespace hal::mock {
  * functions for configure() and duty_cycle().
  *
  */
-struct pwm : public hal::pwm
+template<std::floating_point float_t = config::float_type>
+struct pwm : public hal::pwm<float_t>
 {
+  using settings = hal::pwm<float_t>::settings;
   /**
    * @brief Reset spy information for both configure() and duty_cycle()
    *
@@ -28,14 +30,14 @@ struct pwm : public hal::pwm
   /// Spy handler for hal::pwm::configure()
   spy_handler<settings> spy_configure;
   /// Spy handler for hal::pwm::duty_cycle()
-  spy_handler<percent> spy_duty_cycle;
+  spy_handler<percentage<float_t>> spy_duty_cycle;
 
 private:
   status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   };
-  status driver_duty_cycle(percent p_duty_cycle) noexcept override
+  status driver_duty_cycle(percentage<float_t> p_duty_cycle) noexcept override
   {
     return spy_duty_cycle.record(p_duty_cycle);
   };

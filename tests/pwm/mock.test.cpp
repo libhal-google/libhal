@@ -7,10 +7,10 @@ boost::ut::suite pwm_mock_test = []() {
 
   "hal::mock::pwm::configure()"_test = []() {
     // Setup
-    constexpr hal::pwm::settings expected1 = {
+    constexpr hal::pwm<>::settings expected1 = {
       .frequency = frequency(1'000),
     };
-    constexpr hal::pwm::settings expected2 = {
+    constexpr hal::pwm<>::settings expected2 = {
       .frequency = frequency(10'000),
     };
     hal::mock::pwm mock;
@@ -29,20 +29,23 @@ boost::ut::suite pwm_mock_test = []() {
 
   "hal::mock::pwm::duty_cycle()"_test = []() {
     // Setup
-    constexpr auto expected1 = percent::from_ratio(1, 2);
-    constexpr auto expected2 = percent::from_ratio(1, 4);
+    constexpr auto expected1 = percentage<config::float_type>(0.5);
+    constexpr auto expected2 = percentage<config::float_type>(0.25);
     hal::mock::pwm mock;
     mock.spy_duty_cycle.trigger_error_on_call(3);
 
     // Exercise + Verify
     expect(bool{ mock.duty_cycle(expected1) });
-    expect(expected1 == std::get<0>(mock.spy_duty_cycle.call_history().at(0)));
+    expect(expected1.value() ==
+           std::get<0>(mock.spy_duty_cycle.call_history().at(0)).value());
 
     expect(bool{ mock.duty_cycle(expected2) });
-    expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(1)));
+    expect(expected2.value() ==
+           std::get<0>(mock.spy_duty_cycle.call_history().at(1)).value());
 
     expect(!mock.duty_cycle(expected2));
-    expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(2)));
+    expect(expected2.value() ==
+           std::get<0>(mock.spy_duty_cycle.call_history().at(2)).value());
   };
 };
 }  // namespace hal
