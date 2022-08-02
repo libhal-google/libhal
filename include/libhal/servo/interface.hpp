@@ -1,7 +1,8 @@
 #pragma once
 
+#include "../config.hpp"
 #include "../error.hpp"
-#include "../percent.hpp"
+#include "../percentage.hpp"
 
 namespace hal {
 /**
@@ -34,6 +35,7 @@ namespace hal {
  *     commanded to move to their center position, they will be able to move to
  *     that position no matter the original position of the rotor at power on.
  */
+template<std::floating_point float_t = config::float_type>
 class servo
 {
 public:
@@ -88,13 +90,13 @@ public:
    * @param p_position - position to move the servo to
    * @return status - success or error flag
    */
-  [[nodiscard]] status position(percent p_position) noexcept
+  [[nodiscard]] status position(percentage<float_t> p_position) noexcept
   {
     return driver_position(p_position);
   }
 
 private:
-  virtual status driver_position(percent p_position) noexcept = 0;
+  virtual status driver_position(percentage<float_t> p_position) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

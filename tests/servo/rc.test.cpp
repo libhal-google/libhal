@@ -16,12 +16,12 @@ boost::ut::suite rc_servo_test = []() {
 
     // Exercise
     // use defaults
-    auto servo0 = hal::rc_servo::create(pwm0);
+    auto servo0 = hal::rc_servo<>::create(pwm0);
     // 100Hz (or 10ms per update) with 500us being max negative start and 2500us
     // being max positive.
-    auto servo1 = hal::rc_servo::create<100, 500, 2500>(pwm1);
+    auto servo1 = hal::rc_servo<>::create<100, 500, 2500>(pwm1);
     pwm2.spy_configure.trigger_error_on_call(1);
-    auto servo2 = hal::rc_servo::create(pwm2);
+    auto servo2 = hal::rc_servo<>::create(pwm2);
 
     // Verify
     expect(bool{ servo0 });
@@ -31,45 +31,39 @@ boost::ut::suite rc_servo_test = []() {
 
   "hal::servo::rc_servo::position"_test = []() {
     // Setup
-    constexpr auto expected0 = percent::from_ratio(5, 100);
-    constexpr auto expected1 = percent::from_ratio(1, 10);
-    constexpr auto expected2 = percent::from_ratio(15, 100);
-    constexpr auto expected3 = percent::from_ratio(2, 10);
-    constexpr auto expected4 = percent::from_ratio(1, 4);
+    constexpr auto expected0 = percentage<config::float_type>(0.05);
+    constexpr auto expected1 = percentage<config::float_type>(0.10);
+    constexpr auto expected2 = percentage<config::float_type>(0.20);
+    constexpr auto expected3 = percentage<config::float_type>(0.25);
 
-    constexpr auto percent_neg_100 = hal::percent::from_ratio(-1, 1);
-    constexpr auto percent_neg_50 = hal::percent::from_ratio(-1, 2);
-    constexpr auto percent_0 = hal::percent::from_ratio(0, 1);
-    constexpr auto percent_50 = hal::percent::from_ratio(1, 2);
-    constexpr auto percent_100 = hal::percent::from_ratio(1, 1);
+    constexpr auto percent_neg_100 = percentage<config::float_type>(-1.0);
+    constexpr auto percent_neg_50 = percentage<config::float_type>(-0.5);
+    constexpr auto percent_50 = percentage<config::float_type>(0.5);
+    constexpr auto percent_100 = percentage<config::float_type>(1.0);
 
     hal::mock::pwm pwm;
-    auto servo = hal::rc_servo::create<100, 500, 2500>(pwm).value();
+    auto servo = hal::rc_servo<>::create<100, 500, 2500>(pwm).value();
 
     // Exercise
     auto result0 = servo.position(percent_neg_100);
     auto result1 = servo.position(percent_neg_50);
-    auto result2 = servo.position(percent_0);
-    auto result3 = servo.position(percent_50);
-    auto result4 = servo.position(percent_100);
+    auto result2 = servo.position(percent_50);
+    auto result3 = servo.position(percent_100);
 
     // Verify
     expect(bool{ result0 });
     expect(bool{ result1 });
     expect(bool{ result2 });
     expect(bool{ result3 });
-    expect(bool{ result4 });
 
-    expect(that % expected0 ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(0)));
-    expect(that % expected1 ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(1)));
-    expect(that % expected2 ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(2)));
-    expect(that % expected3 ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(3)));
-    expect(that % expected4 ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(4)));
+    expect(that % expected0.value() ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(0)).value());
+    expect(that % expected1.value() ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(1)).value());
+    expect(that % expected2.value() ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(2)).value());
+    expect(that % expected3.value() ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(3)).value());
   };
 };
 }  // namespace hal
