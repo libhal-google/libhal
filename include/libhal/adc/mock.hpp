@@ -1,4 +1,7 @@
 #pragma once
+
+#include <queue>
+
 #include "interface.hpp"
 
 namespace hal::mock {
@@ -13,29 +16,28 @@ template<std::floating_point float_t = config::float_type>
 struct adc : public hal::adc<float_t>
 {
   /**
-   * @brief Construct a new adc object
+   * @brief Queues the percentages to be returned for read()
    *
-   * @param p_adc_value - percent value for adc
+   * @param p_adc_values - queue of percentages
    */
-  adc(percentage<float_t> p_adc_value)
-    : m_adc_value(p_adc_value){};
-  /**
-   * @brief Set the mock adc to a given value
-   *
-   * @param p_adc_value - percent value to set adc to
-   */
-  void set(percentage<float_t> p_adc_value)
+  void set(std::queue<percentage<float_t>>& p_adc_values)
   {
-    m_adc_value = p_adc_value;
+    m_adc_values = p_adc_values;
   }
 
 private:
   result<percentage<float_t>> driver_read() noexcept
   {
-    return m_adc_value;
+    if (m_adc_values.size() == 0) {
+      return boost::leaf::new_error(
+        std::out_of_range("percentages queue is empty!"));
+    }
+    percentage<float_t> m_current_value = m_adc_values.front();
+    m_adc_values.pop();
+    return m_current_value;
   }
 
-  percentage<float_t> m_adc_value = percentage<float_t>(0.0);
+  std::queue<percentage<float_t>> m_adc_values{};
 };
 /** @} */
 }  // namespace hal::mock

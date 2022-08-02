@@ -31,7 +31,7 @@ public:
     m_value = p_percent.value();
     return *this;
   }
-  constexpr percentage&& operator=(const percentage&& p_percent)
+  constexpr percentage& operator=(const percentage&& p_percent)
   {
     m_value = p_percent.value();
     return *this;

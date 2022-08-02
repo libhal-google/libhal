@@ -1,3 +1,5 @@
+#include <deque>
+
 #include <boost/ut.hpp>
 #include <libhal/adc/mock.hpp>
 
@@ -9,13 +11,19 @@ boost::ut::suite adc_mock_test = []() {
   auto expected1 = percentage<config::float_type>(0.25);
   auto expected2 = percentage<config::float_type>(0.5);
   auto expected3 = percentage<config::float_type>(1.0);
-  hal::mock::adc mock(expected1);
+  hal::mock::adc mock;
+  std::deque percentages{ expected1, expected2, expected3 };
+  std::queue queue(percentages);
 
-  // Exercise + Verify
-  expect(that % expected1.value() == mock.read().value().value());
-  mock.set(expected2);
-  expect(that % expected2.value() == mock.read().value().value());
-  mock.set(expected3);
-  expect(that % expected3.value() == mock.read().value().value());
+  // Exercise
+  mock.set(queue);
+  auto result1 = mock.read().value();
+  auto result2 = mock.read().value();
+  auto result3 = mock.read().value();
+
+  // Verify
+  expect(that % expected1.value() == result1.value());
+  expect(that % expected2.value() == result2.value());
+  expect(that % expected3.value() == result3.value());
 };
 }  // namespace hal
