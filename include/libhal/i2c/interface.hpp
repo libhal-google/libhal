@@ -35,6 +35,13 @@ public:
   {
     /// @brief The serial clock rate in hertz.
     frequency clock_rate{};
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /**
