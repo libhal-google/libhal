@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "../error.hpp"
+#include "../units.hpp"
 #include "interface.hpp"
 
 namespace hal {
@@ -44,7 +45,7 @@ namespace hal {
  */
 [[nodiscard]] inline status write(
   serial& p_serial,
-  std::span<const std::byte> p_data_out) noexcept
+  std::span<const hal::byte> p_data_out) noexcept
 {
   return p_serial.write(p_data_out);
 }
@@ -54,14 +55,14 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be read from
  * @param p_data_in - buffer to have bytes from the serial port read into
- * @return result<std::span<const std::byte>> - return an error if
+ * @return result<std::span<const hal::byte>> - return an error if
  * a call to serial::read or delay() returns an error from the serial port or
  * a span with the number of bytes read and a pointer to where the read bytes
  * are.
  */
-[[nodiscard]] inline result<std::span<const std::byte>> read(
+[[nodiscard]] inline result<std::span<const hal::byte>> read(
   serial& p_serial,
-  std::span<std::byte> p_data_in)
+  std::span<hal::byte> p_data_in)
 {
   HAL_CHECK(delay(p_serial, p_data_in.size()));
   return p_serial.read(p_data_in);
@@ -75,16 +76,16 @@ namespace hal {
  *
  * @tparam BytesToRead - the number of bytes to be read from the serial port.
  * @param p_serial - the serial port to be read from
- * @return result<std::array<std::byte, BytesToRead>> - return an
+ * @return result<std::array<hal::byte, BytesToRead>> - return an
  * error if a call to serial::read or delay() returns an error from the
  * serial port or a span with the number of bytes read and a pointer to where
  * the read bytes are.
  */
 template<size_t BytesToRead>
-[[nodiscard]] result<std::array<std::byte, BytesToRead>> read(
+[[nodiscard]] result<std::array<hal::byte, BytesToRead>> read(
   serial& p_serial) noexcept
 {
-  std::array<std::byte, BytesToRead> buffer;
+  std::array<hal::byte, BytesToRead> buffer;
   HAL_CHECK(delay(p_serial, BytesToRead));
   HAL_CHECK(p_serial.read(buffer));
   return buffer;
@@ -104,8 +105,8 @@ template<size_t BytesToRead>
  */
 [[nodiscard]] inline status write_then_read(
   serial& p_serial,
-  std::span<const std::byte> p_data_out,
-  std::span<std::byte> p_data_in) noexcept
+  std::span<const hal::byte> p_data_out,
+  std::span<hal::byte> p_data_in) noexcept
 {
   HAL_CHECK(write(p_serial, p_data_out));
   HAL_CHECK(read(p_serial, p_data_in));
@@ -121,16 +122,16 @@ template<size_t BytesToRead>
  * @tparam BytesToRead - the number of bytes to read back
  * @param p_serial - the serial port to have the transaction occur on
  * @param p_data_out - the data to be written to the port
- * @return result<std::array<std::byte, BytesToRead>> - return an
+ * @return result<std::array<hal::byte, BytesToRead>> - return an
  * error if a call to serial::read or serial::write() returns an error from the
  * serial port or an array of read bytes.
  */
 template<size_t BytesToRead>
-[[nodiscard]] result<std::array<std::byte, BytesToRead>> write_then_read(
+[[nodiscard]] result<std::array<hal::byte, BytesToRead>> write_then_read(
   serial& p_serial,
-  std::span<const std::byte> p_data_out) noexcept
+  std::span<const hal::byte> p_data_out) noexcept
 {
-  std::array<std::byte, BytesToRead> buffer;
+  std::array<hal::byte, BytesToRead> buffer;
   HAL_CHECK(write_then_read(p_serial, p_data_out, buffer));
   return buffer;
 }

@@ -1,6 +1,8 @@
 
 #pragma once
+
 #include "../testing.hpp"
+#include "../units.hpp"
 #include "interface.hpp"
 
 namespace hal::mock {
@@ -29,16 +31,16 @@ struct write_only_spi : public hal::spi
   /// Spy handler for hal::spi::configure()
   spy_handler<settings> spy_configure;
   /// Record of the out data from hal::spi::transfer()
-  std::vector<std::vector<std::byte>> write_record;
+  std::vector<std::vector<hal::byte>> write_record;
 
 private:
   status driver_configure(const settings& p_settings) noexcept override
   {
     return spy_configure.record(p_settings);
   };
-  status driver_transfer(std::span<const std::byte> p_data_out,
-                         [[maybe_unused]] std::span<std::byte> p_data_in,
-                         [[maybe_unused]] std::byte p_filler) noexcept override
+  status driver_transfer(std::span<const hal::byte> p_data_out,
+                         [[maybe_unused]] std::span<hal::byte> p_data_in,
+                         [[maybe_unused]] hal::byte p_filler) noexcept override
   {
     write_record.push_back({ p_data_out.begin(), p_data_out.end() });
     return {};

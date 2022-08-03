@@ -8,6 +8,7 @@
 
 #include "../error.hpp"
 #include "../frequency.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -40,7 +41,7 @@ public:
     /// The number of elements in the payload
     uint8_t length = 0;
     /// The message data
-    std::array<std::byte, 8> payload{ std::byte{ 0 } };
+    std::array<hal::byte, 8> payload{ hal::byte{ 0 } };
     /// Whether or not the message is a remote request frame. If true, then
     /// length and payload are ignored.
     bool is_remote_request = false;

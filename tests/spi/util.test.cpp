@@ -6,9 +6,9 @@ namespace hal {
 boost::ut::suite spi_util_test = []() {
   using namespace boost::ut;
 
-  static constexpr std::byte success_filler{ 0xF5 };
-  static constexpr std::byte failure_filler{ 0x33 };
-  static constexpr std::byte filler_byte{ 0xA5 };
+  static constexpr hal::byte success_filler{ 0xF5 };
+  static constexpr hal::byte failure_filler{ 0x33 };
+  static constexpr hal::byte filler_byte{ 0xA5 };
 
   class dummy : public hal::spi
   {
@@ -17,9 +17,9 @@ boost::ut::suite spi_util_test = []() {
     {
       return {};
     }
-    [[nodiscard]] status driver_transfer(std::span<const std::byte> p_out,
-                                         std::span<std::byte> p_in,
-                                         std::byte p_filler) noexcept override
+    [[nodiscard]] status driver_transfer(std::span<const hal::byte> p_out,
+                                         std::span<hal::byte> p_in,
+                                         hal::byte p_filler) noexcept override
     {
       if (!p_out.empty()) {
         m_out = p_out;
@@ -43,15 +43,15 @@ boost::ut::suite spi_util_test = []() {
     {
     }
 
-    std::span<const std::byte> m_out = std::span<const std::byte>{};
-    std::span<std::byte> m_in = std::span<std::byte>{};
-    std::byte m_filler = std::byte{ 0xFF };
+    std::span<const hal::byte> m_out = std::span<const hal::byte>{};
+    std::span<hal::byte> m_in = std::span<hal::byte>{};
+    hal::byte m_filler = hal::byte{ 0xFF };
   };
 
   "[success] write"_test = []() {
     // Setup
     dummy spi;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
 
     // Exercise
     auto result = write(spi, expected_payload);
@@ -68,7 +68,7 @@ boost::ut::suite spi_util_test = []() {
   "[success] read"_test = []() {
     // Setup
     dummy spi;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result = read(spi, expected_buffer, success_filler);
@@ -86,7 +86,7 @@ boost::ut::suite spi_util_test = []() {
   "[failure] read"_test = []() {
     // Setup
     dummy spi;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result = read(spi, expected_buffer, failure_filler);
@@ -104,7 +104,7 @@ boost::ut::suite spi_util_test = []() {
   "[success] read<Length>"_test = []() {
     // Setup
     dummy spi;
-    std::array<std::byte, 5> expected_buffer;
+    std::array<hal::byte, 5> expected_buffer;
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -138,8 +138,8 @@ boost::ut::suite spi_util_test = []() {
   "[success] write_then_read"_test = []() {
     // Setup
     dummy spi;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result =
@@ -158,8 +158,8 @@ boost::ut::suite spi_util_test = []() {
   "[failure] write_then_read"_test = []() {
     // Setup
     dummy spi;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -179,8 +179,8 @@ boost::ut::suite spi_util_test = []() {
   "[success] write_then_read<Length>"_test = []() {
     // Setup
     dummy spi;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer{};
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer{};
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -200,7 +200,7 @@ boost::ut::suite spi_util_test = []() {
   "[failure] write_then_read<Length>"_test = []() {
     // Setup
     dummy spi;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
 
     // Exercise
     auto result = write_then_read<5>(spi, expected_payload, failure_filler);

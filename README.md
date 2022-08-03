@@ -325,7 +325,7 @@ read/sample capabilities.
 Meaning that the following code should work for all three of these functions.
 
 ```cpp
-constexpr std::byte address(0x17);
+constexpr hal::byte address(0x17);
 auto response_i2c = hal::read<1>(i2c, address);
 auto response_spi = hal::read<1>(spi);
 auto response_uart = hal::read<1>(uart);
@@ -457,11 +457,11 @@ int main() {
   // Construct the bit_bang_spi object using the implementations above
   hal::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
 
-  std::array<std::byte, 4> payload = {
-    std::byte(0x11),
-    std::byte(0x22),
-    std::byte(0x33),
-    std::byte(0x44),
+  std::array<hal::byte, 4> payload = {
+    hal::byte(0x11),
+    hal::byte(0x22),
+    hal::byte(0x33),
+    hal::byte(0x44),
   };
 
   chip_select.level(false);
@@ -499,11 +499,11 @@ int main() {
 
   // Get an output_pin and have it act like a chip select
 
-  std::array<std::byte, 4> payload = {
-    std::byte(0x11),
-    std::byte(0x22),
-    std::byte(0x33),
-    std::byte(0x44),
+  std::array<hal::byte, 4> payload = {
+    hal::byte(0x11),
+    hal::byte(0x22),
+    hal::byte(0x33),
+    hal::byte(0x44),
   };
 
   chip_select.level(false);
@@ -598,8 +598,8 @@ int main()
     // error result is returned from this function the handlers below will be
     // called.
     [&i2c0]() -> status {
-      constexpr std::byte address(0x11);
-      std::array<std::byte, 1> dummy_payload{ std::byte{ 0xAA } };
+      constexpr hal::byte address(0x11);
+      std::array<hal::byte, 1> dummy_payload{ hal::byte{ 0xAA } };
       // Functions that return boost::leaf::result must have their result
       // checked and handled. To do this we use the HAL_CHECK to remove
       // the boiler plate in doing this.

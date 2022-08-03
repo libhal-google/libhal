@@ -6,6 +6,7 @@
 
 #include "../error.hpp"
 #include "../frequency.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -42,7 +43,7 @@ public:
 
   /// Default filler data placed on the bus in place of actual write data when
   /// the write buffer has been exhausted.
-  static constexpr std::byte default_filler = std::byte{ 0xFF };
+  static constexpr hal::byte default_filler = hal::byte{ 0xFF };
 
   /**
    * @brief Configure spi to match the settings supplied
@@ -73,18 +74,18 @@ public:
    * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] status transfer(std::span<const std::byte> p_data_out,
-                                std::span<std::byte> p_data_in,
-                                std::byte p_filler = default_filler) noexcept
+  [[nodiscard]] status transfer(std::span<const hal::byte> p_data_out,
+                                std::span<hal::byte> p_data_in,
+                                hal::byte p_filler = default_filler) noexcept
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual status driver_transfer(std::span<const std::byte> p_data_out,
-                                 std::span<std::byte> p_data_in,
-                                 std::byte p_filler) noexcept = 0;
+  virtual status driver_transfer(std::span<const hal::byte> p_data_out,
+                                 std::span<hal::byte> p_data_in,
+                                 hal::byte p_filler) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

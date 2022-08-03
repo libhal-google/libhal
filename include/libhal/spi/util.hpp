@@ -3,6 +3,7 @@
 #include <span>
 
 #include "../error.hpp"
+#include "../units.hpp"
 #include "interface.hpp"
 
 namespace hal {
@@ -20,10 +21,10 @@ namespace hal {
  */
 [[nodiscard]] inline status write(
   spi& p_spi,
-  std::span<const std::byte> p_data_out) noexcept
+  std::span<const hal::byte> p_data_out) noexcept
 {
   return p_spi.transfer(
-    p_data_out, std::span<std::byte>{}, spi::default_filler);
+    p_data_out, std::span<hal::byte>{}, spi::default_filler);
 }
 
 /**
@@ -39,10 +40,10 @@ namespace hal {
  */
 [[nodiscard]] inline status read(
   spi& p_spi,
-  std::span<std::byte> p_data_in,
-  std::byte p_filler = spi::default_filler) noexcept
+  std::span<hal::byte> p_data_in,
+  hal::byte p_filler = spi::default_filler) noexcept
 {
-  return p_spi.transfer(std::span<std::byte>{}, p_data_in, p_filler);
+  return p_spi.transfer(std::span<hal::byte>{}, p_data_in, p_filler);
 }
 /**
  * @brief Read data from the SPI bus and return a std::array of bytes.
@@ -53,16 +54,16 @@ namespace hal {
  * @param p_spi - spi driver
  * @param p_filler - filler data placed on the bus in place of actual write
  * data.
- * @return result<std::array<std::byte, BytesToRead>> - any errors
+ * @return result<std::array<hal::byte, BytesToRead>> - any errors
  * associated with this call
  */
 template<size_t BytesToRead>
-[[nodiscard]] result<std::array<std::byte, BytesToRead>> read(
+[[nodiscard]] result<std::array<hal::byte, BytesToRead>> read(
   spi& p_spi,
-  std::byte p_filler = spi::default_filler) noexcept
+  hal::byte p_filler = spi::default_filler) noexcept
 {
-  std::array<std::byte, BytesToRead> buffer;
-  HAL_CHECK(p_spi.transfer(std::span<std::byte>{}, buffer, p_filler));
+  std::array<hal::byte, BytesToRead> buffer;
+  HAL_CHECK(p_spi.transfer(std::span<hal::byte>{}, buffer, p_filler));
   return buffer;
 }
 
@@ -87,9 +88,9 @@ template<size_t BytesToRead>
  */
 [[nodiscard]] inline status write_then_read(
   spi& p_spi,
-  std::span<const std::byte> p_data_out,
-  std::span<std::byte> p_data_in,
-  std::byte p_filler = spi::default_filler) noexcept
+  std::span<const hal::byte> p_data_out,
+  std::span<hal::byte> p_data_in,
+  hal::byte p_filler = spi::default_filler) noexcept
 {
   HAL_CHECK(write(p_spi, p_data_out));
   HAL_CHECK(read(p_spi, p_data_in, p_filler));
@@ -106,13 +107,13 @@ template<size_t BytesToRead>
  * @param p_data_out - bytes to write to the bus
  * @param p_filler - filler data placed on the bus when the read operation
  * begins.
- * @return result<std::array<std::byte, BytesToRead>>
+ * @return result<std::array<hal::byte, BytesToRead>>
  */
 template<size_t BytesToRead>
-[[nodiscard]] result<std::array<std::byte, BytesToRead>> write_then_read(
+[[nodiscard]] result<std::array<hal::byte, BytesToRead>> write_then_read(
   spi& p_spi,
-  std::span<const std::byte> p_data_out,
-  std::byte p_filler = spi::default_filler) noexcept
+  std::span<const hal::byte> p_data_out,
+  hal::byte p_filler = spi::default_filler) noexcept
 {
   HAL_CHECK(write(p_spi, p_data_out));
   return read<BytesToRead>(p_spi, p_filler);

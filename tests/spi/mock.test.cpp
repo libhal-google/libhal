@@ -34,11 +34,11 @@ boost::ut::suite spi_mock_test = []() {
 
   "hal::mock::write_only_spi::transfer()"_test = []() {
     // Setup
-    constexpr std::array<const std::byte, 1> out_1{ std::byte{ 0xAA } };
-    constexpr std::array<const std::byte, 2> out_2{ std::byte{ 0xDD },
-                                                    std::byte{ 0xCC } };
-    constexpr std::span<std::byte> dummy{};
-    constexpr std::byte filler{ 0xFF };
+    constexpr std::array<const hal::byte, 1> out_1{ hal::byte{ 0xAA } };
+    constexpr std::array<const hal::byte, 2> out_2{ hal::byte{ 0xDD },
+                                                    hal::byte{ 0xCC } };
+    constexpr std::span<hal::byte> dummy{};
+    constexpr hal::byte filler{ 0xFF };
 
     hal::mock::write_only_spi mock;
 
