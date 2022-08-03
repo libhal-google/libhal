@@ -11,6 +11,7 @@
 #include "../error.hpp"
 #include "../frequency.hpp"
 #include "../timeout.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -57,10 +58,10 @@ public:
    * span for data_out and data_in are set to null.
    *
    * - For write transactions, pass p_data_in as an empty span
-   * `std::span<std::byte>{}` and pass a buffer to p_data_out.
+   * `std::span<hal::byte>{}` and pass a buffer to p_data_out.
    *
    * - For read transactions, pass p_data_out as an empty span
-   * `std::span<const std::byte>{}` and pass a buffer to p_data_in.
+   * `std::span<const hal::byte>{}` and pass a buffer to p_data_in.
    *
    * - For write-then-read transactions, pass a buffer for both p_data_in
    * p_data_out.
@@ -95,9 +96,9 @@ public:
    * indicated by p_timeout.
    */
   [[nodiscard]] status transaction(
-    std::byte p_address,
-    std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in,
+    hal::byte p_address,
+    std::span<const hal::byte> p_data_out,
+    std::span<hal::byte> p_data_in,
     std::function<hal::timeout> p_timeout) noexcept
   {
     return driver_transaction(p_address, p_data_out, p_data_in, p_timeout);
@@ -106,9 +107,9 @@ public:
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual status driver_transaction(
-    std::byte p_address,
-    std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in,
+    hal::byte p_address,
+    std::span<const hal::byte> p_data_out,
+    std::span<hal::byte> p_data_in,
     std::function<hal::timeout> p_timeout) noexcept = 0;
 };
 /** @} */

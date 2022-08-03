@@ -75,7 +75,7 @@ add_test(NAME ${TEST_NAME} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 
 target_include_directories(${TEST_NAME} PUBLIC tests)
 target_compile_options(${TEST_NAME} PRIVATE -Werror -Wall -Wextra
-  -Wno-unused-function -Wconversion)
+  -Wno-unused-function -Wconversion -Wno-psabi)
 set_target_properties(${TEST_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
 target_compile_features(${TEST_NAME} PRIVATE cxx_std_20)
 set_target_properties(${TEST_NAME} PROPERTIES CXX_EXTENSIONS OFF)

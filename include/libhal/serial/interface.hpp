@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../error.hpp"
-
 #include <cstddef>
 #include <cstdint>
 #include <optional>
 #include <span>
+
+#include "../error.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -98,7 +99,7 @@ public:
    * @param p_data - data to be transmitted over the serial port
    * @return status
    */
-  [[nodiscard]] status write(std::span<const std::byte> p_data) noexcept
+  [[nodiscard]] status write(std::span<const hal::byte> p_data) noexcept
   {
     return driver_write(p_data);
   }
@@ -127,12 +128,12 @@ public:
    * buffer is greater than bytes available, then the buffer is filled up to the
    * length returned by bytes_available(). The rest of the buffer is left
    * untouched.
-   * @return result<std::span<const std::byte>> - The address will
+   * @return result<std::span<const hal::byte>> - The address will
    * ALWAYS be the same as p_data and the length will be equal to the number of
    * bytes read from the buffer.
    */
-  [[nodiscard]] result<std::span<const std::byte>> read(
-    std::span<std::byte> p_data) noexcept
+  [[nodiscard]] result<std::span<const hal::byte>> read(
+    std::span<hal::byte> p_data) noexcept
   {
     return driver_read(p_data);
   }
@@ -149,10 +150,10 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual status driver_write(std::span<const std::byte> p_data) noexcept = 0;
+  virtual status driver_write(std::span<const hal::byte> p_data) noexcept = 0;
   virtual result<size_t> driver_bytes_available() noexcept = 0;
-  virtual result<std::span<const std::byte>> driver_read(
-    std::span<std::byte> p_data) noexcept = 0;
+  virtual result<std::span<const hal::byte>> driver_read(
+    std::span<hal::byte> p_data) noexcept = 0;
   virtual status driver_flush() noexcept = 0;
 };
 /** @} */

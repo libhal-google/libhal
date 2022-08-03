@@ -7,9 +7,9 @@ boost::ut::suite serial_util_test = []() {
   using namespace boost::ut;
   using namespace std::chrono_literals;
 
-  // static constexpr std::byte success_filler{ 0xF5 };
-  static constexpr std::byte write_failure_byte{ 0x33 };
-  static constexpr std::byte filler_byte{ 0xA5 };
+  // static constexpr hal::byte success_filler{ 0xF5 };
+  static constexpr hal::byte write_failure_byte{ 0x33 };
+  static constexpr hal::byte filler_byte{ 0xA5 };
 
   class dummy : public hal::serial
   {
@@ -19,7 +19,7 @@ boost::ut::suite serial_util_test = []() {
       return {};
     }
     [[nodiscard]] status driver_write(
-      std::span<const std::byte> p_data) noexcept override
+      std::span<const hal::byte> p_data) noexcept override
     {
       if (p_data[0] == write_failure_byte) {
         return boost::leaf::new_error();
@@ -36,8 +36,8 @@ boost::ut::suite serial_util_test = []() {
       return ++m_bytes_available;
     }
 
-    [[nodiscard]] result<std::span<const std::byte>> driver_read(
-      std::span<std::byte> p_data) noexcept override
+    [[nodiscard]] result<std::span<const hal::byte>> driver_read(
+      std::span<hal::byte> p_data) noexcept override
     {
       if (m_read_fails) {
         return boost::leaf::new_error();
@@ -57,8 +57,8 @@ boost::ut::suite serial_util_test = []() {
     {
     }
 
-    std::span<const std::byte> m_out{};
-    std::span<std::byte> m_in{};
+    std::span<const hal::byte> m_out{};
+    std::span<hal::byte> m_in{};
     size_t m_bytes_available = 0;
     bool m_flush_called = false;
     bool m_bytes_available_fails = false;
@@ -68,7 +68,7 @@ boost::ut::suite serial_util_test = []() {
   "[success] write"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
 
     // Exercise
     auto result = write(serial, expected_payload);
@@ -87,7 +87,7 @@ boost::ut::suite serial_util_test = []() {
   "[failure] write"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{ write_failure_byte };
+    const std::array<hal::byte, 4> expected_payload{ write_failure_byte };
 
     // Exercise
     auto result = write(serial, expected_payload);
@@ -106,7 +106,7 @@ boost::ut::suite serial_util_test = []() {
   "[success] read"_test = []() {
     // Setup
     dummy serial;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result = read(serial, expected_buffer);
@@ -125,7 +125,7 @@ boost::ut::suite serial_util_test = []() {
   "[failure bytes_available] read"_test = []() {
     // Setup
     dummy serial;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
     serial.m_bytes_available_fails = true;
 
     // Exercise
@@ -145,7 +145,7 @@ boost::ut::suite serial_util_test = []() {
   "[failure read] read"_test = []() {
     // Setup
     dummy serial;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
     serial.m_read_fails = true;
 
     // Exercise
@@ -165,7 +165,7 @@ boost::ut::suite serial_util_test = []() {
   "[success] read<Length>"_test = []() {
     // Setup
     dummy serial;
-    std::array<std::byte, 5> expected_buffer;
+    std::array<hal::byte, 5> expected_buffer;
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -222,8 +222,8 @@ boost::ut::suite serial_util_test = []() {
   "[success] write_then_read"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result = write_then_read(serial, expected_payload, expected_buffer);
@@ -241,8 +241,8 @@ boost::ut::suite serial_util_test = []() {
   "[failure bytes_available] write_then_read"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
     expected_buffer.fill(filler_byte);
     serial.m_bytes_available_fails = true;
 
@@ -263,8 +263,8 @@ boost::ut::suite serial_util_test = []() {
   "[failure read] write_then_read"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
     expected_buffer.fill(filler_byte);
     serial.m_read_fails = true;
 
@@ -285,8 +285,8 @@ boost::ut::suite serial_util_test = []() {
   "[failure on write] write_then_read"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{ write_failure_byte };
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{ write_failure_byte };
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result = write_then_read(serial, expected_payload, expected_buffer);
@@ -305,8 +305,8 @@ boost::ut::suite serial_util_test = []() {
   "[success] write_then_read<Length>"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer{};
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer{};
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -326,7 +326,7 @@ boost::ut::suite serial_util_test = []() {
   "[failure on write] write_then_read<Length>"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{ write_failure_byte };
+    const std::array<hal::byte, 4> expected_payload{ write_failure_byte };
 
     // Exercise
     auto result = write_then_read<5>(serial, expected_payload);
@@ -345,7 +345,7 @@ boost::ut::suite serial_util_test = []() {
   "[failure bytes_available] write_then_read<Length>"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
     serial.m_bytes_available_fails = true;
 
     // Exercise
@@ -365,7 +365,7 @@ boost::ut::suite serial_util_test = []() {
   "[failure read] write_then_read<Length>"_test = []() {
     // Setup
     dummy serial;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
     serial.m_read_fails = true;
 
     // Exercise

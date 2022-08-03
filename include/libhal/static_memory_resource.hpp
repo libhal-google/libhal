@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <memory_resource>
 
+#include "units.hpp"
+
 namespace hal {
 /**
  * @addtogroup utility
@@ -86,7 +88,7 @@ protected:
     // allocated address must contain a valid address from buffer. To get the
     // location of the unallocated memory, simply add the number of bytes to
     // allocate_address variable.
-    m_unallocated_memory = static_cast<std::byte*>(allocated_address) + p_bytes;
+    m_unallocated_memory = static_cast<hal::byte*>(allocated_address) + p_bytes;
 
     return allocated_address;
   }
@@ -119,8 +121,8 @@ protected:
   }
 
 private:
-  std::array<std::byte, BufferSize> m_buffer{};
-  std::byte* m_unallocated_memory{};
+  std::array<hal::byte, BufferSize> m_buffer{};
+  hal::byte* m_unallocated_memory{};
   std::pmr::monotonic_buffer_resource m_resource{};
 };
 /** @} */

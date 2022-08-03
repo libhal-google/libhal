@@ -6,9 +6,9 @@ namespace hal {
 boost::ut::suite i2c_util_test = []() {
   using namespace boost::ut;
 
-  static constexpr std::byte successful_address{ 0x15 };
-  static constexpr std::byte failure_address{ 0x33 };
-  static constexpr std::byte filler_byte{ 0xA5 };
+  static constexpr hal::byte successful_address{ 0x15 };
+  static constexpr hal::byte failure_address{ 0x33 };
+  static constexpr hal::byte filler_byte{ 0xA5 };
 
   struct test_timeout_t
   {
@@ -28,9 +28,9 @@ boost::ut::suite i2c_util_test = []() {
       return {};
     }
     [[nodiscard]] status driver_transaction(
-      std::byte p_address,
-      std::span<const std::byte> p_out,
-      std::span<std::byte> p_in,
+      hal::byte p_address,
+      std::span<const hal::byte> p_out,
+      std::span<hal::byte> p_in,
       std::function<hal::timeout> p_timeout) noexcept override
     {
       m_address = p_address;
@@ -52,16 +52,16 @@ boost::ut::suite i2c_util_test = []() {
     {
     }
 
-    std::byte m_address = std::byte{ 0 };
-    std::span<const std::byte> m_out = std::span<const std::byte>{};
-    std::span<std::byte> m_in = std::span<std::byte>{};
+    hal::byte m_address = hal::byte{ 0 };
+    std::span<const hal::byte> m_out = std::span<const hal::byte>{};
+    std::span<hal::byte> m_in = std::span<hal::byte>{};
   };
 
   "[success] write"_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
 
     // Exercise
     auto result =
@@ -82,7 +82,7 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
 
     // Exercise
     auto result =
@@ -103,7 +103,7 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result =
@@ -124,7 +124,7 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    std::array<std::byte, 4> expected_buffer;
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result =
@@ -145,7 +145,7 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    std::array<std::byte, 5> expected_buffer;
+    std::array<hal::byte, 5> expected_buffer;
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -184,8 +184,8 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
 
     // Exercise
     auto result = write_then_read(i2c,
@@ -209,8 +209,8 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer;
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer;
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -235,8 +235,8 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    const std::array<std::byte, 4> expected_payload{};
-    std::array<std::byte, 4> expected_buffer{};
+    const std::array<hal::byte, 4> expected_payload{};
+    std::array<hal::byte, 4> expected_buffer{};
     expected_buffer.fill(filler_byte);
 
     // Exercise
@@ -259,7 +259,7 @@ boost::ut::suite i2c_util_test = []() {
     // Setup
     test_i2c i2c;
     test_timeout_t test_timeout;
-    const std::array<std::byte, 4> expected_payload{};
+    const std::array<hal::byte, 4> expected_payload{};
 
     // Exercise
     auto result = write_then_read<5>(
