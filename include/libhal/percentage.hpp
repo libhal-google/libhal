@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <concepts>
 
+#include "math.hpp"
+
 namespace hal {
 /**
  * @brief A type representing a percentage value
@@ -61,8 +63,15 @@ public:
   {
     return static_cast<float>(m_value);
   }
+  constexpr bool equals(percentage p_other, float_t p_epsilon = 1e-9f) const
+  {
+    return hal::equals(m_value, p_other.value(), p_epsilon);
+  }
   constexpr bool operator<=>(const percentage& p_percent) const = default;
-  constexpr bool operator==(const percentage& p_percent) = delete;
+  constexpr bool operator==(const percentage& p_percent) const
+  {
+    return equals(p_percent);
+  }
 
 private:
   constexpr void set_and_constrain(float_t p_value)
