@@ -16,45 +16,55 @@ namespace hal {
 /**
  * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
  *
+ * This driver controls the waveform generation of a square wave and its
+ * properties such as frequency and duty cycle.
+ *
+ * Frequency, meaning how often the waveform cycles from from low to high.
+ *
+ * Duty cycle, what proportion of the wavelength of the pulse is the voltage
+ * HIGH.
+ *
+ *  ```
+ *     ____________________       _
+ *    |                    |     |
+ *   _|                    |_____|
+ *    ^                    ^     ^
+ *    |<------ high ------>|<low>|
+ *
+ *    HIGH Duration = 18 segments
+ *    LOW Duration =  5 segments
+ *    Duty Cycle = 20 / (20 + 5) = 80%
+ *
+ *    If each segment is 1us then the wavelength is 25us
+ *    Thus frequency is (1 / 25us) = 40kHz
+ * ```
+ *
+ * PWM is used for power control like motor control, lighting, transmitting
+ * signals to servos, sending telemetry and much more.
+ *
  */
 template<std::floating_point float_t = config::float_type>
 class pwm
 {
 public:
-  /// Generic settings for a hardware Pulse Width Modulation (PWM) generating
-  /// devices devices.
-  struct settings
-  {
-    /// The target channel PWM frequency.
-    hal::frequency frequency = hal::frequency(1'000);
-
-    /**
-     * @brief Default operators for <, <=, >, >= and ==
-     *
-     * @return auto - result of the comparison
-     */
-    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
-      default;
-  };
-
   /**
-   * @brief Configure pwm to match the settings supplied
+   * @brief Set the pwm waveform frequency
    *
-   * @param p_settings - settings to apply to pwm driver
-   * @return status
-   * @throws std::errc::invalid_argument if the settings could not be achieved.
+   * @param p_frequency - settings to apply to pwm driver
+   * @return status - status of this operation
+   * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
+   * the pwm generator is capable of achieving.
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status frequency(hal::frequency p_frequency) noexcept
   {
-    return driver_configure(p_settings);
+    return driver_frequency(p_frequency);
   }
 
   /**
-   * @brief Set the duty cycle percentage
+   * @brief Set the pwm waveform duty cycle
    *
    * @param p_duty_cycle - set the duty cycle of the pwm.
-   * @return status - any error that occurred during this
-   * operation.
+   * @return status - status of this operation
    */
   [[nodiscard]] status duty_cycle(percentage<float_t> p_duty_cycle) noexcept
   {
@@ -62,7 +72,7 @@ public:
   }
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_frequency(hal::frequency p_frequency) noexcept = 0;
   virtual status driver_duty_cycle(
     percentage<float_t> p_duty_cycle) noexcept = 0;
 };
