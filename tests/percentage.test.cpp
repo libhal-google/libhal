@@ -53,6 +53,115 @@ boost::ut::suite percentage_test = []() {
       hal::percentage<double> assign_double2(assign_double);
       expect(that % assign_double.value() == assign_double2.value());
     };
+    "const equals zero"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.0f);
+      constexpr auto value2 = hal::percentage<float>(0.1f - 0.1f);
+      constexpr auto epsilon = 0.000001f;
+
+      // Exercise + verify
+      expect(value1.equals(value2, epsilon));
+    };
+    "const equals boundaries"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.2f + 0.8f);
+      constexpr auto value2 = hal::percentage<float>(0.5F + 0.5f);
+      constexpr auto epsilon = 0.000001f;
+
+      // Exercise + verify
+      expect(value1.equals(value2, epsilon));
+    };
+    "const equals standard"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.15f + 0.15f);
+      constexpr auto value2 = hal::percentage<float>(0.2f + 0.1f);
+      constexpr auto epsilon = 0.000001f;
+
+      // Exercise + verify
+      expect(value1.equals(value2, epsilon));
+    };
+    "const equals standard default epsilon"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.15f + 0.15f);
+      constexpr auto value2 = hal::percentage<float>(0.2f + 0.1f);
+
+      // Exercise + verify
+      expect(value1.equals(value2));
+    };
+    "const equals standard default epsilon not equal"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.3f);
+      constexpr auto value2 = hal::percentage<float>(0.4f);
+
+      // Exercise + verify
+      expect(false == value1.equals(value2));
+    };
+    "const equals standard double"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<double>(0.15 + 0.15);
+      constexpr auto value2 = hal::percentage<double>(0.2 + 0.1);
+      constexpr auto epsilon = 0.000001;
+
+      // Exercise + verify
+      expect(value1.equals(value2, epsilon));
+    };
+    "const equals standard not equal"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.3f);
+      constexpr auto value2 = hal::percentage<float>(0.4f);
+      constexpr auto epsilon = 0.000001f;
+
+      // Exercise + verify
+      expect(false == value1.equals(value2, epsilon));
+    };
+    "operator== zero"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.0f);
+      constexpr auto value2 = hal::percentage<float>(0.1f - 0.1f);
+
+      // Exercise + verify
+      expect(value1 == value2);
+    };
+    "operator== boundaries"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.2f + 0.8f);
+      constexpr auto value2 = hal::percentage<float>(0.5F + 0.5f);
+
+      // Exercise + verify
+      expect(value1 == value2);
+    };
+    "operator== standard"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.15f + 0.15f);
+      constexpr auto value2 = hal::percentage<float>(0.2f + 0.1f);
+
+      // Exercise + verify
+      expect(value1 == value2);
+    };
+    "operator== standard"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<double>(0.15 + 0.15);
+      constexpr auto value2 = hal::percentage<double>(0.2 + 0.1);
+
+      // Exercise + verify
+      expect(value1 == value2);
+    };
+    "operator== standard not equal"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.3f);
+      constexpr auto value2 = hal::percentage<float>(0.4f);
+
+      // Exercise + verify
+      expect(value1 != value2);
+    };
+    "operator== standard not equal"_test = []() {
+      // Setup
+      constexpr auto value1 = hal::percentage<float>(0.3001f);
+      constexpr auto value2 = hal::percentage<float>(0.3002f);
+
+      // Exercise + verify
+      expect(value1 != value2);
+    };
   };
 };
 }  // namespace hal

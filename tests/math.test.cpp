@@ -50,5 +50,32 @@ boost::ut::suite math_test = []() {
       expect(that % 221200 == distance(222323, 1123));
     };
   };
+  "hal::equal()"_test = []() {
+    "zero"_test = []() { expect(equals(0.0f, (0.1f - 0.1f), 0.000001f)); };
+    "one"_test = []() { expect(equals(1.0f, (0.5f + 0.5f), 0.000001f)); };
+    "boundaries"_test = []() {
+      expect(equals(std::numeric_limits<float>::max(),
+                    std::numeric_limits<float>::max(),
+                    0.000001f));
+    };
+    "standard"_test = []() {
+      expect(equals(0.3f, (0.15f + 0.15f), 0.000001f));
+    };
+    "standard double"_test = []() {
+      expect(equals(0.3, (0.15 + 0.15), 0.000001));
+    };
+    "standard default epsilon"_test = []() {
+      expect(equals(0.3f, (0.15f + 0.15f)));
+    };
+    "standard default epsilon not equal"_test = []() {
+      expect(false == equals(0.3f, 0.4f));
+    };
+    "standard not equal"_test = []() {
+      expect(false == equals(0.3f, 0.4f, 0.000001f));
+    };
+    "standard not equal"_test = []() {
+      expect(false == equals(0.3001f, 0.3002f, 0.000001f));
+    };
+  };
 };
 }

@@ -171,5 +171,37 @@ template<std::integral T>
     return static_cast<unsigned_t>(difference);
   }
 }
+/**
+ * @brief Determines if two values are equal within a relative error.
+ *
+ * @tparam float_t - float type
+ * @param p_value1 - First value to compare.
+ * @param p_value2 - Second value to compare.
+ * @param p_epsilon - Error margin that the difference is compared to.
+ * @return true - difference is less than epsilon
+ * @return false - difference is more than epsilon
+ */
+template<std::floating_point float_t = config::float_type>
+constexpr static bool equals(float_t p_value1,
+                             float_t p_value2,
+                             float_t p_epsilon = 1e-9f)
+{
+  if (p_value1 == p_value2) {
+    return true;
+  }
+  float_t value1_abs = std::abs(p_value1);
+  float_t value2_abs = std::abs(p_value2);
+  float_t diff = std::abs(p_value1 - p_value2);
+  float_t absolute_values_sum = value1_abs + value2_abs;
+
+  if (p_value1 == 0 || p_value2 == 0 ||
+      (absolute_values_sum < std::numeric_limits<float_t>::min())) {
+    return diff < (p_epsilon * std::numeric_limits<float_t>::min());
+  } else {
+    auto relative_error =
+      diff / std::min(absolute_values_sum, std::numeric_limits<float_t>::max());
+    return relative_error < p_epsilon;
+  }
+}
 /** @} */
 }  // namespace hal
