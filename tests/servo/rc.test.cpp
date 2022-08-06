@@ -20,7 +20,7 @@ boost::ut::suite rc_servo_test = []() {
     // 100Hz (or 10ms per update) with 500us being max negative start and 2500us
     // being max positive.
     auto servo1 = hal::rc_servo<>::create<100, 500, 2500>(pwm1);
-    pwm2.spy_configure.trigger_error_on_call(1);
+    pwm2.spy_frequency.trigger_error_on_call(1);
     auto servo2 = hal::rc_servo<>::create(pwm2);
 
     // Verify

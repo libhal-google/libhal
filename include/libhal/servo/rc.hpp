@@ -45,8 +45,7 @@ public:
       (1000.0 / Frequency) > (MaxMicroseconds / 1000.0),
       "The maximum microseconds is greater than the period of the frequency");
     constexpr hal::frequency frequency = hal::frequency{ Frequency };
-    typename hal::pwm<float_t>::settings settings{ .frequency = frequency };
-    HAL_CHECK(p_pwm.configure(settings));
+    HAL_CHECK(p_pwm.frequency(frequency));
 
     auto frequency_wavelength =
       static_cast<float_t>(wavelength<std::micro>(frequency).count());
