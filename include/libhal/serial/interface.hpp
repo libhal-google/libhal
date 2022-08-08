@@ -23,10 +23,10 @@ namespace hal {
  *
  * This interface only works 8-bit serial data frames.
  *
- * Due to the asynchronous nature of serial communication protocols, all
- * implementations of serial devices must be buffered. Buffered, in this case,
- * is defined as automatic storage of received bytes without direct application
- * intervention.
+ * Due to the asynchronous and unformatted nature of serial communication
+ * protocols, all implementations of serial devices must be buffered. Buffered,
+ * in this case, is defined as automatic storage of received bytes without
+ * direct application intervention.
  *
  * All implementations MUST allow the user to supply their own buffer of
  * arbitrary size up to the limits of what hardware can support. This allows a
@@ -75,6 +75,22 @@ public:
     parity parity = parity::none;
   };
 
+  /// Structure informing the caller of the number of bytes that can be read out
+  /// and the storage capacity of the serial port.
+  struct bytes_available_t
+  {
+    /// Bytes currently received, enqueued, and available to be read out.
+    ///
+    /// This value can be equal to or exceed the value of capacity. In this
+    /// situation, the number of bytes above the capacity are bytes that have
+    /// been dropped. Not all drivers will indicate the number of bytes lost. It
+    /// is  up to the driver or application to decide what to do in this
+    /// situation.
+    size_t available;
+    /// The maximum number of bytes that the serial port can queue up.
+    size_t capacity;
+  };
+
   /**
    * @brief Configure serial to match the settings supplied
    *
@@ -106,40 +122,57 @@ public:
   /**
    * @brief The number of bytes that have been buffered
    *
-   * @return result<size_t> - number of bytes that can be read out
-   * of this serial port.
-   * @throws std::errc::protocol_error indicates that a parity error occurred
-   * during reception.
-   * @throws std::errc::io_error indicates that a frame error occurred during
-   * reception.
+   * @return bytes_available_t - number of bytes that can be read out
+   * of this serial port as well as the capacity of the serial port.
    */
-  [[nodiscard]] result<size_t> bytes_available() noexcept
+  [[nodiscard]] bytes_available_t bytes_available() noexcept
   {
     return driver_bytes_available();
   }
   /**
-   * @brief Read the bytes received over the receiver line into buffer
+   * @brief Copy bytes from working buffer into passed buffer
    *
-   * This operation copies the bytes from the serial driver's internal buffer to
-   * the buffer supplied. This call will subtract from the number returned from
-   * bytes_available() function.
+   * This operation copies the bytes from the serial driver's internal working
+   * buffer to the buffer supplied. This call will subtract from the number
+   * returned from bytes_available() function.
    *
-   * @param p_data - Buffer to read bytes back from. If the length of this
-   * buffer is greater than bytes available, then the buffer is filled up to the
-   * length returned by bytes_available(). The rest of the buffer is left
-   * untouched.
-   * @return result<std::span<const hal::byte>> - The address will
+   * If the length of this buffer is greater than bytes available, then the
+   * buffer is filled up to the length returned by bytes_available(). The rest
+   * of the buffer is left untouched.
+   *
+   * If a frame error has occurred at any point during serial reception, this
+   * function will throw a `std::errc::io_error` value. The contents of the
+   * internal working buffer as well as the values for bytes_available will stay
+   * the same with no copy into the supplied buffered taking place. The frame
+   * error will be internally cleared after its occurrence. A subsequent call to
+   * read() will read out the contents of the buffer although the data inside
+   * may be corrupt. Options are to flush the buffer and attempt reception again
+   * or read out the potentially corrupted data and parse it as needed. The
+   * choice of operations here are very application and driver specific.
+   *
+   * @param p_data - Buffer to read bytes back from
+   * @return result<std::span<hal::byte>> - The address will
    * ALWAYS be the same as p_data and the length will be equal to the number of
    * bytes read from the buffer.
+   * @throws std::errc::io_error - a frame error occurred at some point during
+   * reception.
    */
-  [[nodiscard]] result<std::span<const hal::byte>> read(
+  [[nodiscard]] result<std::span<hal::byte>> read(
     std::span<hal::byte> p_data) noexcept
   {
     return driver_read(p_data);
   }
   /**
-   * @brief Set bytes_available() to zero and clear any received data stored in
-   * hardware registers.
+   * @brief Flush working buffer
+   *
+   * The behavior of flushing the internal working buffer is this:
+   *
+   * - Set the internal circular buffer implementation to an "empty" state.
+   * - After this call, so long as data is not received at the same time,
+   *   bytes_available() will report to zero bytes
+   * - Will clear any received data stored in hardware registers.
+   * - Will ensure that this operation is as fast as possible, meaning it will
+   *   not zero out the contents of the internal working buffer.
    *
    * @return status - success or failure
    */
@@ -151,8 +184,8 @@ public:
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual status driver_write(std::span<const hal::byte> p_data) noexcept = 0;
-  virtual result<size_t> driver_bytes_available() noexcept = 0;
-  virtual result<std::span<const hal::byte>> driver_read(
+  virtual bytes_available_t driver_bytes_available() noexcept = 0;
+  virtual result<std::span<hal::byte>> driver_read(
     std::span<hal::byte> p_data) noexcept = 0;
   virtual status driver_flush() noexcept = 0;
 };
