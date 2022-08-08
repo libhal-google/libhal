@@ -28,9 +28,9 @@ namespace hal {
  */
 [[nodiscard]] inline status delay(serial& p_serial, size_t p_length) noexcept
 {
-  size_t bytes_available = HAL_CHECK(p_serial.bytes_available());
+  auto bytes_available = p_serial.bytes_available().available;
   while (bytes_available < p_length) {
-    bytes_available = HAL_CHECK(p_serial.bytes_available());
+    bytes_available = p_serial.bytes_available().available;
   }
   return {};
 }
@@ -55,12 +55,12 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be read from
  * @param p_data_in - buffer to have bytes from the serial port read into
- * @return result<std::span<const hal::byte>> - return an error if
+ * @return result<std::span<hal::byte>> - return an error if
  * a call to serial::read or delay() returns an error from the serial port or
  * a span with the number of bytes read and a pointer to where the read bytes
  * are.
  */
-[[nodiscard]] inline result<std::span<const hal::byte>> read(
+[[nodiscard]] inline result<std::span<hal::byte>> read(
   serial& p_serial,
   std::span<hal::byte> p_data_in)
 {
