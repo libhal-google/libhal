@@ -50,9 +50,9 @@ private:
   }
 
   status driver_transaction(
-    std::byte p_address,
-    std::span<const std::byte> p_data_out,
-    std::span<std::byte> p_data_in,
+    hal::byte p_address,
+    std::span<const hal::byte> p_data_out,
+    std::span<hal::byte> p_data_in,
     std::function<hal::timeout> p_timeout) noexcept override
   {
     return m_i2c->transaction(p_address, p_data_out, p_data_in, p_timeout);
