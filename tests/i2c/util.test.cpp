@@ -273,5 +273,39 @@ boost::ut::suite i2c_util_test = []() {
     expect(that % expected_payload.size() == i2c.m_out.size());
     expect(that % false == test_timeout.was_called);
   };
+
+  "[success] probe(i2c&)"_test = []() {
+    // Setup
+    test_i2c i2c;
+
+    // Exercise
+    auto result = probe(i2c, successful_address);
+    bool successful = static_cast<bool>(result);
+
+    // Verify
+    expect(successful);
+    expect(successful_address == i2c.m_address);
+    expect(that % 1 == i2c.m_in.size());
+    expect(that % nullptr != i2c.m_in.data());
+    expect(that % 0 == i2c.m_out.size());
+    expect(that % nullptr == i2c.m_out.data());
+  };
+
+  "[failure] probe(i2c&)"_test = []() {
+    // Setup
+    test_i2c i2c;
+
+    // Exercise
+    auto result = probe(i2c, failure_address);
+    bool successful = static_cast<bool>(result);
+
+    // Verify
+    expect(!successful);
+    expect(failure_address == i2c.m_address);
+    expect(that % 1 == i2c.m_in.size());
+    expect(that % nullptr != i2c.m_in.data());
+    expect(that % 0 == i2c.m_out.size());
+    expect(that % nullptr == i2c.m_out.data());
+  };
 };
 }  // namespace hal
