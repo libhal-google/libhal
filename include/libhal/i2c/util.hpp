@@ -123,5 +123,23 @@ template<size_t BytesToRead>
   HAL_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer, p_timeout));
   return buffer;
 }
+
+/**
+ * @brief probe the i2c bus to see if a device exists
+ *
+ * @param p_i2c - i2c driver
+ * @param p_address - target address to probe for
+ * @return status - any errors associated with the read call
+ */
+[[nodiscard]] inline status probe(i2c& p_i2c, hal::byte p_address) noexcept
+{
+  // p_data_in: empty placeholder for transcation's data_in
+  std::array<hal::byte, 1> data_in;
+
+  // p_timeout: no timeout placeholder for transaction's p_timeout
+  std::function<hal::timeout> timeout = hal::never_timeout();
+
+  return p_i2c.transaction(p_address, std::span<hal::byte>{}, data_in, timeout);
+}
 /// @}
 }  // namespace hal
