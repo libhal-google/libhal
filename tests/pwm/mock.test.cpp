@@ -7,8 +7,8 @@ boost::ut::suite pwm_mock_test = []() {
 
   "hal::mock::pwm::frequency()"_test = []() {
     // Setup
-    constexpr hal::frequency expected1 = frequency(1'000);
-    constexpr hal::frequency expected2 = frequency(10'000);
+    constexpr auto expected1 = hertz(1'000);
+    constexpr auto expected2 = hertz(10'000);
     hal::mock::pwm mock;
     mock.spy_frequency.trigger_error_on_call(3);
 

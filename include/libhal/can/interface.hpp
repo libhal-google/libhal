@@ -7,7 +7,6 @@
 #include <functional>
 
 #include "../error.hpp"
-#include "../frequency.hpp"
 #include "../units.hpp"
 
 namespace hal {
@@ -27,7 +26,7 @@ public:
   struct settings
   {
     /// Bus clock rate
-    frequency clock_rate{};
+    hertz clock_rate{};
   };
 
   /// Can message ID type trait
