@@ -68,7 +68,8 @@ add_executable(${TEST_NAME}
   tests/overflow_counter.test.cpp
   tests/math.test.cpp
   tests/error.test.cpp
-  tests/map.test.cpp)
+  tests/map.test.cpp
+  tests/units.test.cpp)
 
 enable_testing()
 add_test(NAME ${TEST_NAME} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
