@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../frequency.hpp"
+#include "../math.hpp"
 #include "interface.hpp"
 
 namespace hal {
@@ -15,7 +15,7 @@ namespace hal {
 class minimum_speed_i2c : public hal::i2c
 {
 public:
-  constexpr static auto default_max_speed = frequency(2'000'000);
+  constexpr static auto default_max_speed = hertz(2'000'000);
   /**
    * @brief Factory function to create minimum_speed_i2c object.
    *
@@ -25,13 +25,13 @@ public:
    * frequency
    */
   static minimum_speed_i2c create(hal::i2c& p_i2c,
-                                  frequency p_frequency = default_max_speed)
+                                  hertz p_frequency = default_max_speed)
   {
     return minimum_speed_i2c(p_i2c, p_frequency);
   }
 
 private:
-  constexpr minimum_speed_i2c(hal::i2c& p_i2c, frequency p_frequency)
+  constexpr minimum_speed_i2c(hal::i2c& p_i2c, hertz p_frequency)
     : m_i2c(&p_i2c)
     , m_lowest_seen_frequency(p_frequency)
   {
@@ -39,7 +39,7 @@ private:
 
   status driver_configure(const settings& p_new_setting) noexcept override
   {
-    if (p_new_setting.clock_rate == frequency(0)) {
+    if (equals(p_new_setting.clock_rate, 0.0)) {
       return boost::leaf::new_error(std::errc::invalid_argument);
     }
     if (m_lowest_seen_frequency > p_new_setting.clock_rate) {
@@ -59,7 +59,7 @@ private:
   }
 
   hal::i2c* m_i2c;
-  hal::frequency m_lowest_seen_frequency;
+  hertz m_lowest_seen_frequency;
 };
 /** @} */
 }  // namespace hal

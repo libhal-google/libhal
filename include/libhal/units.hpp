@@ -31,44 +31,83 @@ using g_force = config::float_type;
 using meters = config::float_type;
 
 // Namespace containing user defined literals for the hal standard units
+// TODO: When hal::frequency is eliminated, remove this so that literals can be
+// used easily within classes & interfaces.
 namespace experimental::literals {
-[[nodiscard]] consteval hertz operator""_Hz(unsigned long long p_value) noexcept
+
+// =============================================================================
+// Frequency
+// =============================================================================
+
+[[nodiscard]] consteval hertz operator""_Hz(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value);
 }
-[[nodiscard]] consteval hertz operator""_kHz(
-  unsigned long long p_value) noexcept
+
+[[nodiscard]] consteval hertz operator""_kHz(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value) * std::kilo::num;
 }
-[[nodiscard]] consteval hertz operator""_MHz(
-  unsigned long long p_value) noexcept
+
+[[nodiscard]] consteval hertz operator""_MHz(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value) * std::mega::num;
 }
-[[nodiscard]] consteval g_force operator""_g(
-  unsigned long long p_value) noexcept
+
+[[nodiscard]] consteval hertz operator""_GHz(long double p_value) noexcept
+{
+  return static_cast<config::float_type>(p_value) * std::giga::num;
+}
+
+// =============================================================================
+// G force
+// =============================================================================
+
+[[nodiscard]] consteval g_force operator""_g(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value);
 }
-[[nodiscard]] consteval meters operator""_um(
-  unsigned long long p_value) noexcept
+
+// =============================================================================
+// Lengths
+// =============================================================================
+
+[[nodiscard]] consteval meters operator""_um(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value) / std::micro::den;
 }
-[[nodiscard]] consteval meters operator""_mm(
-  unsigned long long p_value) noexcept
+
+[[nodiscard]] consteval meters operator""_mm(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value) / std::milli::den;
 }
-[[nodiscard]] consteval meters operator""_m(unsigned long long p_value) noexcept
+
+[[nodiscard]] consteval meters operator""_m(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value);
 }
-[[nodiscard]] consteval meters operator""_km(
-  unsigned long long p_value) noexcept
+
+[[nodiscard]] consteval meters operator""_km(long double p_value) noexcept
 {
   return static_cast<config::float_type>(p_value) * std::kilo::num;
+}
+
+[[nodiscard]] consteval meters operator""_inch(long double p_value) noexcept
+{
+  constexpr config::float_type inch_to_meter = 0.0254;
+  return static_cast<config::float_type>(p_value) * inch_to_meter;
+}
+
+[[nodiscard]] consteval meters operator""_yards(long double p_value) noexcept
+{
+  constexpr config::float_type yard_to_meter = 0.9144;
+  return static_cast<config::float_type>(p_value) * yard_to_meter;
+}
+
+[[nodiscard]] consteval meters operator""_miles(long double p_value) noexcept
+{
+  constexpr config::float_type miles_to_meter = 1609.344;
+  return static_cast<config::float_type>(p_value) * miles_to_meter;
 }
 }  // namespace experimental::literals
 

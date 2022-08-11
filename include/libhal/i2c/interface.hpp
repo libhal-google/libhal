@@ -9,7 +9,6 @@
 #include <system_error>
 
 #include "../error.hpp"
-#include "../frequency.hpp"
 #include "../timeout.hpp"
 #include "../units.hpp"
 
@@ -34,7 +33,7 @@ public:
   struct settings
   {
     /// @brief The serial clock rate in hertz.
-    frequency clock_rate{};
+    hertz clock_rate{};
     /**
      * @brief Default operators for <, <=, >, >= and ==
      *

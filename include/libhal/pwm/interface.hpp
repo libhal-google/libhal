@@ -4,8 +4,8 @@
 
 #include "../config.hpp"
 #include "../error.hpp"
-#include "../frequency.hpp"
 #include "../percentage.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -55,7 +55,7 @@ public:
    * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
    * the pwm generator is capable of achieving.
    */
-  [[nodiscard]] status frequency(hal::frequency p_frequency) noexcept
+  [[nodiscard]] status frequency(hertz p_frequency) noexcept
   {
     return driver_frequency(p_frequency);
   }
@@ -72,7 +72,7 @@ public:
   }
 
 private:
-  virtual status driver_frequency(hal::frequency p_frequency) noexcept = 0;
+  virtual status driver_frequency(hertz p_frequency) noexcept = 0;
   virtual status driver_duty_cycle(
     percentage<float_t> p_duty_cycle) noexcept = 0;
 };

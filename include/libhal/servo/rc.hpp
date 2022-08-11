@@ -44,15 +44,13 @@ public:
     static_assert(
       (1000.0 / Frequency) > (MaxMicroseconds / 1000.0),
       "The maximum microseconds is greater than the period of the frequency");
-    constexpr hal::frequency frequency = hal::frequency{ Frequency };
+    constexpr auto frequency = hertz{ Frequency };
+
     HAL_CHECK(p_pwm.frequency(frequency));
 
-    auto frequency_wavelength =
-      static_cast<float_t>(wavelength<std::micro>(frequency).count());
-    auto min_percent =
-      percentage<float_t>(MinMicroseconds / frequency_wavelength);
-    auto max_percent =
-      percentage<float_t>(MaxMicroseconds / frequency_wavelength);
+    auto wavelength = (1.0f / frequency) * std::micro::den;
+    auto min_percent = percentage<float_t>(MinMicroseconds / wavelength);
+    auto max_percent = percentage<float_t>(MaxMicroseconds / wavelength);
     auto percent_range =
       std::make_pair(min_percent.value(), max_percent.value());
 
