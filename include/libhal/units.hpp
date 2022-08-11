@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "config.hpp"
+#include "math.hpp"
 
 namespace hal {
 /**
@@ -111,5 +112,151 @@ namespace experimental::literals {
 }
 }  // namespace experimental::literals
 
+// =============================================================================
+// Frequency
+// =============================================================================
+
+/**
+ * @brief Calculate the number of cycles of this frequency within the time
+ * duration. This function is meant for timers to determine how many count
+ * cycles are needed to reach a particular time duration at this frequency.
+ *
+ * @param p_source - source frequency
+ * @param p_duration - the amount of time to convert to cycles
+ * @return std::int64_t - number of cycles
+ */
+[[nodiscard]] constexpr std::int64_t cycles_per(
+  hertz p_source,
+  hal::time_duration p_duration) noexcept
+{
+  // Full Equation:
+  // =========================================================================
+  //
+  //                              / ratio_num \_
+  //   frequency_hz * |period| * | ----------- |  = cycles
+  //                              \ ratio_den /
+  //
+
+  constexpr std::int64_t denominator = decltype(p_duration)::period::den;
+  const auto duration = absolute_value(p_duration.count());
+  const auto cycle_count = duration * p_source * (numerator / denominator);
+
+  return static_cast<std::int64_t>(cycle_count);
+}
+
+/**
+ * @brief Calculates and returns the wavelength in seconds.
+ *
+ * @tparam Period - desired period (defaults to std::femto for femtoseconds).
+ * @param p_source - source frequency to convert to wavelength
+ * @return std::chrono::duration<int64_t, Period> - time based wavelength of
+ * the frequency.
+ */
+template<typename Period = std::femto>
+constexpr std::chrono::duration<int64_t, Period> wavelength(hertz p_source)
+{
+  auto duration = (1.0f / p_source) * Period::den;
+  return std::chrono::duration<int64_t, Period>(duration);
+}
+
+/**
+ * @brief Calculate the amount of time it takes a frequency to oscillate a
+ * number of cycles.
+ *
+ * @param p_source - the frequency to compute the cycles from
+ * @param p_cycles - number of cycles within the time duration
+ * @return std::chrono::nanoseconds - time duration based on this frequency
+ * and the number of cycles
+ */
+[[nodiscard]] constexpr std::chrono::nanoseconds duration_from_cycles(
+  hertz p_source,
+  std::int32_t p_cycles) noexcept
+{
+  // Full Equation (based on the equation in cycles_per()):
+  // =========================================================================
+  //
+  //                /    cycles * ratio_den    \_
+  //   |period| =  | ---------------------------|
+  //                \ frequency_hz * ratio_num /
+  //
+  constexpr auto time_duration_den = std::chrono::nanoseconds::period::den;
+  constexpr auto time_duration_num = std::chrono::nanoseconds::period::num;
+  constexpr auto scale_den = std::int64_t{ time_duration_den };
+  constexpr auto scale_num = std::int64_t{ time_duration_num };
+
+  std::int64_t numerator = std::int64_t{ p_cycles } * scale_den;
+  std::int64_t denominator = p_source.value_hz * scale_num;
+  std::int64_t nanoseconds = rounding_division(numerator, denominator);
+
+  return std::chrono::nanoseconds(nanoseconds);
+}
+
+/**
+ * @brief Divider selection mode for achieving a target frequency.
+ */
+enum class divider_rule
+{
+  /// Restrict dividers to achieve frequencies above target frequency.
+  higher,
+  /// Restrict dividers to achieve frequencies below target frequency.
+  lower,
+  /// Do not restrict dividers.
+  closest
+};
+
+/**
+ * @brief Calculate divider for the closest resulting frequency to target.
+ *
+ * @tparam InputIt - iterator type from the container.
+ * @param p_source - the source frequency .
+ * @param p_first - iterator to the first item in the search space of
+ * available frequency dividers.
+ * @param p_last - iterator after the last item in search space of available
+ * frequency dividers.
+ * @param p_target - the ideal frequency to be achieved by selecting one of
+ * the available frequency dividers.
+ * @param p_divider_rule - the selection mode for dividers. This can
+ * restrict the dividers to result in a frequency less than or equal to the
+ * target, higher than or equal to the target or not restrict the dividers at
+ * all and get the closest value to the target.
+ * @return InputIt - an iterator pointing to the resulting best divider if a
+ * solution is found. If no solution is found, p_last is returned.
+ */
+template<typename InputIt>
+[[nodiscard]] constexpr InputIt closest(hertz p_source,
+                                        InputIt p_first,
+                                        InputIt p_last,
+                                        hertz p_target,
+                                        divider_rule p_divider_rule)
+{
+  auto cost = [p_target](hertz& p_candidate) -> config::float_type {
+    return distance(p_candidate.value_hz, p_target.value_hz);
+  };
+
+  auto is_applicable = [p_target, p_divider_rule](hertz& p_candidate) -> bool {
+    switch (p_divider_rule) {
+      case divider_rule::lower:
+        return p_candidate <= p_target;
+      case divider_rule::higher:
+        return p_candidate >= p_target;
+      case divider_rule::closest:
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  InputIt best = p_last;
+  auto best_cost = std::numeric_limits<hertz>::max();
+
+  for (InputIt it = p_first; it != p_last; it++) {
+    hertz candidate{ p_source / *it };
+    if (is_applicable(candidate) && cost(candidate) < best_cost) {
+      best = it;
+      best_cost = cost(candidate);
+    }
+  }
+  return best;
+}
 /** @} */
 }  // namespace hal
