@@ -4,6 +4,8 @@
 #include <cstdint>
 
 #include "config.hpp"
+#include "error.hpp"
+#include "math.hpp"
 
 namespace hal {
 /**
@@ -111,5 +113,103 @@ namespace experimental::literals {
 }
 }  // namespace experimental::literals
 
+/**
+ * @brief Calculate the number of cycles of this frequency within the time
+ * duration. This function is meant for timers to determine how many count
+ * cycles are needed to reach a particular time duration at this frequency.
+ *
+ * @param p_source - source frequency
+ * @param p_duration - the amount of time to convert to cycles
+ * @return std::int64_t - number of cycles
+ */
+[[nodiscard]] constexpr std::int64_t cycles_per(
+  const hertz p_source,
+  hal::time_duration p_duration) noexcept
+{
+  // Full Equation:
+  //                              / ratio_num \_
+  //   frequency_hz * |period| * | ----------- |  = cycles
+  //                              \ ratio_den /
+  //
+  // std::chrono::nanoseconds::period::num == 1
+  // std::chrono::nanoseconds::period::den == 1,000,000
+
+  const auto denominator = decltype(p_duration)::period::den;
+  const auto cycle_count = (p_duration.count() * p_source) / denominator;
+
+  return static_cast<std::int64_t>(cycle_count);
+}
+
+/**
+ * @brief Calculates and returns the wavelength in seconds.
+ *
+ * @tparam Period - desired period (defaults to std::femto for femtoseconds).
+ * @param p_source - source frequency to convert to wavelength
+ * @return std::chrono::duration<int64_t, Period> - time based wavelength of
+ * the frequency.
+ */
+template<typename Period>
+constexpr std::chrono::duration<int64_t, Period> wavelength(hertz p_source)
+{
+  if (equals(p_source, 0.0)) {
+    return std::chrono::duration<int64_t, Period>(0);
+  }
+  auto duration = (1.0f / p_source) * Period::den;
+  return std::chrono::duration<int64_t, Period>(static_cast<int64_t>(duration));
+}
+
+/**
+ * @brief Calculates and returns the wavelength in seconds as a float.
+ *
+ * @tparam float_t - float type
+ * @tparam Period - desired period
+ * @param p_source - source frequency to convert to wavelength
+ * @return constexpr float_t - float representation of the time based wavelength
+ * of the frequency.
+ */
+template<std::floating_point float_t = config::float_type>
+constexpr float_t wavelength(hertz p_source)
+{
+  if (equals(p_source, 0.0)) {
+    return float_t(0);
+  }
+  auto duration = (1.0f / p_source);
+  return float_t(duration);
+}
+
+/**
+ * @brief Calculate the amount of time it takes a frequency to oscillate a
+ * number of cycles.
+ *
+ * @param p_source - the frequency to compute the cycles from
+ * @param p_cycles - number of cycles within the time duration
+ * @return std::chrono::nanoseconds - time duration based on this frequency
+ * and the number of cycles
+ */
+[[nodiscard]] inline result<std::chrono::nanoseconds> duration_from_cycles(
+  const hertz p_source,
+  std::int32_t p_cycles) noexcept
+{
+  // Full Equation (based on the equation in cycles_per()):
+  //
+  //
+  //                /    cycles * ratio_den    \_
+  //   |period| =  | ---------------------------|
+  //                \ frequency_hz * ratio_num /
+  //
+  constexpr auto time_duration_den = std::chrono::nanoseconds::period::den;
+  constexpr auto time_duration_num = std::chrono::nanoseconds::period::num;
+  constexpr auto int_max =
+    static_cast<config::float_type>(std::numeric_limits<std::int64_t>::max());
+  constexpr auto int_min =
+    static_cast<config::float_type>(std::numeric_limits<std::int64_t>::min());
+  config::float_type ratio = time_duration_den / time_duration_num;
+  auto nanoseconds = (p_cycles / p_source) * ratio;
+
+  if (int_min <= nanoseconds && nanoseconds <= int_max) {
+    return std::chrono::nanoseconds(static_cast<std::int64_t>(nanoseconds));
+  }
+  return new_error(std::errc::result_out_of_range);
+}
 /** @} */
 }  // namespace hal
