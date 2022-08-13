@@ -5,16 +5,15 @@
 
 namespace hal {
 namespace {
-constexpr auto expected_value = percentage<config::float_type>(0.5);
+constexpr auto expected_value = percentage(0.5);
 
-template<std::floating_point float_t = config::float_type>
-class test_servo : public hal::servo<float_t>
+class test_servo : public hal::servo
 {
 public:
   float_t m_passed_position;
 
 private:
-  status driver_position(percentage<float_t> p_position) noexcept override
+  status driver_position(percentage p_position) noexcept override
   {
     m_passed_position = p_position.value();
     return {};
@@ -25,7 +24,7 @@ private:
 boost::ut::suite servo_test = []() {
   using namespace boost::ut;
   // Setup
-  test_servo<config::float_type> test;
+  test_servo test;
 
   // Exercise
   auto result = test.position(expected_value);

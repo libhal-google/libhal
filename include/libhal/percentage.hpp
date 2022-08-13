@@ -15,39 +15,40 @@ namespace hal {
  *
  * @tparam float_t - floating point representation
  */
-template<std::floating_point float_t = float>
-class percentage
+template<std::floating_point float_t>
+class percentage_t
 {
 public:
   constexpr static float_t max = +1.0;
   constexpr static float_t min = -1.0;
   constexpr static float_t zero = 0.0;
 
-  constexpr percentage(float_t p_value)
+  template<std::floating_point U>
+  constexpr percentage_t(U p_value)
     : m_value(0.0)
   {
+    set_and_constrain(static_cast<float_t>(p_value));
+  }
+  constexpr percentage_t& operator=(const percentage_t& p_percent)
+  {
+    m_value = p_percent.value();
+    return *this;
+  }
+  constexpr percentage_t& operator=(const percentage_t&& p_percent)
+  {
+    m_value = p_percent.value();
+    return *this;
+  }
+  constexpr percentage_t& operator=(float_t p_value)
+  {
     set_and_constrain(p_value);
-  }
-  constexpr percentage& operator=(const percentage& p_percent)
-  {
-    m_value = p_percent.value();
     return *this;
   }
-  constexpr percentage& operator=(const percentage&& p_percent)
-  {
-    m_value = p_percent.value();
-    return *this;
-  }
-  constexpr percentage& operator=(float_t p_value)
-  {
-    set_and_constrain(p_value);
-    return *this;
-  }
-  constexpr percentage(const percentage& p_percent)
+  constexpr percentage_t(const percentage_t& p_percent)
   {
     m_value = p_percent.value();
   }
-  constexpr percentage(const percentage&& p_percent)
+  constexpr percentage_t(const percentage_t&& p_percent)
   {
     m_value = p_percent.value();
   }
@@ -63,12 +64,12 @@ public:
   {
     return static_cast<float>(m_value);
   }
-  constexpr bool equals(percentage p_other, float_t p_epsilon = 1e-9f) const
+  constexpr bool equals(percentage_t p_other, float_t p_epsilon = 1e-9f) const
   {
     return hal::equals(m_value, p_other.value(), p_epsilon);
   }
-  constexpr bool operator<=>(const percentage& p_percent) const = default;
-  constexpr bool operator==(const percentage& p_percent) const
+  constexpr bool operator<=>(const percentage_t& p_percent) const = default;
+  constexpr bool operator==(const percentage_t& p_percent) const
   {
     return equals(p_percent);
   }
@@ -80,4 +81,6 @@ private:
   }
   float_t m_value{ 0.0 };
 };
+
+using percentage = percentage_t<float>;
 }  // namespace hal

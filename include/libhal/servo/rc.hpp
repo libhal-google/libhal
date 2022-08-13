@@ -14,8 +14,7 @@ namespace hal {
  * @brief Generic RC servo driver.
  *
  */
-template<std::floating_point float_t = config::float_type>
-class rc_servo : public hal::servo<float_t>
+class rc_servo : public hal::servo
 {
 public:
   /**
@@ -34,7 +33,7 @@ public:
   template<uint32_t Frequency = 50,
            uint32_t MinMicroseconds = 1000,
            uint32_t MaxMicroseconds = 2000>
-  static result<rc_servo> create(hal::pwm<float_t>& p_pwm)
+  static result<rc_servo> create(hal::pwm& p_pwm)
   {
     // Check that MinMicroseconds is less than MaxMicroseconds
     static_assert(
@@ -49,8 +48,8 @@ public:
     HAL_CHECK(p_pwm.frequency(frequency));
 
     auto wavelength = (1.0f / frequency) * std::micro::den;
-    auto min_percent = percentage<float_t>(MinMicroseconds / wavelength);
-    auto max_percent = percentage<float_t>(MaxMicroseconds / wavelength);
+    auto min_percent = percentage(MinMicroseconds / wavelength);
+    auto max_percent = percentage(MaxMicroseconds / wavelength);
     auto percent_range =
       std::make_pair(min_percent.value(), max_percent.value());
 
@@ -58,25 +57,24 @@ public:
   }
 
 private:
-  constexpr rc_servo(hal::pwm<float_t>& p_pwm,
-                     std::pair<float_t, float_t> p_percent_range)
+  constexpr rc_servo(hal::pwm& p_pwm, std::pair<float, float> p_percent_range)
     : m_pwm(&p_pwm)
     , m_percent_range(p_percent_range)
   {
   }
 
-  status driver_position(percentage<float_t> p_position) noexcept override
+  status driver_position(percentage p_position) noexcept override
   {
-    auto scaled_percent_raw = map(p_position.value(),
-                                  std::make_pair(hal::percentage<float_t>::min,
-                                                 hal::percentage<float_t>::max),
-                                  m_percent_range);
-    auto scaled_percent = percentage<float_t>(scaled_percent_raw);
+    auto scaled_percent_raw =
+      map(p_position.value(),
+          std::make_pair(hal::percentage::min, hal::percentage::max),
+          m_percent_range);
+    auto scaled_percent = percentage(scaled_percent_raw);
     return m_pwm->duty_cycle(scaled_percent);
   }
 
-  hal::pwm<float_t>* m_pwm;
-  std::pair<float_t, float_t> m_percent_range;
+  hal::pwm* m_pwm;
+  std::pair<float, float> m_percent_range;
 };
 /** @} */
 }  // namespace hal

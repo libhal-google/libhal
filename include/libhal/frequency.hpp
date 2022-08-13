@@ -79,13 +79,14 @@ struct duty_cycle
    * count.
    */
   template<std::floating_point float_t>
-  [[nodiscard]] explicit constexpr operator percentage<float_t>() const noexcept
+  [[nodiscard]] explicit constexpr operator percentage_t<float_t>()
+    const noexcept
   {
     auto float_high = static_cast<float>(high);
     auto float_low = static_cast<float>(low);
     auto float_total = float_high + float_low;
     auto ratio = float_high / float_total;
-    return percentage<float_t>(ratio);
+    return percentage_t<float_t>(ratio);
   }
 
   /**
@@ -97,7 +98,7 @@ struct duty_cycle
   template<std::floating_point float_t>
   [[nodiscard]] explicit constexpr operator float_t() const noexcept
   {
-    return static_cast<float_t>(static_cast<percentage<float_t>>((*this)));
+    return static_cast<float_t>(static_cast<percentage_t<float_t>>((*this)));
   }
 };
 

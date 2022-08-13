@@ -13,8 +13,7 @@ namespace hal::mock {
  * simulations.
  *
  */
-template<std::floating_point float_t = config::float_type>
-struct servo : public hal::servo<float_t>
+struct servo : public hal::servo
 {
   /**
    * @brief Reset spy information for position()
@@ -26,10 +25,10 @@ struct servo : public hal::servo<float_t>
   }
 
   /// Spy handler for hal::servo::position()
-  spy_handler<percentage<float_t>> spy_position;
+  spy_handler<percentage> spy_position;
 
 private:
-  status driver_position(percentage<float_t> p_position) noexcept override
+  status driver_position(percentage p_position) noexcept override
   {
     return spy_position.record(p_position);
   }

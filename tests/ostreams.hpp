@@ -40,7 +40,7 @@ inline std::ostream& operator<<(std::ostream& os, const percent& p_percent)
 }
 template<std::floating_point float_t>
 inline std::ostream& operator<<(std::ostream& os,
-                                const percentage<float_t>& p_percent)
+                                const percentage_t<float_t>& p_percent)
 {
   return (os << "percentage { " << std::fixed << std::setprecision(15)
              << static_cast<float>(p_percent.value()) << " : " << std::right

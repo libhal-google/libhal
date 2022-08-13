@@ -7,8 +7,8 @@ boost::ut::suite motor_mock_test = []() {
 
   // Setup
   hal::mock::motor mock;
-  constexpr auto expected1 = percentage<config::float_type>(0.5);
-  constexpr auto expected2 = percentage<config::float_type>(0.25);
+  constexpr auto expected1 = percentage(0.5);
+  constexpr auto expected2 = percentage(0.25);
   mock.spy_power.trigger_error_on_call(3);
 
   // Exercise + Verify
