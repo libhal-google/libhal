@@ -40,7 +40,7 @@ boost::ut::suite i2c_util_test = []() {
       std::fill(m_in.begin(), m_in.end(), filler_byte);
 
       if (m_address == failure_address) {
-        return boost::leaf::new_error();
+        return hal::new_error();
       }
 
       (void)p_timeout();

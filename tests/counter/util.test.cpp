@@ -68,7 +68,7 @@ boost::ut::suite counter_utility_test = []() {
       [&timeout_object]() -> status {
         for (std::int64_t i = 0; i < expected.count() - 2; i++) {
           if (!timeout_object()) {
-            return boost::leaf::new_error();
+            return hal::new_error();
           }
         }
         return timeout_object();
@@ -99,7 +99,7 @@ boost::ut::suite counter_utility_test = []() {
       [&timeout_object]() -> status {
         for (std::int64_t i = 0; i < expected.count() - 2; i++) {
           if (!timeout_object()) {
-            return boost::leaf::new_error();
+            return hal::new_error();
           }
         }
         return timeout_object();

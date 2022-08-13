@@ -31,7 +31,7 @@ public:
                                         hal::time_duration p_duration)
   {
     if (p_duration < hal::time_duration(0)) {
-      return boost::leaf::new_error(std::errc::result_out_of_range);
+      return hal::new_error(std::errc::result_out_of_range);
     }
 
     const auto [frequency, count] = HAL_CHECK(p_counter.uptime());
@@ -82,7 +82,7 @@ public:
     m_cycles_until_timeout -= delta_count;
 
     if (m_cycles_until_timeout <= 0) {
-      return boost::leaf::new_error(std::errc::timed_out);
+      return hal::new_error(std::errc::timed_out);
     }
 
     m_previous_count = current_count;

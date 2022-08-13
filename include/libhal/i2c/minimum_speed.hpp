@@ -40,7 +40,7 @@ private:
   status driver_configure(const settings& p_new_setting) noexcept override
   {
     if (equals(p_new_setting.clock_rate, 0.0)) {
-      return boost::leaf::new_error(std::errc::invalid_argument);
+      return hal::new_error(std::errc::invalid_argument);
     }
     if (m_lowest_seen_frequency > p_new_setting.clock_rate) {
       m_lowest_seen_frequency = p_new_setting.clock_rate;

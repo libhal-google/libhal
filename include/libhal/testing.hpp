@@ -56,7 +56,7 @@ public:
       m_error_trigger--;
     } else if (m_error_trigger == 1) {
       m_error_trigger--;
-      return boost::leaf::new_error();
+      return hal::new_error();
     }
 
     return {};

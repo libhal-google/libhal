@@ -315,7 +315,7 @@ constexpr std::chrono::duration<int64_t, Period> wavelength(
 {
   std::uint64_t cycles = cycles_per(p_source_clock, p_duration);
   if (cycles > std::numeric_limits<std::uint32_t>::max()) {
-    return boost::leaf::new_error(std::errc::value_too_large);
+    return hal::new_error(std::errc::value_too_large);
   }
   return calculate_duty_cycle(static_cast<uint32_t>(cycles), p_percent);
 }

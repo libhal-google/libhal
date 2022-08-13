@@ -33,7 +33,7 @@ boost::ut::suite spi_util_test = []() {
       m_filler = p_filler;
 
       if (p_filler == failure_filler) {
-        return boost::leaf::new_error();
+        return hal::new_error();
       }
 
       return {};

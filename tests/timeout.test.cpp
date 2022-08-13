@@ -12,7 +12,7 @@ boost::ut::suite timeout_test = []() {
     auto timeout_function = [&counts]() mutable -> status {
       counts++;
       if (counts >= timeout_call_limit) {
-        return boost::leaf::new_error(std::errc::timed_out);
+        return hal::new_error(std::errc::timed_out);
       }
       return {};
     };
@@ -33,9 +33,7 @@ boost::ut::suite timeout_test = []() {
 
   "hal::delay(timeout) returns error"_test = []() {
     // Setup
-    auto timeout_function = []() mutable -> status {
-      return boost::leaf::new_error();
-    };
+    auto timeout_function = []() mutable -> status { return hal::new_error(); };
 
     // Exercise
     auto result = hal::delay(timeout_function);

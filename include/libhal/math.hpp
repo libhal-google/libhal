@@ -34,7 +34,7 @@ template<typename T>
   T result = p_lhs * p_rhs;
 
   if (p_lhs != result / p_rhs) {
-    return boost::leaf::new_error(std::errc::result_out_of_range);
+    return hal::new_error(std::errc::result_out_of_range);
   }
 
   return result;

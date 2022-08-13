@@ -54,7 +54,7 @@ private:
   result<bool> driver_level() noexcept override
   {
     if (m_levels.size() == 0) {
-      return boost::leaf::new_error(
+      return hal::new_error(
         std::out_of_range("interrupt pin level queue is empty!"));
     }
     bool m_current_value = m_levels.front();

@@ -26,8 +26,7 @@ private:
   result<microkelvin> driver_read() noexcept
   {
     if (m_temperatures.size() == 0) {
-      return boost::leaf::new_error(
-        std::out_of_range("temperatures queue is empty!"));
+      return hal::new_error(std::out_of_range("temperatures queue is empty!"));
     }
     auto m_current_value = m_temperatures.front();
     m_temperatures.pop();
