@@ -50,7 +50,7 @@ public:
    * @brief Set the pwm waveform frequency
    *
    * @param p_frequency - settings to apply to pwm driver
-   * @return status - status of this operation
+   * @return status - success or failure
    * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
    * the pwm generator is capable of achieving.
    */
@@ -62,8 +62,8 @@ public:
   /**
    * @brief Set the pwm waveform duty cycle
    *
-   * @param p_duty_cycle - set the duty cycle of the pwm.
-   * @return status - status of this operation
+   * @param p_duty_cycle - set the duty cycle of the pwm
+   * @return status - success or failure
    */
   [[nodiscard]] status duty_cycle(percentage p_duty_cycle) noexcept
   {

@@ -23,7 +23,7 @@ namespace hal {
  * @param p_address - target address
  * @param p_data_out - buffer of bytes to write to the target device
  * @param p_timeout - amount of time to execute the transaction
- * @return status - any errors associated with the read call
+ * @return status - success or failure
  */
 [[nodiscard]] inline status write(
   i2c& p_i2c,
@@ -43,7 +43,7 @@ namespace hal {
  * @param p_address - target address
  * @param p_data_in - buffer to read bytes into from target device
  * @param p_timeout - amount of time to execute the transaction
- * @return status - any errors associated with the read call
+ * @return status - success or failure
  */
 [[nodiscard]] inline status read(
   i2c& p_i2c,
@@ -88,7 +88,7 @@ template<size_t BytesToRead>
  * @param p_data_in - buffer to read bytes into from target device
  * @param p_timeout - amount of time to execute the transaction
  *
- * @return status - any errors associated with the read call
+ * @return status - success or failure
  */
 [[nodiscard]] inline status write_then_read(
   i2c& p_i2c,
@@ -129,7 +129,7 @@ template<size_t BytesToRead>
  *
  * @param p_i2c - i2c driver
  * @param p_address - target address to probe for
- * @return status - any errors associated with the read call
+ * @return status - success or failure
  */
 [[nodiscard]] inline status probe(i2c& p_i2c, hal::byte p_address) noexcept
 {

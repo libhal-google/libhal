@@ -87,7 +87,7 @@ public:
    *     servo.position(hal::percent::from_ratio(90, 90));
    *
    * @param p_position - position to move the servo to
-   * @return status - success or error flag
+   * @return status - success or failure
    */
   [[nodiscard]] status position(percentage p_position) noexcept
   {

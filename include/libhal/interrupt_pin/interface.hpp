@@ -84,7 +84,7 @@ public:
   /**
    * @brief Disable interrupts for this pin
    *
-   * @return status - any error that occurred during this
+   * @return status - success or failure
    * operation.
    */
   [[nodiscard]] status detach_interrupt() noexcept

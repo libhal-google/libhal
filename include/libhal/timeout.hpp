@@ -33,7 +33,7 @@ using timeout = status(void);
  *
  * @tparam Timeout - timeout type
  * @param p_timeout - callable timeout object
- * @return status - success
+ * @return status - success or failure
  */
 template<typename Timeout = std::function<hal::timeout>>
 [[nodiscard]] inline status delay(Timeout p_timeout) noexcept

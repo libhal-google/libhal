@@ -61,7 +61,7 @@ public:
    *
    * @param p_message - the message to be sent
    *
-   * @return status - any error that occurred during this
+   * @return status - success or failure
    * operation.
    */
   [[nodiscard]] status send(const message_t& p_message) noexcept
@@ -76,7 +76,7 @@ public:
    *
    * @param p_receive_handler - this handler will be called when the can device
    * receives a message. Set to nullptr to disable receive interrupts.
-   * @return status - any error that occurred during this
+   * @return status - success or failure
    * operation.
    */
   [[nodiscard]] status attach_interrupt(

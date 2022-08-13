@@ -45,7 +45,7 @@ public:
    * @brief Record the arguments of a function being spied on.
    *
    * @param p_args - arguments to record
-   * @return status - returns success or an error if the
+   * @return status - success or failure
    * error trigger has been reached.
    */
   [[nodiscard]] status record(args_t... p_args)

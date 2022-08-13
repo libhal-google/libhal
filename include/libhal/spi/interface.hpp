@@ -71,7 +71,7 @@ public:
    * dropped.
    * @param p_filler - filler data placed on the bus in place of actual write
    * data when p_data_out has been exhausted.
-   * @return status - any error that occurred during this
+   * @return status - success or failure
    * operation.
    */
   [[nodiscard]] status transfer(std::span<const hal::byte> p_data_out,
