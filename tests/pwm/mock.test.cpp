@@ -25,8 +25,8 @@ boost::ut::suite pwm_mock_test = []() {
 
   "hal::mock::pwm::duty_cycle()"_test = []() {
     // Setup
-    constexpr auto expected1 = percentage<config::float_type>(0.5);
-    constexpr auto expected2 = percentage<config::float_type>(0.25);
+    constexpr auto expected1 = percentage(0.5);
+    constexpr auto expected2 = percentage(0.25);
     hal::mock::pwm mock;
     mock.spy_duty_cycle.trigger_error_on_call(3);
 

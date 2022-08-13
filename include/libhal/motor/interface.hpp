@@ -21,7 +21,6 @@ namespace hal {
  *   - A servo with open loop motor control
  *
  */
-template<std::floating_point float_t = config::float_type>
 class motor
 {
 public:
@@ -56,13 +55,13 @@ public:
    * @return status - success or an error that occurred when
    * attempting to set the power output of the motor.
    */
-  [[nodiscard]] status power(percentage<float_t> p_power) noexcept
+  [[nodiscard]] status power(percentage p_power) noexcept
   {
     return driver_power(p_power);
   }
 
 private:
-  virtual status driver_power(percentage<float_t> p_power) noexcept = 0;
+  virtual status driver_power(percentage p_power) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

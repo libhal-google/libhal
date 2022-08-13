@@ -13,8 +13,7 @@ namespace hal::mock {
  * spy function for write()
  *
  */
-template<std::floating_point float_t = config::float_type>
-struct dac : public hal::dac<float_t>
+struct dac : public hal::dac
 {
   /**
    * @brief Reset spy information for write()
@@ -26,10 +25,10 @@ struct dac : public hal::dac<float_t>
   }
 
   /// Spy handler for hal::dac::write()
-  spy_handler<percentage<float_t>> spy_write;
+  spy_handler<percentage> spy_write;
 
 private:
-  status driver_write(percentage<float_t> p_value) noexcept override
+  status driver_write(percentage p_value) noexcept override
   {
     return spy_write.record(p_value);
   };

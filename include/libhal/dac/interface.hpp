@@ -19,7 +19,6 @@ namespace hal {
  * analog voltages between a defined LOW and HIGH voltage.
  *
  */
-template<std::floating_point float_t = config::float_type>
 class dac
 {
 public:
@@ -34,13 +33,13 @@ public:
    * @return status - any error that occurred during this
    * operation.
    */
-  [[nodiscard]] status write(percentage<float_t> p_value) noexcept
+  [[nodiscard]] status write(percentage p_value) noexcept
   {
     return driver_write(p_value);
   }
 
 private:
-  virtual status driver_write(percentage<float_t> p_value) noexcept = 0;
+  virtual status driver_write(percentage p_value) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

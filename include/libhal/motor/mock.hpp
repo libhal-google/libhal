@@ -13,8 +13,7 @@ namespace hal::mock {
  * spy function for power()
  *
  */
-template<std::floating_point float_t = config::float_type>
-struct motor : public hal::motor<float_t>
+struct motor : public hal::motor
 {
   /**
    * @brief Reset spy information for power()
@@ -26,10 +25,10 @@ struct motor : public hal::motor<float_t>
   }
 
   /// Spy handler for hal::motor::write()
-  spy_handler<percentage<float_t>> spy_power;
+  spy_handler<percentage> spy_power;
 
 private:
-  status driver_power(percentage<float_t> p_power) noexcept override
+  status driver_power(percentage p_power) noexcept override
   {
     return spy_power.record(p_power);
   };

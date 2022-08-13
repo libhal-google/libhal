@@ -8,8 +8,8 @@ boost::ut::suite servo_mock_test = []() {
   "hal::mock::servo::position()"_test = []() {
     // Setup
     hal::mock::servo mock;
-    auto expected1 = percentage<config::float_type>(0.5);
-    auto expected2 = percentage<config::float_type>(0.25);
+    auto expected1 = percentage(0.5);
+    auto expected2 = percentage(0.25);
 
     // Exercise
     auto result1 = mock.position(expected1);

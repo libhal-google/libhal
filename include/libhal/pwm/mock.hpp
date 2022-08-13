@@ -13,8 +13,7 @@ namespace hal::mock {
  * functions for frequency() and duty_cycle().
  *
  */
-template<std::floating_point float_t = config::float_type>
-struct pwm : public hal::pwm<float_t>
+struct pwm : public hal::pwm
 {
   /**
    * @brief Reset spy information for both frequency() and duty_cycle()
@@ -29,14 +28,14 @@ struct pwm : public hal::pwm<float_t>
   /// Spy handler for hal::pwm::frequency()
   spy_handler<hertz> spy_frequency;
   /// Spy handler for hal::pwm::duty_cycle()
-  spy_handler<percentage<float_t>> spy_duty_cycle;
+  spy_handler<percentage> spy_duty_cycle;
 
 private:
   status driver_frequency(hertz p_settings) noexcept override
   {
     return spy_frequency.record(p_settings);
   }
-  status driver_duty_cycle(percentage<float_t> p_duty_cycle) noexcept override
+  status driver_duty_cycle(percentage p_duty_cycle) noexcept override
   {
     return spy_duty_cycle.record(p_duty_cycle);
   }
