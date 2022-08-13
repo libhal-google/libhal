@@ -83,7 +83,7 @@ public:
    * fails, the state of the serial device has not changed.
    *
    * @param p_settings - settings to apply to serial driver
-   * @return status
+   * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved
    */
   [[nodiscard]] status configure(const settings& p_settings) noexcept
@@ -97,7 +97,7 @@ public:
    * This function will block until the entire transfer is finished.
    *
    * @param p_data - data to be transmitted over the serial port
-   * @return status
+   * @return status - success or failure
    */
   [[nodiscard]] status write(std::span<const hal::byte> p_data) noexcept
   {
@@ -141,7 +141,7 @@ public:
    * @brief Set bytes_available() to zero and clear any received data stored in
    * hardware registers.
    *
-   * @return status
+   * @return status - success or failure
    */
   [[nodiscard]] status flush() noexcept
   {

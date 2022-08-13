@@ -71,7 +71,7 @@ public:
   /**
    * @brief Call this object to check if it has timed out.
    *
-   * @return status
+   * @return status - success or failure
    * @throws std::errc::timed_out - if the number of cycles until timeout has
    * been exceeded.
    */

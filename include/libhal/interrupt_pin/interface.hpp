@@ -48,7 +48,7 @@ public:
    * @brief Configure the interrupt pin to match the settings supplied
    *
    * @param p_settings - settings to apply to interrupt pin
-   * @return status
+   * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] status configure(const settings& p_settings) noexcept
@@ -58,7 +58,7 @@ public:
   /**
    * @brief Return the voltage level of the pin
    *
-   * @return status
+   * @return status - success or failure
    */
   [[nodiscard]] result<bool> level() noexcept
   {
@@ -74,7 +74,7 @@ public:
    * @param p_callback function to execute when the trigger condition is met
    * @param p_trigger the trigger condition that will signal the system to run
    * the callback.
-   * @return status
+   * @return status - success or failure
    */
   [[nodiscard]] status attach_interrupt(std::function<void(void)> p_callback,
                                         trigger_edge p_trigger) noexcept
