@@ -84,7 +84,7 @@ template<size_t BytesToRead>
  * @param p_data_in - buffer to receive bytes back from the SPI bus
  * @param p_filler - filler data placed on the bus when the read operation
  * begins.
- * @return status
+ * @return status - success or failure
  */
 [[nodiscard]] inline status write_then_read(
   spi& p_spi,

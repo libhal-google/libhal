@@ -49,7 +49,7 @@ public:
    * @brief Configure can to match the settings supplied
    *
    * @param p_settings - settings to apply to can driver
-   * @return status
+   * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] status configure(const settings& p_settings) noexcept
