@@ -45,7 +45,7 @@ inline result<hal::counter_timeout> create_timeout(
                                   hal::time_duration p_duration) noexcept
 {
   if (p_duration < hal::time_duration(0)) {
-    return boost::leaf::new_error(std::errc::result_out_of_range);
+    return hal::new_error(std::errc::result_out_of_range);
   }
   auto timeout_object = HAL_CHECK(create_timeout(p_counter, p_duration));
   return delay(timeout_object);

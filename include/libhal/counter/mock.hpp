@@ -30,8 +30,7 @@ private:
   result<uptime_t> driver_uptime() noexcept
   {
     if (m_uptimes.size() == 0) {
-      return boost::leaf::new_error(
-        std::out_of_range("uptimes queue is empty!"));
+      return hal::new_error(std::out_of_range("uptimes queue is empty!"));
     }
     uptime_t m_current_value = m_uptimes.front();
     m_uptimes.pop();

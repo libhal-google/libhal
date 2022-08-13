@@ -28,8 +28,7 @@ private:
   result<percentage> driver_read() noexcept
   {
     if (m_adc_values.size() == 0) {
-      return boost::leaf::new_error(
-        std::out_of_range("percentages queue is empty!"));
+      return hal::new_error(std::out_of_range("percentages queue is empty!"));
     }
     percentage m_current_value = m_adc_values.front();
     m_adc_values.pop();

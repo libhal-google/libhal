@@ -26,8 +26,7 @@ private:
   result<sample> driver_read() noexcept
   {
     if (m_samples.size() == 0) {
-      return boost::leaf::new_error(
-        std::out_of_range("samples queue is empty!"));
+      return hal::new_error(std::out_of_range("samples queue is empty!"));
     }
     sample m_current_value = m_samples.front();
     m_samples.pop();

@@ -97,7 +97,7 @@ template<typename T>
   //
   // Throw error std::errc::invalid_argument.
   if (std::cmp_equal(input_distance, 0)) {
-    return boost::leaf::new_error(std::errc::invalid_argument);
+    return hal::new_error(std::errc::invalid_argument);
   }
 
   // Bounds check p_target and if it is is outside of the input range then

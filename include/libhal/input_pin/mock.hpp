@@ -49,7 +49,7 @@ private:
     // This comparison performs bounds checking because front() and pop() do
     // not bounds check and results in undefined behavior if the queue is empty.
     if (m_levels.size() == 0) {
-      return boost::leaf::new_error(
+      return hal::new_error(
         std::out_of_range("input_pin level queue is empty!"));
     }
     bool m_current_value = m_levels.front();

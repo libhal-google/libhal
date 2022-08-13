@@ -22,7 +22,7 @@ boost::ut::suite serial_util_test = []() {
       std::span<const hal::byte> p_data) noexcept override
     {
       if (p_data[0] == write_failure_byte) {
-        return boost::leaf::new_error();
+        return hal::new_error();
       }
       m_out = p_data;
       return {};
@@ -31,7 +31,7 @@ boost::ut::suite serial_util_test = []() {
     [[nodiscard]] result<size_t> driver_bytes_available() noexcept override
     {
       if (m_bytes_available_fails) {
-        return boost::leaf::new_error();
+        return hal::new_error();
       }
       return ++m_bytes_available;
     }
@@ -40,7 +40,7 @@ boost::ut::suite serial_util_test = []() {
       std::span<hal::byte> p_data) noexcept override
     {
       if (m_read_fails) {
-        return boost::leaf::new_error();
+        return hal::new_error();
       }
       m_in = p_data;
       std::fill(p_data.begin(), p_data.end(), filler_byte);

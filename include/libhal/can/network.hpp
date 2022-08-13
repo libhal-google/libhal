@@ -202,7 +202,7 @@ public:
     auto was_successful = result.second;
 
     if (!was_successful) {
-      return boost::leaf::new_error(std::errc::not_enough_memory);
+      return hal::new_error(std::errc::not_enough_memory);
     }
 
     // Return reference to the newly made node_t.

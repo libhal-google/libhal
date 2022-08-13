@@ -1087,7 +1087,7 @@ This includes placing an **infinite loop block** in a driver.
 An application should have control over how their application ends. A
 driver should report severe errors to the application and let the application
 decide the next steps. If a particular operation cannot be executed as intended,
-then `boost::leaf::new_error()` should be called.
+then `hal::new_error()` should be called.
 
 Constructors would be the only valid place to put an exit statement, because
 they cannot return errors only themselves.
