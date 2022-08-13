@@ -23,7 +23,7 @@ namespace hal {
  * @param p_serial - serial port to wait for
  * @param p_length - the number of bytes that need to be buffered before this
  * function returns.
- * @return status - return an error if a call to
+ * @return status - success or failure
  * serial::bytes_available returns an error from the serial port.
  */
 [[nodiscard]] inline status delay(serial& p_serial, size_t p_length) noexcept
@@ -40,7 +40,7 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be written to
  * @param p_data_out - the data to be written out the port
- * @return status - return an error if a call to
+ * @return status - success or failure
  * serial::write returns an error from the serial port.
  */
 [[nodiscard]] inline status write(
@@ -100,7 +100,7 @@ template<size_t BytesToRead>
  * @param p_serial - the serial port to have the transaction occur on
  * @param p_data_out - the data to be written to the port
  * @param p_data_in - a buffer to receive the bytes back from the port
- * @return status - return an error if a call to serial::read
+ * @return status - success or failure
  * or serial::write() returns an error from the serial port or success.
  */
 [[nodiscard]] inline status write_then_read(

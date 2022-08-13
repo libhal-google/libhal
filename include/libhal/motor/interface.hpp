@@ -52,8 +52,7 @@ public:
    *   0%.
    *
    * @param p_power - the amount of power to apply to the motor
-   * @return status - success or an error that occurred when
-   * attempting to set the power output of the motor.
+   * @return status - success or failure
    */
   [[nodiscard]] status power(percentage p_power) noexcept
   {

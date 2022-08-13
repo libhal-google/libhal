@@ -19,8 +19,12 @@ namespace hal {
  * @{
  */
 /**
- * @brief Inter-integrated Circuit (I2C) or Two Wire Interface (TWI)
- * communication protocol hardware abstract interface.
+ * @brief Inter-integrated Circuit (I2C) hardware abstract interface.
+ *
+ * Also known as Two Wire Interface (TWI) communication protocol. This is a very
+ * commonly used protocol for communication with sensors and peripheral devices
+ * because it only requires two connections SDA (data signal) and SCL (clock
+ * signal). This is possible because the protocol for I2C is addressable.
  *
  */
 class i2c
@@ -47,7 +51,7 @@ public:
    * @brief Configure i2c to match the settings supplied
    *
    * @param p_settings - settings to apply to i2c driver
-   * @return status
+   * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] status configure(const settings& p_settings) noexcept
@@ -70,7 +74,10 @@ public:
    * `std::span<const hal::byte>{}` and pass a buffer to p_data_in.
    *
    * - For write-then-read transactions, pass a buffer for both p_data_in
-   * p_data_out.
+   *   p_data_out.
+   *
+   * - If both p_data_in and p_data_out are empty, simply do nothing and return
+   *   success.
    *
    * In the event of arbitration loss, this function will wait for the bus to
    * become free and try again. Arbitration loss means that during the address
@@ -90,7 +97,7 @@ public:
    * @param p_timeout callable which notifies the i2c driver that it has run out
    * of time to perform the transaction and must stop and return control to the
    * caller.
-   * @return status
+   * @return status - success or failure
    * @throws std::errc::io_error indicates that the i2c lines were put into an
    * invalid state during the transaction due to interference, misconfiguration
    * of the i2c peripheral or the addressed device or something else.

@@ -36,7 +36,7 @@ inline result<hal::counter_timeout> create_timeout(
  *
  * @param p_counter - counter driver
  * @param p_duration - the amount of time to delay for, must be positive
- * @return status - returns any errors that result from
+ * @return status - success or failure
  * hal::counter::uptime(), otherwise returns success.
  * @throws std::errc::result_out_of_range - if the calculated cycle count
  * exceeds std::int64_t.

@@ -74,7 +74,7 @@ public:
    * schedule event expires, this function may not complete before the hardware
    * calls the callback.
    *
-   * @return status - driver specific error, if any.
+   * @return status - success or failure
    */
   [[nodiscard]] status clear() noexcept
   {
@@ -89,7 +89,7 @@ public:
    *
    * @param p_callback - callback function to be called when the timer expires
    * @param p_delay - the amount of time before the timer expires
-   * @return status - returns `delay_too_small` or
+   * @return status - success or failure
    * `delay_too_large` if p_interval cannot be reached.
    */
   [[nodiscard]] status schedule(std::function<void(void)> p_callback,

@@ -57,7 +57,7 @@ public:
    *
    * @param p_high - if true then the pin state is set to HIGH voltage. If
    * false, the pin state is set to LOW voltage.
-   * @return status - any error that occurred during this
+   * @return status - success or failure
    * operation.
    */
   [[nodiscard]] status level(bool p_high) noexcept

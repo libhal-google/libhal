@@ -17,12 +17,6 @@ namespace hal {
  *
  * Use this interface for devices and peripherals that can convert analog
  * voltage signals into a digital number.
- *
- * This interface makes no assumptions about how the conversation is made via
- * the ADC. Conversions could be performed at each call of this function.
- * Conversions can be ongoing by hardware and this function returns the latest
- * sample or the first sample from a queue. Collecting samples can occur
- * over a communication protocol like SPI or I2C.
  */
 class adc
 {

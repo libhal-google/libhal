@@ -17,7 +17,7 @@ namespace hal {
  *
  * @param p_spi - spi driver
  * @param p_data_out - data to be written to the SPI bus
- * @return status - any errors associated with this call
+ * @return status - success or failure
  */
 [[nodiscard]] inline status write(
   spi& p_spi,
@@ -36,7 +36,7 @@ namespace hal {
  * @param p_data_in - buffer to receive bytes back from the SPI bus
  * @param p_filler - filler data placed on the bus in place of actual write
  * data.
- * @return status - any errors associated with this call
+ * @return status - success or failure
  */
 [[nodiscard]] inline status read(
   spi& p_spi,

@@ -16,22 +16,18 @@ namespace hal {
  * @brief Digital to Analog Converter (DAC) hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that can create arbitrary
- * analog voltages between a defined LOW and HIGH voltage.
+ * analog voltages between a defined Vss (negative reference) and Vcc (positive
+ * reference) voltage.
  *
  */
 class dac
 {
 public:
   /**
-   * @brief Generate a voltage between a defined LOW and HIGH voltage.
+   * @brief Set the output voltage of the DAC.
    *
-   * The LOW and HIGH voltage are generally configured by a reference voltage
-   * (usually denoted V_ref) connected to the device. Generally though, the low
-   * voltage is 0V and the high voltage reference is VCC.
-   *
-   * @param p_value - percentage scale from LOW to HIGH voltage
-   * @return status - any error that occurred during this
-   * operation.
+   * @param p_value - percentage scale from Vss to Vcc voltage
+   * @return status - success or failure
    */
   [[nodiscard]] status write(percentage p_value) noexcept
   {
