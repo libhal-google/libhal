@@ -10,9 +10,9 @@ boost::ut::suite counter_mock_test = []() {
   "hal::mock::counter::uptime()"_test = []() {
     // Setup
     hal::mock::counter mock;
-    constexpr hal::counter::uptime_t expected1{ frequency{ 1'000'000 }, 0 };
-    hal::counter::uptime_t expected2{ frequency{ 8'000'000 }, 1 };
-    hal::counter::uptime_t expected3{ frequency{ 48'000'000 }, 2 };
+    constexpr hal::counter::uptime_t expected1{ hertz{ 1'000'000 }, 0 };
+    hal::counter::uptime_t expected2{ hertz{ 8'000'000 }, 1 };
+    hal::counter::uptime_t expected3{ hertz{ 48'000'000 }, 2 };
     std::deque samples{ expected1, expected2, expected3 };
     std::queue queue(samples);
 

@@ -7,7 +7,7 @@ namespace hal {
 boost::ut::suite uptime_utility_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
-  using namespace hal::literals;
+  using namespace hal::experimental::literals;
 
   class mock_counter : public hal::counter
   {
@@ -22,7 +22,7 @@ boost::ut::suite uptime_utility_test = []() {
     std::queue<std::uint32_t> uptime_sequence{};
 
   private:
-    hal::frequency m_frequency{ 1'000_MHz };
+    hertz m_frequency{ 1'000.0_MHz };
   };
 
   "[uptime_counter] zero"_test = []() {

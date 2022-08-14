@@ -1,5 +1,6 @@
 #include <boost/ut.hpp>
 #include <libhal/counter/util.hpp>
+#include <system_error>
 
 #include "../ostreams.hpp"
 
@@ -7,7 +8,7 @@ namespace hal {
 boost::ut::suite counter_utility_test = []() {
   using namespace boost::ut;
 
-  static constexpr frequency expected_frequency{ 1'000'000 };
+  static constexpr hertz expected_frequency{ 1'000'000 };
 
   class dummy_counter : public hal::counter
   {
@@ -40,9 +41,7 @@ boost::ut::suite counter_utility_test = []() {
 
     hal::attempt_all(
       [&timeout_object]() -> status { return timeout_object(); },
-      [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
-        success = true;
-      },
+      [&success](match<std::errc, std::errc::timed_out>) { success = true; },
       []() { expect(false) << "std::errc::timed_out was not thrown!"; });
 
     // Verify
@@ -73,9 +72,7 @@ boost::ut::suite counter_utility_test = []() {
         }
         return timeout_object();
       },
-      [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
-        success = true;
-      },
+      [&success](match<std::errc, std::errc::timed_out>) { success = true; },
       []() { expect(false) << "std::errc::timed_out was not thrown!"; });
 
     // Verify
@@ -104,9 +101,7 @@ boost::ut::suite counter_utility_test = []() {
         }
         return timeout_object();
       },
-      [&success](boost::leaf::match<std::errc, std::errc::timed_out>) {
-        success = true;
-      },
+      [&success](match<std::errc, std::errc::timed_out>) { success = true; },
       []() { expect(false) << "std::errc::timed_out was not thrown!"; });
 
     // Verify
