@@ -8,12 +8,12 @@ boost::ut::suite spi_mock_test = []() {
 
   "hal::mock::write_only_spi::configure()"_test = []() {
     // Setup
-    constexpr hal::spi::settings expected1 = { .clock_rate = frequency(1'000),
+    constexpr hal::spi::settings expected1 = { .clock_rate = 1'000,
                                                .clock_idles_high = false,
                                                .data_valid_on_trailing_edge =
                                                  false };
 
-    constexpr hal::spi::settings expected2 = { .clock_rate = frequency(10'000),
+    constexpr hal::spi::settings expected2 = { .clock_rate = 10'000,
                                                .clock_idles_high = true,
                                                .data_valid_on_trailing_edge =
                                                  true };

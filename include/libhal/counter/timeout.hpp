@@ -2,7 +2,6 @@
 
 #include <system_error>
 
-#include "../frequency.hpp"
 #include "../units.hpp"
 #include "interface.hpp"
 

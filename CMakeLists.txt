@@ -58,7 +58,6 @@ add_executable(${TEST_NAME}
   tests/counter/uptime_counter.test.cpp
 
   tests/static_memory_resource.test.cpp
-  tests/frequency.test.cpp
   tests/enum.test.cpp
   tests/percent.test.cpp
   tests/percentage.test.cpp
