@@ -2,7 +2,7 @@
 
 #include "interface.hpp"
 
-namespace hal::experimental {
+namespace hal {
 /**
  * @addtogroup counter
  * @{
@@ -43,19 +43,17 @@ public:
   result<std::chrono::nanoseconds> uptime()
   {
     const auto [frequency, new_uptime] = HAL_CHECK(m_counter->uptime());
-    auto time_delta =
-      static_cast<decltype(m_previous_count)>(new_uptime - m_previous_count);
-    auto nanosecond_delta =
-      HAL_CHECK(frequency.duration_from_cycles(time_delta));
-    m_last_uptime += nanosecond_delta;
+    auto count_delta = static_cast<uint32_t>(new_uptime - m_previous_count);
+    auto time_delta = HAL_CHECK(duration_from_cycles(frequency, count_delta));
+    m_last_uptime += time_delta;
     m_previous_count = new_uptime;
     return m_last_uptime;
   }
 
 private:
-  hal::counter_interface* m_counter = nullptr;
+  hal::counter* m_counter = nullptr;
   uint32_t m_previous_count{};
   std::chrono::nanoseconds m_last_uptime{};
 };
 /** @} */
-}  // namespace hal::experimental
+}  // namespace hal

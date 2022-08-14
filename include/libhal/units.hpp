@@ -123,7 +123,7 @@ namespace experimental::literals {
  * @return std::int64_t - number of cycles
  */
 [[nodiscard]] constexpr std::int64_t cycles_per(
-  const hertz p_source,
+  hertz p_source,
   hal::time_duration p_duration) noexcept
 {
   // Full Equation:
@@ -187,8 +187,8 @@ constexpr float_t wavelength(hertz p_source)
  * and the number of cycles
  */
 [[nodiscard]] inline result<std::chrono::nanoseconds> duration_from_cycles(
-  const hertz p_source,
-  std::int32_t p_cycles) noexcept
+  hertz p_source,
+  std::uint32_t p_cycles) noexcept
 {
   // Full Equation (based on the equation in cycles_per()):
   //
@@ -197,16 +197,17 @@ constexpr float_t wavelength(hertz p_source)
   //   |period| =  | ---------------------------|
   //                \ frequency_hz * ratio_num /
   //
-  constexpr auto time_duration_den = std::chrono::nanoseconds::period::den;
-  constexpr auto time_duration_num = std::chrono::nanoseconds::period::num;
-  constexpr auto int_max =
-    static_cast<config::float_type>(std::numeric_limits<std::int64_t>::max());
-  constexpr auto int_min =
-    static_cast<config::float_type>(std::numeric_limits<std::int64_t>::min());
-  config::float_type ratio = time_duration_den / time_duration_num;
-  auto nanoseconds = (p_cycles / p_source) * ratio;
+  constexpr auto ratio_den = std::chrono::nanoseconds::period::den;
+  constexpr auto ratio_num = std::chrono::nanoseconds::period::num;
+  constexpr auto int_min = std::numeric_limits<std::int64_t>::min();
+  constexpr auto int_max = std::numeric_limits<std::int64_t>::max();
+  constexpr auto float_int_min = static_cast<config::float_type>(int_min);
+  constexpr auto float_int_max = static_cast<config::float_type>(int_max);
 
-  if (int_min <= nanoseconds && nanoseconds <= int_max) {
+  const auto source = std::abs(p_source);
+  auto nanoseconds = (p_cycles * ratio_den) / (source * ratio_num);
+
+  if (float_int_min <= nanoseconds && nanoseconds <= float_int_max) {
     return std::chrono::nanoseconds(static_cast<std::int64_t>(nanoseconds));
   }
   return new_error(std::errc::result_out_of_range);

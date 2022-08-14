@@ -5,7 +5,7 @@
 #include <cstdint>
 
 #include "../error.hpp"
-#include "../frequency.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -33,7 +33,7 @@ public:
   struct uptime_t
   {
     /// Current operating frequency of the counter
-    hal::frequency frequency;
+    hertz frequency;
     /// The current count of the counter
     std::uint32_t count;
   };

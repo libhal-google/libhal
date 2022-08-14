@@ -55,6 +55,7 @@ add_executable(${TEST_NAME}
 
   tests/servo/rc.test.cpp
   tests/i2c/minimum_speed.test.cpp
+  tests/counter/uptime_counter.test.cpp
 
   tests/static_memory_resource.test.cpp
   tests/frequency.test.cpp
