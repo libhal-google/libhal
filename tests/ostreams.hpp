@@ -1,12 +1,12 @@
 #pragma once
 
-#include <boost/ut.hpp>
 #include <chrono>
 #include <iomanip>
+#include <span>
 
 #include <libhal/percentage.hpp>
+#include <libhal/units.hpp>
 
-namespace {
 template<typename Rep, typename Period>
 inline std::ostream& operator<<(
   std::ostream& os,
@@ -15,7 +15,38 @@ inline std::ostream& operator<<(
   return (os << p_duration.count() << " * (" << Period::num << "/"
              << Period::den << ")s");
 }
-}  // namespace
+
+template<typename T, size_t size>
+inline bool operator==(const std::array<T, size>& p_array,
+                       const std::span<T>& p_span) noexcept
+{
+  if (p_span.size() != size) {
+    return false;
+  }
+
+  return std::equal(p_array.begin(), p_array.end(), p_span.begin());
+}
+
+template<typename T, size_t size>
+inline bool operator!=(const std::array<T, size>& p_array,
+                       const std::span<T>& p_span) noexcept
+{
+  return !(p_array == p_span);
+}
+
+template<typename T, size_t size>
+bool operator==(const std::array<T, size>& p_lhs,
+                const std::array<T, size>& p_rhs)
+{
+  return std::equal(p_lhs.begin(), p_lhs.end(), p_rhs.begin());
+}
+
+template<typename T, size_t size>
+bool operator!=(const std::array<T, size>& p_lhs,
+                const std::array<T, size>& p_rhs)
+{
+  return !(p_lhs == p_rhs);
+}
 
 namespace hal {
 template<std::floating_point float_t>
