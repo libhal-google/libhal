@@ -62,14 +62,11 @@ libhal exists to make hardware drivers:
 - Does not dynamically allocate
 - Uses tweak header files for customization
 - Designed to be modular, dynamic, composable, and lightweight
-- Dependencies:
-  - C++20 or above
-  - [Boost.LEAF](https://boostorg.github.io/leaf/) for error handling
-  - [libxbitset](https://github.com/libhal/libxbitset/)
-  - [mp-units](https://mpusz.github.io/units/)
-  - [uintwide_t.h](https://github.com/ckormanyos/wide-integer)
 - System agnostic
 - Follows C++ Core Guidelines
+- Dependencies:
+  - C++20
+  - [Boost.LEAF](https://boostorg.github.io/leaf/) for error handling
 
 # 📃 Glossary
 
