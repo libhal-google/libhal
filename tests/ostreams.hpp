@@ -4,7 +4,6 @@
 #include <chrono>
 #include <iomanip>
 
-#include <libhal/frequency.hpp>
 #include <libhal/percent.hpp>
 #include <libhal/percentage.hpp>
 
@@ -20,17 +19,6 @@ inline std::ostream& operator<<(
 }  // namespace
 
 namespace hal {
-inline std::ostream& operator<<(std::ostream& os, const frequency& p_frequency)
-{
-  return (os << p_frequency.value_hz << "_Hz");
-}
-
-inline std::ostream& operator<<(std::ostream& os, const duty_cycle& p_duty)
-{
-  return (os << "duty_cycle { high: " << p_duty.high << ","
-             << " low: " << p_duty.low << " }");
-}
-
 inline std::ostream& operator<<(std::ostream& os, const percent& p_percent)
 {
   return (os << "percent { " << std::fixed << std::setprecision(3)

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../frequency.hpp"
 #include "../map.hpp"
 #include "../pwm/interface.hpp"
 #include "interface.hpp"

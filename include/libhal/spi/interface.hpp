@@ -5,7 +5,6 @@
 #include <span>
 
 #include "../error.hpp"
-#include "../frequency.hpp"
 #include "../units.hpp"
 
 namespace hal {
@@ -26,7 +25,7 @@ public:
   struct settings
   {
     /// Serial clock frequency
-    frequency clock_rate{};
+    hertz clock_rate{};
     /// The polarity of the pins when the signal is idle
     bool clock_idles_high = false;
     /// The phase of the clock signal when communicating
