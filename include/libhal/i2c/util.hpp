@@ -29,7 +29,7 @@ namespace hal {
   i2c& p_i2c,
   hal::byte p_address,
   std::span<const hal::byte> p_data_out,
-  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
+  timeout auto p_timeout = hal::never_timeout()) noexcept
 {
   return p_i2c.transaction(
     p_address, p_data_out, std::span<hal::byte>{}, p_timeout);
@@ -49,7 +49,7 @@ namespace hal {
   i2c& p_i2c,
   hal::byte p_address,
   std::span<hal::byte> p_data_in,
-  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
+  timeout auto p_timeout = hal::never_timeout()) noexcept
 {
   return p_i2c.transaction(
     p_address, std::span<hal::byte>{}, p_data_in, p_timeout);
@@ -70,7 +70,7 @@ template<size_t BytesToRead>
 [[nodiscard]] result<std::array<hal::byte, BytesToRead>> read(
   i2c& p_i2c,
   hal::byte p_address,
-  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
+  timeout auto p_timeout = hal::never_timeout()) noexcept
 {
   std::array<hal::byte, BytesToRead> buffer;
   HAL_CHECK(read(p_i2c, p_address, buffer, p_timeout));
@@ -95,7 +95,7 @@ template<size_t BytesToRead>
   hal::byte p_address,
   std::span<const hal::byte> p_data_out,
   std::span<hal::byte> p_data_in,
-  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
+  timeout auto p_timeout = hal::never_timeout()) noexcept
 {
   return p_i2c.transaction(p_address, p_data_out, p_data_in, p_timeout);
 }
@@ -117,7 +117,7 @@ template<size_t BytesToRead>
   i2c& p_i2c,
   hal::byte p_address,
   std::span<const hal::byte> p_data_out,
-  std::function<hal::timeout> p_timeout = hal::never_timeout()) noexcept
+  timeout auto p_timeout = hal::never_timeout()) noexcept
 {
   std::array<hal::byte, BytesToRead> buffer;
   HAL_CHECK(write_then_read(p_i2c, p_address, p_data_out, buffer, p_timeout));
@@ -137,7 +137,7 @@ template<size_t BytesToRead>
   std::array<hal::byte, 1> data_in;
 
   // p_timeout: no timeout placeholder for transaction's p_timeout
-  std::function<hal::timeout> timeout = hal::never_timeout();
+  timeout auto timeout = hal::never_timeout();
 
   return p_i2c.transaction(p_address, std::span<hal::byte>{}, data_in, timeout);
 }

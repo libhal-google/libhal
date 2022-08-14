@@ -25,7 +25,10 @@ namespace hal {
  * @returns status - sets error flag set when timeout
  * condition has been met, otherwise returns success.
  */
-using timeout = status(void);
+using timeout_function = status(void);
+
+template<class T>
+concept timeout = std::convertible_to<T, std::function<timeout_function>>;
 
 /**
  * @brief Delay the execution of the application or thread for a duration of
@@ -35,8 +38,7 @@ using timeout = status(void);
  * @param p_timeout - callable timeout object
  * @return status - success or failure
  */
-template<typename Timeout = std::function<hal::timeout>>
-[[nodiscard]] inline status delay(Timeout p_timeout) noexcept
+[[nodiscard]] inline status delay(timeout auto p_timeout) noexcept
 {
   bool waiting = true;
 

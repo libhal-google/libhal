@@ -112,7 +112,7 @@ public:
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
-    std::function<hal::timeout> p_timeout) noexcept
+    std::function<hal::timeout_function> p_timeout) noexcept
   {
     return driver_transaction(p_address, p_data_out, p_data_in, p_timeout);
   }
@@ -123,7 +123,7 @@ private:
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
-    std::function<hal::timeout> p_timeout) noexcept = 0;
+    std::function<hal::timeout_function> p_timeout) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

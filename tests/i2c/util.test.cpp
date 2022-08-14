@@ -31,7 +31,7 @@ boost::ut::suite i2c_util_test = []() {
       hal::byte p_address,
       std::span<const hal::byte> p_out,
       std::span<hal::byte> p_in,
-      std::function<hal::timeout> p_timeout) noexcept override
+      std::function<hal::timeout_function> p_timeout) noexcept override
     {
       m_address = p_address;
       m_out = p_out;
@@ -169,7 +169,7 @@ boost::ut::suite i2c_util_test = []() {
     test_timeout_t test_timeout;
 
     // Exercise
-    auto result = read<5>(i2c, failure_address);
+    auto result = read<5>(i2c, failure_address, never_timeout());
     bool successful = static_cast<bool>(result);
 
     // Verify
