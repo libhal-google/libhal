@@ -3,7 +3,6 @@
 #include <cstdint>
 
 #include "../error.hpp"
-#include "../percent.hpp"
 #include "unit.hpp"
 
 namespace hal {
@@ -22,11 +21,11 @@ public:
   struct axis_t
   {
     /// Percentage of acceleration in the X-axis relative to the full-scale
-    percent x;
+    float x;
     /// Percentage of acceleration in the Y-axis relative to the full-scale
-    percent y;
+    float y;
     /// Percentage of acceleration in the Z-axis relative to the full-scale
-    percent z;
+    float z;
 
     /**
      * @brief Default operators for <, <=, >, >= and ==

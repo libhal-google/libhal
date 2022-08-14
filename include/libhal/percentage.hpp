@@ -23,6 +23,11 @@ public:
   constexpr static float_t min = -1.0;
   constexpr static float_t zero = 0.0;
 
+  constexpr percentage_t()
+    : m_value(0.0)
+  {
+  }
+
   template<std::floating_point U>
   constexpr percentage_t(U p_value)
     : m_value(0.0)

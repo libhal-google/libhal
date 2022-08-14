@@ -10,12 +10,12 @@ constexpr auto expected_value = percentage(0.5);
 class test_servo : public hal::servo
 {
 public:
-  float_t m_passed_position;
+  percentage m_passed_position{};
 
 private:
   status driver_position(percentage p_position) noexcept override
   {
-    m_passed_position = p_position.value();
+    m_passed_position = p_position;
     return {};
   }
 };
