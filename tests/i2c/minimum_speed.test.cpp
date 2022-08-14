@@ -18,7 +18,7 @@ struct fake_i2c : public hal::i2c
   spy_handler<hal::byte,
               std::span<const hal::byte>,
               std::span<hal::byte>,
-              std::function<hal::timeout>>
+              std::function<hal::timeout_function>>
     spy_transaction;
 
 private:
@@ -30,7 +30,7 @@ private:
     [[maybe_unused]] hal::byte p_address,
     [[maybe_unused]] std::span<const hal::byte> p_data_out,
     [[maybe_unused]] std::span<hal::byte> p_data_in,
-    [[maybe_unused]] std::function<hal::timeout> p_timeout) noexcept
+    [[maybe_unused]] std::function<hal::timeout_function> p_timeout) noexcept
   {
     return spy_transaction.record(p_address, p_data_out, p_data_in, p_timeout);
   }
@@ -107,7 +107,7 @@ boost::ut::suite minimum_speed_test = []() {
                                                          hal::byte{ 0xFF } };
       std::span<hal::byte> data_in;
       bool has_been_called = false;
-      std::function<hal::timeout> expected_timeout =
+      std::function<hal::timeout_function> expected_timeout =
         [&has_been_called]() -> status {
         has_been_called = true;
         return {};
