@@ -70,21 +70,21 @@ public:
    *
    *     // This is a made up servo has 180 degrees of movement and has absolute
    *     // positioning.
-   *     hal::example_servo servo;  // implements hal::servo
+   *     hal::example_servo servo;
    *     // Move to center position
-   *     servo.position(hal::percent::from_ratio(0, 90));
+   *     servo.position(hal::percentage(0.0/90.0));
    *     // ... delay ...
    *     // Move to the +45 degrees position
-   *     servo.position(hal::percent::from_ratio(45, 90));
+   *     servo.position(hal::percentage(45.0/90.0));
    *     // ... delay ...
    *     // Move to the -45 degrees position
-   *     servo.position(hal::percent::from_ratio(-45, 90));
+   *     servo.position(hal::percentage(-45.0/90.0));
    *     // ... delay ...
    *     // Move to the -90 degrees position
-   *     servo.position(hal::percent::from_ratio(-90, 90));
+   *     servo.position(hal::percentage(-90.0/90.0));
    *     // ... delay ...
    *     // Move to the +90 degrees position
-   *     servo.position(hal::percent::from_ratio(90, 90));
+   *     servo.position(hal::percentage(90.0/90.0));
    *
    * @param p_position - position to move the servo to
    * @return status - success or failure

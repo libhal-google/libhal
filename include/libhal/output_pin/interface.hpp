@@ -15,6 +15,9 @@ namespace hal {
  * Use this to drive a pin HIGH or LOW in order to send a control signal or turn
  * off or on an LED.
  *
+ * Implementations of this interface can be backed by external devices such as
+ * I/O expanders or other microcontrollers.
+ *
  */
 class output_pin
 {
@@ -25,12 +28,10 @@ public:
     /// Pull resistor for the pin. This generally only helpful when open
     /// drain is enabled.
     pin_resistor resistor = pin_resistor::pull_up;
+
     /// Starting level of the output pin. HIGH voltage defined as true and LOW
     /// voltage defined as false.
     bool open_drain = false;
-    /// Set the starting level of the output pin on initialization. HIGH voltage
-    /// defined as true and LOW voltage defined as false.
-    bool starting_level = true;
 
     /**
      * @brief Default operators for <, <=, >, >= and ==
@@ -52,25 +53,27 @@ public:
   {
     return driver_configure(p_settings);
   }
+
   /**
    * @brief Set the state of the pin
    *
    * @param p_high - if true then the pin state is set to HIGH voltage. If
    * false, the pin state is set to LOW voltage.
    * @return status - success or failure
-   * operation.
    */
   [[nodiscard]] status level(bool p_high) noexcept
   {
     return driver_level(p_high);
   }
+
   /**
-   * @brief Read the state of the output pin. Implementations must read the pin
-   * state from hardware and will not simply cache the results from running
-   * level(bool).
+   * @brief Read the current state of the output pin
    *
-   * @return result<bool> - true indicates HIGH voltage and false
-   * indicates LOW voltage
+   * Implementations must read the pin state from hardware and will not simply
+   * cache the results from the execution of `level(bool)`.
+   *
+   * @return result<bool> - true indicates HIGH voltage and false indicates LOW
+   * voltage
    */
   [[nodiscard]] result<bool> level() noexcept
   {

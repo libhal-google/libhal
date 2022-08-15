@@ -15,7 +15,7 @@ namespace hal {
 class minimum_speed_i2c : public hal::i2c
 {
 public:
-  constexpr static auto default_max_speed = hertz(2'000'000);
+  constexpr static auto default_max_speed = 2'000'000;
   /**
    * @brief Factory function to create minimum_speed_i2c object.
    *
@@ -39,7 +39,7 @@ private:
 
   status driver_configure(const settings& p_new_setting) noexcept override
   {
-    if (equals(p_new_setting.clock_rate, 0.0)) {
+    if (p_new_setting.clock_rate == 0) {
       return hal::new_error(std::errc::invalid_argument);
     }
     if (m_lowest_seen_frequency > p_new_setting.clock_rate) {

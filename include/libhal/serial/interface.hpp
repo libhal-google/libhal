@@ -73,6 +73,14 @@ public:
     stop_bits stop = stop_bits::one;
     /// Parity bit type for each frame
     parity parity = parity::none;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /// Structure informing the caller of the number of bytes that can be read out

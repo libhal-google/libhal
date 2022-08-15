@@ -11,7 +11,6 @@ boost::ut::suite output_pin_mock_test = []() {
     constexpr hal::output_pin::settings mock_settings_custom{
       .resistor = pin_resistor::pull_down,
       .open_drain = true,
-      .starting_level = false,
     };
     hal::mock::output_pin mock;
 

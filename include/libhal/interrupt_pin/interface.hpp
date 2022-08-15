@@ -12,26 +12,21 @@ namespace hal {
  * @{
  */
 /**
- * @brief Digital interrupt pin hardware abstraction.
+ * @brief Digital interrupt pin hardware abstraction
  *
- * Use this to trigger an interrupt service routine (ISR) when a pin detects a
- * falling edge (when the pin's voltage transitions from HIGH to LOW), a rising
- * edge (when the pin's voltage transitions from LOW to HIGH), or any transition
- * of state on the pin.
+ * Use this to automatically call a function when a pin's state has
+ * transitioned.
+ *
+ * The transition states are:
+ *
+ *   - falling edge: the pin reads a transitions from HIGH to LOW
+ *   - rising edge: the pin reads a transitions from LOW to HIGH
+ *   - both: the pin reads any state change
  *
  */
 class interrupt_pin
 {
 public:
-  /// Generic settings for interrupt pins
-  struct settings
-  {
-    /// pull resistor for an interrupt pin. Generally advised to NOT use
-    /// `pin_resistor::none` and if it is used and external pull resistor should
-    /// be placed on the pin to prevent random interrupt from firing.
-    pin_resistor resistor = pin_resistor::pull_up;
-  };
-
   /// The condition in which an interrupt is triggered.
   enum class trigger_edge
   {
@@ -44,6 +39,35 @@ public:
     /// Trigger and interrupt when a pin transitions it state
     both = 2,
   };
+
+  /// Generic settings for interrupt pins
+  struct settings
+  {
+    /// Pull resistor for an interrupt pin.
+    ///
+    /// In general, it is highly advised to either set the pull resistor to
+    /// something other than "none" or to attach an external pull up resistor to
+    /// the interrupt pin in order to prevent random interrupt from firing.
+    pin_resistor resistor = pin_resistor::pull_up;
+
+    /// The trigger condition that will signal the system to run the callback.
+    trigger_edge trigger = trigger_edge::rising;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
+  };
+
+  /// Interrupt pin handler
+  ///
+  /// @param true - state of the pin when the interrupt was triggered was HIGH
+  /// @param false - state of the pin when the interrupt was triggered was LOW
+  using handler = void(bool p_state);
+
   /**
    * @brief Configure the interrupt pin to match the settings supplied
    *
@@ -55,49 +79,24 @@ public:
   {
     return driver_configure(p_settings);
   }
+
   /**
-   * @brief Return the voltage level of the pin
+   * @brief Set the callback for when the interrupt occurs
    *
-   * @return status - success or failure
-   */
-  [[nodiscard]] result<bool> level() noexcept
-  {
-    return driver_level();
-  }
-  /**
-   * @brief Enable interrupts for this pin. Pass in the callback to be executed
-   * when the trigger condition is met. This function can be called multiple
-   * times if the callback or trigger conditions need to be changed.
-   * detach_interrupts() does not need to be called before re-running this
-   * function.
+   * Any state transitions before this function is called are lost.
    *
-   * @param p_callback function to execute when the trigger condition is met
-   * @param p_trigger the trigger condition that will signal the system to run
-   * the callback.
-   * @return status - success or failure
+   * @param p_callback function to execute when the trigger condition is met.
+   * Set to nullptr to disable this interrupt.
    */
-  [[nodiscard]] status attach_interrupt(std::function<void(void)> p_callback,
-                                        trigger_edge p_trigger) noexcept
+  void on_trigger(std::function<handler> p_callback) noexcept
   {
-    return driver_attach_interrupt(p_callback, p_trigger);
-  }
-  /**
-   * @brief Disable interrupts for this pin
-   *
-   * @return status - success or failure
-   * operation.
-   */
-  [[nodiscard]] status detach_interrupt() noexcept
-  {
-    return driver_detach_interrupt();
+    return driver_on_trigger(p_callback);
   }
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual result<bool> driver_level() noexcept = 0;
-  virtual status driver_attach_interrupt(std::function<void(void)> p_callback,
-                                         trigger_edge p_trigger) noexcept = 0;
-  virtual status driver_detach_interrupt() noexcept = 0;
+  virtual void driver_on_trigger(
+    std::function<handler> p_callback) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

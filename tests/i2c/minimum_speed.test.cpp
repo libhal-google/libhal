@@ -48,11 +48,10 @@ boost::ut::suite minimum_speed_test = []() {
       constexpr hal::i2c::settings minimum_default = {
         .clock_rate = minimum_speed_i2c::default_max_speed
       };
-      constexpr hal::i2c::settings expected_upper_boundary = {
-        .clock_rate = hertz(3'000'000)
-      };
-      constexpr hal::i2c::settings expected_lower = { .clock_rate = hertz(1) };
-      constexpr hal::i2c::settings expected_zero = { .clock_rate = hertz(0) };
+      constexpr hal::i2c::settings expected_upper_boundary = { .clock_rate =
+                                                                 3'000'000 };
+      constexpr hal::i2c::settings expected_lower = { .clock_rate = 1 };
+      constexpr hal::i2c::settings expected_zero = { .clock_rate = 0 };
 
       // Exercise
       auto mock = hal::minimum_speed_i2c::create(mock_i2c);
@@ -74,14 +73,13 @@ boost::ut::suite minimum_speed_test = []() {
     "create() + configure() with frequency"_test = []() {
       // Setup
       hal::fake_i2c mock_i2c;
-      constexpr hal::hertz device_frequency = hertz(1'000'000);
+      constexpr std::uint32_t device_frequency = 1'000'000;
       constexpr hal::i2c::settings choosen_frequency = { .clock_rate =
                                                            device_frequency };
-      constexpr hal::i2c::settings expected_upper_boundary = {
-        .clock_rate = hertz(3'000'000)
-      };
-      constexpr hal::i2c::settings expected_lower = { .clock_rate = hertz(1) };
-      constexpr hal::i2c::settings expected_zero = { .clock_rate = hertz(0) };
+      constexpr hal::i2c::settings expected_upper_boundary = { .clock_rate =
+                                                                 3'000'000 };
+      constexpr hal::i2c::settings expected_lower = { .clock_rate = 1 };
+      constexpr hal::i2c::settings expected_zero = { .clock_rate = 0 };
 
       // Exercise
       auto mock = hal::minimum_speed_i2c::create(mock_i2c, device_frequency);
