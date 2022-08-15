@@ -11,10 +11,10 @@ namespace hal {
  * @{
  */
 /**
- * @brief Hardware abstraction for open loop continuous rotary and linear
- * actuators.
+ * @brief Open loop motorized actuator hardware abstraction
  *
  * The motor interface can represent a variety of things such as:
+ *
  *   - A driver for motor controller IC like the DRV8801
  *   - A driver for a motor with integrated controller & serial interface
  *   - A unidirectional motor controlled by a single transistor
@@ -25,8 +25,7 @@ class motor
 {
 public:
   /**
-   * @brief Apply a percentage of power to the motor equal to the `p_power`
-   * input parameter.
+   * @brief Apply power to the motor
    *
    * Power is a percentage and thus cannot be used as a way to gauge how fast
    * the motor is moving. In general applying more power means to increase speed

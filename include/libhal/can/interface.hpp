@@ -1,8 +1,6 @@
 #pragma once
 
 #include <array>
-#include <chrono>
-#include <cstddef>
 #include <cstdint>
 #include <functional>
 
@@ -25,8 +23,16 @@ public:
   /// Generic settings for a can peripheral
   struct settings
   {
-    /// Bus clock rate
-    hertz clock_rate{};
+    /// Bus clock rate in hertz
+    std::uint32_t clock_rate{};
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
+      default;
   };
 
   /// Can message ID type trait
@@ -37,14 +43,18 @@ public:
   {
     /// ID of the message
     id_t id;
+    /// The message data
+    std::array<hal::byte, 8> payload{};
     /// The number of elements in the payload
     uint8_t length = 0;
-    /// The message data
-    std::array<hal::byte, 8> payload{ hal::byte{ 0 } };
     /// Whether or not the message is a remote request frame. If true, then
     /// length and payload are ignored.
     bool is_remote_request = false;
   };
+
+  // Receive handler for can messages
+  using handler = void(const message_t& p_message);
+
   /**
    * @brief Configure can to match the settings supplied
    *
@@ -57,12 +67,11 @@ public:
     return driver_configure(p_settings);
   }
   /**
-   * @brief Send a can message over the can bus
+   * @brief Send a message
    *
    * @param p_message - the message to be sent
    *
    * @return status - success or failure
-   * operation.
    */
   [[nodiscard]] status send(const message_t& p_message) noexcept
   {
@@ -70,27 +79,23 @@ public:
   }
 
   /**
-   * @brief Setup driver to execute callback when a can message is received.
+   * @brief Set the message reception handler
    *
-   * All received can messages are dropped before this function is called.
+   * Before this function is called all received messages are dropped.
    *
-   * @param p_receive_handler - this handler will be called when the can device
-   * receives a message. Set to nullptr to disable receive interrupts.
+   * @param p_handler - this handler will be called when a message has been
+   * received. Set to "nullptr" to disable receive interrupts.
    * @return status - success or failure
-   * operation.
    */
-  [[nodiscard]] status attach_interrupt(
-    std::function<void(const message_t& p_message)> p_receive_handler) noexcept
+  [[nodiscard]] status on_receive(std::function<handler> p_handler) noexcept
   {
-    return driver_attach_interrupt(p_receive_handler);
+    return driver_on_receive(p_handler);
   }
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual status driver_send(const message_t& p_message) noexcept = 0;
-  virtual status driver_attach_interrupt(
-    std::function<void(const message_t& p_message)>
-      p_receive_handler) noexcept = 0;
+  virtual status driver_on_receive(std::function<handler> p_handler) noexcept;
 };
 /** @} */
 }  // namespace hal

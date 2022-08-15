@@ -64,6 +64,7 @@ public:
   {
     return driver_is_running();
   }
+
   /**
    * @brief Stops a scheduled event from happening.
    *
@@ -80,6 +81,7 @@ public:
   {
     return driver_clear();
   }
+
   /**
    * @brief Schedule an callback to be called at a designated time/interval
    *
@@ -90,7 +92,7 @@ public:
    * @param p_callback - callback function to be called when the timer expires
    * @param p_delay - the amount of time before the timer expires
    * @return status - success or failure
-   * `delay_too_large` if p_interval cannot be reached.
+   * @throws out_of_bounds - if p_interval cannot be achieved.
    */
   [[nodiscard]] status schedule(std::function<void(void)> p_callback,
                                 std::chrono::nanoseconds p_delay) noexcept

@@ -37,7 +37,7 @@ public:
    * @brief Configure the input pin to match the settings supplied
    *
    * @param p_settings - settings to apply to input pin
-   * @return status - success or failure
+   * @return status
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
   [[nodiscard]] status configure(const settings& p_settings) noexcept
@@ -48,8 +48,8 @@ public:
   /**
    * @brief Read the state of the input pin
    *
-   * @return result<bool> - true indicates HIGH voltage and false
-   * indicates LOW voltage
+   * @return result<bool> - true indicates HIGH voltage level and false
+   * indicates LOW voltage level
    */
   [[nodiscard]] result<bool> level() noexcept
   {

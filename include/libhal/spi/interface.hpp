@@ -24,8 +24,8 @@ public:
   /// Generic settings for a standard SPI device.
   struct settings
   {
-    /// Serial clock frequency
-    hertz clock_rate{};
+    /// Serial clock frequency in hertz
+    std::uint32_t clock_rate = 100'000;
     /// The polarity of the pins when the signal is idle
     bool clock_idles_high = false;
     /// The phase of the clock signal when communicating
@@ -71,7 +71,6 @@ public:
    * @param p_filler - filler data placed on the bus in place of actual write
    * data when p_data_out has been exhausted.
    * @return status - success or failure
-   * operation.
    */
   [[nodiscard]] status transfer(std::span<const hal::byte> p_data_out,
                                 std::span<hal::byte> p_data_in,
