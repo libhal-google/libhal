@@ -8,18 +8,10 @@ class libhal_conan(ConanFile):
     author = "Khalil Estell"
     url = "https://github.com/libhal/libhal"
     description = "A collection of interfaces and abstractions for embedded peripherals and devices using modern C++"
-    topics = ("peripherals", "hardware")
+    topics = ("peripherals", "hardware", "abstraction", "devices")
     settings = "os", "compiler", "arch", "build_type"
-    generators = "cmake_find_package"
-    exports_sources = "include/*", "CMakeLists.txt", "tests/*"
+    exports_sources = "include/*"
     no_copy_source = True
-
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure()
-        cmake.build()
-        if self.should_test:
-            self.run("ctest -j %s --output-on-failure" % tools.cpu_count())
 
     def package(self):
         self.copy("*.h")
@@ -27,6 +19,3 @@ class libhal_conan(ConanFile):
 
     def package_id(self):
         self.info.header_only()
-
-    def build_requirements(self):
-        self.test_requires("boost-ext-ut/1.1.8@")

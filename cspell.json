@@ -51,7 +51,9 @@
         "libesp",
         "libatmega",
         "UART",
-        "ctest"
+        "ctest",
+        "psabi",
+        "conans"
     ],
     "ignorePaths": [
         "**/third_party/leaf.hpp",

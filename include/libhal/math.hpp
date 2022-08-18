@@ -5,6 +5,8 @@
  */
 #pragma once
 
+#include <concepts>
+
 #include "error.hpp"
 
 namespace hal {
@@ -182,8 +184,8 @@ template<std::integral T>
  * @return false - difference is more than epsilon
  */
 template<std::floating_point float_t = config::float_type>
-constexpr static bool equals(float_t p_value1,
-                             float_t p_value2,
+constexpr static bool equals(std::floating_point auto p_value1,
+                             std::floating_point auto p_value2,
                              float_t p_epsilon = 1e-9f)
 {
   if (p_value1 == p_value2) {

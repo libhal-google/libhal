@@ -154,7 +154,7 @@ constexpr std::chrono::duration<int64_t, Period> wavelength(hertz p_source)
   if (equals(p_source, 0.0)) {
     return std::chrono::duration<int64_t, Period>(0);
   }
-  auto duration = (1.0f / p_source) * Period::den;
+  auto duration = (1.0 / p_source) * Period::den;
   return std::chrono::duration<int64_t, Period>(static_cast<int64_t>(duration));
 }
 
