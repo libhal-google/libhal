@@ -7,7 +7,7 @@ project(test_package VERSION 0.0.1 LANGUAGES CXX)
 
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
-find_package(libhal)
+find_package(libhal REQUIRED)
 
 add_executable(${PROJECT_NAME} main.cpp)
 

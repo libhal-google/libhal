@@ -11,8 +11,7 @@ find_package(ut)
 
 set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
-
-add_executable(${TEST_NAME}
+set(LIST_OF_SOURCES
   can/interface.test.cpp
   pwm/interface.test.cpp
   timer/interface.test.cpp
@@ -61,10 +60,25 @@ add_executable(${TEST_NAME}
   map.test.cpp
   units.test.cpp)
 
-target_include_directories(${TEST_NAME} PUBLIC . ../include)
-target_compile_options(${TEST_NAME} PRIVATE -Werror -Wall -Wextra
-  -Wno-unused-function -Wconversion -Wno-psabi)
-set_target_properties(${TEST_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
-target_compile_features(${TEST_NAME} PRIVATE cxx_std_20)
-set_target_properties(${TEST_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(${TEST_NAME} PRIVATE boost::ut)
+set(WARNING_FLAGS -Werror -Wall -Wextra -Wno-unused-function -Wconversion
+  -Wno-psabi)
+
+add_executable(${TEST_NAME}_double ${LIST_OF_SOURCES})
+target_include_directories(${TEST_NAME}_double PUBLIC
+  . configs/double ../include)
+target_compile_options(${TEST_NAME}_double PRIVATE ${WARNING_FLAGS})
+set_target_properties(${TEST_NAME}_double PROPERTIES
+  CXX_VISIBILITY_PRESET hidden)
+target_compile_features(${TEST_NAME}_double PRIVATE cxx_std_20)
+set_target_properties(${TEST_NAME}_double PROPERTIES CXX_EXTENSIONS OFF)
+target_link_libraries(${TEST_NAME}_double PRIVATE boost::ut)
+
+add_executable(${TEST_NAME}_float ${LIST_OF_SOURCES})
+target_include_directories(${TEST_NAME}_float PUBLIC
+  . configs/float ../include)
+target_compile_options(${TEST_NAME}_float PRIVATE ${WARNING_FLAGS})
+set_target_properties(${TEST_NAME}_float PROPERTIES
+  CXX_VISIBILITY_PRESET hidden)
+target_compile_features(${TEST_NAME}_float PRIVATE cxx_std_20)
+set_target_properties(${TEST_NAME}_float PROPERTIES CXX_EXTENSIONS OFF)
+target_link_libraries(${TEST_NAME}_float PRIVATE boost::ut)

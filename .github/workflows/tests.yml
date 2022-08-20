@@ -31,11 +31,8 @@ jobs:
       - name: 📦 Install g++-11
         run: sudo apt install g++-11
 
-      - name: 🆕 Create Conan Package
-        run: conan create .
-
-      - name: 🧪 Build & Run Test Package
-        run: conan test test_package "libhal/[>0.0.0]"
+      - name: 🆕 Create Conan Package & Run Test Package
+        run: conan create . latest@
 
       - name: 🔬 Build & Run Unit Tests
         run: ./tests/run.sh
