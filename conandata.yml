@@ -1,0 +1,4 @@
+sources:
+  "0.0.0":
+    url: "https://github.com/libhal/libhal/archive/refs/tags/v0.0.0.tar.gz"
+    sha256: "8f4851281c4bfc8f53f332eff67917f19fdb5edf2f71ddb329ecc017ff78cfbb"
