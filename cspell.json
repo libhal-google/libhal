@@ -53,7 +53,9 @@
         "UART",
         "ctest",
         "psabi",
-        "conans"
+        "conans",
+        "bindirs",
+        "conanrun"
     ],
     "ignorePaths": [
         "**/third_party/leaf.hpp",

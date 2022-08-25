@@ -49,3 +49,9 @@ ncc.stderr
 
 # OS files
 .DS_Store
+
+# Conan Files
+graph_info.json
+conaninfo.txt
+conan.lock
+conanbuildinfo.txt
