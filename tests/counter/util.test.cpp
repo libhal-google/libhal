@@ -85,7 +85,7 @@ boost::ut::suite counter_utility_test = []() {
 
   "hal::create_timeout(hal::counter, 1337ns)"_test = []() {
     // Setup
-    static constexpr hal::time_duration expected(1337);
+    static constexpr hal::time_duration expected(10);
     dummy_counter test_counter;
     bool success = false;
 
@@ -95,6 +95,7 @@ boost::ut::suite counter_utility_test = []() {
     hal::attempt_all(
       [&timeout_object]() -> status {
         for (std::int64_t i = 0; i < expected.count() - 2; i++) {
+          // error out if this times out early
           if (!timeout_object()) {
             return hal::new_error();
           }
@@ -172,7 +173,8 @@ boost::ut::suite counter_utility_test = []() {
 
     // Verify
     expect(bool{ result });
-    expect(that % expected.count() == test_counter.get_internal_uptime().count);
+    expect(that % (expected.count() - 1) ==
+           test_counter.get_internal_uptime().count);
     expect(that % expected_frequency ==
            test_counter.get_internal_uptime().frequency);
   };

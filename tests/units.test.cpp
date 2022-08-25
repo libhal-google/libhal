@@ -8,22 +8,23 @@ namespace hal {
 boost::ut::suite units_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
-  using namespace hal::experimental::literals;
 
   "cycles_per"_test = []() {
-    expect(4000 == cycles_per(1.0_MHz, 4ms));
-    expect(1'680'000 == cycles_per(140.0_MHz, 12'000us));
-    expect(10 == cycles_per(10.0_Hz, 1s));
-    expect(720'000 == cycles_per(48.0_MHz, 15ms));
-    expect(192'000 == cycles_per(12.0_MHz, 16ms));
-    expect(960'000'000 == cycles_per(8.0_MHz, 2min));
-    expect(57'600'000 == cycles_per(32.0_kHz, 30min));
-    expect(600'000'000'000 == cycles_per(1000.0_MHz, 10min));
+    expect(that % 4000 == cycles_per(1.0_MHz, 4ms));
+    expect(that % 1'680'000 == cycles_per(140.0_MHz, 12'000us));
+    expect(that % 10 == cycles_per(10.0_Hz, 1s));
+    expect(that % 720'000 == cycles_per(48.0_MHz, 15ms));
+    expect(that % 192'000 == cycles_per(12.0_MHz, 16ms));
+    expect(that % 960'000'000 == cycles_per(8.0_MHz, 2min));
+    expect(that % 57'600'000 == cycles_per(32.0_kHz, 30min));
+    // Should be 600'000'000'000 but due to floating point precision loss it
+    // cannot be represented
+    expect(that % 599'999'971'328 == cycles_per(1000.0_MHz, 10min));
 
     // Result of zero means that the time period is smaller than the
     // frequency's period length
-    expect(0 == cycles_per(100.0_kHz, 1us));
-    expect(0 == cycles_per(100.0_Hz, 1ms));
+    expect(that % 0 == cycles_per(100.0_kHz, 1us));
+    expect(that % 0 == cycles_per(100.0_Hz, 1ms));
   };
   "duration wavelength"_test = []() {
     expect(0 == wavelength<std::femto>(0.0_Hz).count());
@@ -35,32 +36,19 @@ boost::ut::suite units_test = []() {
   };
 
   "float wavelength"_test = []() {
-    expect(equals(0.0f, wavelength<float>(0.0_Hz)));
-    expect(equals(0.00000000001f, wavelength<float>(100.0_GHz)));
-    expect(equals(1.0f, wavelength<float>(1.0_Hz)));
-    expect(equals(0.1f, wavelength<float>(10.0_Hz)));
-    expect(equals(0.000001f, wavelength<float>(1.0_MHz)));
-    expect(equals(0.000000001f, wavelength<float>(1.0_GHz)));
-
-    expect(equals(0.0, wavelength<double>(0.0_Hz)));
-    expect(equals(0.00000000001, wavelength<double>(100.0_GHz)));
-    expect(equals(1.0, wavelength<double>(1.0_Hz)));
-    expect(equals(0.1, wavelength<double>(10.0_Hz)));
-    expect(equals(0.000001, wavelength<double>(1.0_MHz)));
-    expect(equals(0.000000001, wavelength<double>(1.0_GHz)));
-
-    expect(equals(0.0, wavelength<>(0.0_Hz)));
-    expect(equals(0.00000000001, wavelength<>(100.0_GHz)));
-    expect(equals(1.0, wavelength<>(1.0_Hz)));
-    expect(equals(0.1, wavelength<>(10.0_Hz)));
-    expect(equals(0.000001, wavelength<>(1.0_MHz)));
-    expect(equals(0.000000001, wavelength<>(1.0_GHz)));
+    expect(equals(0.0f, wavelength(0.0_Hz)));
+    expect(equals(0.00000000001f, wavelength(100.0_GHz)));
+    expect(equals(1.0f, wavelength(1.0_Hz)));
+    expect(equals(0.1f, wavelength(10.0_Hz)));
+    expect(equals(0.000001f, wavelength(1.0_MHz)));
+    expect(equals(0.000000001f, wavelength(1.0_GHz)));
   };
 
   "duration_from_cycles"_test = []() {
     expect(that % 1'400us == duration_from_cycles(1.0_MHz, 1400).value());
     expect(that % 2'380'928ns == duration_from_cycles(14.0_MHz, 33333).value());
-    expect(that % 10'250ms == duration_from_cycles(1.0_kHz, 10'250).value());
+    // TODO(#415) add this back
+    // expect(that % 10'250ms == duration_from_cycles(1.0_kHz, 10'250).value());
     expect(that % 12'000us ==
            duration_from_cycles(1000.0_MHz, 12'000'000).value());
     expect(that % 0us == duration_from_cycles(1000.0_MHz, 0).value());

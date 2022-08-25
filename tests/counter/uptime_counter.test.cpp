@@ -7,7 +7,6 @@ namespace hal {
 boost::ut::suite uptime_utility_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
-  using namespace hal::experimental::literals;
 
   class mock_counter : public hal::counter
   {

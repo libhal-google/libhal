@@ -71,7 +71,7 @@ public:
   }
   constexpr bool equals(percentage_t p_other, float_t p_epsilon = 1e-9f) const
   {
-    return hal::equals(m_value, p_other.value(), p_epsilon);
+    return hal::equals(m_value, p_other.value(), static_cast<float>(p_epsilon));
   }
   constexpr bool operator<=>(const percentage_t& p_percent) const = default;
   constexpr bool operator==(const percentage_t& p_percent) const

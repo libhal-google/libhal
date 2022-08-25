@@ -176,25 +176,25 @@ template<std::integral T>
 /**
  * @brief Determines if two values are equal within a relative error.
  *
- * @tparam float_t - float type
  * @param p_value1 - First value to compare.
  * @param p_value2 - Second value to compare.
  * @param p_epsilon - Error margin that the difference is compared to.
  * @return true - difference is less than epsilon
  * @return false - difference is more than epsilon
  */
-template<std::floating_point float_t = config::float_type>
 constexpr static bool equals(std::floating_point auto p_value1,
                              std::floating_point auto p_value2,
-                             float_t p_epsilon = 1e-9f)
+                             float p_epsilon = 1e-9f)
 {
   if (p_value1 == p_value2) {
     return true;
   }
-  float_t value1_abs = std::abs(p_value1);
-  float_t value2_abs = std::abs(p_value2);
-  float_t diff = std::abs(p_value1 - p_value2);
-  float_t absolute_values_sum = value1_abs + value2_abs;
+  auto value1_abs = std::abs(p_value1);
+  auto value2_abs = std::abs(p_value2);
+  auto diff = std::abs(p_value1 - p_value2);
+  auto absolute_values_sum = value1_abs + value2_abs;
+
+  using float_t = decltype(absolute_values_sum);
 
   if (p_value1 == 0 || p_value2 == 0 ||
       (absolute_values_sum < std::numeric_limits<float_t>::min())) {

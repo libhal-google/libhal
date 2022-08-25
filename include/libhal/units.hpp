@@ -23,19 +23,17 @@ using time_duration = std::chrono::duration<std::int32_t, std::micro>;
 using byte = std::uint8_t;
 
 /// Type for frequency represented in hertz
-using hertz = config::float_type;
+using hertz = float;
 
 /// Type for acceleration represented in the force applied by gravity at sea
 /// level.
-using g_force = config::float_type;
+using g_force = float;
 
 /// Type for length represented in meters.
-using meters = config::float_type;
+using meters = float;
 
 // Namespace containing user defined literals for the hal standard units
-// TODO: When hal::frequency is eliminated, remove this so that literals can be
-// used easily within classes & interfaces.
-namespace experimental::literals {
+namespace literals {
 
 // =============================================================================
 // Frequency
@@ -43,22 +41,22 @@ namespace experimental::literals {
 
 [[nodiscard]] consteval hertz operator""_Hz(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value);
+  return static_cast<float>(p_value);
 }
 
 [[nodiscard]] consteval hertz operator""_kHz(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value) * std::kilo::num;
+  return static_cast<float>(p_value * std::kilo::num);
 }
 
 [[nodiscard]] consteval hertz operator""_MHz(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value) * std::mega::num;
+  return static_cast<float>(p_value * std::mega::num);
 }
 
 [[nodiscard]] consteval hertz operator""_GHz(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value) * std::giga::num;
+  return static_cast<float>(p_value * std::giga::num);
 }
 
 // =============================================================================
@@ -67,7 +65,7 @@ namespace experimental::literals {
 
 [[nodiscard]] consteval g_force operator""_g(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value);
+  return static_cast<float>(p_value);
 }
 
 // =============================================================================
@@ -76,42 +74,46 @@ namespace experimental::literals {
 
 [[nodiscard]] consteval meters operator""_um(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value) / std::micro::den;
+  return static_cast<float>(p_value / std::micro::den);
 }
 
 [[nodiscard]] consteval meters operator""_mm(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value) / std::milli::den;
+  return static_cast<float>(p_value / std::milli::den);
 }
 
 [[nodiscard]] consteval meters operator""_m(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value);
+  return static_cast<float>(p_value);
 }
 
 [[nodiscard]] consteval meters operator""_km(long double p_value) noexcept
 {
-  return static_cast<config::float_type>(p_value) * std::kilo::num;
+  return static_cast<float>(p_value * std::kilo::num);
 }
 
 [[nodiscard]] consteval meters operator""_inch(long double p_value) noexcept
 {
-  constexpr config::float_type inch_to_meter = 0.0254;
-  return static_cast<config::float_type>(p_value) * inch_to_meter;
+  constexpr double inch_to_meter = 0.0254;
+  return static_cast<float>(p_value * inch_to_meter);
 }
 
 [[nodiscard]] consteval meters operator""_yards(long double p_value) noexcept
 {
-  constexpr config::float_type yard_to_meter = 0.9144;
-  return static_cast<config::float_type>(p_value) * yard_to_meter;
+  constexpr double yard_to_meter = 0.9144;
+  return static_cast<float>(p_value * yard_to_meter);
 }
 
 [[nodiscard]] consteval meters operator""_miles(long double p_value) noexcept
 {
-  constexpr config::float_type miles_to_meter = 1609.344;
-  return static_cast<config::float_type>(p_value) * miles_to_meter;
+  constexpr double miles_to_meter = 1609.344;
+  return static_cast<float>(p_value * miles_to_meter);
 }
-}  // namespace experimental::literals
+}  // namespace literals
+
+// Allow libraries within the hal namespace to immediately use the user defined
+// literals
+using namespace literals;
 
 /**
  * @brief Calculate the number of cycles of this frequency within the time
@@ -135,7 +137,8 @@ namespace experimental::literals {
   // std::chrono::nanoseconds::period::den == 1,000,000
 
   const auto denominator = decltype(p_duration)::period::den;
-  const auto cycle_count = (p_duration.count() * p_source) / denominator;
+  const auto float_count = static_cast<float>(p_duration.count());
+  const auto cycle_count = (float_count * p_source) / denominator;
 
   return static_cast<std::int64_t>(cycle_count);
 }
@@ -151,10 +154,11 @@ namespace experimental::literals {
 template<typename Period>
 constexpr std::chrono::duration<int64_t, Period> wavelength(hertz p_source)
 {
-  if (equals(p_source, 0.0)) {
+  if (equals(p_source, 0.0f)) {
     return std::chrono::duration<int64_t, Period>(0);
   }
-  auto duration = (1.0 / p_source) * Period::den;
+  auto duration = (1.0f / p_source);
+  duration = duration * static_cast<decltype(p_source)>(Period::den);
   return std::chrono::duration<int64_t, Period>(static_cast<int64_t>(duration));
 }
 
@@ -164,17 +168,16 @@ constexpr std::chrono::duration<int64_t, Period> wavelength(hertz p_source)
  * @tparam float_t - float type
  * @tparam Period - desired period
  * @param p_source - source frequency to convert to wavelength
- * @return constexpr float_t - float representation of the time based wavelength
+ * @return constexpr float - float representation of the time based wavelength
  * of the frequency.
  */
-template<std::floating_point float_t = config::float_type>
-constexpr float_t wavelength(hertz p_source)
+constexpr float wavelength(hertz p_source)
 {
-  if (equals(p_source, 0.0)) {
-    return float_t(0);
+  if (equals(p_source, 0.0f)) {
+    return 0.0f;
   }
   auto duration = (1.0f / p_source);
-  return float_t(duration);
+  return float(duration);
 }
 
 /**
@@ -188,7 +191,7 @@ constexpr float_t wavelength(hertz p_source)
  */
 [[nodiscard]] inline result<std::chrono::nanoseconds> duration_from_cycles(
   hertz p_source,
-  std::uint32_t p_cycles) noexcept
+  uint32_t p_cycles) noexcept
 {
   // Full Equation (based on the equation in cycles_per()):
   //
@@ -201,11 +204,12 @@ constexpr float_t wavelength(hertz p_source)
   constexpr auto ratio_num = std::chrono::nanoseconds::period::num;
   constexpr auto int_min = std::numeric_limits<std::int64_t>::min();
   constexpr auto int_max = std::numeric_limits<std::int64_t>::max();
-  constexpr auto float_int_min = static_cast<config::float_type>(int_min);
-  constexpr auto float_int_max = static_cast<config::float_type>(int_max);
+  constexpr auto float_int_min = static_cast<float>(int_min);
+  constexpr auto float_int_max = static_cast<float>(int_max);
 
   const auto source = std::abs(p_source);
-  auto nanoseconds = (p_cycles * ratio_den) / (source * ratio_num);
+  const auto float_cycles = static_cast<float>(p_cycles);
+  const auto nanoseconds = (float_cycles * ratio_den) / (source * ratio_num);
 
   if (float_int_min <= nanoseconds && nanoseconds <= float_int_max) {
     return std::chrono::nanoseconds(static_cast<std::int64_t>(nanoseconds));

@@ -62,7 +62,7 @@ boost::ut::suite math_test = []() {
       expect(equals(0.3f, (0.15f + 0.15f), 0.000001f));
     };
     "standard double"_test = []() {
-      expect(equals(0.3, (0.15 + 0.15), 0.000001));
+      expect(equals(0.3, (0.15 + 0.15), 0.000001f));
     };
     "standard default epsilon"_test = []() {
       expect(equals(0.3f, (0.15f + 0.15f)));
