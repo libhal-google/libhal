@@ -19,14 +19,14 @@ boost::ut::suite serial_util_test = []() {
     {
       return {};
     }
-    [[nodiscard]] status driver_write(
+    [[nodiscard]] result<size_t> driver_write(
       std::span<const hal::byte> p_data) noexcept override
     {
       if (p_data[0] == write_failure_byte) {
         return hal::new_error();
       }
       m_out = p_data;
-      return {};
+      return p_data.size();
     }
 
     [[nodiscard]] bytes_available_t driver_bytes_available() noexcept override
@@ -74,6 +74,7 @@ boost::ut::suite serial_util_test = []() {
 
       // Verify
       expect(bool{ result });
+      expect(result.value() == expected_payload.size());
       expect(!serial.flush_called);
       expect(that % expected_payload.data() == serial.m_out.data());
       expect(that % expected_payload.size() == serial.m_out.size());

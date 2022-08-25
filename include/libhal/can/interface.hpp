@@ -24,7 +24,7 @@ public:
   struct settings
   {
     /// Bus clock rate in hertz
-    std::uint32_t clock_rate{};
+    hertz clock_rate{};
 
     /**
      * @brief Default operators for <, <=, >, >= and ==
