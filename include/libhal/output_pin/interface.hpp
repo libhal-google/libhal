@@ -27,7 +27,7 @@ public:
   {
     /// Pull resistor for the pin. This generally only helpful when open
     /// drain is enabled.
-    pin_resistor resistor = pin_resistor::pull_up;
+    pin_resistor resistor = pin_resistor::none;
 
     /// Starting level of the output pin. HIGH voltage defined as true and LOW
     /// voltage defined as false.

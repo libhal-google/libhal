@@ -116,14 +116,12 @@ public:
   }
 
   /**
-   * @brief Write data on the transmitter line of the port
-   *
-   * This function will block until the entire transfer is finished.
+   * @brief Write data to the transmitter line of the serial port
    *
    * @param p_data - data to be transmitted over the serial port
-   * @return status - success or failure
+   * @return result<size_t> - the number of bytes transmitted
    */
-  [[nodiscard]] status write(std::span<const hal::byte> p_data) noexcept
+  [[nodiscard]] result<size_t> write(std::span<const hal::byte> p_data) noexcept
   {
     return driver_write(p_data);
   }
@@ -191,7 +189,8 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual status driver_write(std::span<const hal::byte> p_data) noexcept = 0;
+  virtual result<size_t> driver_write(
+    std::span<const hal::byte> p_data) noexcept = 0;
   virtual bytes_available_t driver_bytes_available() noexcept = 0;
   virtual result<std::span<hal::byte>> driver_read(
     std::span<hal::byte> p_data) noexcept = 0;

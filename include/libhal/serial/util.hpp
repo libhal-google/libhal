@@ -19,10 +19,10 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be written to
  * @param p_data_out - the data to be written out the port
- * @return status - success or failure
+ * @return result<size_t> - success or failure
  * serial::write returns an error from the serial port.
  */
-[[nodiscard]] inline status write(
+[[nodiscard]] inline result<size_t> write(
   serial& p_serial,
   std::span<const hal::byte> p_data_out) noexcept
 {
