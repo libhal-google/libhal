@@ -1,5 +1,6 @@
 #include <boost/ut.hpp>
 #include <libhal/map.hpp>
+#include <libhal/math.hpp>
 
 namespace hal {
 boost::ut::suite map_test = []() {
@@ -20,13 +21,13 @@ boost::ut::suite map_test = []() {
       expect(that % 0.5_d ==
              map(0.0, std::make_pair(min, max), std::make_pair(0.0, 1.0)));
 
-      expect(that % max == map(1338.0,
-                               std::make_pair(1337.0, 1338.0),
-                               std::make_pair(min, max)));
+      expect(equals(
+        max,
+        map(1338.0, std::make_pair(1337.0, 1338.0), std::make_pair(min, max))));
 
-      expect(that % min == map(1337.0,
-                               std::make_pair(1337.0, 1338.0),
-                               std::make_pair(min, max)));
+      expect(equals(
+        min,
+        map(1337.0, std::make_pair(1337.0, 1338.0), std::make_pair(min, max))));
     };
 
     "Standard usage"_test = []() {

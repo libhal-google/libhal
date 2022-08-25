@@ -37,7 +37,7 @@ public:
   struct settings
   {
     /// @brief The serial clock rate in hertz.
-    std::uint32_t clock_rate = 100'000;
+    hertz clock_rate = 100.0_kHz;
 
     /**
      * @brief Default operators for <, <=, >, >= and ==

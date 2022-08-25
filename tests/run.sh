@@ -16,11 +16,9 @@ conan install ..
 # Generate build files
 cmake ..
 # Build program
-make -j unit_test_double
-make -j unit_test_float
+make -j unit_test
 
 # Execute unit tests
-./unit_test_double
-./unit_test_float
+./unit_test
 
 # ... PROFIT!

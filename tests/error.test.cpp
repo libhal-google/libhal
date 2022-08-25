@@ -5,16 +5,6 @@ namespace hal {
 boost::ut::suite error_test = []() {
   using namespace boost::ut;
 
-  static_assert(std::is_same_v<double, config::float_type>,
-                "For testing purposes this should be double. This is to show "
-                "that the configuration option can be overriden from the "
-                "default of 'float' to 'double'.");
-
-  static_assert(sizeof(config::float_type) == 8,
-                "For testing purposes this should be double (size 8 bytes). "
-                "This is to show that the configuration option can be "
-                "overriden from the default of 'float' to 'double'.");
-
   "[success] hal::on_error calls callback"_test = []() {
     // Setup
     auto current_call_count = config::callback_call_count;
