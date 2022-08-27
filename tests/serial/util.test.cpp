@@ -64,13 +64,13 @@ boost::ut::suite serial_util_test = []() {
   };
 
   "serial/util"_test = []() {
-    "[success] write"_test = []() {
+    "[success] write_partial"_test = []() {
       // Setup
       fake_serial serial;
       const std::array<hal::byte, 4> expected_payload{};
 
       // Exercise
-      auto result = write(serial, expected_payload);
+      auto result = write_partial(serial, expected_payload);
 
       // Verify
       expect(bool{ result });
@@ -81,13 +81,13 @@ boost::ut::suite serial_util_test = []() {
       expect(that % !serial.read_was_called);
     };
 
-    "[failure] write"_test = []() {
+    "[failure] write_partial"_test = []() {
       // Setup
       fake_serial serial;
       const std::array<hal::byte, 4> expected_payload{ write_failure_byte };
 
       // Exercise
-      auto result = write(serial, expected_payload);
+      auto result = write_partial(serial, expected_payload);
 
       // Verify
       expect(!bool{ result });
