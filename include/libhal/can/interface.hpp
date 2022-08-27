@@ -24,7 +24,7 @@ public:
   struct settings
   {
     /// Bus clock rate in hertz
-    hertz clock_rate{};
+    hertz clock_rate = 100.0_kHz;
 
     /**
      * @brief Default operators for <, <=, >, >= and ==
@@ -33,6 +33,17 @@ public:
      */
     [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
       default;
+
+    /**
+     * @brief Operators ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator==(
+      const settings& p_settings) const noexcept
+    {
+      return equals(clock_rate, p_settings.clock_rate);
+    }
   };
 
   /// Can message ID type trait
