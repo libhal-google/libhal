@@ -46,6 +46,17 @@ public:
      */
     [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
       default;
+
+    /**
+     * @brief Operators ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator==(
+      const settings& p_settings) const noexcept
+    {
+      return equals(clock_rate, p_settings.clock_rate);
+    }
   };
 
   /**

@@ -68,7 +68,7 @@ public:
     };
 
     /// The operating speed of the baud rate (in units of bits per second)
-    uint32_t baud_rate = 115200;
+    hertz baud_rate = 115200.0f;
     /// Number of stop bits for each frame
     stop_bits stop = stop_bits::one;
     /// Parity bit type for each frame
@@ -81,6 +81,18 @@ public:
      */
     [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
       default;
+
+    /**
+     * @brief Operators ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator==(
+      const settings& p_settings) const noexcept
+    {
+      return stop == p_settings.stop && parity == p_settings.parity &&
+             equals(baud_rate, p_settings.baud_rate);
+    }
   };
 
   /// Structure informing the caller of the number of bytes that can be read out

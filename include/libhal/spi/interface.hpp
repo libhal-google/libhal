@@ -25,19 +25,33 @@ public:
   struct settings
   {
     /// Serial clock frequency in hertz
-    std::uint32_t clock_rate = 100'000;
+    hertz clock_rate = 100.0_kHz;
     /// The polarity of the pins when the signal is idle
     bool clock_idles_high = false;
     /// The phase of the clock signal when communicating
     bool data_valid_on_trailing_edge = false;
 
     /**
-     * @brief Default operators for <, <=, >, >= and ==
+     * @brief Default operators for <, <=, >, >=
      *
      * @return auto - result of the comparison
      */
     [[nodiscard]] constexpr auto operator<=>(const settings&) const noexcept =
       default;
+
+    /**
+     * @brief Operators ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator==(
+      const settings& p_settings) const noexcept
+    {
+      return clock_idles_high == p_settings.clock_idles_high &&
+             data_valid_on_trailing_edge ==
+               p_settings.data_valid_on_trailing_edge &&
+             equals(clock_rate, p_settings.clock_rate);
+    }
   };
 
   /// Default filler data placed on the bus in place of actual write data when
