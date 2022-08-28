@@ -20,17 +20,17 @@ add_executable(${TEST_NAME}
   spi/interface.test.cpp
   adc/interface.test.cpp
   dac/interface.test.cpp
-  counter/interface.test.cpp
   input_pin/interface.test.cpp
   interrupt_pin/interface.test.cpp
   output_pin/interface.test.cpp
   serial/interface.test.cpp
   servo/interface.test.cpp
+  steady_clock/interface.test.cpp
 
   i2c/util.test.cpp
   spi/util.test.cpp
-  counter/util.test.cpp
   serial/util.test.cpp
+  steady_clock/util.test.cpp
 
   motor/mock.test.cpp
   pwm/mock.test.cpp
@@ -40,15 +40,13 @@ add_executable(${TEST_NAME}
   adc/mock.test.cpp
   output_pin/mock.test.cpp
   input_pin/mock.test.cpp
-  counter/mock.test.cpp
   interrupt_pin/mock.test.cpp
   servo/mock.test.cpp
+  steady_clock/mock.test.cpp
 
   servo/rc.test.cpp
   i2c/minimum_speed.test.cpp
 
-  # TODO(#415): add this back when possible
-  # counter/uptime_counter.test.cpp
   static_memory_resource.test.cpp
   enum.test.cpp
   percentage.test.cpp

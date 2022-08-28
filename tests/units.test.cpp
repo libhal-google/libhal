@@ -27,12 +27,13 @@ boost::ut::suite units_test = []() {
     expect(that % 0 == cycles_per(100.0_Hz, 1ms));
   };
   "duration wavelength"_test = []() {
-    expect(0 == wavelength<std::femto>(0.0_Hz).count());
-    expect(10'000 == wavelength<std::femto>(100.0_GHz).count());
-    expect(1'000 == wavelength<std::milli>(1.0_Hz).count());
-    expect(100'000 == wavelength<std::micro>(10.0_Hz).count());
-    expect(1'000 == wavelength<std::nano>(1.0_MHz).count());
-    expect(1 == wavelength<std::nano>(1.0_GHz).count());
+    expect(that % std::numeric_limits<hal::time_duration::rep>::max() ==
+           wavelength<std::femto>(0.0_Hz).count());
+    expect(that % 10'000 == wavelength<std::femto>(100.0_GHz).count());
+    expect(that % 1'000 == wavelength<std::milli>(1.0_Hz).count());
+    expect(that % 100'000 == wavelength<std::micro>(10.0_Hz).count());
+    expect(that % 1'000 == wavelength<std::nano>(1.0_MHz).count());
+    expect(that % 1 == wavelength<std::nano>(1.0_GHz).count());
   };
 
   "float wavelength"_test = []() {
@@ -47,8 +48,9 @@ boost::ut::suite units_test = []() {
   "duration_from_cycles"_test = []() {
     expect(that % 1'400us == duration_from_cycles(1.0_MHz, 1400).value());
     expect(that % 2'380'928ns == duration_from_cycles(14.0_MHz, 33333).value());
-    // TODO(#415) add this back
-    // expect(that % 10'250ms == duration_from_cycles(1.0_kHz, 10'250).value());
+    expect(that % 10'250ms ==
+           std::chrono::duration_cast<std::chrono::milliseconds>(
+             duration_from_cycles(1.0_kHz, 10'250).value()));
     expect(that % 12'000us ==
            duration_from_cycles(1000.0_MHz, 12'000'000).value());
     expect(that % 0us == duration_from_cycles(1000.0_MHz, 0).value());
