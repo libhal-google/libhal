@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 
 #include "config.hpp"
@@ -13,16 +14,15 @@ namespace hal {
  * @{
  */
 
-/// The standard time durations in libhal is set to microseconds held
-/// within an std::int32_t integer.
-using time_duration = std::chrono::duration<std::int32_t, std::micro>;
+/// The standard time durations in libhal std::chrono::nanoseconds
+using time_duration = std::chrono::nanoseconds;
 
 /// Standard type for bytes in libhal. hal::byte has a number of annoyances that
 /// results in more verbose code without much benefit and thus hal::byte was
 /// created.
 using byte = std::uint8_t;
 
-/// Type for frequency represented in hertz
+/// Type for frequency represented in hertz.
 using hertz = float;
 
 /// Type for acceleration represented in the force applied by gravity at sea
@@ -154,12 +154,20 @@ using namespace literals;
 template<typename Period>
 constexpr std::chrono::duration<int64_t, Period> wavelength(hertz p_source)
 {
-  if (equals(p_source, 0.0f)) {
-    return std::chrono::duration<int64_t, Period>(0);
+  using duration = std::chrono::duration<int64_t, Period>;
+
+  static_assert(Period::num == 1, "The period ratio numerator must be 1");
+  static_assert(Period::den >= 1,
+                "The period ratio denominator must be 1 or greater than 1.");
+
+  constexpr auto denominator = static_cast<decltype(p_source)>(Period::den);
+  auto period = (1.0f / p_source) * denominator;
+
+  if (std::isinf(period)) {
+    return duration(std::numeric_limits<int64_t>::max());
   }
-  auto duration = (1.0f / p_source);
-  duration = duration * static_cast<decltype(p_source)>(Period::den);
-  return std::chrono::duration<int64_t, Period>(static_cast<int64_t>(duration));
+
+  return duration(static_cast<int64_t>(period));
 }
 
 /**

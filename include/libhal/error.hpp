@@ -15,6 +15,29 @@ template<class T>
 using result = boost::leaf::result<T>;
 using status = result<void>;
 
+/**
+ * @brief a readability function for returning successful results;
+ *
+ * For functions that return `status`, rather than returning `{}` to default
+ * initialize the status object as "success", use this function to make it more
+ * clear to the reader.
+ *
+ * EXAMPLE:
+ *
+ *     status some_function() {
+ *        return success();
+ *     }
+ *
+ * @return status - that is always successful
+ */
+inline status success()
+{
+  // Default initialize the status object using the brace initialization, which
+  // will set the status to the default "success" state.
+  status successful_status{};
+  return successful_status;
+}
+
 template<class TryBlock, class... H>
 [[nodiscard]] constexpr auto attempt(TryBlock&& p_try_block, H&&... p_handlers)
 {
