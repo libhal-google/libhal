@@ -22,7 +22,7 @@ struct timer : public hal::timer
   void reset()
   {
     spy_schedule.reset();
-    spy_clear.reset();
+    spy_cancel.reset();
     spy_is_running.reset();
   }
 
@@ -31,7 +31,7 @@ struct timer : public hal::timer
   /// Spy handler for hal::timer::is_running()
   spy_handler<bool> spy_is_running;
   /// Spy handler for hal::timer::clear()
-  spy_handler<bool> spy_clear;
+  spy_handler<bool> spy_cancel;
 
 private:
   status driver_schedule(std::function<void(void)> p_callback,
@@ -48,10 +48,10 @@ private:
     }
     return m_is_running;
   }
-  status driver_clear() noexcept override
+  status driver_cancel() noexcept override
   {
     m_is_running = false;
-    return spy_clear.record(true);
+    return spy_cancel.record(true);
   }
   bool m_is_running = false;
 };
