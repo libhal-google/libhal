@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include <span>
 
 #include <libhal/percentage.hpp>
@@ -14,6 +15,26 @@ inline std::ostream& operator<<(
 {
   return (os << p_duration.count() << " * (" << Period::num << "/"
              << Period::den << ")s");
+}
+
+template<typename T, size_t size>
+inline std::ostream& operator<<(std::ostream& os,
+                                const std::array<T, size>& p_array)
+{
+  os << "{";
+  for (const auto& element : p_array) {
+    os << element << ", ";
+  }
+  return os << "}\n";
+}
+template<typename T>
+inline std::ostream& operator<<(std::ostream& os, const std::span<T>& p_array)
+{
+  os << "{";
+  for (const auto& element : p_array) {
+    os << element << ", ";
+  }
+  return os << "}\n";
 }
 
 template<typename T, size_t size>

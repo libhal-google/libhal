@@ -95,11 +95,25 @@ public:
     }
   };
 
-  /// Structure informing the caller of the number of bytes that can be read out
-  /// and the storage capacity of the serial port.
-  struct bytes_available_t
+  /// @brief Return type for serial read operations
+  struct read_t
   {
-    /// Bytes currently received, enqueued, and available to be read out.
+    /// @brief The filled portion of the input buffer from the serial port
+    ///
+    /// The size of this buffer indicates the number of bytes read
+    /// The address points to the start of the buffer passed into the read()
+    /// function.
+    std::span<hal::byte> received;
+
+    /// @brief The unfilled portion of the buffer
+    ///
+    /// The size of this buffer indicates the number of bytes unfilled
+    /// The address points to right after the `data` span. This means that
+    /// putting the `remaining` buffer back into the read() until it reaches 0
+    /// will ensure that the entire original buffer is filled to capacity.
+    std::span<hal::byte> remaining;
+
+    /// @brief Number of enqueued and available to be read out bytes
     ///
     /// This value can be equal to or exceed the value of capacity. In this
     /// situation, the number of bytes above the capacity are bytes that have
@@ -107,8 +121,28 @@ public:
     /// is  up to the driver or application to decide what to do in this
     /// situation.
     size_t available;
+
     /// The maximum number of bytes that the serial port can queue up.
     size_t capacity;
+  };
+
+  /// @brief Return type for serial write operations
+  struct write_t
+  {
+    /// @brief The portion of the buffer transmitted
+    ///
+    /// The size of this buffer indicates the number of bytes read
+    /// The address points to the start of the buffer passed into the read()
+    /// function.
+    std::span<const hal::byte> transmitted;
+
+    /// @brief The portion of the buffer that was not transmitted
+    ///
+    /// The size of this buffer indicates the number of bytes unfilled
+    /// The address points to right after the `data` span. This means that
+    /// putting the `remaining` buffer back into the read() until it reaches 0
+    /// will ensure that the entire original buffer is filled to capacity.
+    std::span<const hal::byte> remaining;
   };
 
   /**
@@ -131,52 +165,43 @@ public:
    * @brief Write data to the transmitter line of the serial port
    *
    * @param p_data - data to be transmitted over the serial port
-   * @return result<size_t> - the number of bytes transmitted
+   * @return result<write_t> - serial write response
    */
-  [[nodiscard]] result<size_t> write(std::span<const hal::byte> p_data) noexcept
+  [[nodiscard]] result<write_t> write(
+    std::span<const hal::byte> p_data) noexcept
   {
     return driver_write(p_data);
   }
-  /**
-   * @brief The number of bytes that have been buffered
-   *
-   * @return bytes_available_t - number of bytes that can be read out
-   * of this serial port as well as the capacity of the serial port.
-   */
-  [[nodiscard]] bytes_available_t bytes_available() noexcept
-  {
-    return driver_bytes_available();
-  }
+
   /**
    * @brief Copy bytes from working buffer into passed buffer
    *
    * This operation copies the bytes from the serial driver's internal working
-   * buffer to the buffer supplied. This call will subtract from the number
-   * returned from bytes_available() function.
+   * buffer to the buffer supplied.
    *
-   * If the length of this buffer is greater than bytes available, then the
-   * buffer is filled up to the length returned by bytes_available(). The rest
-   * of the buffer is left untouched.
+   * The buffer will be filled up either to the end of the buffer or until there
+   * are no more bytes left in the working buffer. The remaining portion of the
+   * input buffer is returned in `read_t::remaining`.
    *
    * If a frame error has occurred at any point during serial reception, this
    * function will throw a `std::errc::io_error` value. The contents of the
-   * internal working buffer as well as the values for bytes_available will stay
-   * the same with no copy into the supplied buffered taking place. The frame
-   * error will be internally cleared after its occurrence. A subsequent call to
-   * read() will read out the contents of the buffer although the data inside
-   * may be corrupt. Options are to flush the buffer and attempt reception again
-   * or read out the potentially corrupted data and parse it as needed. The
-   * choice of operations here are very application and driver specific.
+   * internal working buffer will stay the same. No information from the
+   * internal working buffer will be copied into the supplied buffer and no data
+   * will be removed from the internal working buffer. The frame error status
+   * will be internally cleared after its occurrence. Subsequent calls of this
+   * function will read out the contents of the buffer although the data inside
+   * may be corrupt.
    *
-   * @param p_data - Buffer to read bytes back from
-   * @return result<std::span<hal::byte>> - The address will
-   * ALWAYS be the same as p_data and the length will be equal to the number of
-   * bytes read from the buffer.
+   * When an error occurs the options available are to flush the buffer and
+   * attempt reception again or read out the potentially corrupted data and
+   * parse it as needed. The choice of operation is application/driver specific.
+   *
+   * @param p_data - Buffer to read bytes in to
+   * @return result<read_t> - serial read response data
    * @throws std::errc::io_error - a frame error occurred at some point during
    * reception.
    */
-  [[nodiscard]] result<std::span<hal::byte>> read(
-    std::span<hal::byte> p_data) noexcept
+  [[nodiscard]] result<read_t> read(std::span<hal::byte> p_data) noexcept
   {
     return driver_read(p_data);
   }
@@ -185,12 +210,10 @@ public:
    *
    * The behavior of flushing the internal working buffer is this:
    *
-   * - Set the internal circular buffer implementation to an "empty" state.
-   * - After this call, so long as data is not received at the same time,
-   *   bytes_available() will report to zero bytes
-   * - Will clear any received data stored in hardware registers.
-   * - Will ensure that this operation is as fast as possible, meaning it will
-   *   not zero out the contents of the internal working buffer.
+   * - Sets the serial port's internal working buffer to an "empty" state.
+   * - Clear any received data stored in hardware registers.
+   * - Use the fastest available option to perform these operations, meaning
+   *   that the contents of the internal working buffer will not be zeroed out.
    *
    * @return status - success or failure
    */
@@ -201,11 +224,9 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual result<size_t> driver_write(
+  virtual result<write_t> driver_write(
     std::span<const hal::byte> p_data) noexcept = 0;
-  virtual bytes_available_t driver_bytes_available() noexcept = 0;
-  virtual result<std::span<hal::byte>> driver_read(
-    std::span<hal::byte> p_data) noexcept = 0;
+  virtual result<read_t> driver_read(std::span<hal::byte> p_data) noexcept = 0;
   virtual status driver_flush() noexcept = 0;
 };
 /** @} */
