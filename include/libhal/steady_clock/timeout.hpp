@@ -33,13 +33,14 @@ public:
     const auto frequency = p_steady_clock.frequency();
     const auto tick_period = wavelength<period>(frequency);
     auto ticks_required = p_duration / tick_period;
+    using unsigned_ticks = std::make_unsigned_t<decltype(ticks_required)>;
 
     if (ticks_required <= 1) {
       ticks_required = 1;
     }
 
-    const auto future_timestamp =
-      ticks_required + HAL_CHECK(p_steady_clock.uptime());
+    const auto ticks = static_cast<unsigned_ticks>(ticks_required);
+    const auto future_timestamp = ticks + HAL_CHECK(p_steady_clock.uptime());
 
     return steady_clock_timeout(p_steady_clock, future_timestamp);
   }

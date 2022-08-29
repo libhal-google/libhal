@@ -19,32 +19,41 @@ boost::ut::suite serial_util_test = []() {
     {
       return {};
     }
-    [[nodiscard]] result<size_t> driver_write(
+
+    [[nodiscard]] result<write_t> driver_write(
       std::span<const hal::byte> p_data) noexcept override
     {
       if (p_data[0] == write_failure_byte) {
         return hal::new_error();
       }
       m_out = p_data;
-      return p_data.size();
+      return write_t{ p_data, std::span<const hal::byte>{} };
     }
 
-    [[nodiscard]] bytes_available_t driver_bytes_available() noexcept override
-    {
-      return bytes_available_t{ .available = 0, .capacity = 1000UL };
-    }
-
-    [[nodiscard]] result<std::span<hal::byte>> driver_read(
+    [[nodiscard]] result<read_t> driver_read(
       std::span<hal::byte> p_data) noexcept override
     {
+      if (p_data.size() == 0) {
+        return read_t{
+          .received = p_data,
+          .remaining = std::span<hal::byte>{},
+          .available = 1,
+          .capacity = 1,
+        };
+      }
       read_was_called = true;
       if (m_read_fails) {
         return hal::new_error();
       }
       // only fill 1 byte at a time
       p_data[0] = filler_byte;
-      p_data = p_data.subspan(0, 1);
-      return p_data;
+
+      return read_t{
+        .received = p_data.subspan(0, 1),
+        .remaining = p_data.subspan(1),
+        .available = 1,
+        .capacity = 1,
+      };
     }
 
     [[nodiscard]] status driver_flush() noexcept override
@@ -74,7 +83,7 @@ boost::ut::suite serial_util_test = []() {
 
       // Verify
       expect(bool{ result });
-      expect(result.value() == expected_payload.size());
+      expect(result.value().transmitted.size() == expected_payload.size());
       expect(!serial.flush_called);
       expect(that % expected_payload.data() == serial.m_out.data());
       expect(that % expected_payload.size() == serial.m_out.size());
@@ -113,7 +122,7 @@ boost::ut::suite serial_util_test = []() {
       expect(that % nullptr == serial.m_out.data());
       expect(that % 0 == serial.m_out.size());
       bool test = expected_buffer == result.value();
-      expect(that % test);
+      expect(that % test) << expected_buffer << " != " << result.value();
     };
 
     "[failure read] read"_test = []() {

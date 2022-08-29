@@ -22,7 +22,7 @@ namespace hal {
  * @return result<size_t> - success or failure
  * serial::write returns an error from the serial port.
  */
-[[nodiscard]] inline result<size_t> write_partial(
+[[nodiscard]] inline result<serial::write_t> write_partial(
   serial& p_serial,
   std::span<const hal::byte> p_data_out) noexcept
 {
@@ -46,11 +46,10 @@ namespace hal {
   std::span<hal::byte> p_data_in,
   timeout auto p_timeout) noexcept
 {
-  std::span<hal::byte> data_in = p_data_in;
+  auto read_result = HAL_CHECK(p_serial.read(p_data_in));
 
-  while (data_in.size() > 0) {
-    auto read_bytes = HAL_CHECK(p_serial.read(data_in));
-    data_in = data_in.subspan(read_bytes.size());
+  while (read_result.remaining.size() != 0) {
+    read_result = HAL_CHECK(p_serial.read(read_result.remaining));
     HAL_CHECK(p_timeout());
   }
 

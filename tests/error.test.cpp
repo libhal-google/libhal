@@ -47,7 +47,7 @@ boost::ut::suite error_test = []() {
 
     attempt_all(
       [expected]() -> status { return new_error(); },
-      [&value_to_be_change](int) {},
+      [](int) {},
       [&value_to_be_change, expected]() { value_to_be_change = expected; });
 
     // Verify
