@@ -4,6 +4,7 @@
 #include <functional>
 
 #include "../error.hpp"
+#include "../units.hpp"
 
 namespace hal {
 /**
@@ -15,8 +16,13 @@ namespace hal {
  * @brief Timer hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that have timer like
- * capabilities, such that, when a timer's time has expired, an
- * event/interrupt/signal is generated.
+ * capabilities, such that, when a timer's time has expired, an event,
+ * interrupt, or signal is generated.
+ *
+ * Timer drivers tick period must be an integer multiple of 1 nanosecond,
+ * meaning that the only tick period allowed are 1ns, 2ns, up to the maximum
+ * holdable in a std::chrono::nanosecond type. sub-nanosecond tick periods are
+ * not allowed.
  *
  */
 class timer
@@ -26,31 +32,14 @@ public:
    * @brief Error type indicating that the desired time delay is not achievable
    * with this timer.
    *
-   * Usually this occurs if the time delay is too small or too big based on what
-   * is possible with the driving frequency of the timer and along with any
-   * pre-scalars before the counting register.
-   *
-   * <b>How to handle these errors:</b>
-   *
-   * - In cases where the program is scanning for the fastest delay, this is to
-   *   be expected. The error will report the minimum possible delay which can
-   *   then be assigned. Same for the maximum possible delay.
-   *
-   * - In most other cases, this is usually a bug in the code and cannot be
-   *   handled in code and should be treated as such. Drivers using a timer, if
-   *   they need an exact number will not be usable with this timer if it throws
-   *   this error, which will either require another timer that can perform this
-   *   work be used or increasing the clock rate fed into the timer in order to
-   *   increase its frequency range.
-   *
+   * This occurs if the time delay is too large based on the tick period of the
+   * timer.
    */
   struct out_of_bounds
   {
-    /// The invalid delay given to the schedule function.
-    std::chrono::nanoseconds invalid;
-    /// The minimum possible delay allowed.
-    std::chrono::nanoseconds minimum;
-    /// The maximum possible delay allowed.
+    /// The tick period
+    std::chrono::nanoseconds tick_period;
+    /// The maximum possible delay allowed
     std::chrono::nanoseconds maximum;
   };
 
@@ -77,34 +66,42 @@ public:
    *
    * @return status - success or failure
    */
-  [[nodiscard]] status clear() noexcept
+  [[nodiscard]] status cancel() noexcept
   {
-    return driver_clear();
+    return driver_cancel();
   }
 
   /**
-   * @brief Schedule an callback to be called at a designated time/interval
+   * @brief Schedule an callback be be executed after the delay time
    *
    * If this is called and the timer has already scheduled an event (in other
-   * words, is_running() returns true), then the previous scheduled event will
-   * be cleared and the new scheduled event will be started.
+   * words, `is_running()` returns true), then the previous scheduled event will
+   * be canceled and the new scheduled event will be started.
+   *
+   * If the delay time result in a tick period of 0, then the timer will execute
+   * after 1 tick period. For example, if the tick period is 1ms and the
+   * requested time delay is 500us, then the event will be scheduled for 1ms.
+   *
+   * If the tick period is 1ms and the requested time is 2.5ms then the event
+   * will be scheduled after 2 tick periods or in 2ms.
    *
    * @param p_callback - callback function to be called when the timer expires
-   * @param p_delay - the amount of time before the timer expires
+   * @param p_delay - the amount of time until the timer expires
    * @return status - success or failure
-   * @throws out_of_bounds - if p_interval cannot be achieved.
+   * @throws out_of_bounds - if p_interval is greater than what can be cannot be
+   * achieved
    */
   [[nodiscard]] status schedule(std::function<void(void)> p_callback,
-                                std::chrono::nanoseconds p_delay) noexcept
+                                hal::time_duration p_delay) noexcept
   {
     return driver_schedule(p_callback, p_delay);
   }
 
 private:
   virtual result<bool> driver_is_running() noexcept = 0;
-  virtual status driver_clear() noexcept = 0;
+  virtual status driver_cancel() noexcept = 0;
   virtual status driver_schedule(std::function<void(void)> p_callback,
-                                 std::chrono::nanoseconds p_delay) noexcept = 0;
+                                 hal::time_duration p_delay) noexcept = 0;
 };
 /** @} */
 }  // namespace hal
