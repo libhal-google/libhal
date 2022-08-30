@@ -12,7 +12,7 @@ mkdir -p build
 cd build
 
 # Install conan packages (Boost.UT)
-conan install ..
+conan install .. -s build_type=Debug
 # Generate build files
 cmake ..
 # Build program
