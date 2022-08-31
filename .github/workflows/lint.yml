@@ -26,10 +26,6 @@ jobs:
         shell: bash
         run: sudo apt install clang-format-13
 
-      - name: 📥 Install cspell
-        shell: bash
-        run: sudo npm install -g cspell
-
       - name: 📥 Install libclang-11-dev (for name style check)
         shell: bash
         run: sudo apt install libclang-11-dev
@@ -65,8 +61,3 @@ jobs:
         run: |
              clang-format --dry-run --Werror \
              $(find include -name "*.hpp" -not -path "*/third_party/*")
-
-      - name: 🔤 Check Spelling
-        shell: bash
-        if: always()
-        run: cspell **/*
