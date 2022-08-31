@@ -1,5 +1,6 @@
 [requires]
 boost-ext-ut/1.1.8
+boost-leaf/0.4.0
 
 [generators]
 CMakeToolchain
