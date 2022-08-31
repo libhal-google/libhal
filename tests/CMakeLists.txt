@@ -9,6 +9,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_BUILD_TYPE "Debug")
 
 find_package(ut REQUIRED CONFIG)
+find_package(boost-leaf REQUIRED CONFIG)
 
 set(TEST_NAME unit_test)
 set(CMAKE_BUILD_TYPE Debug)
@@ -65,4 +66,4 @@ target_compile_options(${TEST_NAME} PRIVATE -Werror -Wall -Wextra
   -Wno-unused-function -Wconversion -Wno-psabi)
 target_compile_features(${TEST_NAME} PRIVATE cxx_std_20)
 set_target_properties(${TEST_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(${TEST_NAME} PRIVATE boost::ut)
+target_link_libraries(${TEST_NAME} PRIVATE boost::ut boost::leaf)
