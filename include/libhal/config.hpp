@@ -4,7 +4,7 @@
 
 namespace hal::config {
 namespace defaults {
-constexpr std::string_view platform = "test";
+constexpr std::string_view platform = "undefined";
 constexpr bool on_error_callback_enabled = false;
 constexpr auto on_error_callback = []() {};
 }  // namespace defaults
@@ -14,6 +14,8 @@ using namespace defaults;
 // Pull the tweaks
 #if __has_include(<libhal.tweaks.hpp>)
 #include <libhal.tweaks.hpp>
+#else
+#warning "libhal.tweaks.hpp file not found! Was this intended?"
 #endif
 
 namespace hal {
