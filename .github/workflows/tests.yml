@@ -31,9 +31,6 @@ jobs:
       - name: 📥 Install g++-11
         run: sudo apt install g++-11
 
-      - name: 🎚 Set Conan ABI
-        run: conan profile update settings.compiler.libcxx=libstdc++11 default
-
       - name: 📦 Create Conan Package & Run Test Package
         run: conan create .
 
