@@ -22,12 +22,6 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Copy README.md to docs directory
-        run: cp README.md logo.svg docs
-
-      - name: Copy logo.svg to docs directory
-        run: cp logo.svg docs/
-
       - name: Apply repo name to 'doxygen.conf' project name
         working-directory: docs
         run: echo PROJECT_NAME = ${{ github.event.repository.name }} >> doxygen.conf
