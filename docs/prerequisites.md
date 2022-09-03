@@ -12,51 +12,17 @@ libhal, but these are most supported and recommended way of using libhal.
 
 If you already have these installed you can skip this step.
 
-## Installing python3
+## Installing on Ubuntu 22.04:
 
-### Ubuntu 22.04 and above
-
-Python 3.10 already installed, nothing to do here
-
-### MacOS X
-
-1. Install brew
-  - Run this command:
-
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-2. Install Python3
-
-```
-brew install python
-```
-
-### Windows
-
-Download and run the installer which can be found here:
-https://www.python.org/downloads/windows/
-
-## Installing cmake
-
-### For all systems
-
-Execute the following command
+NOTE: Python 3.10 already installed
 
 ```
 pip install cmake
 ```
 
-## Installing conan
-
 ```
 pip install conan
 ```
-
-## Installing g++-11 or above
-
-### Ubuntu 22.04
 
 ```
 sudo apt update
@@ -65,13 +31,47 @@ sudo apt install build-essential
 sudo apt install -y g++-11
 ```
 
-### MacOSX
+### Installing on MacOS X:
+
+Open up a terminal and execute these commands one by one:
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+```
+brew install python
+```
 
 ```
 brew install gcc@11
 ```
 
-### Windows
+```
+pip install cmake
+```
+
+```
+pip install conan
+```
+
+## Installation steps for Windows
+
+### Installing python
+
+Python Installer here: https://www.python.org/downloads/windows/
+
+### Installing conan + cmake
+
+```
+pip install cmake
+```
+
+```
+pip install conan
+```
+
+### Installing GCC 11
 
 NOTE: This section is not complete and a complete guide to installing g++-11
 is not currently available. Still investigating the simplest way to achieve

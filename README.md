@@ -25,7 +25,7 @@
 
 # 📥 Install
 
-## [Installing Prerequisites](https://github.com/libhal/docs/prerequisites.md)
+## [Installing Prerequisites](docs/prerequisites.md)
 
 ## Install using conan
 
