@@ -12,7 +12,7 @@ libhal, but these are most supported and recommended way of using libhal.
 
 If you already have these installed you can skip this step.
 
-## Installing on Ubuntu 22.04:
+## Installing on Ubuntu 22.04
 
 NOTE: Python 3.10 already installed
 
@@ -31,7 +31,7 @@ sudo apt install build-essential
 sudo apt install -y g++-11
 ```
 
-### Installing on MacOS X:
+### Installing on MacOS X
 
 Open up a terminal and execute these commands one by one:
 
