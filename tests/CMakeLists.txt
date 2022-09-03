@@ -49,6 +49,7 @@ add_executable(${TEST_NAME}
   servo/rc.test.cpp
   i2c/minimum_speed.test.cpp
 
+  as_bytes.test.cpp
   static_memory_resource.test.cpp
   enum.test.cpp
   timeout.test.cpp
