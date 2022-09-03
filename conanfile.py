@@ -61,7 +61,7 @@ class LibHALConan(ConanFile):
         basic_layout(self)
 
     def requirements(self):
-        self.requires("boost-leaf/0.4.0@")
+        self.requires("boost-leaf/[x, include_prerelease=True]@")
 
     def package(self):
         copy(self, "LICENSE", dst=os.path.join(
