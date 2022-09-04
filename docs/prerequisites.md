@@ -8,75 +8,111 @@ libhal, but these are most supported and recommended way of using libhal.
 - `python`: 3.10 or above
 - `cmake`: 3.15 or above
 - `conan`: 1.51.3 or above (conan 2.0.0+ not currently supported)
-- `g++`: version 11.3.0 or above (for compiling tests and code in general)
+- `gcc`: version 11.3.0 or above (for compiling tests and code in general)
 
 If you already have these installed you can skip this step.
 
 ## Installing on Ubuntu 22.04:
 
-NOTE: Python 3.10 already installed
+### 1. Install GCC
 
-```
-pip install cmake
-```
-
-```
-pip install conan
-```
+Install GCC and build essentials.
 
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install build-essential
-sudo apt install -y g++-11
+sudo apt install -y build-essential g++
 ```
 
-### Installing on MacOS X:
+### 2. Installing cmake & conan
 
-Open up a terminal and execute these commands one by one:
+Python 3.10 already installed, so pip can be used immediately.
+
+```
+pip install cmake
+pip install conan
+```
+
+## Installing on MacOS X:
+
+### 1. Install Homebrew
 
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
+### 2. Install latest version of Python 3.x
+
+Install python (will default to the latest Python3 version).
+
 ```
 brew install python
 ```
 
+### 3. Install GCC
+
 ```
-brew install gcc@11
+brew install gcc
 ```
+
+### 4. Install cmake & conan.
 
 ```
 pip install cmake
-```
-
-```
 pip install conan
 ```
 
 ## Installation steps for Windows
 
-### Installing python
+### 1. Installing python
 
-Python Installer here: https://www.python.org/downloads/windows/
+Download and run the python installer from this web page
+https://www.python.org/downloads/windows/.
 
-### Installing conan + cmake
+### 2. Installing MSYS2
+
+Follow the instructions found here: https://www.msys2.org/
+
+### 3. Install GCC and build essentials
+
+Within the MSYS2 terminal run the following command to install GCC and
+build essentials.
+
+```
+pacman -S base-devel mingw-w64-x86_64-gcc
+```
+
+### 4. Updating the Environment Paths
+
+Open `Windows Powershell` and execute the following command to make the
+
+```PowerShell
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) +
+    ";C:\dev\msys64\mingw64\bin;C:\dev\msys64\mingw32\bin;C:\dev\msys64\usr\bin",
+    [EnvironmentVariableTarget]::Machine)
+```
+
+After this, close powershell and reopen it to check if it worked. Run
+`g++ --version` and you should get a message with version information in it.
+
+### 5. Installing conan + cmake
 
 ```
 pip install cmake
-```
-
-```
 pip install conan
 ```
 
-### Installing GCC 11
+## Troubleshooting
 
-NOTE: This section is not complete and a complete guide to installing g++-11
-is not currently available. Still investigating the simplest way to achieve
-this.
+### `settings.compiler` not found error
 
-TODO(#429): Flesh out this section out
+First check that `g++ --version` runs and that the compiler version is `11` or
+above. If not, please install the appropriate compiler. If g++ is found then
+run the following command to get conan to autodetect your default compiler on
+your system.
 
-Download g++-11.3.0 from: https://winlibs.com/ and unzip it.
+```
+conan profile default --detect --force
+```
