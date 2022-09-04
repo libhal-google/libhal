@@ -84,7 +84,9 @@ pacman -S base-devel mingw-w64-x86_64-gcc
 
 ### 4. Updating the Environment Paths
 
-Open `Windows Powershell` and execute the following command to make the
+Open `Windows Powershell` as `Administrator` (right click on it to see the
+option) and execute the following command. This will add gcc and the build
+essentials to your systems environment paths.
 
 ```PowerShell
 [Environment]::SetEnvironmentVariable(
