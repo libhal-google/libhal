@@ -37,9 +37,9 @@ jobs:
         run: conan config set general.revisions_enabled=True
 
       - name: 📡 Sign into JFrog Artifactory
-      env:
-        API_KEY: ${{ secrets.SuperSecret }}
-        USER : ${{ secrets.SuperSecret }}
+        env:
+          API_KEY: ${{ secrets.JFROG_LIBHAL_TRUNK_API_KEY }}
+          USER : ${{ secrets.JFROG_LIBHAL_TRUNK_USER }}
         run: |
              conan user -p "$API_KEY" -r libhal-trunk "$USER"
 
