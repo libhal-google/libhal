@@ -27,7 +27,29 @@
 
 ## [Installing Prerequisites](docs/prerequisites.md)
 
-## Install using conan
+## Install using conan center index (CCI)
+
+NOT RECOMMENDED! CCI tends to be out of date currently.
+
+```bash
+conan install libhal
+```
+
+## Install from `libhal-trunk`
+
+`libhal-trunk` is a remote conan server with the latest version of the code.
+
+Run the following to add `libhal-trunk` to your list of conan remote servers.
+
+NOTE: that the `--insert` argument places this server at the highest priority
+for conan, meaning updates will be checked at this server first before
+attempting to check out servers like the CCI.
+
+```bash
+conan remote add libhal-trunk https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
+```
+
+Now run this command to install libhal from that server.
 
 ```bash
 conan install libhal
@@ -40,12 +62,6 @@ git clone https://github.com/libhal/libhal.git
 cd libhal
 conan create .
 ```
-
-## Using libhal without conan
-
-libhal is a header only library so simply clone the repo into your
-project and add a `-I/path/to/libhal/include` in your GCC or Clang
-command that will bring all of the libraries into your project.
 
 # ℹ️ Overview
 
