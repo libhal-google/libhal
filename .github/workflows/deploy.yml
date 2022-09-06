@@ -1,6 +1,7 @@
 name: 🚀 deploy
 
 on:
+  workflow_dispatch:
   workflow_call:
     inputs:
       library:
