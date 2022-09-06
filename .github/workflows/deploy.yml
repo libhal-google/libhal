@@ -11,7 +11,7 @@ on:
       - main
 
 jobs:
-  tests:
+  deploy:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
