@@ -36,10 +36,12 @@ jobs:
       - name: 📡 Enable conan revision mode
         run: conan config set general.revisions_enabled=True
 
-      - name: 📡 Enable conan revision mode
+      - name: 📡 Sign into JFrog Artifactory
+      env:
+        API_KEY: ${{ secrets.SuperSecret }}
+        USER : ${{ secrets.SuperSecret }}
         run: |
-             conan user -p "${{ secrets.JFROG_LIBHAL_TRUNK_API_KEY }}" \
-              -r libhal-trunk "${{ secrets.JFROG_LIBHAL_TRUNK_USER }}"
+             conan user -p "$API_KEY" -r libhal-trunk "$USER"
 
       - name: 📦 Create Conan Package & Verify Test Package
         run: conan create .
