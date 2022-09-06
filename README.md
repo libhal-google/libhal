@@ -2,14 +2,12 @@
   <img height="250" src="logo.png">
 </p>
 
-# libhal
+<div align="center">
 
 [![Discord](https://img.shields.io/discord/800515757871726622?color=7389D8&logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/p5A6vzv8tm)
 [![docs](https://github.com/libhal/libhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/docs.yml)
 [![lint](https://github.com/libhal/libhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/lint.yml)
 [![tests](https://github.com/libhal/libhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/tests.yml)
-
-**🏗️ WARNING: PROJECT IN DEVELOPMENT 🚧**
 
 | [Install](#-install)
 | [Overview](#ℹ%EF%B8%8F-overview)
@@ -20,6 +18,9 @@
 | [Libraries](#-libraries)
 | [Motivation](#-motivation)
 | [Contributing](#-contributing)
+|
+
+</div>
 
 # [📚 Software APIs](https://libhal.github.io/libhal/api)
 
