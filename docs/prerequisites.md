@@ -10,9 +10,9 @@ libhal, but these are most supported and recommended way of using libhal.
 - `conan`: 1.51.3 or above (conan 2.0.0+ not currently supported)
 - `gcc`: version 11.3.0 or above (for compiling tests and code in general)
 
-If you already have these installed you can skip this step.
-
 ## Installing on Ubuntu 22.04:
+
+Python 3.10 is default installed.
 
 ### 1. Install GCC
 
@@ -24,12 +24,15 @@ sudo apt upgrade
 sudo apt install -y build-essential g++
 ```
 
-### 2. Installing cmake & conan
-
-Python 3.10 already installed, so pip can be used immediately.
+### 2. Installing cmake
 
 ```
 pip install cmake
+```
+
+### 3. Installing conan
+
+```
 pip install conan
 ```
 
@@ -55,10 +58,15 @@ brew install python
 brew install gcc
 ```
 
-### 4. Install cmake & conan.
+### 4. Install cmake
 
 ```
 pip install cmake
+```
+
+### 5. Install conan
+
+```
 pip install conan
 ```
 
@@ -92,17 +100,22 @@ essentials to your systems environment paths.
 [Environment]::SetEnvironmentVariable(
     "Path",
     [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) +
-    ";C:\dev\msys64\mingw64\bin;C:\dev\msys64\mingw32\bin;C:\dev\msys64\usr\bin",
+    ";C:\msys64\mingw64\bin;C:\msys64\mingw32\bin;C:\msys64\usr\bin",
     [EnvironmentVariableTarget]::Machine)
 ```
 
 After this, close powershell and reopen it to check if it worked. Run
 `g++ --version` and you should get a message with version information in it.
 
-### 5. Installing conan + cmake
+### 5. Installing cmake
 
 ```
 pip install cmake
+```
+
+### 6. Installing conan
+
+```
 pip install conan
 ```
 
