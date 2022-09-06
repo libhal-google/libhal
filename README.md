@@ -25,7 +25,7 @@
 
 # 📥 Install
 
-## [Installing Prerequisites](docs/prerequisites.md)
+## [Install Prerequisites](docs/prerequisites.md)
 
 ## Install using conan center index (CCI)
 

@@ -5,8 +5,9 @@ libhal, but these are most supported and recommended way of using libhal.
 
 ## Prerequisites
 
-- `python`: 3.10 or above
+- `make`: latest available version installed via "build essentials" package
 - `cmake`: 3.15 or above
+- `python`: 3.10 or above
 - `conan`: 1.51.3 or above (conan 2.0.0+ not currently supported)
 - `gcc`: version 11.3.0 or above (for compiling tests and code in general)
 
