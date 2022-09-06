@@ -1,4 +1,4 @@
-name: 🧪 tests
+name: 🚀 deploy
 
 on:
   workflow_call:
@@ -6,12 +6,9 @@ on:
       library:
         required: true
         type: string
-  pull_request:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 12 * * 0'
 
 jobs:
   tests:
@@ -47,5 +44,12 @@ jobs:
       - name: 📦 Create Conan Package & Verify Test Package
         run: conan create .
 
-      - name: 🔬 Build & Run Unit Tests
-        run: ./tests/run.sh
+      - name: 🆙 Upload package to `libhal-trunk` repo
+        if: ${{ inputs.library == '' }}
+        run: conan upload "libhal/*" --confirm --all -r=libhal-trunk
+
+      - name: 🆙 Upload package to `libhal-trunk` repo
+        if: ${{ inputs.library != '' }}
+        run: |
+             conan upload "${{ inputs.library }}/*" --confirm --all \
+             -r=libhal-trunk

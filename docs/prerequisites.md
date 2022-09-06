@@ -22,7 +22,7 @@ Install GCC and build essentials.
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install -y build-essential g++
+sudo apt install -y build-essential g++-11
 ```
 
 ### 2. Installing cmake
