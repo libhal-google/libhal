@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="150" src="logo.svg">
+  <img height="250" src="logo.png">
 </p>
 
 # libhal
