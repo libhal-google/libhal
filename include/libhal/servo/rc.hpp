@@ -65,20 +65,19 @@ public:
 
     // Calculate the wavelength in microseconds.
     auto wavelength = (1.0f / frequency) * std::micro::den;
-    // min_percent represents the minimum percentage to be used with the pwm
-    // signal. The percentage is calculated by using the minimum width of the
+    // min_percent represents the minimum float to be used with the pwm
+    // signal. The float is calculated by using the minimum width of the
     // signal in microseconds divided by the wavelength to get the decimal
-    // representation of the percentage.
-    auto min_percent = percentage(MinMicroseconds / wavelength);
-    // max_percent represents the maximum percentage to be used with the pwm
-    // signal. The percentage is calculated by using the maximum width of the
+    // representation of the float.
+    auto min_percent = float(MinMicroseconds / wavelength);
+    // max_percent represents the maximum float to be used with the pwm
+    // signal. The float is calculated by using the maximum width of the
     // signal in microseconds divided by the wavelength to get the decimal
-    // representation of the percentage.
-    auto max_percent = percentage(MaxMicroseconds / wavelength);
+    // representation of the float.
+    auto max_percent = float(MaxMicroseconds / wavelength);
     // percent_range holds float value of min_percent and max_percent for use
     // with map function used in position().
-    auto percent_range =
-      std::make_pair(min_percent.value(), max_percent.value());
+    auto percent_range = std::make_pair(min_percent, max_percent);
     // If no errors happen, call the constructor with verified parameters
     return rc_servo(p_pwm, percent_range);
   }
@@ -95,25 +94,23 @@ private:
 
   // Drivers must implement functions that are listed in interface. Use override
   // keyword for virtual functions
-  status driver_position(percentage p_position) noexcept override
+  status driver_position(float p_position) noexcept override
   {
     // The range of p_position is from -100% to 100%. The value of p_position is
-    // mapped within the percentage range of the pwm signal to get the decimal
-    // value of the scaled_percentage.
+    // mapped within the float range of the pwm signal to get the decimal
+    // value of the scaled_float.
     //
     // Example:
-    // pwm min percentage: percentage(0.05)
-    // pwm max percentage: percentage(0.25)
+    // pwm min float: float(0.05)
+    // pwm max float: float(0.25)
     //
-    // percentage(0.05) = position(percentage(-1.0))
-    // percentage(0.10) = position(percentage(-0.5))
-    // percentage(0.20) = position(percentage(0.5))
-    // percentage(0.25) = position(percentage(1.0))
+    // float(0.05) = position(float(-1.0))
+    // float(0.10) = position(float(-0.5))
+    // float(0.20) = position(float(0.5))
+    // float(0.25) = position(float(1.0))
     auto scaled_percent_raw =
-      map(p_position.value(),
-          std::make_pair(hal::percentage::min, hal::percentage::max),
-          m_percent_range);
-    auto scaled_percent = percentage(scaled_percent_raw);
+      map(p_position, std::make_pair(float(-1.0), float(1.0)), m_percent_range);
+    auto scaled_percent = float(scaled_percent_raw);
     // Set the duty cycle of the pwm with the scaled percent.
     return m_pwm->duty_cycle(scaled_percent);
   }

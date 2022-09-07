@@ -2,7 +2,6 @@
 
 #include "../config.hpp"
 #include "../error.hpp"
-#include "../percentage.hpp"
 
 namespace hal {
 /**
@@ -45,21 +44,21 @@ public:
    *   the motor. Using the same example, in this case 6V would be applied to
    *   the motor either as a DC constant voltage or via PWM at 50% duty cycle.
    *
-   * - Negative percentages will cause the motor to move in the opposite
-   *   direction as positive percentages. In the event that motor driver can *
+   * - Negative values will cause the motor to move in the opposite
+   *   direction as positive values. In the event that motor driver can *
    *   only go in one direction, this function should clamp the power applied to
    *   0%.
    *
    * @param p_power - the amount of power to apply to the motor
    * @return status - success or failure
    */
-  [[nodiscard]] status power(percentage p_power) noexcept
+  [[nodiscard]] status power(float p_power) noexcept
   {
     return driver_power(p_power);
   }
 
 private:
-  virtual status driver_power(percentage p_power) noexcept = 0;
+  virtual status driver_power(float p_power) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

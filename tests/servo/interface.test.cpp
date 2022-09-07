@@ -5,15 +5,15 @@
 
 namespace hal {
 namespace {
-constexpr auto expected_value = percentage(0.5);
+constexpr auto expected_value = float(0.5);
 
 class test_servo : public hal::servo
 {
 public:
-  percentage m_passed_position{};
+  float m_passed_position{};
 
 private:
-  status driver_position(percentage p_position) noexcept override
+  status driver_position(float p_position) noexcept override
   {
     m_passed_position = p_position;
     return {};
@@ -31,6 +31,6 @@ boost::ut::suite servo_test = []() {
 
   // Verify
   expect(bool{ result });
-  expect(that % expected_value.value() == test.m_passed_position);
+  expect(that % expected_value == test.m_passed_position);
 };
 }  // namespace hal

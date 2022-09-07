@@ -31,15 +31,15 @@ boost::ut::suite rc_servo_test = []() {
 
   "hal::servo::rc_servo::position"_test = []() {
     // Setup
-    constexpr auto expected0 = percentage(0.05);
-    constexpr auto expected1 = percentage(0.10);
-    constexpr auto expected2 = percentage(0.20);
-    constexpr auto expected3 = percentage(0.25);
+    constexpr auto expected0 = float(0.05);
+    constexpr auto expected1 = float(0.10);
+    constexpr auto expected2 = float(0.20);
+    constexpr auto expected3 = float(0.25);
 
-    constexpr auto percent_neg_100 = percentage(-1.0);
-    constexpr auto percent_neg_50 = percentage(-0.5);
-    constexpr auto percent_50 = percentage(0.5);
-    constexpr auto percent_100 = percentage(1.0);
+    constexpr auto percent_neg_100 = float(-1.0);
+    constexpr auto percent_neg_50 = float(-0.5);
+    constexpr auto percent_50 = float(0.5);
+    constexpr auto percent_100 = float(1.0);
 
     hal::mock::pwm pwm;
     auto servo = hal::rc_servo::create<100, 500, 2500>(pwm).value();
@@ -56,14 +56,14 @@ boost::ut::suite rc_servo_test = []() {
     expect(bool{ result2 });
     expect(bool{ result3 });
 
-    expect(that % expected0.value() ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(0)).value());
-    expect(that % expected1.value() ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(1)).value());
-    expect(that % expected2.value() ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(2)).value());
-    expect(that % expected3.value() ==
-           std::get<0>(pwm.spy_duty_cycle.call_history().at(3)).value());
+    expect(that % expected0 ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(0)));
+    expect(that % expected1 ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(1)));
+    expect(that % expected2 ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(2)));
+    expect(that % expected3 ==
+           std::get<0>(pwm.spy_duty_cycle.call_history().at(3)));
   };
 };
 }  // namespace hal

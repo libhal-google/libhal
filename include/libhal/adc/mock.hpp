@@ -15,27 +15,27 @@ namespace hal::mock {
 struct adc : public hal::adc
 {
   /**
-   * @brief Queues the percentages to be returned for read()
+   * @brief Queues the floats to be returned for read()
    *
-   * @param p_adc_values - queue of percentages
+   * @param p_adc_values - queue of floats
    */
-  void set(std::queue<percentage>& p_adc_values)
+  void set(std::queue<float>& p_adc_values)
   {
     m_adc_values = p_adc_values;
   }
 
 private:
-  result<percentage> driver_read() noexcept
+  result<float> driver_read() noexcept
   {
     if (m_adc_values.size() == 0) {
-      return hal::new_error(std::out_of_range("percentages queue is empty!"));
+      return hal::new_error(std::out_of_range("floats queue is empty!"));
     }
-    percentage m_current_value = m_adc_values.front();
+    float m_current_value = m_adc_values.front();
     m_adc_values.pop();
     return m_current_value;
   }
 
-  std::queue<percentage> m_adc_values{};
+  std::queue<float> m_adc_values{};
 };
 /** @} */
 }  // namespace hal::mock

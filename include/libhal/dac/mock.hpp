@@ -25,10 +25,10 @@ struct dac : public hal::dac
   }
 
   /// Spy handler for hal::dac::write()
-  spy_handler<percentage> spy_write;
+  spy_handler<float> spy_write;
 
 private:
-  status driver_write(percentage p_value) noexcept override
+  status driver_write(float p_value) noexcept override
   {
     return spy_write.record(p_value);
   };

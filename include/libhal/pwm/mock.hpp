@@ -28,14 +28,14 @@ struct pwm : public hal::pwm
   /// Spy handler for hal::pwm::frequency()
   spy_handler<hertz> spy_frequency;
   /// Spy handler for hal::pwm::duty_cycle()
-  spy_handler<percentage> spy_duty_cycle;
+  spy_handler<float> spy_duty_cycle;
 
 private:
   status driver_frequency(hertz p_settings) noexcept override
   {
     return spy_frequency.record(p_settings);
   }
-  status driver_duty_cycle(percentage p_duty_cycle) noexcept override
+  status driver_duty_cycle(float p_duty_cycle) noexcept override
   {
     return spy_duty_cycle.record(p_duty_cycle);
   }

@@ -4,7 +4,6 @@
 
 #include "../config.hpp"
 #include "../error.hpp"
-#include "../percentage.hpp"
 
 namespace hal {
 /**
@@ -29,13 +28,13 @@ public:
    * @param p_value - percentage scale from Vss to Vcc voltage
    * @return status - success or failure
    */
-  [[nodiscard]] status write(percentage p_value) noexcept
+  [[nodiscard]] status write(float p_value) noexcept
   {
     return driver_write(p_value);
   }
 
 private:
-  virtual status driver_write(percentage p_value) noexcept = 0;
+  virtual status driver_write(float p_value) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

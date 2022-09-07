@@ -25,10 +25,10 @@ struct servo : public hal::servo
   }
 
   /// Spy handler for hal::servo::position()
-  spy_handler<percentage> spy_position;
+  spy_handler<float> spy_position;
 
 private:
-  status driver_position(percentage p_position) noexcept override
+  status driver_position(float p_position) noexcept override
   {
     return spy_position.record(p_position);
   }

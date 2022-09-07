@@ -5,7 +5,6 @@
 #include <iostream>
 #include <span>
 
-#include <libhal/percentage.hpp>
 #include <libhal/units.hpp>
 
 template<typename Rep, typename Period>
@@ -68,15 +67,3 @@ bool operator!=(const std::array<T, size>& p_lhs,
 {
   return !(p_lhs == p_rhs);
 }
-
-namespace hal {
-template<std::floating_point float_t>
-inline std::ostream& operator<<(std::ostream& os,
-                                const percentage_t<float_t>& p_percent)
-{
-  return (os << "percentage { " << std::fixed << std::setprecision(15)
-             << static_cast<float>(p_percent.value()) << " : " << std::right
-             << std::setfill(' ') << std::setw(10) << p_percent.value()
-             << " }");
-}
-}  // namespace hal
