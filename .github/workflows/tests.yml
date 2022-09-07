@@ -32,6 +32,9 @@ jobs:
       - name: 📥 Install conan
         run: pip install conan
 
+      - name: 📥 Install gcovr
+        run: pip install --upgrade gcovr
+
       - name: 📡 Add `libhal-trunk` conan remote
         run: |
              conan remote add libhal-trunk \
