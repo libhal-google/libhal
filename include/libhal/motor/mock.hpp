@@ -25,10 +25,10 @@ struct motor : public hal::motor
   }
 
   /// Spy handler for hal::motor::write()
-  spy_handler<percentage> spy_power;
+  spy_handler<float> spy_power;
 
 private:
-  status driver_power(percentage p_power) noexcept override
+  status driver_power(float p_power) noexcept override
   {
     return spy_power.record(p_power);
   };

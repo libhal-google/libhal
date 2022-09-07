@@ -4,7 +4,6 @@
 
 #include "../config.hpp"
 #include "../error.hpp"
-#include "../percentage.hpp"
 #include "../units.hpp"
 
 namespace hal {
@@ -65,14 +64,14 @@ public:
    * @param p_duty_cycle - set the duty cycle of the pwm
    * @return status - success or failure
    */
-  [[nodiscard]] status duty_cycle(percentage p_duty_cycle) noexcept
+  [[nodiscard]] status duty_cycle(float p_duty_cycle) noexcept
   {
     return driver_duty_cycle(p_duty_cycle);
   }
 
 private:
   virtual status driver_frequency(hertz p_frequency) noexcept = 0;
-  virtual status driver_duty_cycle(percentage p_duty_cycle) noexcept = 0;
+  virtual status driver_duty_cycle(float p_duty_cycle) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

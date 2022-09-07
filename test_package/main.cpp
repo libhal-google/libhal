@@ -11,9 +11,9 @@ private:
     std::printf("frequency = %f Hz\n", p_frequency);
     return {};
   }
-  virtual hal::status driver_duty_cycle(hal::percentage p_position) noexcept
+  virtual hal::status driver_duty_cycle(float p_position) noexcept
   {
-    std::printf("duty cycle = %f %%\n", p_position.value());
+    std::printf("duty cycle = %f %%\n", p_position);
     return {};
   }
 };

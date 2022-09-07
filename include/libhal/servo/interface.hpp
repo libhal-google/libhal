@@ -2,7 +2,6 @@
 
 #include "../config.hpp"
 #include "../error.hpp"
-#include "../percentage.hpp"
 
 namespace hal {
 /**
@@ -41,7 +40,7 @@ public:
   /**
    * @brief Set the position of the servo.
    *
-   * The position of the servo is controlled with a percentage value. The
+   * The position of the servo is controlled with a float value. The
    * percentage value is then converted into an angular or linear position by
    * the implementing driver. The following list gives an idea of how each
    * percentage corresponds to each position.
@@ -72,30 +71,30 @@ public:
    *     // positioning.
    *     hal::example_servo servo;
    *     // Move to center position
-   *     servo.position(hal::percentage(0.0/90.0));
+   *     servo.position(hal::float(0.0/90.0));
    *     // ... delay ...
    *     // Move to the +45 degrees position
-   *     servo.position(hal::percentage(45.0/90.0));
+   *     servo.position(hal::float(45.0/90.0));
    *     // ... delay ...
    *     // Move to the -45 degrees position
-   *     servo.position(hal::percentage(-45.0/90.0));
+   *     servo.position(hal::float(-45.0/90.0));
    *     // ... delay ...
    *     // Move to the -90 degrees position
-   *     servo.position(hal::percentage(-90.0/90.0));
+   *     servo.position(hal::float(-90.0/90.0));
    *     // ... delay ...
    *     // Move to the +90 degrees position
-   *     servo.position(hal::percentage(90.0/90.0));
+   *     servo.position(hal::float(90.0/90.0));
    *
    * @param p_position - position to move the servo to
    * @return status - success or failure
    */
-  [[nodiscard]] status position(percentage p_position) noexcept
+  [[nodiscard]] status position(float p_position) noexcept
   {
     return driver_position(p_position);
   }
 
 private:
-  virtual status driver_position(percentage p_position) noexcept = 0;
+  virtual status driver_position(float p_position) noexcept = 0;
 };
 /** @} */
 }  // namespace hal

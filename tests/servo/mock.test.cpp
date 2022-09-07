@@ -8,8 +8,8 @@ boost::ut::suite servo_mock_test = []() {
   "hal::mock::servo::position()"_test = []() {
     // Setup
     hal::mock::servo mock;
-    auto expected1 = percentage(0.5);
-    auto expected2 = percentage(0.25);
+    auto expected1 = float(0.5);
+    auto expected2 = float(0.25);
 
     // Exercise
     auto result1 = mock.position(expected1);
@@ -18,10 +18,8 @@ boost::ut::suite servo_mock_test = []() {
     // Verify
     expect(bool{ result1 });
     expect(bool{ result2 });
-    expect(expected1.value() ==
-           std::get<0>(mock.spy_position.call_history().at(0)).value());
-    expect(expected2.value() ==
-           std::get<0>(mock.spy_position.call_history().at(1)).value());
+    expect(expected1 == std::get<0>(mock.spy_position.call_history().at(0)));
+    expect(expected2 == std::get<0>(mock.spy_position.call_history().at(1)));
   };
 };
 }  // namespace hal

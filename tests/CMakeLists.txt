@@ -50,7 +50,6 @@ add_executable(${TEST_NAME}
 
   static_memory_resource.test.cpp
   enum.test.cpp
-  percentage.test.cpp
   timeout.test.cpp
   static_callable.test.cpp
   testing.test.cpp

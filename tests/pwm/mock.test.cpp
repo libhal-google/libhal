@@ -25,23 +25,20 @@ boost::ut::suite pwm_mock_test = []() {
 
   "hal::mock::pwm::duty_cycle()"_test = []() {
     // Setup
-    constexpr auto expected1 = percentage(0.5);
-    constexpr auto expected2 = percentage(0.25);
+    constexpr auto expected1 = float(0.5);
+    constexpr auto expected2 = float(0.25);
     hal::mock::pwm mock;
     mock.spy_duty_cycle.trigger_error_on_call(3);
 
     // Exercise + Verify
     expect(bool{ mock.duty_cycle(expected1) });
-    expect(expected1.value() ==
-           std::get<0>(mock.spy_duty_cycle.call_history().at(0)).value());
+    expect(expected1 == std::get<0>(mock.spy_duty_cycle.call_history().at(0)));
 
     expect(bool{ mock.duty_cycle(expected2) });
-    expect(expected2.value() ==
-           std::get<0>(mock.spy_duty_cycle.call_history().at(1)).value());
+    expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(1)));
 
     expect(!mock.duty_cycle(expected2));
-    expect(expected2.value() ==
-           std::get<0>(mock.spy_duty_cycle.call_history().at(2)).value());
+    expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(2)));
   };
 };
 }  // namespace hal
