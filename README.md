@@ -55,6 +55,7 @@ attempting to check out servers like the CCI.
 
 ```bash
 conan remote add libhal-trunk https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
+conan config set general.revisions_enabled=True
 ```
 
 Now run this command to install libhal from that server.
