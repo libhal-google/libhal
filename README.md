@@ -1,20 +1,23 @@
-<p align="center">
-  <img height="250" src="logo.png">
-</p>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:100">
+
+<div align="center">
+    <br/>
+    <h1>
+      <img height="250" src="logo.png">
+      <p style="font-family: 'Montserrat', sans-serif; font-weight: lighter; font-size: 1.5rem">🚚 portable 🦾 flexible 📦 accessible 🍰 easy to use</p>
+    </h1>
+</div>
 
 <div align="center">
 
 [![docs](https://github.com/libhal/libhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/docs.yml)
 [![lint](https://github.com/libhal/libhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/lint.yml)
 [![tests](https://github.com/libhal/libhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/tests.yml)
-
 [![GitHub stars](https://img.shields.io/github/stars/libhal/libhal.svg)](https://github.com/libhal/libhal/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/libhal/libhal.svg)](https://github.com/libhal/libhal/network)
 [![GitHub issues](https://img.shields.io/github/issues/libhal/libhal.svg)](https://github.com/libhal/libhal/issues)
-
 [![codecov](https://codecov.io/gh/libhal/libhal/branch/master/graph/badge.svg?token=E7aAr2o1CT)](https://codecov.io/gh/libhal/libhal)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b084e6d5962d49a9afcb275d62cd6586)](https://www.codacy.com/gh/libhal/libhal/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=libhal/libhal&amp;utm_campaign=Badge_Grade)
-
 [![Discord](https://img.shields.io/discord/800515757871726622?color=7389D8&logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/p5A6vzv8tm)
 
 [Install](#-install)
@@ -556,18 +559,6 @@ concatenation of both 32-bit numbers. This driver, so long as it is checked
 often enough, can take a 32-bit hardware counter and extend it to a 64-bit
 counter.
 
-### hal::percent
-
-(TODO)
-
-### hal::frequency
-
-(TODO)
-
-## ⚖️ Using mp-units with libhal
-
-(TODO)
-
 ## ☔️ Handling errors
 
 Errors are handled in libhal using
@@ -899,7 +890,7 @@ int main()
 ![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fsupported.json)
 ![safety critical](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fsafety_critical.json)
 ![allocates](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fallocates.json)
-![floats](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Ffloats.json)
+![doubles](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fdoubles.json)
 ![throws](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fthrows.json)
 
 The badges above are displayed in a library's README.md right below the title to
@@ -922,21 +913,19 @@ This badge is placed for a libraries that have the possibility to dynamically
 allocates memory via `new`, `malloc`, `std::allocator` or a standard library
 that uses any of the allocating functions.
 
-## ⚠️ FLOATS
+## ⚠️ DOUBLES
 
-If a library uses floating point arithmetic anywhere in its implementation.
-Some points to consider when seeing a library that uses floats:
+If a library uses double floating point arithmetic anywhere in its
+implementation. Some points to consider when seeing a library that uses doubles:
 
-- Floating point operations take up flash space for devices without a hardware
-  FPU (floating point unit).
-- The cost is only paid once because the software floating point support code
-  can be called each time for each operation. So if you are already using
-  software floats then it is likely that using this library will not add more
-  space to a project.
-- Software driven floating arithmetic is very slow compared to integer
-  arithmetic.
-- For applications using multiple threads along with FPU support, context
-  switching time will increase because the FPU registers will need to be saved.
+- Double floating point operations take up flash space for devices without a
+  hardware FPU (floating point unit).
+- The cost is only paid once because the software implementation of floating
+  point support code can be called each time for each operation. So if you are
+  already using doubles in your code then it is likely that using this library
+  will not add more space to a project.
+- Software driven double floating point arithmetic is slow compared to integer
+  or single floating point arithmetic.
 
 ## ⚠️ THROWS
 
