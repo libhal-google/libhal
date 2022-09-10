@@ -890,7 +890,7 @@ int main()
 ![supported](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fsupported.json)
 ![safety critical](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fsafety_critical.json)
 ![allocates](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fallocates.json)
-![doubles](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fdoubles.json)
+![double](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fdouble.json)
 ![throws](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flibhal%2Flibhal%2Fmain%2Fbadges%2Fthrows.json)
 
 The badges above are displayed in a library's README.md right below the title to
