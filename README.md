@@ -125,7 +125,7 @@ operating systems, or operating systems running on a particular SBC
 - Linux
 - Windows CE
 
-### SBC example
+### SBC examples
 
 - Raspberry Pi
 - ODROID UX
@@ -267,25 +267,24 @@ Using stm32f10x:
 ```cpp
 #include <chrono>
 
-#include <libarmcortex/counter.hpp>
-#include <libhal/counter/util.hpp>
+#include <libhal/steady_clock/util.hpp>
 #include <libstm32f10x/output_pin.hpp>
 #include <libarmcortex/dwt_counter.hpp>
 
 int main() {
   // Get pin A2 as an output pin
   hal::output_pin & led = hal::stm32f10x::output_pin::get<'A', 2>();
-  // Construct a hardware counter
-  hal::counter & counter = hal::cortex_m::dwt_counter::get(
+  // Construct a hardware steady_clock
+  hal::steady_clock & steady_clock = hal::cortex_m::dwt_counter::get(
       hal::stm32f10x::clock::cpu());
 
   while (true)
   {
     using std::chrono::literals;
     led.level(true);
-    hal::delay(counter, 500ms);
+    hal::delay(steady_clock, 500ms);
     led.level(false);
-    hal::delay(counter, 500ms);
+    hal::delay(steady_clock, 500ms);
   }
 }
 ```
@@ -485,10 +484,10 @@ int main() {
   hal::bit_bang_spi bit_bang_spi(clock, data_out, data_in);
 
   std::array<hal::byte, 4> payload = {
-    hal::byte(0x11),
-    hal::byte(0x22),
-    hal::byte(0x33),
-    hal::byte(0x44),
+    0x11,
+    0x22,
+    0x33,
+    0x44,
   };
 
   chip_select.level(false);
@@ -656,18 +655,6 @@ void throw_exception(std::exception const& e)
 } // namespace boost
 ```
 
-### Getting logs from errors
-
-(TODO)
-
-### Peripheral driver debug snapshots
-
-(TODO)
-
-### Getting stack traces
-
-(TODO)
-
 ## 🎛️ Customization
 
 libhal uses `tweak.hpp` header files for customization and
@@ -707,133 +694,6 @@ the `-I` flag to specify directories where headers can be found. The file must
 be at the root of the directory listed within the `-I` include path.
 
 # Techniques
-
-## Virtual Static Polymorphism (VSP)
-
-TL;DR: This technique is used to eliminate the cost of making virtual function
-calls.
-
-### Discussion
-
-Each interface in libhal uses the keyword `virtual` to support runtime
-polymorphism. There are consequences to using the `virtual` keyword such as the
-generation of a "vtable". This article
-[Demystifying virtual functions, Vtable and VPTR in
-C++](https://medium.com/@abhichavhan/demystifying-virtual-functions-vtable-and-vptr-in-c-bf56f11f7cc7)
-explains how vtables work in detail.
-
-Whether or not vtables use too much space for an application is up for debate
-depending on the application. libhal mitigates this by trying to keep
-the number of virtual functions for each interface as small as is reasonable.
-
-The real concern regarding `virtual` keyword use is the function call
-performance. In order to call a virtual function, a lookup must be performed,
-then the call can be made. This tends to require 1 to 2 additional instructions
-before a function is called. For most applications this is negligible but for
-those in which this is a deal breaker there is a solution in using the "Virtual
-Static Polymorphism" technique. Note that this technique can improve call speed
-but at the cost of increasing the binary size of the application.
-
-### Writing Device Drivers with this Technique
-
-Here is an example of a soft driver for `hal::input_pin` which inverts the
-value of the read function using VSP.
-
-```cpp
-namespace hal
-{
-template<typename T = hal::input_pin>
-class invert_read : public hal::input_pin {
-public:
-  template<typename U>
-  invert_read(U & p_input_pin) : m_input_pin(p_input_pin) {}
-
-private:
-  status driver_configure(
-    const settings& p_settings) noexcept override
-  {
-    return m_input_pin->configure(p_settings);
-  }
-
-  result<bool> driver_level() noexcept override
-  {
-    return !HAL_CHECK(m_input_pin->level());
-  }
-
-  T * m_input_pin;
-};
-}
-```
-
-How is this useful? See the breakdown.
-
-### Scenario #1: Virtual call
-
-In this scenario, the default class template type has not been explicitly
-changed and thus the code will call class functions in a virtual, indirect way.
-
-```cpp
-hal::some_mcu::input_pin & input0 = hal::some_mcu::get_input_pin<0>();
-hal::invert_pin runtime_polymorphic(input0);
-auto result0 = runtime_polymorphic.read();
-```
-
-The information about the original class object and its internal implementation
-is not visible to the `runtime_polymorphic` object. So when read is called,
-because the type of the internal pointer is `T = hal::input_pin`, the code
-must perform a virtual call through the interface.
-
-### Scenario #2: Direct call
-
-Now lets look at a scenario where the default class template type has been
-explicitly set to the type of the input pin driver.
-
-```cpp
-// Uses static (direct) function calls
-hal::some_mcu::input_pin & input1 = hal::some_mcu::get_input_pin<1>();
-hal::invert_pin<hal::some_mcu::input_pin> static_polymorphic(input1);
-auto result1 = runtime_polymorphic.read();
-```
-
-Now `hal::invert_pin` is no longer dealing with an interface as type `T` is
-now `hal::some_mcu::input_pin`. As far as `hal::invert_pin` is concerned, we
-never used an interface in this case. Note that the constructor's type `U` is
-now equal to the type `T` and thus there is no down casting occurring. Now when
-read is called, the class has full context regarding the implementation of the
-read function. The compiler can then make a decision on whether or not to do the
-following three options:
-
-1. **Worst Case Scenario**: virtual call (costly so unlikely)
-2. **Better Scenario**: if the function's implementation is sufficiently large,
-   direct function call. This does result in cost but its better than a virtual
-   call.
-3. **Best Case Scenario**: if the function's implementation is small enough, the
-   compiler can inline the implementation of the driver into the soft driver
-   removing the call entirely.
-
-### Evaluating the PROS & CONS
-
-The PROS of scenario 2 or 3 from the list above is that you get better calling
-performance. And if you stack these multiple levels deep the performance
-improves stack.
-
-The CONS of this is that for each different unique explicit instantiation of
-`hal::invert_pin`, there will be multiple implementations of the same driver
-in the binary. For example, if a project has 3 drivers that implement the input
-pin interface and each requires an `hal::invert_pin` class to invert their
-read values, then you would have the following:
-
-```cpp
-// using virtual calls
-hal::invert_pin<hal::input_pin>
-// direct calls to some_mcu::input_pin
-hal::invert_pin<hal::some_mcu::input_pin>
-// direct calls to io_expander::input_pin
-hal::invert_pin<hal::io_expander::input_pin>
-```
-
-The cost of all of these driver instantiations can be large for large projects
-if the choice of speed over space is not made carefully.
 
 ## Supporting Multiple Platforms
 
@@ -957,11 +817,11 @@ libhal interfaces, peripheral drivers, device drivers and soft drivers.
 The following files are a guide to how to write their respective driver:
 
 - Peripheral Drivers:
-  - TBD: [`lpc40xx:adc.hpp`]()
+  - [`lpc40xx:adc.hpp`](https://github.com/libhal/liblpc40xx/blob/main/include/liblpc40xx/adc.hpp)
 - Device Drivers:
   - TBD: [`mma8452q:accelerometer.hpp`]()
 - Soft Drivers;
-  - TBD: [`libhal:rc_servo.hpp`]()
+  - [`libhal:rc_servo.hpp`](https://github.com/libhal/libhal/blob/main/include/libhal/servo/rc.hpp)
 
 Each of these files will include comments that document every portion of the
 code and explain why each line or block of code is present in the code.
