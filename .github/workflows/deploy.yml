@@ -7,6 +7,7 @@ on:
       library:
         required: true
         type: string
+  pull_request:
   push:
     branches:
       - main
@@ -47,11 +48,11 @@ jobs:
         run: conan create . --test-folder test_package
 
       - name: 🆙 Upload package to `libhal-trunk` repo
-        if: ${{ inputs.library == '' }}
+        if: ${{ inputs.library == '' && github.ref == 'refs/heads/main'}}
         run: conan upload "libhal/*" --confirm --all -r=libhal-trunk
 
       - name: 🆙 Upload package to `libhal-trunk` repo
-        if: ${{ inputs.library != '' }}
+        if: ${{ inputs.library != '' && github.ref == 'refs/heads/main'}}
         run: |
              conan upload "${{ inputs.library }}/*" --confirm --all \
              -r=libhal-trunk
