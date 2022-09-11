@@ -44,7 +44,7 @@ jobs:
         run: conan user -p $API_KEY -r libhal-trunk $JFROG_USER
 
       - name: 📦 Create Conan Package & Verify Test Package
-        run: conan create .
+        run: conan create . --test-folder test_package
 
       - name: 🆙 Upload package to `libhal-trunk` repo
         if: ${{ inputs.library == '' }}
