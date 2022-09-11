@@ -1,6 +1,10 @@
 name: 🚀 deploy
 
 on:
+  workflow_run:
+    workflows: ["📖 docs", "🧼 lint", "🧪 tests"]
+    types:
+      - completed
   workflow_dispatch:
   workflow_call:
     inputs:
