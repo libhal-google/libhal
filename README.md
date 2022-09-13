@@ -133,7 +133,7 @@ operating systems, or operating systems running on a particular SBC
 
 ## Interface
 
-Interfaces are the basic building block of libhal and enables the
+Interfaces are the basic building blocks of libhal and enable the
 flexibility needed to be portable and flexible.
 
 An interface is a contract of functions that an implementing class must adhere
@@ -142,8 +142,8 @@ function should have on hardware regardless of the implementation. When a
 program is compiled and a driver implements an interface, the compiler detects
 if any of the functions have not been provided and if so, will report an error.
 
-In libhal each interface corresponds to a type of embedded systems
-primitive which can be things such as:
+In libhal each interface corresponds to a type of embedded system
+primitive such as:
 
 - Digital I/O (input/output pins)
 - Analog to digital converter (adc)
@@ -158,14 +158,14 @@ Peripheral drivers are drivers for a target that is embedded within the device
 and therefore cannot be removed from the chip and is fixed in number.
 
 - Example: A digital output and input pin
-- Example: 1 of 5 hardware timer within a micro-controller
+- Example: 1 of 5 hardware timers within a micro-controller
 - Example: Integrated analog-to-digital converter
 
 ## Device drivers
 
-Are drivers for devices external to a target. In order to communicate with such
-a device the target must have the necessary peripherals and peripheral drivers
-to operate correctly.
+Device drivers are drivers for devices external to a target. In order to
+communicate with such a device the target must have the necessary peripherals
+and peripheral drivers to operate correctly.
 
 - Example: an accelerometer driver for the mpu6050
 - Example: a memory storage driver for a at581 flash memory
@@ -173,10 +173,11 @@ to operate correctly.
 
 ## Soft drivers
 
-Are drivers that do not have any specific underlying hardware associated with
-them. They are used to emulate, give context to, or alter the behavior of
-interfaces. For a driver to be a soft driver it must implement or have a way
-to generate, construct or create implementations of hardware interfaces.
+Soft drivers are drivers that do not have any specific underlying hardware
+associated with them. They are used to emulate, give context to, or alter the
+behavior of interfaces. For a driver to be a soft driver it must implement or
+have a way to generate, construct or create implementations of hardware
+interfaces.
 
 ### Emulation Example
 
@@ -186,7 +187,7 @@ to generate, construct or create implementations of hardware interfaces.
 
 ### Context Example
 
-- Implement a rotary encoder by using an adc a potentiometer and some
+- Implement a rotary encoder by using an adc, a potentiometer and some
   specification of the potentiometer like min and max angle, along with min and
   max voltage.
 - Implement a dac using multiple output pins and a set of resistors and an op
@@ -209,7 +210,7 @@ Hard drivers are peripheral drivers and device drivers.
 
 Off interface functions are public class functions that a driver can have that
 is beyond what is available for the interface it is implementing. These
-functions usually configures a peripheral or device in a way that is outside of
+functions usually configure a peripheral or device in a way that is outside
 the scope of the implementing interface. For peripherals these are platform
 specific. For drivers these are device specific features. Examples of such
 specific functions are as follows:
@@ -303,9 +304,9 @@ The file organization follows these rules:
     - Example: `#include <libhal/adc/interface.hpp>`
     - Example: `#include <libhal/dac/interface.hpp>`
 5. Any files associated/extending a particular interface will reside in that
-   interfaces directory such as soft drivers or utilities.
+   interface's directory such as soft drivers or utilities.
 6. Any hardware/interface files that extend to multiple interfaces will be
-   placed in one interface directories. The choice should be the directory that
+   placed in one interface directory. The choice should be the directory that
    makes the most sense, but this can be very arbitrary.
     - Example: `#include <libhal/input_pin/pin_resistor.hpp>`, this file
       could be in `output_pin` or `interrupt_pin` but `input_pin` seems like the
@@ -361,9 +362,9 @@ Utility functions are always "free" functions. "Free" means a non-class member
 function. Utility functions should never need access to the internal details of
 a class and thus do not and should not be members of the class.
 
-When C++ adds support for UFCS (Uniform function call syntax) free functions can
-be called as if they were member functions and class functions could be called
-as if they were free functions. Slated currently for C++26.
+When C++ adds support for UFCS (Uniform function call syntax), free functions
+can be called as if they were member functions and class functions could be
+called as if they were free functions. Slated currently for C++26.
 
 An example of UFCS would be the following:
 
@@ -381,9 +382,9 @@ include `#include <libhal/adc/util.hpp>`.
 
 ### Common Utility Functions
 
-To keep the semantics consistent almost every driver will have either or both a
+To keep the semantics consistent, almost every driver will have either or both a
 `hal::read()` or `hal::write()` free function. These functions should do
-what a typical developer should expect, read from the device for input devices
+what a typical developer should expect: read from the device for input devices
 or write to the device for output devices. The exact behavior depends on the
 interface.
 
@@ -399,7 +400,7 @@ need pwm signals and some output pins.
 
 ### Using an MPU6050 as an Accelerometer and/or Gyroscope
 
-The following steps assumes you already have a project that can be compiled and
+The following steps assume you already have a project that can be compiled and
 flashed on to a device and also has driver support for i2c.
 
 This particular examples uses the "normal" or low bandwidth versions of the
@@ -453,16 +454,15 @@ gyroscope drivers that your code can use.
 ## Using Soft Drivers
 
 Using soft drivers is no different than using a device driver. The only
-difference between device drivers and soft drivers is the fact that soft drivers
-are not associated with a particular device like an mpu6050 or esp8266. They are
-generic.
+difference between device drivers and soft drivers is that soft drivers are
+generic and not associated with a particular device like a mpu6050 or esp8266.
 
 A useful soft driver that can be used when a target does not have an spi
-peripheral or cannot use one of the available spi busses, is the
-`hal::bit_bang_spi`. "bit bang" refers to any method of data transmission that
-employs software as a substitute for dedicated hardware to generate transmitted
-signals or process received signals. `hal::bit_bang_spi` implements the
-`hal::spi` interface using 2 `hal::output_pins` and 1 `hal::input_pin`.
+peripheral or cannot use one of the available spi busses is `hal::bit_bang_spi`.
+"bit bang" refers to any method of data transmission that employs software as a
+substitute for dedicated hardware to generate transmitted signals or process
+received signals. `hal::bit_bang_spi` implements the `hal::spi` interface using
+2 `hal::output_pins` and 1 `hal::input_pin`.
 
 Being software emulated this driver is far slower than using hardware driven
 spi.
@@ -546,11 +546,11 @@ Utility classes are like soft drivers except they do not implement hardware
 interfaces. Utility classes are generally used to manage an interface and
 extend a driver's usefulness.
 
-Examples of this would be `hal::can_network` which takes an `hal::can`
+Examples of this would be `hal::can_network` which takes a `hal::can`
 implementation and manages a map of the messages the device has received on the
 can bus.
 
-Another example is `hal::uptime_counter` which takes an `hal::counter` and
+Another example is `hal::uptime_counter` which takes a `hal::counter` and
 for each call for uptime on the uptime counter, the class checks if the 32-bit
 counter has overflowed. If it has, then increment another 32-bit number with the
 number of overflows counted. Return the result as a 64-bit number which is the
@@ -574,7 +574,7 @@ the system.
 #define BOOST_LEAF_NO_THREADS
 ```
 
-LEAF also allows you to control how exceptions are handled by defining a
+LEAF allows you to control how exceptions are handled by defining a
 `boost::throw_exception(std::exception const&)` function. In general you want
 this to simply execute `std::exit` when this occurs. To do this, simply add
 this snippet to one of the C++ files linked into the project.
@@ -585,6 +585,7 @@ void throw_exception(std::exception const& e)
 {
   std::exit();
 }
+} // namespace boost
 ```
 
 ### Basic errors
@@ -697,9 +698,9 @@ be at the root of the directory listed within the `-I` include path.
 
 ## Supporting Multiple Platforms
 
-Peripherals are platform specific, thus an lpc40xx output pin driver will not
-work on an stm32f10x device. Because each implements the peripherals in a
-different and unique way there needs to be a separate driver for each. This is
+Peripherals are platform specific, thus a lpc40xx output pin driver will not
+work on a stm32f10x device. Because device each implements the peripherals in a
+different and unique way, there needs to be a separate driver for each. This is
 the crux of why embedded software is not portable across multiple devices. But
 libhal has a method of fixing this.
 
@@ -770,7 +771,7 @@ If a library follows completely the AUTOSAR C++20 guidelines.
 ## ⚠️ ALLOCATES
 
 This badge is placed for a libraries that have the possibility to dynamically
-allocates memory via `new`, `malloc`, `std::allocator` or a standard library
+allocate memory via `new`, `malloc`, `std::allocator` or a standard library
 that uses any of the allocating functions.
 
 ## ⚠️ DOUBLES
@@ -837,8 +838,8 @@ code and explain why each line or block of code is present in the code.
   - lowercase snake_case for everything else.
   - prefix `p_` for function parameters.
   - prefix `m_` for private/protected class member.
-- Refrain from variable names with abbreviations where it can be helped. `adc`
-  `pwm` and `i2c` are extremely common so it is fine to leave them as
+- Refrain from variable names with abbreviations where it can be helped. `adc`,
+  `pwm`, and `i2c` are extremely common so it is fine to leave them as
   abbreviations. Most people know the abbreviations more than the words that
   make them up. But words like `cnt` should be `count` and `cdl` and `cdh`
   should be written out as `clock_divider_low` and `clock_divider_high`.
@@ -881,12 +882,12 @@ Never include `<iostream>`.
 
 #### Rationale
 
-Applications incurs an automatic 150kB space penalty for including this header
+Applications incur an automatic 150kB space penalty for including this header
 even if the application never uses any part of `<iostream>`.
 
 ### Refrain from memory allocations
 
-Drivers should refrain from memory allocate as much as possible that includes
+Drivers should refrain from memory allocations as much as possible that includes
 using STL libraries that allocate such as `std::string` or `std::vector`.
 
 #### Rationale
@@ -895,7 +896,7 @@ TBD
 
 ### Drivers should not log to STDOUT or STDIN
 
-Peripheral driver must NOT log to stdout or stderr. This means no calls to
+Peripheral drivers must NOT log to stdout or stderr. This means no calls to
 
 - `std::printf`
 - `std::cout`
@@ -905,9 +906,9 @@ Peripheral driver must NOT log to stdout or stderr. This means no calls to
 
 Consider using the file I/O libraries in C, C++, python or some other
 language. Would you, as a developer, ever imagine that opening, reading,
-writing, or closing a file would to your console? Especially if there did not
+writing, or closing a file would (write?) to your console? Especially if there did not
 exist a way to turn off logging. Most users would be very upset as this would
-not seem like the role of the file I/O library to spam my console. This gets
+not seem like the role of the file I/O library to spam the console. This gets
 even worse if a particular application has thousands of files and each operation
 is logging.
 
@@ -1078,7 +1079,7 @@ for more details. Rationale can be found within that link as well.
 # 💡 Motivation
 
 The world of embedded systems is written almost entirely in C and C++. More and
-more the embedded world moves away from C and towards C++. This has to do with
+more of the embedded world move away from C and towards C++. This has to do with
 the many benefits of C++ such as type safety, compile time features,
 meta-programming, multiple programming paradigms which, if use correctly can
 result in smaller and higher performance code than in C.
@@ -1097,7 +1098,7 @@ for embedded system concepts such as serial communication (UART), analog to
 digital conversion (ADC), inertial measurement units (IMU), pulse width
 modulation (PWM) and much more. The advantage of building a system on top of
 libhal is that higher level drivers can be used with any target platform
-whether it is an stm32, an nxp micro controller, an RISC-V or is on an
+whether it is a stm32, a nxp micro controller, a RISC-V, or is on an
 embedded linux.
 
 This project is inspired by the work of Rust's embedded_hal and follows many of
