@@ -106,7 +106,8 @@ public:
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual status driver_send(const message_t& p_message) noexcept = 0;
-  virtual status driver_on_receive(std::function<handler> p_handler) noexcept;
+  virtual status driver_on_receive(
+    std::function<handler> p_handler) noexcept = 0;
 };
 /** @} */
 }  // namespace hal
