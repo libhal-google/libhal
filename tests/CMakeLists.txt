@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
   serial/interface.test.cpp
   servo/interface.test.cpp
   steady_clock/interface.test.cpp
+  motor/interface.test.cpp
 
   i2c/util.test.cpp
   spi/util.test.cpp
