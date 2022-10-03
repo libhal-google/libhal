@@ -14,14 +14,10 @@ boost::ut::suite math_test = []() {
       expect(that % 2147483648L == multiply(-1L, -2147483648L).value());
     };
     "Exceptions"_test = []() {
-      expect(throws([] {
-        return multiply(std::uint32_t{ 5U }, std::uint32_t{ 4294967295U })
-          .value();
-      }));
-      expect(throws([] {
-        return multiply(std::uint32_t{ 4L }, std::uint32_t{ 1073741824L })
-          .value();
-      }));
+      expect(
+        !bool{ multiply(std::uint32_t{ 5U }, std::uint32_t{ 4294967295U }) });
+      expect(
+        !bool{ multiply(std::uint32_t{ 4L }, std::uint32_t{ 1073741824L }) });
     };
     "Standard Usage"_test = []() {
       expect(that % 75 == multiply(15, 5).value());
