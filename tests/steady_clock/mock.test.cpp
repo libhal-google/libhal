@@ -29,6 +29,6 @@ boost::ut::suite steady_clock_mock_test = []() {
   expect(that % expected1 == result1);
   expect(that % expected2 == result2);
   expect(that % expected3 == result3);
-  expect(throws([&mock] { mock.uptime().value(); }));
+  expect(!bool{ mock.uptime() });
 };
 }  // namespace hal

@@ -7,7 +7,7 @@ namespace hal {
 boost::ut::suite input_pin_mock_test = []() {
   using namespace boost::ut;
 
-  "hal::mock::inputput_pin::configure()"_test = []() {
+  "hal::mock::input_pin::configure()"_test = []() {
     // Setup
     constexpr hal::input_pin::settings mock_settings_default{};
     constexpr hal::input_pin::settings mock_settings_custom{
@@ -40,7 +40,7 @@ boost::ut::suite input_pin_mock_test = []() {
     expect(that % true == mock.level().value());
     expect(that % false == mock.level().value());
     expect(that % true == mock.level().value());
-    expect(throws([&mock] { mock.level().value(); }));
+    expect(!bool{ mock.level() });
   };
   "hal::mock::input_pin::reset()"_test = []() {
     // Setup
