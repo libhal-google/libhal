@@ -7,7 +7,6 @@
 namespace hal {
 boost::ut::suite serial_util_test = []() {
   using namespace boost::ut;
-  using namespace std::chrono_literals;
 
   static constexpr hal::byte write_failure_byte{ 'C' };
   static constexpr hal::byte filler_byte{ 'A' };
@@ -23,10 +22,15 @@ boost::ut::suite serial_util_test = []() {
     [[nodiscard]] result<write_t> driver_write(
       std::span<const hal::byte> p_data) noexcept override
     {
+      write_call_count++;
       if (p_data[0] == write_failure_byte) {
         return hal::new_error();
       }
       m_out = p_data;
+
+      if (single_byte_out) {
+        return write_t{ p_data.subspan(0, 1), p_data.subspan(1) };
+      }
       return write_t{ p_data, std::span<const hal::byte>{} };
     }
 
@@ -42,7 +46,7 @@ boost::ut::suite serial_util_test = []() {
         };
       }
       read_was_called = true;
-      if (m_read_fails) {
+      if (read_fails) {
         return hal::new_error();
       }
       // only fill 1 byte at a time
@@ -67,13 +71,15 @@ boost::ut::suite serial_util_test = []() {
     }
 
     std::span<const hal::byte> m_out{};
+    int write_call_count = 0;
     bool read_was_called = false;
     bool flush_called = false;
-    bool m_read_fails = false;
+    bool read_fails = false;
+    bool single_byte_out = false;
   };
 
   "serial/util"_test = []() {
-    "[success] write_partial"_test = []() {
+    "[success] write_partial full"_test = []() {
       // Setup
       fake_serial serial;
       const std::array<hal::byte, 4> expected_payload{};
@@ -90,6 +96,24 @@ boost::ut::suite serial_util_test = []() {
       expect(that % !serial.read_was_called);
     };
 
+    "[success] write_partial single byte at a time"_test = []() {
+      // Setup
+      fake_serial serial;
+      const std::array<hal::byte, 4> expected_payload{};
+      serial.single_byte_out = true;
+
+      // Exercise
+      auto result = write_partial(serial, expected_payload);
+
+      // Verify
+      expect(bool{ result });
+      expect(1 == result.value().transmitted.size());
+      expect(!serial.flush_called);
+      expect(that % &expected_payload[0] == serial.m_out.data());
+      expect(that % 4 == serial.m_out.size());
+      expect(that % !serial.read_was_called);
+    };
+
     "[failure] write_partial"_test = []() {
       // Setup
       fake_serial serial;
@@ -103,6 +127,59 @@ boost::ut::suite serial_util_test = []() {
       expect(!serial.flush_called);
       expect(that % nullptr == serial.m_out.data());
       expect(that % 0 == serial.m_out.size());
+      expect(that % !serial.read_was_called);
+    };
+
+    "[success] write"_test = []() {
+      // Setup
+      fake_serial serial;
+      const std::array<hal::byte, 4> expected_payload{};
+      serial.single_byte_out = true;
+
+      // Exercise
+      auto result = write(serial, expected_payload);
+
+      // Verify
+      expect(bool{ result });
+      expect(!serial.flush_called);
+      expect(that % 1 == serial.m_out.size());
+      expect(that % expected_payload.size() == serial.write_call_count);
+      expect(that % !serial.read_was_called);
+    };
+
+    "[success] write(std::span<const char>)"_test = []() {
+      // Setup
+      fake_serial serial;
+      const std::array<char, 4> expected_payload{ 'a', 'b', 'c', 'd' };
+      serial.single_byte_out = true;
+
+      // Exercise
+      auto result = write(serial, expected_payload);
+
+      // Verify
+      expect(bool{ result });
+      expect(!serial.flush_called);
+      expect(that % expected_payload.end()[-1] == serial.m_out[0]);
+      expect(that % 1 == serial.m_out.size());
+      expect(that % expected_payload.size() == serial.write_call_count);
+      expect(that % !serial.read_was_called);
+    };
+
+    "[success] write(std::string_view)"_test = []() {
+      // Setup
+      fake_serial serial;
+      std::string_view expected_payload = "abcd";
+      serial.single_byte_out = true;
+
+      // Exercise
+      auto result = write(serial, expected_payload);
+
+      // Verify
+      expect(bool{ result });
+      expect(!serial.flush_called);
+      expect(that % expected_payload.end()[-1] == serial.m_out[0]);
+      expect(that % 1 == serial.m_out.size());
+      expect(that % expected_payload.size() == serial.write_call_count);
       expect(that % !serial.read_was_called);
     };
 
@@ -129,7 +206,7 @@ boost::ut::suite serial_util_test = []() {
       // Setup
       fake_serial serial;
       std::array<hal::byte, 4> expected_buffer;
-      serial.m_read_fails = true;
+      serial.read_fails = true;
 
       // Exercise
       auto result = read(serial, expected_buffer, never_timeout());
@@ -163,7 +240,7 @@ boost::ut::suite serial_util_test = []() {
     "[failure read] read<Length>"_test = []() {
       // Setup
       fake_serial serial;
-      serial.m_read_fails = true;
+      serial.read_fails = true;
 
       // Exercise
       auto result = read<5>(serial, never_timeout());
@@ -203,7 +280,7 @@ boost::ut::suite serial_util_test = []() {
       std::array<hal::byte, 4> expected_buffer;
       expected_buffer.fill(filler_byte);
       std::array<hal::byte, 4> actual_buffer;
-      serial.m_read_fails = true;
+      serial.read_fails = true;
 
       // Exercise
       auto result = write_then_read(
@@ -279,7 +356,7 @@ boost::ut::suite serial_util_test = []() {
       // Setup
       fake_serial serial;
       const std::array<hal::byte, 4> expected_payload{};
-      serial.m_read_fails = true;
+      serial.read_fails = true;
 
       // Exercise
       auto result =

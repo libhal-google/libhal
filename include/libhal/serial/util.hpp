@@ -4,6 +4,7 @@
 #include <span>
 #include <string_view>
 
+#include "../as_bytes.hpp"
 #include "../error.hpp"
 #include "../timeout.hpp"
 #include "../units.hpp"
@@ -19,14 +20,60 @@ namespace hal {
  *
  * @param p_serial - the serial port that will be written to
  * @param p_data_out - the data to be written out the port
- * @return result<size_t> - success or failure
- * serial::write returns an error from the serial port.
+ * @return result<serial::write_t> - get the results of the uart port write
+ * operation.
  */
 [[nodiscard]] inline result<serial::write_t> write_partial(
   serial& p_serial,
   std::span<const hal::byte> p_data_out) noexcept
 {
   return p_serial.write(p_data_out);
+}
+
+/**
+ * @brief Write bytes to a serial port
+ *
+ * @param p_serial - the serial port that will be written to
+ * @param p_data_out - the data to be written out the port
+ * @return status - success or failure
+ */
+[[nodiscard]] inline status write(
+  serial& p_serial,
+  std::span<const hal::byte> p_data_out) noexcept
+{
+  auto write_info = HAL_CHECK(p_serial.write(p_data_out));
+
+  while (write_info.remaining.size() != 0) {
+    write_info = HAL_CHECK(p_serial.write(write_info.remaining));
+  }
+
+  return success();
+}
+
+/**
+ * @brief Write std::span of const char to a serial port
+ *
+ * @param p_serial - the serial port that will be written to
+ * @param p_data_out - chars to be written out the port
+ * @return status - success or failure
+ */
+[[nodiscard]] inline status write(serial& p_serial,
+                                  std::span<const char> p_data_out) noexcept
+{
+  return write(p_serial, hal::as_bytes(p_data_out));
+}
+
+/**
+ * @brief Write std::span of const char to a serial port
+ *
+ * @param p_serial - the serial port that will be written to
+ * @param p_data_out - chars to be written out the port
+ * @return status - success or failure
+ */
+[[nodiscard]] inline status write(serial& p_serial,
+                                  std::string_view p_data_out) noexcept
+{
+  return write(p_serial, hal::as_bytes(p_data_out));
 }
 
 /**
