@@ -147,24 +147,6 @@ boost::ut::suite serial_util_test = []() {
       expect(that % !serial.read_was_called);
     };
 
-    "[success] write(std::span<const char>)"_test = []() {
-      // Setup
-      fake_serial serial;
-      const std::array<char, 4> expected_payload{ 'a', 'b', 'c', 'd' };
-      serial.single_byte_out = true;
-
-      // Exercise
-      auto result = write(serial, expected_payload);
-
-      // Verify
-      expect(bool{ result });
-      expect(!serial.flush_called);
-      expect(that % expected_payload.end()[-1] == serial.m_out[0]);
-      expect(that % 1 == serial.m_out.size());
-      expect(that % expected_payload.size() == serial.write_call_count);
-      expect(that % !serial.read_was_called);
-    };
-
     "[success] write(std::string_view)"_test = []() {
       // Setup
       fake_serial serial;

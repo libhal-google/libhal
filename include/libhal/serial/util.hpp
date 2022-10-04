@@ -58,19 +58,6 @@ namespace hal {
  * @return status - success or failure
  */
 [[nodiscard]] inline status write(serial& p_serial,
-                                  std::span<const char> p_data_out) noexcept
-{
-  return write(p_serial, hal::as_bytes(p_data_out));
-}
-
-/**
- * @brief Write std::span of const char to a serial port
- *
- * @param p_serial - the serial port that will be written to
- * @param p_data_out - chars to be written out the port
- * @return status - success or failure
- */
-[[nodiscard]] inline status write(serial& p_serial,
                                   std::string_view p_data_out) noexcept
 {
   return write(p_serial, hal::as_bytes(p_data_out));
