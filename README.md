@@ -1,11 +1,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:100">
 
 <div align="center">
-    <br/>
-    <h1>
-      <img height="250" src="logo.png">
-      <p style="font-family: 'Montserrat', sans-serif; font-weight: lighter; font-size: 1.5rem">🚚 portable 🦾 flexible 📦 accessible 🍰 easy to use</p>
-    </h1>
+<img height="250" src="logo.png">
+<br />
+<br />
+
+```
+🚚 portable 🦾 flexible 📦 accessible 🍰 easy to use
+```
+<br />
 </div>
 
 <div align="center">
