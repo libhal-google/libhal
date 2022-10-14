@@ -61,6 +61,13 @@ inline auto new_error(Item&&... p_item) noexcept
   return boost::leaf::new_error(std::forward<Item>(p_item)...);
 }
 
+[[noreturn]] inline void halt()
+{
+  while (true) {
+    continue;
+  }
+}
+
 namespace error {
 /**
  * @brief Used for defining static_asserts that should always fail, but only if
