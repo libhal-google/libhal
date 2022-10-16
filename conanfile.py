@@ -11,7 +11,7 @@ required_conan_version = ">=1.50.0"
 
 class LibHALConan(ConanFile):
     name = "libhal"
-    version = "0.1.6"
+    version = "0.1.7"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://libhal.github.io/libhal"
@@ -61,7 +61,7 @@ class LibHALConan(ConanFile):
         basic_layout(self)
 
     def requirements(self):
-        self.requires("boost-leaf/[x, include_prerelease=True]@")
+        self.requires("boost-leaf/[>=1.80.0, include_prerelease=True]@")
 
     def package(self):
         copy(self, "LICENSE", dst=os.path.join(

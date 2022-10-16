@@ -29,6 +29,18 @@ using hertz = float;
 /// level.
 using g_force = float;
 
+/// Type for current represented in amps.
+using ampere = float;
+
+/// Type for voltage represented in volts.
+using volts = float;
+
+/// Type for temperature represented in celsius.
+using celsius = float;
+
+/// Type for rotational velocity represented in RPMs.
+using rpm = float;
+
 /// Type for length represented in meters.
 using meters = float;
 
@@ -66,6 +78,88 @@ namespace literals {
 [[nodiscard]] consteval g_force operator""_g(long double p_value) noexcept
 {
   return static_cast<float>(p_value);
+}
+
+// =============================================================================
+// Ampere
+// =============================================================================
+
+[[nodiscard]] consteval ampere operator""_kA(long double p_value) noexcept
+{
+  return static_cast<float>(p_value * std::kilo::num);
+}
+
+[[nodiscard]] consteval ampere operator""_A(long double p_value) noexcept
+{
+  return static_cast<float>(p_value);
+}
+
+[[nodiscard]] consteval ampere operator""_mA(long double p_value) noexcept
+{
+  return static_cast<float>(p_value / std::milli::den);
+}
+
+[[nodiscard]] consteval ampere operator""_uA(long double p_value) noexcept
+{
+  return static_cast<float>(p_value / std::micro::den);
+}
+
+// =============================================================================
+// Voltage
+// =============================================================================
+
+[[nodiscard]] consteval volts operator""_kV(long double p_value) noexcept
+{
+  return static_cast<float>(p_value * std::kilo::num);
+}
+
+[[nodiscard]] consteval volts operator""_V(long double p_value) noexcept
+{
+  return static_cast<float>(p_value);
+}
+
+[[nodiscard]] consteval volts operator""_mV(long double p_value) noexcept
+{
+  return static_cast<float>(p_value / std::milli::den);
+}
+
+[[nodiscard]] consteval volts operator""_uV(long double p_value) noexcept
+{
+  return static_cast<float>(p_value / std::micro::den);
+}
+
+// =============================================================================
+// Temperature
+// =============================================================================
+
+[[nodiscard]] consteval celsius operator""_C(long double p_value) noexcept
+{
+  return static_cast<float>(p_value);
+}
+
+[[nodiscard]] consteval celsius operator""_F(long double p_value) noexcept
+{
+  p_value = (p_value - 32.0) * (5.0 / 9.0);
+  return static_cast<float>(p_value);
+}
+
+[[nodiscard]] consteval celsius operator""_K(long double p_value) noexcept
+{
+  return static_cast<float>(p_value - 273.15);
+}
+
+// =============================================================================
+// Rotational Velocity
+// =============================================================================
+
+[[nodiscard]] consteval rpm operator""_rpm(long double p_value) noexcept
+{
+  return static_cast<float>(p_value);
+}
+
+[[nodiscard]] consteval rpm operator""_deg_per_sec(long double p_value) noexcept
+{
+  return static_cast<float>(p_value / 6.0);
 }
 
 // =============================================================================
