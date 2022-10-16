@@ -7,12 +7,15 @@ set -e
 script_path="$(dirname "${BASH_SOURCE[0]}")"
 cd $script_path
 
+# Create and locally install our conan package
+conan create ..
+
 # Create, if not present, the "build" directory and move into it
 mkdir -p build
 cd build
 
 # Install conan packages (Boost.UT)
-conan install .. -s build_type=Debug
+conan install .. -s build_type=Debug -r=libhal-trunk --update
 # Generate build files
 cmake ..
 # Build program
