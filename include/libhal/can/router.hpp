@@ -64,7 +64,7 @@ public:
       }));
     }
 
-    return hal::success();
+    return result.first;
   }
 
   /**
