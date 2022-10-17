@@ -44,6 +44,9 @@ using rpm = float;
 /// Type for length represented in meters.
 using meters = float;
 
+/// Type for rotational velocity represented in degrees.
+using angle = float;
+
 // Namespace containing user defined literals for the hal standard units
 namespace literals {
 
@@ -160,6 +163,15 @@ namespace literals {
 [[nodiscard]] consteval rpm operator""_deg_per_sec(long double p_value) noexcept
 {
   return static_cast<float>(p_value / 6.0);
+}
+
+// =============================================================================
+// Angle
+// =============================================================================
+
+[[nodiscard]] consteval angle operator""_deg(long double p_value) noexcept
+{
+  return static_cast<float>(p_value);
 }
 
 // =============================================================================
