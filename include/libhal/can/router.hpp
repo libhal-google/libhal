@@ -18,6 +18,10 @@ namespace hal {
 class can_router
 {
 public:
+  using handler = std::function<hal::can::handler>;
+  using route_map = std::pmr::unordered_map<hal::can::id_t, handler>;
+  using iterator = route_map::iterator;
+
   /**
    * @brief Construct a new can message router
    *
@@ -32,20 +36,18 @@ public:
   }
 
   /**
-   * @brief Setup a callback for when a particular ID is received
+   * @brief Add an empty receive callback to the routing map
    *
    *
    * @param p_id - Associated ID of messages to be stored.
-   * @param p_handler - callback to be executed when a p_id message is received.
    * @return status - error or success
    * @throws std::errc::not_enough_memory if the internal network map does not
    * have enough space to add another handler.
    */
-  [[nodiscard]] status on_receive(
-    hal::can::id_t p_id,
-    std::function<hal::can::handler> p_handler) noexcept
+  [[nodiscard]] result<iterator> add_route(hal::can::id_t p_id) noexcept
   {
-    auto result = m_messages.emplace(std::make_pair(p_id, p_handler));
+    auto result = m_messages.emplace(std::make_pair(
+      p_id, []([[maybe_unused]] const can::message_t& p_message) {}));
     auto was_successful = result.second;
 
     if (!was_successful) {
@@ -62,6 +64,24 @@ public:
       }));
     }
 
+    return hal::success();
+  }
+
+  /**
+   * @brief Set a callback for when messages with a specific ID is received
+   *
+   *
+   * @param p_id - Associated ID of messages to be stored.
+   * @param p_handler - callback to be executed when a p_id message is received.
+   * @return status - error or success
+   * @throws std::errc::not_enough_memory if the internal network map does not
+   * have enough space to add another handler.
+   */
+  [[nodiscard]] status on_receive(hal::can::id_t p_id,
+                                  handler p_handler) noexcept
+  {
+    auto iterator = HAL_CHECK(add_route(p_id));
+    iterator->second = p_handler;
     return hal::success();
   }
 
@@ -93,8 +113,7 @@ public:
 
 private:
   hal::can* m_can{};
-  std::pmr::unordered_map<hal::can::id_t, std::function<hal::can::handler>>
-    m_messages{};
+  route_map m_messages{};
   bool m_initialized = false;
 };
 /** @} */
