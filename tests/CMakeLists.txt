@@ -52,6 +52,7 @@ add_executable(${PROJECT_NAME}
   static_memory_resource.test.cpp
   enum.test.cpp
   timeout.test.cpp
+  static_list.test.cpp
   static_callable.test.cpp
   testing.test.cpp
   main.test.cpp
