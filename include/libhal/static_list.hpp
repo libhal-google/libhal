@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <iterator>
 #include <utility>
 
 namespace hal {
@@ -191,7 +192,13 @@ public:
   public:
     friend class static_list;
 
-    item_iterator(item* p_item, static_list* p_list = nullptr)
+    using iterator_category = std::bidirectional_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = Object;
+    using pointer = value_type*;
+    using reference = value_type&;
+
+    explicit item_iterator(item* p_item, const static_list* p_list = nullptr)
       : m_self(p_item)
       , m_list(p_list)
     {
@@ -234,19 +241,34 @@ public:
       return m_self == p_other.m_self;
     }
 
-    Object& operator*()
+    bool operator!=(const item_iterator& p_other) const
+    {
+      return m_self != p_other.m_self;
+    }
+
+    reference operator*()
     {
       return m_self->get();
     }
 
-    const Object& operator*() const
+    const reference operator*() const
     {
       return m_self->get();
+    }
+
+    pointer operator->()
+    {
+      return &m_self->get();
+    }
+
+    pointer operator->() const
+    {
+      return &m_self->get();
     }
 
   private:
     item* m_self;
-    static_list* m_list;
+    const static_list* m_list;
   };
 
   using value_type = Object;

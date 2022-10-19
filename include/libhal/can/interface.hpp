@@ -22,6 +22,9 @@ namespace hal {
 class can
 {
 public:
+  /// Can message ID type trait
+  using id_t = uint32_t;
+
   /// Generic settings for a can peripheral
   ///
   /// CAN Bit Quanta Timing Diagram of:
@@ -162,9 +165,6 @@ public:
     }
   };
 
-  /// Can message ID type trait
-  using id_t = uint32_t;
-
   /// Structure of a CAN message
   struct message_t
   {
@@ -177,6 +177,14 @@ public:
     /// Whether or not the message is a remote request frame. If true, then
     /// length and payload are ignored.
     bool is_remote_request = false;
+
+    /**
+     * @brief Default operators for <, <=, >, >= and ==
+     *
+     * @return auto - result of the comparison
+     */
+    [[nodiscard]] constexpr auto operator<=>(const message_t&) const noexcept =
+      default;
   };
 
   // Receive handler for can messages
