@@ -77,7 +77,8 @@ add_executable(${PROJECT_NAME}
   math.test.cpp
   error.test.cpp
   map.test.cpp
-  units.test.cpp)
+  units.test.cpp
+  callback_recorder.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC . ../include)
 target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra
