@@ -23,7 +23,8 @@ namespace hal {
  * buffer. Memory statistics can also give programs the insight into how much
  * memory space is available and make decisions based on that. In the event that
  * the memory of the static allocator is exceeded, a std::bad_alloc exception is
- * thrown.
+ * thrown. Without exceptions being enabled this will terminate the program so
+ * great care must be taken when using this allocator.
  *
  * USAGE:
  *
