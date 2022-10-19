@@ -45,7 +45,8 @@ public:
    * @param p_callback - when the static callback function is called, it will
    * call this callback
    */
-  static_callable(std::function<return_t(args_t... p_args)> p_callback) noexcept
+  explicit static_callable(
+    std::function<return_t(args_t... p_args)> p_callback) noexcept
   {
     callback = p_callback;
   }

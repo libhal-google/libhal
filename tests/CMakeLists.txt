@@ -56,6 +56,7 @@ add_executable(${PROJECT_NAME}
   static_callable.test.cpp
   testing.test.cpp
   main.test.cpp
+  move_interceptor.test.cpp
   overflow_counter.test.cpp
   math.test.cpp
   error.test.cpp
