@@ -1,6 +1,6 @@
-#include <boost/ut.hpp>
 #include <libhal/static_list.hpp>
-#include <list>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 boost::ut::suite static_list_test = []() {
