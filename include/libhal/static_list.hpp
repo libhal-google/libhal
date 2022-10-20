@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
+#include <utility>
+
 namespace hal {
 /**
  * @brief static_list is a non-owning non-allocating doubly linked list
