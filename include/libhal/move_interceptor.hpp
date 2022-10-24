@@ -26,8 +26,12 @@ namespace hal {
  * @tparam T - object to intercept the move constructor of
  */
 template<class T>
-struct move_interceptor
+class move_interceptor
 {
+public:
+  friend T;
+
+private:
   /**
    * @brief Function called prior to type T's move constructor
    *
