@@ -43,6 +43,7 @@ add_executable(${PROJECT_NAME}
   interrupt_pin/mock.test.cpp
   servo/mock.test.cpp
   steady_clock/mock.test.cpp
+  can/mock.test.cpp
 
   servo/rc.test.cpp
   i2c/minimum_speed.test.cpp
