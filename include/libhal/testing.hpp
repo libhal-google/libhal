@@ -73,6 +73,19 @@ public:
   }
 
   /**
+   * @brief Return argument from one of call history parameters
+   *
+   * @param p_call - history call from 0 to N
+   * @return const auto& - reference to the call history vector
+   * @throws std::out_of_range - if p_call is beyond the size of call_history
+   */
+  template<size_t ArgumentIndex>
+  const auto& history(int p_call) const noexcept
+  {
+    return std::get<ArgumentIndex>(m_call_history.at(p_call));
+  }
+
+  /**
    * @brief Reset call recordings and turns off error trigger
    *
    */
