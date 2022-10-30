@@ -53,6 +53,7 @@ private:
 
 boost::ut::suite can_test = []() {
   using namespace boost::ut;
+
   "can interface test"_test = []() {
     // Setup
     test_can test;
@@ -71,6 +72,7 @@ boost::ut::suite can_test = []() {
     expect(that % expected_message.id == test.m_message.id);
     expect(that % 1 == counter);
   };
+
   "can errors test"_test = []() {
     // Setup
     test_can test;
@@ -85,6 +87,10 @@ boost::ut::suite can_test = []() {
     expect(!bool{ result1 });
     expect(!bool{ result2 });
     expect(!bool{ result3 });
+  };
+
+  "ostream << can::message_t "_test = []() {
+    std::cout << "ostream << can::message_t => " << expected_message << "\n";
   };
 };
 }  // namespace hal

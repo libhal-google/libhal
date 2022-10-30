@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
+#include <iosfwd>
 #include <optional>
 
 #include "../error.hpp"
@@ -185,6 +186,31 @@ public:
      */
     [[nodiscard]] constexpr auto operator<=>(const message_t&) const noexcept =
       default;
+
+    /**
+     * @brief print this type using ostreams
+     *
+     * Meant for unit testing, testing and simulation purposes
+     * C++ streams, in general, should not be used for any embedded project that
+     * will ever have to be used on an MCU due to its memory cost.
+     *
+     * @param p_ostream - the ostream
+     * @param p_message - object to convert to a string
+     * @return std::ostream& - reference to the ostream
+     */
+    friend std::ostream& operator<<(std::ostream& p_ostream,
+                                    const message_t& p_message)
+    {
+      p_ostream << "{ id: " << std::hex << "0x" << p_message.id;
+      p_ostream << ", length: " << std::dec << unsigned{ p_message.length };
+      p_ostream << ", is_remote_request: " << p_message.is_remote_request;
+      p_ostream << ", payload = [";
+      for (const auto& element : p_message.payload) {
+        p_ostream << std::hex << "0x" << unsigned{ element } << ", ";
+      }
+      p_ostream << "] }";
+      return p_ostream;
+    }
   };
 
   // Receive handler for can messages
