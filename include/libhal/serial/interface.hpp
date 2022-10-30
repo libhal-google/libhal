@@ -222,6 +222,8 @@ public:
     return driver_flush();
   }
 
+  virtual ~serial() = default;
+
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual result<write_t> driver_write(

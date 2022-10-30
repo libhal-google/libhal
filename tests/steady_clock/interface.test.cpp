@@ -1,11 +1,9 @@
-#include <boost/ut.hpp>
 #include <libhal/steady_clock/interface.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 namespace {
-constexpr hertz expected_frequency = 1.0_Hz;
-constexpr std::uint64_t expected_uptime = 100;
-
 class test_steady_clock : public hal::steady_clock
 {
 public:

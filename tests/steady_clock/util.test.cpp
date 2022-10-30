@@ -2,7 +2,7 @@
 #include <libhal/steady_clock/util.hpp>
 #include <system_error>
 
-#include "../ostreams.hpp"
+#include <libhal/testing.hpp>
 
 namespace hal {
 boost::ut::suite steady_clock_utility_test = []() {

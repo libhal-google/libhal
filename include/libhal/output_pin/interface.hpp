@@ -16,7 +16,7 @@ namespace hal {
  * off or on an LED.
  *
  * Implementations of this interface can be backed by external devices such as
- * I/O expanders or other microcontrollers.
+ * I/O expanders or other micro-controllers.
  *
  */
 class output_pin
@@ -79,6 +79,8 @@ public:
   {
     return driver_level();
   }
+
+  virtual ~output_pin() = default;
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;

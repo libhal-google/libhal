@@ -57,6 +57,8 @@ public:
     return driver_power(p_power);
   }
 
+  virtual ~motor() = default;
+
 private:
   virtual status driver_power(float p_power) noexcept = 0;
 };

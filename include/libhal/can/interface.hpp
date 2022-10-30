@@ -7,6 +7,7 @@
 #include <iosfwd>
 #include <optional>
 
+#include "../comparison.hpp"
 #include "../error.hpp"
 #include "../units.hpp"
 
@@ -180,12 +181,17 @@ public:
     bool is_remote_request = false;
 
     /**
-     * @brief Default operators for <, <=, >, >= and ==
+     * @brief operator ==
      *
      * @return auto - result of the comparison
      */
-    [[nodiscard]] constexpr auto operator<=>(const message_t&) const noexcept =
-      default;
+    [[nodiscard]] constexpr auto operator==(
+      const message_t& p_other) const noexcept
+    {
+      bool payload_equal = payload == p_other.payload;
+      return payload_equal && id == p_other.id && length == p_other.length &&
+             is_remote_request == p_other.is_remote_request;
+    }
 
     /**
      * @brief print this type using ostreams
@@ -252,6 +258,8 @@ public:
   {
     return driver_on_receive(p_handler);
   }
+
+  virtual ~can() = default;
 
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;

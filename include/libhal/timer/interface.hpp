@@ -97,6 +97,8 @@ public:
     return driver_schedule(p_callback, p_delay);
   }
 
+  virtual ~timer() = default;
+
 private:
   virtual result<bool> driver_is_running() noexcept = 0;
   virtual status driver_cancel() noexcept = 0;

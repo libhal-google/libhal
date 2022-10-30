@@ -44,7 +44,7 @@ private:
   {
     return spy_configure.record(p_settings);
   }
-  result<bool> driver_level() noexcept
+  result<bool> driver_level() noexcept override
   {
     // This comparison performs bounds checking because front() and pop() do
     // not bounds check and results in undefined behavior if the queue is empty.

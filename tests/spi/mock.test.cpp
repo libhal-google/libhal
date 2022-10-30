@@ -34,20 +34,19 @@ boost::ut::suite spi_mock_test = []() {
 
   "hal::mock::write_only_spi::transfer()"_test = []() {
     // Setup
-    constexpr std::array<const hal::byte, 1> out_1{ hal::byte{ 0xAA } };
-    constexpr std::array<const hal::byte, 2> out_2{ hal::byte{ 0xDD },
-                                                    hal::byte{ 0xCC } };
-    constexpr std::span<hal::byte> dummy{};
-    constexpr hal::byte filler{ 0xFF };
+    std::vector<hal::byte> out_1{ hal::byte{ 0xAA } };
+    std::vector<hal::byte> out_2{ hal::byte{ 0xDD }, hal::byte{ 0xCC } };
+    std::span<hal::byte> dummy{};
+    hal::byte filler{ 0xFF };
 
     hal::mock::write_only_spi mock;
 
     // Exercise + Verify
     expect(bool{ mock.transfer(out_1, dummy, filler) });
-    expect(std::ranges::equal(out_1, mock.write_record.at(0)));
+    expect(out_1 == mock.write_record.at(0));
 
     expect(bool{ mock.transfer(out_2, dummy, filler) });
-    expect(std::ranges::equal(out_2, mock.write_record.at(1)));
+    expect(out_2 == mock.write_record.at(1));
     expect(mock.write_record.size() == 2);
 
     mock.reset();

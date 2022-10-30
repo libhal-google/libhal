@@ -10,8 +10,8 @@ boost::ut::suite move_interceptor_test = []() {
     struct mock : public move_interceptor<mock>
     {
       mock() = default;
-      mock(mock&) = default;
-      mock& operator=(mock&) = default;
+      mock(mock&) = delete;
+      mock& operator=(mock&) = delete;
       mock& operator=(mock&& p_old_self) = default;
       mock(mock&& p_old_self) = default;
 

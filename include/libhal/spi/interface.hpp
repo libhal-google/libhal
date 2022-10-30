@@ -93,6 +93,8 @@ public:
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
 
+  virtual ~spi() = default;
+
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual status driver_transfer(std::span<const hal::byte> p_data_out,

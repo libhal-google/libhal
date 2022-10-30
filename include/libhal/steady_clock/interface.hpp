@@ -51,6 +51,8 @@ public:
     return driver_uptime();
   }
 
+  virtual ~steady_clock() = default;
+
 private:
   virtual hertz driver_frequency() noexcept = 0;
   virtual result<std::uint64_t> driver_uptime() noexcept = 0;

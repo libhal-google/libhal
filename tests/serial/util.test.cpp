@@ -2,7 +2,7 @@
 #include <libhal/serial/util.hpp>
 #include <span>
 
-#include "ostreams.hpp"
+#include <libhal/testing.hpp>
 
 namespace hal {
 boost::ut::suite serial_util_test = []() {

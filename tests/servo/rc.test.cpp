@@ -2,7 +2,7 @@
 #include <libhal/pwm/mock.hpp>
 #include <libhal/servo/rc.hpp>
 
-#include "ostreams.hpp"
+#include <libhal/testing.hpp>
 
 namespace hal {
 boost::ut::suite rc_servo_test = []() {

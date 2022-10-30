@@ -69,6 +69,8 @@ public:
     return driver_duty_cycle(p_duty_cycle);
   }
 
+  virtual ~pwm() = default;
+
 private:
   virtual status driver_frequency(hertz p_frequency) noexcept = 0;
   virtual status driver_duty_cycle(float p_duty_cycle) noexcept = 0;

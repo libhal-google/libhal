@@ -93,6 +93,8 @@ public:
     return driver_position(p_position);
   }
 
+  virtual ~servo() = default;
+
 private:
   virtual status driver_position(float p_position) noexcept = 0;
 };
