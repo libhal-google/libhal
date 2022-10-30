@@ -1,8 +1,9 @@
-#include <boost/ut.hpp>
-#include <libhal/math.hpp>
 #include <libhal/units.hpp>
 
-#include "ostreams.hpp"
+#include <libhal/math.hpp>
+#include <libhal/testing.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 boost::ut::suite units_test = []() {
@@ -69,10 +70,12 @@ boost::ut::suite units_test = []() {
 
     expect(that % 25ms == duration_from_cycles(2000.0_MHz, 50'000'000).value());
 
-    expect(
-      !duration_from_cycles(0.01_Hz, std::numeric_limits<std::int32_t>::max()));
-    expect(
-      !duration_from_cycles(0.01_Hz, std::numeric_limits<std::int32_t>::min()));
+    expect(!duration_from_cycles(
+      0.01_Hz,
+      static_cast<std::uint32_t>(std::numeric_limits<std::int32_t>::max())));
+    expect(!duration_from_cycles(
+      0.01_Hz,
+      static_cast<std::uint32_t>(std::numeric_limits<std::int32_t>::min())));
   };
 };
 }  // namespace hal

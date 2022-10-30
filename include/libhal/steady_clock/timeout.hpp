@@ -100,7 +100,7 @@ private:
    * @param p_cycles_until_timeout - number of cycles until timeout
    */
   steady_clock_timeout(hal::steady_clock& p_steady_clock,
-                       std::int64_t p_cycles_until_timeout) noexcept
+                       std::uint64_t p_cycles_until_timeout) noexcept
     : m_counter(&p_steady_clock)
     , m_cycles_until_timeout(p_cycles_until_timeout)
   {

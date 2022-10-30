@@ -1,8 +1,14 @@
 #pragma once
-#include "error.hpp"
 
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <iosfwd>
+#include <span>
 #include <tuple>
 #include <vector>
+
+#include "error.hpp"
 
 namespace hal {
 /**
@@ -80,7 +86,7 @@ public:
    * @throws std::out_of_range - if p_call is beyond the size of call_history
    */
   template<size_t ArgumentIndex>
-  const auto& history(int p_call) const noexcept
+  const auto& history(size_t p_call) const noexcept
   {
     return std::get<ArgumentIndex>(m_call_history.at(p_call));
   }
@@ -101,3 +107,33 @@ private:
 };
 /** @} */
 }  // namespace hal
+
+template<typename Rep, typename Period>
+inline std::ostream& operator<<(
+  std::ostream& p_os,
+  const std::chrono::duration<Rep, Period>& p_duration)
+{
+  return p_os << p_duration.count() << " * (" << Period::num << "/"
+              << Period::den << ")s";
+}
+
+template<typename T, size_t size>
+inline std::ostream& operator<<(std::ostream& p_os,
+                                const std::array<T, size>& p_array)
+{
+  p_os << "{";
+  for (const auto& element : p_array) {
+    p_os << element << ", ";
+  }
+  return p_os << "}\n";
+}
+
+template<typename T>
+inline std::ostream& operator<<(std::ostream& p_os, const std::span<T>& p_array)
+{
+  p_os << "{";
+  for (const auto& element : p_array) {
+    p_os << element << ", ";
+  }
+  return p_os << "}\n";
+}

@@ -93,6 +93,8 @@ public:
     return driver_on_trigger(p_callback);
   }
 
+  virtual ~interrupt_pin() = default;
+
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual void driver_on_trigger(

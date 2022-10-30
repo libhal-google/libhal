@@ -129,6 +129,8 @@ public:
     return driver_transaction(p_address, p_data_out, p_data_in, p_timeout);
   }
 
+  virtual ~i2c() = default;
+
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual status driver_transaction(

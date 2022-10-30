@@ -251,7 +251,7 @@ public:
       return m_self->get();
     }
 
-    const reference operator*() const
+    reference operator*() const
     {
       return m_self->get();
     }
@@ -340,12 +340,12 @@ public:
     return item_iterator(m_head);
   }
 
-  constexpr const auto begin() const noexcept
+  constexpr auto begin() const noexcept
   {
     return item_iterator(m_head);
   }
 
-  constexpr const auto cbegin() const noexcept
+  constexpr auto cbegin() const noexcept
   {
     return item_iterator(m_head);
   }
@@ -355,12 +355,12 @@ public:
     return item_iterator(nullptr, this);
   }
 
-  constexpr const auto end() const noexcept
+  constexpr auto end() const noexcept
   {
     return item_iterator(nullptr, this);
   }
 
-  constexpr const auto cend() const noexcept
+  constexpr auto cend() const noexcept
   {
     return item_iterator(nullptr, this);
   }

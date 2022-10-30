@@ -56,6 +56,8 @@ public:
     return driver_level();
   }
 
+  virtual ~input_pin() = default;
+
 private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual result<bool> driver_level() noexcept = 0;

@@ -33,6 +33,8 @@ public:
     return driver_write(p_value);
   }
 
+  virtual ~dac() = default;
+
 private:
   virtual status driver_write(float p_value) noexcept = 0;
 };

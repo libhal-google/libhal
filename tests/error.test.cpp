@@ -45,10 +45,9 @@ boost::ut::suite error_test = []() {
     // Exercise
     // Should call the `on_error_callback` defined in the tweaks file
 
-    attempt_all(
-      [expected]() -> status { return new_error(); },
-      [](int) {},
-      [&value_to_be_change, expected]() { value_to_be_change = expected; });
+    attempt_all([]() -> status { return new_error(); },
+                [](int) {},
+                [&value_to_be_change]() { value_to_be_change = expected; });
 
     // Verify
     expect(that % value_to_be_change == expected);

@@ -1,7 +1,7 @@
 #include <boost/ut.hpp>
 #include <libhal/servo/interface.hpp>
 
-#include "../ostreams.hpp"
+#include <libhal/testing.hpp>
 
 namespace hal {
 namespace {

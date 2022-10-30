@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "../as_bytes.hpp"
+#include "../comparison.hpp"
 #include "../error.hpp"
 #include "../timeout.hpp"
 #include "../units.hpp"

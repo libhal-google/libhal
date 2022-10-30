@@ -1,6 +1,9 @@
+#include <libhal/math.hpp>
+
+#include <limits>
+
 #include <boost/ut.hpp>
 #include <libhal/map.hpp>
-#include <libhal/math.hpp>
 
 namespace hal {
 boost::ut::suite map_test = []() {
