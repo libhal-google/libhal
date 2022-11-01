@@ -200,12 +200,16 @@ public:
      * C++ streams, in general, should not be used for any embedded project that
      * will ever have to be used on an MCU due to its memory cost.
      *
+     * @tparam CharT - character type
+     * @tparam Traits - ostream traits type
      * @param p_ostream - the ostream
      * @param p_message - object to convert to a string
-     * @return std::ostream& - reference to the ostream
+     * @return std::basic_ostream<CharT, Traits>& - reference to the ostream
      */
-    friend std::ostream& operator<<(std::ostream& p_ostream,
-                                    const message_t& p_message)
+    template<class CharT, class Traits>
+    friend std::basic_ostream<CharT, Traits>& operator<<(
+      std::basic_ostream<CharT, Traits>& p_ostream,
+      const message_t& p_message)
     {
       p_ostream << "{ id: " << std::hex << "0x" << p_message.id;
       p_ostream << ", length: " << std::dec << unsigned{ p_message.length };
