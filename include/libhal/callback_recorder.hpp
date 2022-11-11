@@ -51,15 +51,12 @@ public:
    * @tparam U - return type of the callback function
    * @tparam V - type of the callback function
    * @param p_default - default value to return from callback function
-   * @param p_callback - when the static callback function is called, it will
-   * call this callback
    */
   template<typename U = return_t,
            typename V = std::enable_if_t<!std::is_void_v<U>>*>
-  callback_recorder(U p_default = U{}, V p_callback = 0) noexcept
+  callback_recorder(U p_default = U{}) noexcept
   {
-    m_callback =
-      [this, p_default, p_callback]([[maybe_unused]] args_t... p_args) -> U {
+    m_callback = [this, p_default]([[maybe_unused]] args_t... p_args) -> U {
       m_call_count++;
       return p_default;
     };

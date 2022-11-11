@@ -48,6 +48,8 @@ add_executable(${PROJECT_NAME}
   serial/util.test.cpp
   steady_clock/util.test.cpp
 
+  serial/coroutine.test.cpp
+
   motor/mock.test.cpp
   pwm/mock.test.cpp
   timer/mock.test.cpp
