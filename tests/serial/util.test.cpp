@@ -1,8 +1,8 @@
-#include <boost/ut.hpp>
 #include <libhal/serial/util.hpp>
-#include <span>
 
+#include <boost/ut.hpp>
 #include <libhal/testing.hpp>
+#include <span>
 
 namespace hal {
 boost::ut::suite serial_util_test = []() {
@@ -14,12 +14,12 @@ boost::ut::suite serial_util_test = []() {
   class fake_serial : public hal::serial
   {
   public:
-    [[nodiscard]] status driver_configure(const settings&) noexcept override
+    status driver_configure(const settings&) noexcept override
     {
       return {};
     }
 
-    [[nodiscard]] result<write_t> driver_write(
+    result<write_t> driver_write(
       std::span<const hal::byte> p_data) noexcept override
     {
       write_call_count++;
@@ -34,8 +34,7 @@ boost::ut::suite serial_util_test = []() {
       return write_t{ p_data, std::span<const hal::byte>{} };
     }
 
-    [[nodiscard]] result<read_t> driver_read(
-      std::span<hal::byte> p_data) noexcept override
+    result<read_t> driver_read(std::span<hal::byte> p_data) noexcept override
     {
       if (p_data.size() == 0) {
         return read_t{
@@ -45,10 +44,13 @@ boost::ut::suite serial_util_test = []() {
           .capacity = 1,
         };
       }
+
       read_was_called = true;
+
       if (read_fails) {
         return hal::new_error();
       }
+
       // only fill 1 byte at a time
       p_data[0] = filler_byte;
 
@@ -60,7 +62,7 @@ boost::ut::suite serial_util_test = []() {
       };
     }
 
-    [[nodiscard]] status driver_flush() noexcept override
+    status driver_flush() noexcept override
     {
       flush_called = true;
       return {};

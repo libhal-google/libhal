@@ -6,6 +6,7 @@
 
 #include "../as_bytes.hpp"
 #include "../comparison.hpp"
+#include "../enum.hpp"
 #include "../error.hpp"
 #include "../timeout.hpp"
 #include "../units.hpp"
