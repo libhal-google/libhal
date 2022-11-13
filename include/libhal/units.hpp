@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <iosfwd>
 
 #include "config.hpp"
 #include "error.hpp"
@@ -329,6 +330,27 @@ constexpr float wavelength(hertz p_source)
     return std::chrono::nanoseconds(static_cast<std::int64_t>(nanoseconds));
   }
   return new_error(std::errc::result_out_of_range);
+}
+
+/**
+ * @brief print this type using ostreams
+ *
+ * Meant for unit testing, testing and simulation purposes
+ * C++ streams, in general, should not be used for any embedded project that
+ * will ever have to be used on an MCU due to its memory cost.
+ *
+ * @tparam CharT - character type
+ * @tparam Traits - ostream traits type
+ * @param p_ostream - the ostream
+ * @param p_byte - object to convert to a string
+ * @return std::basic_ostream<CharT, Traits>& - reference to the ostream
+ */
+template<class CharT, class Traits>
+inline std::basic_ostream<CharT, Traits>& operator<<(
+  std::basic_ostream<CharT, Traits>& p_ostream,
+  const byte& p_byte)
+{
+  return p_ostream << std::hex << "0x" << unsigned(p_byte);
 }
 /** @} */
 }  // namespace hal

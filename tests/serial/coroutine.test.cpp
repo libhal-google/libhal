@@ -456,10 +456,6 @@ boost::ut::suite serial_read_into_test = []() {
     expect(that % actual_buffer == expected);
   };
 
-  "[success] read_into in two blocks"_test = [=]() {
-    // Setup
-  };
-
   "[success] read_into return control after 1 byte"_test = [=]() {
     // Setup
     fake_serial serial;
@@ -509,6 +505,147 @@ boost::ut::suite serial_read_into_test = []() {
     std::array<hal::byte, 2> actual_buffer;
 
     auto reader = read_into(serial, actual_buffer);
+
+    // Exercise
+    auto result = reader();
+
+    // Verify
+    expect(that % result.has_error());
+    expect(that % actual_buffer != expected);
+  };
+};
+
+boost::ut::suite serial_read_upto_test = []() {
+  using namespace boost::ut;
+
+  class fake_serial : public hal::serial
+  {
+  public:
+    status driver_configure(const settings&) noexcept override
+    {
+      return {};
+    }
+
+    result<write_t> driver_write(
+      std::span<const hal::byte> p_data) noexcept override
+    {
+      return write_t{
+        .transmitted = p_data,
+        .remaining = std::span<const hal::byte>(),
+      };
+    }
+
+    result<read_t> driver_read(std::span<hal::byte> p_data) noexcept override
+    {
+      return m_read_function(p_data);
+    }
+
+    status driver_flush() noexcept override
+    {
+      return {};
+    }
+
+    virtual ~fake_serial()
+    {}
+
+    std::function<result<read_t>(std::span<hal::byte>)> m_read_function;
+  };
+
+  "[success] read_upto one shot"_test = [=]() {
+    // Setup
+    fake_serial serial;
+    serial.m_read_function =
+      [counter = size_t(0)](
+        std::span<hal::byte> p_data) mutable -> result<serial::read_t> {
+      for (auto& data : p_data) {
+        data = static_cast<hal::byte>(counter++);
+      }
+
+      return serial::read_t{
+        .received = p_data,
+        .remaining = p_data.subspan(p_data.size()),
+        .available = 0,
+        .capacity = 1024,
+      };
+    };
+
+    const std::array<hal::byte, 4> expected = { 0, 1, 2, 3 };
+    const std::array<hal::byte, 2> sequence = { 2, 3 };
+    std::array<hal::byte, 4> actual_buffer{};
+
+    auto reader = read_upto(serial, sequence, actual_buffer);
+    std::array<work_state, 5> results;
+
+    // Exercise
+    results[0] = reader().value();
+    results[1] = reader().value();
+    results[2] = reader().value();
+    results[3] = reader().value();
+    results[4] = reader().value();
+
+    // Verify
+    expect(that % work_state::finished == results[0]);
+    expect(that % work_state::finished == results[1]);
+    expect(that % work_state::finished == results[2]);
+    expect(that % work_state::finished == results[3]);
+    expect(that % work_state::finished == results[4]);
+    expect(that % actual_buffer == expected);
+  };
+
+  "[success] read_upto one byte at a time"_test = [=]() {
+    // Setup
+    fake_serial serial;
+    serial.m_read_function =
+      [counter = size_t(0)](
+        std::span<hal::byte> p_data) mutable -> result<serial::read_t> {
+      for (auto& data : p_data) {
+        data = static_cast<hal::byte>(counter++);
+      }
+
+      return serial::read_t{
+        .received = p_data,
+        .remaining = p_data.subspan(p_data.size()),
+        .available = 0,
+        .capacity = 1024,
+      };
+    };
+
+    const std::array<hal::byte, 4> expected = { 0, 1, 2, 3 };
+    const std::array<hal::byte, 2> sequence = { 2, 3 };
+    std::array<hal::byte, 4> actual_buffer{};
+
+    auto reader = read_upto(serial, sequence, actual_buffer, 1);
+    std::array<work_state, 5> results;
+
+    // Exercise
+    results[0] = reader().value();
+    results[1] = reader().value();
+    results[2] = reader().value();
+    results[3] = reader().value();
+    results[4] = reader().value();
+
+    // Verify
+    expect(that % work_state::in_progress == results[0]);
+    expect(that % work_state::in_progress == results[1]);
+    expect(that % work_state::in_progress == results[2]);
+    expect(that % work_state::finished == results[3]);
+    expect(that % work_state::finished == results[4]);
+    expect(that % actual_buffer == expected);
+  };
+
+  "[success] read_upto in two blocks"_test = [=]() {};
+  "[failure] read_upto return error on read"_test = [=]() {
+    // Setup
+    fake_serial serial;
+    serial.m_read_function =
+      []([[maybe_unused]] std::span<hal::byte> p_data) mutable
+      -> result<serial::read_t> { return hal::new_error(); };
+
+    const std::array<hal::byte, 4> expected = { 0, 1, 2, 3 };
+    const std::array<hal::byte, 2> sequence = { 2, 3 };
+    std::array<hal::byte, 4> actual_buffer;
+
+    auto reader = read_upto(serial, sequence, actual_buffer);
 
     // Exercise
     auto result = reader();
