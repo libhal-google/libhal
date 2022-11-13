@@ -12,7 +12,6 @@
 #include "interface.hpp"
 
 namespace hal {
-
 /**
  * @brief Discard received bytes until the sequence is found
  *
@@ -40,9 +39,18 @@ public:
   }
 
   /**
-   * @brief
+   * @brief Each call to this object will skip data from the serial port until
+   * the sequence is reached.
    *
-   * @return result<work_state> - only
+   * This function will return if the sequence is found or if there are no more
+   * bytes in the serial port.
+   *
+   * Call this function again to resume reading from the port.
+   *
+   * @return result<work_state> - work_state::in_progress if the sequence hasn't
+   * been met and the buffer still has space.
+   * @return result<work_state> - work_state::finished if the sequence was
+   * found before the buffer was filled completely.
    */
   result<work_state> operator()()
   {
@@ -77,8 +85,8 @@ public:
 private:
   serial* m_serial;
   std::span<const hal::byte> m_sequence;
-  size_t m_search_index = 0;
   size_t m_read_limit;
+  size_t m_search_index = 0;
 };
 
 /**
@@ -106,9 +114,17 @@ public:
   }
 
   /**
-   * @brief
+   * @brief Each call to this object will read data into the buffer.
    *
-   * @return result<work_state> - only
+   * This function will return if the read limit is reached or if there are no
+   * more bytes in the serial port.
+   *
+   * Call this function again to resume reading from the port.
+   *
+   * @return result<work_state> - work_state::in_progress if the sequence hasn't
+   * been met and the buffer still has space.
+   * @return result<work_state> - work_state::finished if the sequence was
+   * found before the buffer was filled completely.
    */
   result<work_state> operator()()
   {
@@ -133,5 +149,91 @@ private:
   serial* m_serial;
   std::span<hal::byte> m_buffer;
   size_t m_read_limit;
+};
+
+/**
+ * @brief Discard received bytes until the sequence is found
+ *
+ */
+class read_upto
+{
+public:
+  /**
+   * @brief Construct a new skip beyond object
+   *
+   * @param p_serial - serial port to skip through
+   * @param p_sequence - sequence to search for. The lifetime of this data
+   * pointed to by this span must outlive this object, or not be used when the
+   * lifetime of that data is no longer available.
+   * @param p_buffer - buffer to fill data into
+   * @param p_read_limit - the maximum number of bytes to read off from the
+   * serial port before returning. A value 0 will result in no reads from the
+   * serial port.
+   */
+  read_upto(serial& p_serial,
+            std::span<const hal::byte> p_sequence,
+            std::span<hal::byte> p_buffer,
+            size_t p_read_limit = 32)
+    : m_serial(&p_serial)
+    , m_sequence(p_sequence)
+    , m_buffer(p_buffer)
+    , m_read_limit(p_read_limit)
+  {
+  }
+
+  /**
+   * @brief Each call to this object will read data into the buffer.
+   *
+   * This function will return if the read limit is reached or if there are no
+   * more bytes in the serial port.
+   *
+   * Call this function again to resume reading from the port.
+   *
+   * @return result<work_state> - work_state::in_progress if the sequence hasn't
+   * been met and the buffer still has space.
+   * @return result<work_state> - work_state::failure if the sequence wasn't
+   * found before the buffer was filled completely.
+   * @return result<work_state> - work_state::finished if the sequence was
+   * found before the buffer was filled completely.
+   */
+  result<work_state> operator()()
+  {
+    static constexpr size_t read_length = 1;
+    if (m_search_index == m_sequence.size()) {
+      return work_state::finished;
+    }
+
+    for (size_t read_limit = 0; read_limit < m_read_limit; read_limit++) {
+      auto read_result =
+        HAL_CHECK(m_serial->read(m_buffer.subspan(0, read_length)));
+
+      if (read_result.received.size() == 0) {
+        return work_state::in_progress;
+      }
+
+      m_buffer = m_buffer.subspan(read_length);
+
+      // Check if the next byte received matches the sequence
+      if (m_sequence[m_search_index] == read_result.received[0]) {
+        m_search_index++;
+      } else {  // Otherwise set the search index back to the start.
+        m_search_index = 0;
+      }
+
+      // Check if the search index is equal to the size of the sequence size
+      if (m_search_index == m_sequence.size()) {
+        return work_state::finished;
+      }
+    }
+
+    return work_state::in_progress;
+  }
+
+private:
+  serial* m_serial;
+  std::span<const hal::byte> m_sequence;
+  std::span<hal::byte> m_buffer;
+  size_t m_read_limit;
+  size_t m_search_index = 0;
 };
 }  // namespace hal
