@@ -27,9 +27,8 @@ public:
    * @param p_sequence - sequence to search for. The lifetime of this data
    * pointed to by this span must outlive this object, or not be used when the
    * lifetime of that data is no longer available.
-   * @param p_read_limit - the maximum number of bytes to read off from the
-   * serial port before returning. A value 0 will result in no reads from the
-   * serial port.
+   * @param p_read_limit - the maximum number read attempts from the port before
+   * returning. A value 0 will result in no reads from the serial port.
    */
   skip_past(serial& p_serial,
             std::span<const hal::byte> p_sequence,
@@ -79,6 +78,60 @@ private:
   serial* m_serial;
   std::span<const hal::byte> m_sequence;
   size_t m_search_index = 0;
+  size_t m_read_limit;
+};
+
+/**
+ * @brief Non-blocking callable for reading serial data into a buffer
+ *
+ */
+class read_into
+{
+public:
+  /**
+   * @brief Construct a new read_into object
+   *
+   * @param p_serial - serial port to skip through
+   * @param p_buffer - buffer to read data into
+   * @param p_read_limit - the maximum number read attempts from the port before
+   * returning. A value 0 will result in no reads from the serial port.
+   */
+  read_into(serial& p_serial,
+            std::span<hal::byte> p_buffer,
+            size_t p_read_limit = 32)
+    : m_serial(&p_serial)
+    , m_buffer(p_buffer)
+    , m_read_limit(p_read_limit)
+  {
+  }
+
+  /**
+   * @brief
+   *
+   * @return result<work_state> - only
+   */
+  result<work_state> operator()()
+  {
+    for (size_t read_limit = 0; read_limit < m_read_limit; read_limit++) {
+      if (m_buffer.empty()) {
+        return work_state::finished;
+      }
+
+      auto read_result = HAL_CHECK(m_serial->read(m_buffer));
+      // Set the m_buffer to the amount of bytes remaining to be read.
+      m_buffer = read_result.remaining;
+
+      if (read_result.received.empty()) {
+        return work_state::in_progress;
+      }
+    }
+
+    return work_state::in_progress;
+  }
+
+private:
+  serial* m_serial;
+  std::span<hal::byte> m_buffer;
   size_t m_read_limit;
 };
 }  // namespace hal
