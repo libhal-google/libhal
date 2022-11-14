@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cctype>
+#include <cstdint>
 #include <optional>
 #include <span>
 
@@ -39,8 +41,7 @@ public:
   }
 
   /**
-   * @brief Each call to this object will skip data from the serial port until
-   * the sequence is reached.
+   * @brief skip data from the serial port until the sequence is reached.
    *
    * This function will return if the sequence is found or if there are no more
    * bytes in the serial port.
@@ -114,7 +115,7 @@ public:
   }
 
   /**
-   * @brief Each call to this object will read data into the buffer.
+   * @brief read data into the buffer.
    *
    * This function will return if the read limit is reached or if there are no
    * more bytes in the serial port.
@@ -182,7 +183,7 @@ public:
   }
 
   /**
-   * @brief Each call to this object will read data into the buffer.
+   * @brief read data into the buffer.
    *
    * This function will return if the read limit is reached or if there are no
    * more bytes in the serial port.
@@ -235,5 +236,85 @@ private:
   std::span<hal::byte> m_buffer;
   size_t m_read_limit;
   size_t m_search_index = 0;
+};
+
+/**
+ * @brief Read bytes from serial port and convert to integer
+ *
+ */
+class read_uint32
+{
+public:
+  /**
+   * @brief Construct a new read_uint32 object
+   *
+   * @param p_serial - serial port to skip through
+   * @param p_read_limit - the maximum number read attempts from the port before
+   * returning. A value 0 will result in no reads from the serial port.
+   */
+  read_uint32(serial& p_serial, size_t p_read_limit = 32)
+    : m_serial(&p_serial)
+    , m_read_limit(p_read_limit)
+  {
+  }
+
+  /**
+   * @brief parse serial data and convert to an integer
+   *
+   * This function will return if an integer ws found or no more bytes in the
+   * serial port.
+   *
+   * Call this function again to resume reading from the port.
+   *
+   * @return result<work_state> - work_state::in_progress - if an integer hasn't
+   * been found
+   * @return result<work_state> - work_state::finished - integer has been found
+   * and a non-integer byte has also been found.
+   */
+  result<work_state> operator()()
+  {
+    if (m_finished) {
+      return work_state::finished;
+    }
+
+    for (size_t read_limit = 0; read_limit < m_read_limit; read_limit++) {
+      std::array<hal::byte, 1> buffer;
+      auto read_result = HAL_CHECK(m_serial->read(buffer));
+
+      if (read_result.received.size() != buffer.size()) {
+        return work_state::in_progress;
+      }
+
+      if (std::isdigit(static_cast<char>(read_result.received[0]))) {
+        m_integer_value *= 10;
+        m_integer_value += read_result.received[0] - hal::byte('0');
+        m_found_digit = true;
+      } else if (m_found_digit) {
+        m_finished = true;
+        return work_state::finished;
+      }
+    }
+
+    return work_state::in_progress;
+  }
+
+  /**
+   * @return std::optional<uint32_t> - integer if the parsing is finished or
+   * std::nullopt
+   */
+  std::optional<uint32_t> get()
+  {
+    if (!m_finished) {
+      return std::nullopt;
+    }
+    return m_integer_value;
+  }
+
+private:
+  serial* m_serial;
+  size_t m_read_limit;
+  std::uint32_t m_integer_value = 0;
+  bool m_found_digit = false;
+  bool m_finished = false;
 };
 }  // namespace hal
