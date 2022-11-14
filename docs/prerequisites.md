@@ -11,7 +11,7 @@ libhal, but these are most supported and recommended way of using libhal.
 - `conan`: 1.51.3 or above (conan 2.0.0+ not currently supported)
 - `gcc`: version 11.3.0 or above (for compiling tests and code in general)
 
-## Installing on Ubuntu 22.04:
+## Installing on Ubuntu 22.04
 
 Python 3.10 is default installed.
 
@@ -37,7 +37,7 @@ pip install cmake
 pip install conan
 ```
 
-## Installing on MacOS X:
+## Installing on MacOS X
 
 ### 1. Install Homebrew
 
@@ -53,22 +53,24 @@ Install python (will default to the latest Python3 version).
 brew install python
 ```
 
-### 3. Install GCC
-
-```
-brew install gcc
-```
-
-### 4. Install cmake
+### 3. Install cmake
 
 ```
 pip install cmake
 ```
 
-### 5. Install conan
+### 4. Install conan
 
 ```
 pip install conan
+```
+
+### 5. Install Rosetta
+
+Rosetta necessary for the ARM compiler and others
+
+```
+/usr/sbin/softwareupdate --install-rosetta --agree-to-license
 ```
 
 ## Installation steps for Windows
