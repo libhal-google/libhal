@@ -591,6 +591,45 @@ boost::ut::suite serial_read_upto_test = []() {
     expect(that % result.has_error());
     expect(that % actual_buffer != expected);
   };
+
+  "[success] read_upto one byte at a time"_test = [=]() {
+    // Setup
+    fake_serial serial;
+    serial.m_read_function =
+      [counter = size_t(0)](
+        std::span<hal::byte> p_data) mutable -> result<serial::read_t> {
+      for (auto& data : p_data) {
+        data = static_cast<hal::byte>(counter++);
+      }
+
+      return serial::read_t{
+        .received = p_data,
+        .remaining = p_data.subspan(p_data.size()),
+        .available = 0,
+        .capacity = 1024,
+      };
+    };
+
+    const std::array<hal::byte, 2> sequence = { 3, 4 };
+    std::array<hal::byte, 2> actual_buffer{};
+
+    auto reader = read_upto(serial, sequence, actual_buffer, 1);
+    std::array<work_state, 5> results;
+
+    // Exercise
+    results[0] = reader().value();
+    results[1] = reader().value();
+    results[2] = reader().value();
+    results[3] = reader().value();
+    results[4] = reader().value();
+
+    // Verify
+    expect(that % work_state::in_progress == results[0]);
+    expect(that % work_state::failed == results[1]);
+    expect(that % work_state::failed == results[2]);
+    expect(that % work_state::failed == results[3]);
+    expect(that % work_state::failed == results[4]);
+  };
 };
 
 boost::ut::suite serial_read_uint32_test = []() {

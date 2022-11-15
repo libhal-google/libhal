@@ -192,7 +192,7 @@ public:
    *
    * @return result<work_state> - work_state::in_progress if the sequence hasn't
    * been met and the buffer still has space.
-   * @return result<work_state> - work_state::failure if the sequence wasn't
+   * @return result<work_state> - work_state::failed if the sequence wasn't
    * found before the buffer was filled completely.
    * @return result<work_state> - work_state::finished if the sequence was
    * found before the buffer was filled completely.
@@ -203,6 +203,9 @@ public:
     if (m_search_index == m_sequence.size()) {
       return work_state::finished;
     }
+    if (m_buffer.empty()) {
+      return work_state::failed;
+    }
 
     for (size_t read_limit = 0; read_limit < m_read_limit; read_limit++) {
       auto read_result =
@@ -211,8 +214,6 @@ public:
       if (read_result.received.size() == 0) {
         return work_state::in_progress;
       }
-
-      m_buffer = m_buffer.subspan(read_length);
 
       // Check if the next byte received matches the sequence
       if (m_sequence[m_search_index] == read_result.received[0]) {
@@ -224,6 +225,12 @@ public:
       // Check if the search index is equal to the size of the sequence size
       if (m_search_index == m_sequence.size()) {
         return work_state::finished;
+      }
+
+      m_buffer = m_buffer.subspan(read_length);
+
+      if (m_buffer.empty()) {
+        return work_state::failed;
       }
     }
 

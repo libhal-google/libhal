@@ -16,12 +16,12 @@ namespace hal {
  */
 enum class work_state
 {
-  // Callable is in progress and has not yet finished performing its work
+  // Callable is in progress and has not yet finished performing its work.
   in_progress,
   // Callable was able to determine that it failed to do what it was tasked to
-  // do.
-  failure,
-  // Callable completed the work it needed to perform
+  // do and has terminated.
+  failed,
+  // Callable finished the work it needed to perform and has terminated.
   finished,
 };
 
@@ -36,13 +36,26 @@ constexpr std::string_view to_string(work_state p_state)
   switch (p_state) {
     case work_state::in_progress:
       return "in progress";
-    case work_state::failure:
-      return "failure";
+    case work_state::failed:
+      return "failed";
     case work_state::finished:
       return "finished";
     default:
       return "unknown work state";
   }
+}
+
+/**
+ * @brief Indicate if a work_state is terminal, meaning the worker has finished
+ * its job.
+ *
+ * @param p_state - the work state to check
+ * @return true - work state is either finished or failed
+ * @return false - work state is still in progress
+ */
+constexpr bool terminated(work_state p_state)
+{
+  return p_state == work_state::finished || p_state == work_state::failed;
 }
 
 /**

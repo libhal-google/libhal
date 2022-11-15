@@ -32,8 +32,17 @@ template<class T>
 concept timeout = std::convertible_to<T, std::function<timeout_function>>;
 
 /**
- * @brief Worker is a callable object or function that can be repeatedly tried
- * with try_until
+ * @brief A non-blocking callable that performs work with each call
+ *
+ * Each call to a work_function will perform a set of work. The worker will
+ * return a work_state to indicate its current state. Once the worker reaches a
+ * terminal state, it MUST perform no addtional work and return the terminal
+ * state. For example, if a work function failed, it must always return failure
+ * and not interact with hardware or other software from that point on. Same
+ * will occur for the "finished" state.
+ *
+ * This function can be repeatedly tried until it has reached a terminal state
+ * with the try_until() function.
  *
  * @returns result<work_state> - sets error flag set when an error occurs,
  * otherwise returns work_state enum.
@@ -92,7 +101,8 @@ concept worker = std::convertible_to<T, std::function<work_function>>;
 }
 
 /**
- * @brief Repeatedly call a worker function until a timeout is achieved
+ * @brief Repeatedly call a worker function until it has reached a terminal
+ * state or a timeout has been reached
  *
  * @param p_worker - worker function to repeatedly call
  * @param p_timeout - callable timeout object
@@ -103,7 +113,7 @@ inline result<work_state> try_until(worker auto p_worker,
 {
   while (true) {
     auto state = HAL_CHECK(p_worker());
-    if (state == work_state::failure || state == work_state::finished) {
+    if (hal::terminated(state)) {
       return state;
     }
     HAL_CHECK(p_timeout());
