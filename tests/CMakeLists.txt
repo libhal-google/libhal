@@ -78,6 +78,7 @@ add_executable(${PROJECT_NAME}
   overflow_counter.test.cpp
   math.test.cpp
   error.test.cpp
+  streams.test.cpp
   map.test.cpp
   units.test.cpp
   callback_recorder.test.cpp)
