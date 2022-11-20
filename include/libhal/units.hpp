@@ -3,7 +3,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
-#include <iosfwd>
+#include <ios>
 
 #include "config.hpp"
 #include "error.hpp"
