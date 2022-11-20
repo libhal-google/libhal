@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
-#include <iosfwd>
+#include <ios>
 #include <optional>
 
 #include "../comparison.hpp"

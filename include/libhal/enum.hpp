@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iosfwd>
+#include <ios>
 #include <string_view>
 #include <type_traits>
 
