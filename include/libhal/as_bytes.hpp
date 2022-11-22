@@ -24,11 +24,10 @@ constexpr std::span<const hal::byte> as_bytes(const T* p_address,
 }
 
 template<typename T>
-concept convertible_to_bytes = requires(T a)
-{
-  *a.data();
-  a.size();
-};
+concept convertible_to_bytes = requires(T a) {
+                                 *a.data();
+                                 a.size();
+                               };
 
 constexpr std::span<hal::byte> as_writable_bytes(
   convertible_to_bytes auto& p_container)

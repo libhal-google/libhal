@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <optional>
 #include <span>
+#include <type_traits>
 
 #include "as_bytes.hpp"
 #include "comparison.hpp"
@@ -11,7 +12,34 @@
 #include "error.hpp"
 #include "units.hpp"
 
-namespace hal::stream {
+namespace hal {
+
+/**
+ * @brief Concept for a byte
+ *
+ * @tparam T - object type
+ */
+template<typename T>
+concept byte_stream = requires(T a) {
+                        a.state();
+                        {
+                          a.operator()(std::span<const hal::byte>{})
+                          } -> std::same_as<std::span<const hal::byte>>;
+                      };
+
+/**
+ * @brief Indicate if a byte stream object has finished its work
+ *
+ * @param p_byte_stream_object - the byte stream object to check
+ * @return true - work state is either finished or failed
+ * @return false - work state is still in progress
+ */
+constexpr bool terminated(byte_stream auto p_byte_stream_object)
+{
+  return terminated(p_byte_stream_object.state());
+}
+
+namespace stream {
 /**
  * @brief Discard received bytes until the sequence is found
  *
@@ -319,4 +347,5 @@ public:
 private:
   size_t m_skip;
 };
-}  // namespace hal::stream
+}  // namespace stream
+}  // namespace hal

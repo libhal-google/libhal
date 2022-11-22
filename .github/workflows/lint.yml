@@ -51,10 +51,10 @@ jobs:
         run: wget https://raw.githubusercontent.com/libhal/libhal/main/.clang-format -O .clang-format
 
       - name: 🧹 Format Check
-        uses: DoozyX/clang-format-lint-action@v0.14
+        uses: DoozyX/clang-format-lint-action@v0.15
         with:
           source: 'include/'
           exclude: './third_party/*'
           extensions: 'hpp,cpp'
-          clangFormatVersion: 14
+          clangFormatVersion: 15
           style: file
