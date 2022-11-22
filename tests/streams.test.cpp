@@ -1,9 +1,65 @@
 #include <libhal/streams.hpp>
 
 #include <boost/ut.hpp>
-#include <cinttypes>
 
 namespace hal::stream {
+boost::ut::suite stream_terminated_test = []() {
+  using namespace boost::ut;
+  using namespace std::literals;
+
+  struct example_stream
+  {
+    work_state state()
+    {
+      return m_state;
+    }
+
+    std::span<const hal::byte> operator()(std::span<const hal::byte> p_span)
+    {
+      return p_span;
+    }
+
+    work_state m_state;
+  };
+
+  "hal::terminate(byte_stream) -> true with finished state"_test = []() {
+    // Setup
+    example_stream stream;
+    stream.m_state = work_state::finished;
+
+    // Exercise
+    bool result = terminated(stream);
+
+    // Verify
+    expect(result) << "Should return true as the work_state is 'finished'!";
+  };
+
+  "hal::terminate(byte_stream) -> true with failed state"_test = []() {
+    // Setup
+    example_stream stream;
+    stream.m_state = work_state::failed;
+
+    // Exercise
+    bool result = terminated(stream);
+
+    // Verify
+    expect(result) << "Should return true as the work_state is 'failed'!";
+  };
+
+  "hal::terminate(byte_stream) -> false with in_progress state"_test = []() {
+    // Setup
+    example_stream stream;
+    stream.m_state = work_state::in_progress;
+
+    // Exercise
+    bool result = terminated(stream);
+
+    // Verify
+    expect(!result)
+      << "Should return false as the work_state is 'in_progress'!";
+  };
+};
+
 // =============================================================================
 //
 //                              |  parse<T> Stream  |

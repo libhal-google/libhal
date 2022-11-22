@@ -79,8 +79,7 @@ namespace error {
  */
 template<auto... options>
 struct invalid_option_t : std::false_type
-{
-};
+{};
 /**
  * @brief Helper definition to simplify the usage of invalid_option_t.
  *
