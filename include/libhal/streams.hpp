@@ -15,7 +15,7 @@
 namespace hal {
 
 /**
- * @brief Concept for a byte
+ * @brief Concept for a byte stream callable object
  *
  * @tparam T - object type
  */
@@ -23,7 +23,7 @@ template<typename T>
 concept byte_stream = requires(T a) {
                         a.state();
                         {
-                          a.operator()(std::span<const hal::byte>{})
+                          std::span<const hal::byte>() | a
                           } -> std::same_as<std::span<const hal::byte>>;
                       };
 

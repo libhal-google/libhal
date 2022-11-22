@@ -3,24 +3,35 @@
 #include <boost/ut.hpp>
 
 namespace hal::stream {
+namespace {
+
+struct example_stream
+{
+  work_state state()
+  {
+    return m_state;
+  }
+
+  friend std::span<const hal::byte> operator|(
+    const std::span<const hal::byte>& p_input_data,
+    [[maybe_unused]] example_stream& p_self)
+  {
+    return p_input_data;
+  }
+
+  work_state m_state;
+};
+}  // namespace
+
 boost::ut::suite stream_terminated_test = []() {
   using namespace boost::ut;
   using namespace std::literals;
 
-  struct example_stream
-  {
-    work_state state()
-    {
-      return m_state;
-    }
-
-    std::span<const hal::byte> operator()(std::span<const hal::byte> p_span)
-    {
-      return p_span;
-    }
-
-    work_state m_state;
-  };
+  static_assert(byte_stream<example_stream>);
+  static_assert(byte_stream<parse<size_t>>);
+  static_assert(byte_stream<find>);
+  static_assert(byte_stream<fill_upto>);
+  static_assert(byte_stream<skip>);
 
   "hal::terminate(byte_stream) -> true with finished state"_test = []() {
     // Setup
