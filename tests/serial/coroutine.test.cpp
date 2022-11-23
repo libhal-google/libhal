@@ -17,10 +17,7 @@ public:
   result<write_t> driver_write(
     std::span<const hal::byte> p_data) noexcept override
   {
-    return write_t{
-      .transmitted = p_data,
-      .remaining = std::span<const hal::byte>(),
-    };
+    return write_t{ .data = p_data };
   }
 
   result<read_t> driver_read(std::span<hal::byte> p_data) noexcept override
@@ -57,16 +54,15 @@ boost::ut::suite serial_skip_past_test = []() {
         p_data[0] = read_out[count++];
 
         return serial::read_t{
-          .received = p_data.subspan(0, 1),
-          .remaining = p_data.subspan(1),
+          .data = p_data.subspan(0, 1),
           .available = 1,
           .capacity = 1,
         };
       }
 
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -103,16 +99,15 @@ boost::ut::suite serial_skip_past_test = []() {
           p_data[0] = read_out[count++];
 
           return serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
         }
       }
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -149,16 +144,14 @@ boost::ut::suite serial_skip_past_test = []() {
         case 1:
           p_data[0] = read_out[count];
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
           break;
         case 2:
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 0),
-            .remaining = std::span<hal::byte>(),
+            .data = p_data.subspan(0, 0),
             .available = 1,
             .capacity = 1,
           };
@@ -166,16 +159,14 @@ boost::ut::suite serial_skip_past_test = []() {
         case 3:
           p_data[0] = read_out[count - 1];
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
           break;
         case 4:
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 0),
-            .remaining = std::span<hal::byte>(),
+            .data = p_data.subspan(0, 0),
             .available = 1,
             .capacity = 1,
           };
@@ -185,16 +176,14 @@ boost::ut::suite serial_skip_past_test = []() {
         case 7:
           p_data[0] = read_out[count - 2];
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
           break;
         default:
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 0),
-            .remaining = std::span<hal::byte>(),
+            .data = p_data.subspan(0, 0),
             .available = 1,
             .capacity = 1,
           };
@@ -231,16 +220,15 @@ boost::ut::suite serial_skip_past_test = []() {
         p_data[0] = read_out[count++];
 
         return serial::read_t{
-          .received = p_data.subspan(0, 1),
-          .remaining = p_data.subspan(1),
+          .data = p_data.subspan(0, 1),
           .available = 1,
           .capacity = 1,
         };
       }
 
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -295,8 +283,7 @@ boost::ut::suite serial_skip_past_test = []() {
           p_data[0] = read_out[count++];
 
           return serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
@@ -359,8 +346,8 @@ boost::ut::suite serial_read_into_test = []() {
       }
 
       return serial::read_t{
-        .received = p_data,
-        .remaining = p_data.subspan(p_data.size()),
+        .data = p_data,
+
         .available = 0,
         .capacity = 1024,
       };
@@ -397,8 +384,8 @@ boost::ut::suite serial_read_into_test = []() {
       p_data[0] = static_cast<hal::byte>(counter++);
 
       return serial::read_t{
-        .received = p_data.subspan(0, 1),
-        .remaining = p_data.subspan(1),
+        .data = p_data.subspan(0, 1),
+
         .available = 1,
         .capacity = 1024,
       };
@@ -435,8 +422,8 @@ boost::ut::suite serial_read_into_test = []() {
       p_data[0] = static_cast<hal::byte>(counter++);
 
       return serial::read_t{
-        .received = p_data.subspan(0, 1),
-        .remaining = p_data.subspan(1),
+        .data = p_data.subspan(0, 1),
+
         .available = 1,
         .capacity = 1024,
       };
@@ -499,8 +486,8 @@ boost::ut::suite serial_read_upto_test = []() {
       }
 
       return serial::read_t{
-        .received = p_data,
-        .remaining = p_data.subspan(p_data.size()),
+        .data = p_data,
+
         .available = 0,
         .capacity = 1024,
       };
@@ -540,8 +527,8 @@ boost::ut::suite serial_read_upto_test = []() {
       }
 
       return serial::read_t{
-        .received = p_data,
-        .remaining = p_data.subspan(p_data.size()),
+        .data = p_data,
+
         .available = 0,
         .capacity = 1024,
       };
@@ -603,8 +590,8 @@ boost::ut::suite serial_read_upto_test = []() {
       }
 
       return serial::read_t{
-        .received = p_data,
-        .remaining = p_data.subspan(p_data.size()),
+        .data = p_data,
+
         .available = 0,
         .capacity = 1024,
       };
@@ -651,16 +638,15 @@ boost::ut::suite serial_read_uint32_test = []() {
         p_data[0] = read_out[count++];
 
         return serial::read_t{
-          .received = p_data.subspan(0, 1),
-          .remaining = p_data.subspan(1),
+          .data = p_data.subspan(0, 1),
           .available = 1,
           .capacity = 1,
         };
       }
 
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -695,16 +681,15 @@ boost::ut::suite serial_read_uint32_test = []() {
         p_data[0] = read_out_no_ints[count++];
 
         return serial::read_t{
-          .received = p_data.subspan(0, 1),
-          .remaining = p_data.subspan(1),
+          .data = p_data.subspan(0, 1),
           .available = 1,
           .capacity = 1,
         };
       }
 
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -742,16 +727,15 @@ boost::ut::suite serial_read_uint32_test = []() {
           p_data[0] = read_out[count++];
 
           return serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
         }
       }
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -787,16 +771,14 @@ boost::ut::suite serial_read_uint32_test = []() {
           p_data[0] = read_out_internal_int[count++];
 
           return serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
         }
 
         return serial::read_t{
-          .received = p_data.subspan(0, 0),
-          .remaining = std::span<hal::byte>(),
+          .data = p_data.subspan(0, 0),
           .available = 1,
           .capacity = 1,
         };
@@ -834,16 +816,14 @@ boost::ut::suite serial_read_uint32_test = []() {
         case 1:
           p_data[0] = read_out[count];
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
           break;
         case 2:
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 0),
-            .remaining = std::span<hal::byte>(),
+            .data = p_data.subspan(0, 0),
             .available = 1,
             .capacity = 1,
           };
@@ -851,16 +831,14 @@ boost::ut::suite serial_read_uint32_test = []() {
         case 3:
           p_data[0] = read_out[count - 1];
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
           break;
         case 4:
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 0),
-            .remaining = std::span<hal::byte>(),
+            .data = p_data.subspan(0, 0),
             .available = 1,
             .capacity = 1,
           };
@@ -870,16 +848,14 @@ boost::ut::suite serial_read_uint32_test = []() {
         case 7:
           p_data[0] = read_out[count - 2];
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };
           break;
         default:
           read_response = serial::read_t{
-            .received = p_data.subspan(0, 0),
-            .remaining = std::span<hal::byte>(),
+            .data = p_data.subspan(0, 0),
             .available = 1,
             .capacity = 1,
           };
@@ -917,16 +893,15 @@ boost::ut::suite serial_read_uint32_test = []() {
         p_data[0] = read_out[count++];
 
         return serial::read_t{
-          .received = p_data.subspan(0, 1),
-          .remaining = p_data.subspan(1),
+          .data = p_data.subspan(0, 1),
           .available = 1,
           .capacity = 1,
         };
       }
 
       return serial::read_t{
-        .received = p_data.subspan(0, 0),
-        .remaining = std::span<hal::byte>(),
+        .data = p_data.subspan(0, 0),
+
         .available = 1,
         .capacity = 1,
       };
@@ -983,8 +958,7 @@ boost::ut::suite serial_read_uint32_test = []() {
           p_data[0] = read_out[count++];
 
           return serial::read_t{
-            .received = p_data.subspan(0, 1),
-            .remaining = p_data.subspan(1),
+            .data = p_data.subspan(0, 1),
             .available = 1,
             .capacity = 1,
           };

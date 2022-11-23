@@ -43,10 +43,11 @@ namespace hal {
   serial& p_serial,
   std::span<const hal::byte> p_data_out) noexcept
 {
-  auto write_info = HAL_CHECK(p_serial.write(p_data_out));
+  auto remaining = p_data_out;
 
-  while (write_info.remaining.size() != 0) {
-    write_info = HAL_CHECK(p_serial.write(write_info.remaining));
+  while (remaining.size() != 0) {
+    auto write_length = HAL_CHECK(p_serial.write(remaining)).data.size();
+    remaining = remaining.subspan(write_length);
   }
 
   return success();
@@ -82,10 +83,11 @@ namespace hal {
   std::span<hal::byte> p_data_in,
   timeout auto p_timeout) noexcept
 {
-  auto read_result = HAL_CHECK(p_serial.read(p_data_in));
+  auto remaining = p_data_in;
 
-  while (read_result.remaining.size() != 0) {
-    read_result = HAL_CHECK(p_serial.read(read_result.remaining));
+  while (remaining.size() != 0) {
+    auto read_length = HAL_CHECK(p_serial.read(remaining)).data.size();
+    remaining = remaining.subspan(read_length);
     HAL_CHECK(p_timeout());
   }
 

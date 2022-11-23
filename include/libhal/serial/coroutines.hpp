@@ -63,12 +63,12 @@ public:
       std::array<hal::byte, 1> buffer;
       auto read_result = HAL_CHECK(m_serial->read(buffer));
 
-      if (read_result.received.size() != buffer.size()) {
+      if (read_result.data.size() != buffer.size()) {
         return work_state::in_progress;
       }
 
       // Check if the next byte received matches the sequence
-      if (m_sequence[m_search_index] == read_result.received[0]) {
+      if (m_sequence[m_search_index] == read_result.data[0]) {
         m_search_index++;
       } else {  // Otherwise set the search index back to the start.
         m_search_index = 0;
@@ -136,9 +136,9 @@ public:
 
       auto read_result = HAL_CHECK(m_serial->read(m_buffer));
       // Set the m_buffer to the amount of bytes remaining to be read.
-      m_buffer = read_result.remaining;
+      m_buffer = m_buffer.subspan(read_result.data.size());
 
-      if (read_result.received.empty()) {
+      if (read_result.data.empty()) {
         return work_state::in_progress;
       }
     }
@@ -211,12 +211,12 @@ public:
       auto read_result =
         HAL_CHECK(m_serial->read(m_buffer.subspan(0, read_length)));
 
-      if (read_result.received.size() == 0) {
+      if (read_result.data.size() == 0) {
         return work_state::in_progress;
       }
 
       // Check if the next byte received matches the sequence
-      if (m_sequence[m_search_index] == read_result.received[0]) {
+      if (m_sequence[m_search_index] == read_result.data[0]) {
         m_search_index++;
       } else {  // Otherwise set the search index back to the start.
         m_search_index = 0;
@@ -288,13 +288,13 @@ public:
       std::array<hal::byte, 1> buffer;
       auto read_result = HAL_CHECK(m_serial->read(buffer));
 
-      if (read_result.received.size() != buffer.size()) {
+      if (read_result.data.size() != buffer.size()) {
         return work_state::in_progress;
       }
 
-      if (std::isdigit(static_cast<char>(read_result.received[0]))) {
+      if (std::isdigit(static_cast<char>(read_result.data[0]))) {
         m_integer_value *= 10;
-        m_integer_value += read_result.received[0] - hal::byte('0');
+        m_integer_value += read_result.data[0] - hal::byte('0');
         m_found_digit = true;
       } else if (m_found_digit) {
         m_finished = true;

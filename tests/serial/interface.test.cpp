@@ -32,7 +32,7 @@ private:
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return write_t{ p_data, std::span<const hal::byte>{} };
+    return write_t{ p_data };
   };
 
   result<read_t> driver_read(std::span<hal::byte> p_data) noexcept override
@@ -41,8 +41,7 @@ private:
       return hal::new_error();
     }
     return read_t{
-      .received = p_data.subspan(0, 1),
-      .remaining = p_data.subspan(1),
+      .data = p_data.subspan(0, 1),
       .available = 1,
       .capacity = 1,
     };
@@ -81,9 +80,8 @@ boost::ut::suite serial_test = []() {
     expect(expected_settings.baud_rate == test.m_settings.baud_rate);
     expect(expected_settings.stop == test.m_settings.stop);
     expect(expected_settings.parity == test.m_settings.parity);
-    expect(that % expected_payload.data() ==
-           result2.value().transmitted.data());
-    expect(that % expected_buffer.data() == result3.value().received.data());
+    expect(that % expected_payload.data() == result2.value().data.data());
+    expect(that % expected_buffer.data() == result3.value().data.data());
     expect(true == test.m_flush_called);
   };
 
