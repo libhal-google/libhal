@@ -29,17 +29,16 @@ boost::ut::suite serial_util_test = []() {
       m_out = p_data;
 
       if (single_byte_out) {
-        return write_t{ p_data.subspan(0, 1), p_data.subspan(1) };
+        return write_t{ p_data.subspan(0, 1) };
       }
-      return write_t{ p_data, std::span<const hal::byte>{} };
+      return write_t{ p_data };
     }
 
     result<read_t> driver_read(std::span<hal::byte> p_data) noexcept override
     {
       if (p_data.size() == 0) {
         return read_t{
-          .received = p_data,
-          .remaining = std::span<hal::byte>{},
+          .data = p_data,
           .available = 1,
           .capacity = 1,
         };
@@ -55,8 +54,7 @@ boost::ut::suite serial_util_test = []() {
       p_data[0] = filler_byte;
 
       return read_t{
-        .received = p_data.subspan(0, 1),
-        .remaining = p_data.subspan(1),
+        .data = p_data.subspan(0, 1),
         .available = 1,
         .capacity = 1,
       };
@@ -91,7 +89,7 @@ boost::ut::suite serial_util_test = []() {
 
       // Verify
       expect(bool{ result });
-      expect(result.value().transmitted.size() == expected_payload.size());
+      expect(result.value().data.size() == expected_payload.size());
       expect(!serial.flush_called);
       expect(that % expected_payload.data() == serial.m_out.data());
       expect(that % expected_payload.size() == serial.m_out.size());
@@ -109,7 +107,7 @@ boost::ut::suite serial_util_test = []() {
 
       // Verify
       expect(bool{ result });
-      expect(1 == result.value().transmitted.size());
+      expect(1 == result.value().data.size());
       expect(!serial.flush_called);
       expect(that % &expected_payload[0] == serial.m_out.data());
       expect(that % 4 == serial.m_out.size());

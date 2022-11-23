@@ -103,15 +103,7 @@ public:
     /// The size of this buffer indicates the number of bytes read
     /// The address points to the start of the buffer passed into the read()
     /// function.
-    std::span<hal::byte> received;
-
-    /// @brief The unfilled portion of the buffer
-    ///
-    /// The size of this buffer indicates the number of bytes unfilled
-    /// The address points to right after the `data` span. This means that
-    /// putting the `remaining` buffer back into the read() until it reaches 0
-    /// will ensure that the entire original buffer is filled to capacity.
-    std::span<hal::byte> remaining;
+    std::span<hal::byte> data;
 
     /// @brief Number of enqueued and available to be read out bytes
     ///
@@ -134,15 +126,7 @@ public:
     /// The size of this buffer indicates the number of bytes read
     /// The address points to the start of the buffer passed into the read()
     /// function.
-    std::span<const hal::byte> transmitted;
-
-    /// @brief The portion of the buffer that was not transmitted
-    ///
-    /// The size of this buffer indicates the number of bytes unfilled
-    /// The address points to right after the `data` span. This means that
-    /// putting the `remaining` buffer back into the read() until it reaches 0
-    /// will ensure that the entire original buffer is filled to capacity.
-    std::span<const hal::byte> remaining;
+    std::span<const hal::byte> data;
   };
 
   /**
