@@ -40,6 +40,7 @@ add_executable(${PROJECT_NAME}
   output_pin/interface.test.cpp
   serial/interface.test.cpp
   servo/interface.test.cpp
+  socket/interface.test.cpp
   steady_clock/interface.test.cpp
   motor/interface.test.cpp
 
