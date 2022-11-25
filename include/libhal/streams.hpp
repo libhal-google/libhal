@@ -10,6 +10,7 @@
 #include "comparison.hpp"
 #include "enum.hpp"
 #include "error.hpp"
+#include "timeout.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -346,6 +347,32 @@ public:
 
 private:
   size_t m_skip;
+};
+
+/**
+ * @brief Repeatedly call a worker object to pass a byte stream into until it
+ * has reached a terminal state or a timeout has been reached
+ *
+ * @tparam F - type of the p_data_getter
+ * @param p_byte_stream - byte stream to pass data into
+ * @param p_data_getter - callable object to get data from
+ * @param p_timeout - callable timeout object
+ * @return result<work_state>
+ */
+template<typename F>
+inline result<work_state> try_until(byte_stream auto& p_byte_stream,
+                                    F p_data_getter,
+                                    timeout auto p_timeout) noexcept
+{
+  while (true) {
+    auto span_of_data = p_data_getter();
+    auto remaining = span_of_data | p_byte_stream;
+    if (terminated(p_byte_stream)) {
+      return work_state::finished;
+    }
+    HAL_CHECK(p_timeout());
+  }
+  return new_error(std::errc::state_not_recoverable);
 };
 }  // namespace stream
 }  // namespace hal

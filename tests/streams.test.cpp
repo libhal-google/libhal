@@ -479,4 +479,165 @@ boost::ut::suite multi_stream_test = []() {
     */
   };
 };
+
+boost::ut::suite stream_try_until_test = []() {
+  using namespace boost::ut;
+  using namespace std::literals;
+
+  "[try_until] normal usage"_test = []() {
+    // Setup
+    std::string_view digits_in_between = "abcd1234x---";
+    parse<std::uint32_t> parse_int;
+    auto getter = [&digits_in_between]() -> std::span<const hal::byte> {
+      return std::span<const hal::byte>(
+        reinterpret_cast<const hal::byte*>(digits_in_between.data()),
+        digits_in_between.size());
+    };
+
+    constexpr int timeout_call_limit = 10;
+    int counts = 0;
+    auto timeout_function = [&counts]() mutable -> status {
+      counts++;
+      if (counts >= timeout_call_limit) {
+        return hal::new_error(std::errc::timed_out);
+      }
+      return {};
+    };
+
+    // Exercise
+    auto result = try_until(parse_int, getter, timeout_function).value();
+
+    // Verify
+    expect(that % work_state::finished == result);
+  };
+
+  "[try_until] complete before timeout"_test = []() {
+    // Setup
+    std::string_view digits_in_between = "abcd1234x---";
+    parse<std::uint32_t> parse_int;
+    auto getter = [&digits_in_between]() -> std::span<const hal::byte> {
+      return std::span<const hal::byte>(
+        reinterpret_cast<const hal::byte*>(digits_in_between.data()),
+        digits_in_between.size());
+    };
+
+    auto timeout_function = []() mutable -> status { return {}; };
+
+    // Exercise
+    auto result = try_until(parse_int, getter, timeout_function).value();
+
+    // Verify
+    expect(that % work_state::finished == result);
+  };
+
+  "[try_until] stream in multiple parts"_test = []() {
+    // Setup
+    std::string_view stream_part1 = "abcd1";
+    std::string_view stream_part2 = "123";
+    std::string_view stream_part3 = "4x---";
+    int counts = 0;
+    parse<std::uint32_t> parse_int;
+    auto getter = [&counts,
+                   stream_part1,
+                   stream_part2,
+                   stream_part3]() -> std::span<const hal::byte> {
+      if (counts == 0) {
+        return std::span<const hal::byte>(
+          reinterpret_cast<const hal::byte*>(stream_part1.data()),
+          stream_part1.size());
+      }
+      if (counts == 1) {
+        return std::span<const hal::byte>(
+          reinterpret_cast<const hal::byte*>(stream_part2.data()),
+          stream_part2.size());
+      }
+      return std::span<const hal::byte>(
+        reinterpret_cast<const hal::byte*>(stream_part3.data()),
+        stream_part3.size());
+    };
+
+    constexpr int timeout_call_limit = 10;
+    auto timeout_function = [&counts]() mutable -> status {
+      counts++;
+      if (counts >= timeout_call_limit) {
+        return hal::new_error(std::errc::timed_out);
+      }
+      return {};
+    };
+
+    // Exercise
+    auto result = try_until(parse_int, getter, timeout_function).value();
+
+    // Verify
+    expect(that % work_state::finished == result);
+    expect(that % 2 == counts);
+  };
+
+  "[try_until] timed out"_test = []() {
+    // Setup
+    parse<std::uint32_t> parse_int;
+    auto getter = []() -> std::span<const hal::byte> {
+      return std::span<const hal::byte>();
+    };
+
+    constexpr int timeout_call_limit = 2;
+    int counts = 0;
+    auto timeout_function = [&counts]() mutable -> status {
+      counts++;
+      if (counts >= timeout_call_limit) {
+        return hal::new_error(std::errc::timed_out);
+      }
+      return {};
+    };
+
+    // Exercise
+    auto result = try_until(parse_int, getter, timeout_function);
+
+    // Verify
+    expect(!bool{ result });
+    expect(that % 2 == counts);
+  };
+
+  "[try_until] timeout in multiple parts"_test = []() {
+    // Setup
+    std::string_view stream_part1 = "abcd";
+    std::string_view stream_part2 = "1234";
+    std::string_view stream_part3 = "x---";
+    int counts = 0;
+    parse<std::uint32_t> parse_int;
+    auto getter = [&counts,
+                   stream_part1,
+                   stream_part2,
+                   stream_part3]() -> std::span<const hal::byte> {
+      if (counts == 0) {
+        return std::span<const hal::byte>(
+          reinterpret_cast<const hal::byte*>(stream_part1.data()),
+          stream_part1.size());
+      }
+      if (counts == 1) {
+        return std::span<const hal::byte>(
+          reinterpret_cast<const hal::byte*>(stream_part2.data()),
+          stream_part2.size());
+      }
+      return std::span<const hal::byte>(
+        reinterpret_cast<const hal::byte*>(stream_part3.data()),
+        stream_part3.size());
+    };
+    constexpr int timeout_call_limit = 1;
+    auto timeout_function = [&counts]() mutable -> status {
+      counts++;
+      if (counts >= timeout_call_limit) {
+        return hal::new_error(std::errc::timed_out);
+      }
+      return {};
+    };
+
+    // Exercise
+    auto result = try_until(parse_int, getter, timeout_function);
+
+    // Verify
+    expect(!bool{ result });
+    expect(that % 1 == counts);
+  };
+};
 }  // namespace hal::stream
