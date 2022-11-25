@@ -35,6 +35,13 @@ namespace hal {
 class socket
 {
 public:
+  enum class type : hal::byte
+  {
+    tcp,
+    udp,
+    ssl
+  };
+
   /// Return data for the write operation
   struct write_t
   {
