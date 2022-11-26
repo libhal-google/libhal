@@ -1,9 +1,13 @@
 #pragma once
 
+// "config.hpp" MUST be included before <boost/leaf.hpp> is included to ensure
+// that the libahl.tweaks.hpp file is evaluated first and that any macro
+// definitions for boost leaf are defined before including boost, otherwise,
+// they will be ignored.
+#include "config.hpp"
+
 #include <boost/leaf.hpp>
 #include <system_error>
-
-#include "config.hpp"
 
 #define HAL_CHECK BOOST_LEAF_CHECK
 
