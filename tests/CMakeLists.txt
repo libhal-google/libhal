@@ -25,7 +25,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_BUILD_TYPE "Debug")
 
 find_package(ut REQUIRED CONFIG)
-find_package(libhal REQUIRED CONFIG)
+find_package(boost-leaf REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
   can/interface.test.cpp
@@ -90,4 +90,4 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra
   -Wno-unused-function -Wconversion -Wno-psabi)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut libhal::libhal)
+target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut boost::leaf)
