@@ -69,6 +69,7 @@ add_executable(${PROJECT_NAME}
   can/router.test.cpp
 
   as_bytes.test.cpp
+  bit.test.cpp
   enum.test.cpp
   timeout.test.cpp
   static_list.test.cpp
