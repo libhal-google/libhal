@@ -1,6 +1,6 @@
 [requires]
+boost-leaf/[>=1.80.0, include_prerelease=True]
 boost-ext-ut/1.1.9
-libhal/[>=0.0.0]
 
 [generators]
 CMakeToolchain

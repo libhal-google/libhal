@@ -66,7 +66,7 @@ struct mask
 };
 
 template<mask field>
-auto extract(std::unsigned_integral auto p_value)
+constexpr auto extract(std::unsigned_integral auto p_value)
 {
   using T = decltype(p_value);
   // Shift desired value to the right to position 0
@@ -77,23 +77,45 @@ auto extract(std::unsigned_integral auto p_value)
   return static_cast<T>(masked);
 }
 
+constexpr auto extract(mask p_field, std::unsigned_integral auto p_value)
+{
+  using T = decltype(p_value);
+  // Shift desired value to the right to position 0
+  const auto shifted = p_value >> p_field.position;
+  // Mask away any bits left of the value based on the field width
+  const auto masked = shifted & p_field.origin_mask<T>();
+  // Leaving only the desired bits
+  return static_cast<T>(masked);
+}
+
 template<std::unsigned_integral T>
 class value
 {
 public:
   static constexpr std::uint32_t width = sizeof(T) * 8;
 
-  value(T p_initial_value = 0)
+  constexpr value(T p_initial_value = 0)
     : m_value(p_initial_value)
   {
   }
 
   template<mask field>
-  auto& set()
+  constexpr auto& set()
   {
     static_assert(field.position < width,
                   "Bit position exceeds register width");
-    const auto mask = static_cast<T>(1U << field.position);
+    constexpr auto mask = static_cast<T>(1U << field.position);
+
+    m_value = m_value | mask;
+
+    return *this;
+  }
+
+  constexpr auto& set(mask p_field)
+  {
+    static_assert(p_field.position < width,
+                  "Bit position exceeds register width");
+    const auto mask = static_cast<T>(1U << p_field.position);
 
     m_value = m_value | mask;
 
@@ -101,11 +123,23 @@ public:
   }
 
   template<mask field>
-  auto& clear()
+  constexpr auto& clear()
   {
     static_assert(field.position < width,
                   "Bit position exceeds register width");
-    const auto mask = static_cast<T>(1U << field.position);
+    constexpr auto mask = static_cast<T>(1U << field.position);
+    constexpr auto inverted_mask = ~mask;
+
+    m_value = m_value & inverted_mask;
+
+    return *this;
+  }
+
+  constexpr auto& clear(mask p_field)
+  {
+    static_assert(p_field.position < width,
+                  "Bit position exceeds register width");
+    const auto mask = static_cast<T>(1U << p_field.position);
     const auto inverted_mask = ~mask;
 
     m_value = m_value & inverted_mask;
@@ -114,12 +148,24 @@ public:
   }
 
   template<mask field>
-  auto& toggle()
+  constexpr auto& toggle()
   {
     static_assert(field.position < width,
                   "Bit position exceeds register width");
 
-    const auto mask = static_cast<T>(1U << field.position);
+    constexpr auto mask = static_cast<T>(1U << field.position);
+
+    m_value = m_value ^ mask;
+
+    return *this;
+  }
+
+  constexpr auto& toggle(mask p_field)
+  {
+    static_assert(p_field.position < width,
+                  "Bit position exceeds register width");
+
+    const auto mask = static_cast<T>(1U << p_field.position);
 
     m_value = m_value ^ mask;
 
@@ -129,15 +175,30 @@ public:
   template<mask field>
   constexpr auto& insert(std::unsigned_integral auto p_value)
   {
-    // Clear width's number of bits in the target value at the bit position
-    // specified.
-    m_value &= ~field.mask_value<T>();
-
+    const auto value_to_insert = static_cast<T>(p_value);
     // AND value with mask to remove any bits beyond the specified width.
     // Shift masked value into bit position and OR with target value.
-    auto shifted_field = static_cast<T>(p_value) << field.position;
-    auto value = shifted_field & field.mask_value<T>();
+    const auto shifted_field = value_to_insert << field.position;
+    const auto value = shifted_field & field.mask_value<T>();
 
+    // Clear width's number of bits in the target value at the bit position
+    // specified.
+    m_value = m_value & ~field.mask_value<T>();
+    m_value = m_value | static_cast<T>(value);
+
+    return *this;
+  }
+
+  constexpr auto& insert(mask p_field, std::unsigned_integral auto p_value)
+  {
+    // AND value with mask to remove any bits beyond the specified width.
+    // Shift masked value into bit position and OR with target value.
+    auto shifted_field = static_cast<T>(p_value) << p_field.position;
+    auto value = shifted_field & p_field.mask_value<T>();
+
+    // Clear width's number of bits in the target value at the bit position
+    // specified.
+    m_value = m_value & ~p_field.mask_value<T>();
     m_value = m_value | static_cast<T>(value);
 
     return *this;
