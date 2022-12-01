@@ -36,6 +36,23 @@ struct mask
     return mask{ .position = position, .width = 1U };
   }
 
+  static consteval mask from(std::uint32_t position1, std::uint32_t position2)
+  {
+    constexpr std::uint32_t plus_one = 1;
+    if (position1 < position2) {
+      return mask{ .position = position1,
+                   .width = plus_one + (position2 - position1) };
+    } else {
+      return mask{ .position = position2,
+                   .width = plus_one + (position1 - position2) };
+    }
+  }
+
+  static constexpr mask from(std::uint32_t position)
+  {
+    return mask{ .position = position, .width = 1U };
+  }
+
   template<std::unsigned_integral T>
   constexpr auto origin_mask() const
   {
@@ -113,8 +130,6 @@ public:
 
   constexpr auto& set(mask p_field)
   {
-    static_assert(p_field.position < width,
-                  "Bit position exceeds register width");
     const auto mask = static_cast<T>(1U << p_field.position);
 
     m_value = m_value | mask;
@@ -137,8 +152,6 @@ public:
 
   constexpr auto& clear(mask p_field)
   {
-    static_assert(p_field.position < width,
-                  "Bit position exceeds register width");
     const auto mask = static_cast<T>(1U << p_field.position);
     const auto inverted_mask = ~mask;
 
@@ -162,9 +175,6 @@ public:
 
   constexpr auto& toggle(mask p_field)
   {
-    static_assert(p_field.position < width,
-                  "Bit position exceeds register width");
-
     const auto mask = static_cast<T>(1U << p_field.position);
 
     m_value = m_value ^ mask;
