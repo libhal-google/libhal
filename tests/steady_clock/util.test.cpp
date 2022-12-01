@@ -220,5 +220,35 @@ boost::ut::suite steady_clock_utility_test = []() {
     expect(that % 0 == test_steady_clock.uptime);
     expect(that % expected_frequency == test_steady_clock.frequency());
   };
+
+  "hal::timeout_generator(hal::steady_clock)"_test = []() {
+    // Setup
+    static constexpr hal::time_duration expected(50);
+    dummy_steady_clock test_steady_clock;
+    bool success = false;
+
+    // Exercise
+    auto generator = timeout_generator(test_steady_clock);
+    auto timeout_object = generator(expected).value();
+
+    hal::attempt_all(
+      [&timeout_object]() -> status {
+        // Terminate the loop one iteration before the timeout would occur
+        for (std::int64_t i = 0; i < expected.count() - 1; i++) {
+          if (!timeout_object()) {
+            return hal::new_error();
+          }
+        }
+        return timeout_object();
+      },
+      [&success](match<std::errc, std::errc::timed_out>) { success = true; },
+      []() { expect(false) << "std::errc::timed_out was not thrown!"; });
+
+    // Verify
+    expect(that % success) << "std::errc::timed_out handler was not called!";
+    // After the last call to uptime() the uptime value is incremented by one
+    expect(that % expected.count() == test_steady_clock.uptime - 1);
+    expect(that % expected_frequency == test_steady_clock.frequency());
+  };
 };
 }  // namespace hal

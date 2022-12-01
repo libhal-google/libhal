@@ -49,5 +49,21 @@ inline result<hal::steady_clock_timeout> create_timeout(
   auto timeout_object = HAL_CHECK(create_timeout(p_steady_clock, p_duration));
   return delay(timeout_object);
 }
+
+/**
+ * @brief Generates a function that, when passed a duration, returns a timeout
+ *
+ * @param p_steady_clock - steady_clock driver that must out live the lifetime
+ * of the returned lambda.
+ * @return auto - a callable that returns a new timeout object each time a time
+ * duration is passed to it.
+ */
+inline auto timeout_generator(hal::steady_clock& p_steady_clock)
+{
+  return [&p_steady_clock](hal::time_duration p_duration) -> auto
+  {
+    return create_timeout(p_steady_clock, p_duration);
+  };
+}
 /** @} */
 }  // namespace hal

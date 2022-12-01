@@ -36,7 +36,7 @@ concept timeout = std::convertible_to<T, std::function<timeout_function>>;
  *
  * Each call to a work_function will perform a set of work. The worker will
  * return a work_state to indicate its current state. Once the worker reaches a
- * terminal state, it MUST perform no addtional work and return the terminal
+ * terminal state, it MUST perform no additional work and return the terminal
  * state. For example, if a work function failed, it must always return failure
  * and not interact with hardware or other software from that point on. Same
  * will occur for the "finished" state.
