@@ -64,8 +64,8 @@ public:
 
   /// Interrupt pin handler
   ///
-  /// @param true - state of the pin when the interrupt was triggered was HIGH
-  /// @param false - state of the pin when the interrupt was triggered was LOW
+  /// param p_state - if true state of the pin when the interrupt was triggered
+  /// was HIGH, otherwise LOW
   using handler = void(bool p_state);
 
   /**
