@@ -3,6 +3,7 @@
 #include <span>
 
 #include "../error.hpp"
+#include "../timeout.hpp"
 #include "../units.hpp"
 
 namespace hal {
@@ -60,18 +61,29 @@ public:
   /**
    * @brief Write data to the socket
    *
-   * @param p_data - data to read  to read data from the socket into
+   * @param p_data - data to read to read data from the socket into
+   * @param p_timeout - the amount of time to wait for data to be sent. This is
+   * necessary for sockets, such as TCP sockets, which have to wait to confirm
+   * that the data sent to the server has made it in time.
    * @return hal::result<write_t> - write_t data or error
    * @throw std::errc::no_link if the connection to server has been severed
+   * @throw std::errc::timed_out if writing/sending data to the server could not
+   * be done in time.
    */
   [[nodiscard]] hal::result<write_t> write(
-    std::span<const hal::byte> p_data) noexcept
+    std::span<const hal::byte> p_data,
+    std::function<hal::timeout_function> p_timeout) noexcept
   {
-    return driver_write(p_data);
+    return driver_write(p_data, p_timeout);
   }
 
   /**
    * @brief Read data from the socket
+   *
+   * Sockets, like serial ports, must be buffered. The buffering can be done
+   * by the socket driver itself or can leverage buffers from underlying
+   * peripherals such as a serial port, if that is used for socket
+   * communication.
    *
    * @param p_data - buffer to read data from the socket into
    * @return hal::result<read_t> - read_t data or error
@@ -94,7 +106,8 @@ public:
 
 private:
   virtual hal::result<write_t> driver_write(
-    std::span<const hal::byte> p_data) noexcept = 0;
+    std::span<const hal::byte> p_data,
+    std::function<hal::timeout_function> p_timeout) noexcept = 0;
   virtual hal::result<read_t> driver_read(
     std::span<hal::byte> p_data) noexcept = 0;
 };
