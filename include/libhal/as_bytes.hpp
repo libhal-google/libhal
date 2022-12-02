@@ -40,10 +40,4 @@ constexpr std::span<const hal::byte> as_bytes(
 {
   return as_bytes(p_container.data(), p_container.size());
 }
-
-template<typename T, std::size_t N>
-constexpr std::span<const hal::byte> as_bytes(const T (&array)[N])
-{
-  return as_bytes(array, N);
-}
 }  // namespace hal
