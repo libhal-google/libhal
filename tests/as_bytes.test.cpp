@@ -114,29 +114,6 @@ boost::ut::suite as_bytes_test = []() {
         expect(that % array_pointer == actual.data());
         expect(that % array_byte_size == actual.size());
       }
-      {
-        // Exercise
-        auto actual = hal::as_bytes("Hello World");
-        // Verify
-        // Verify: this works because almost all compilers will find common
-        // strings and place them in the same location, therefor, the location
-        // of a string "Hello World" will always be the same.
-        expect(that % reinterpret_cast<const hal::byte*>("Hello World") ==
-               actual.data());
-        expect(that % sizeof("Hello World") == actual.size());
-      }
-      {
-        int c_int_array[] = { 1, 2, 3, 5 };
-        // Exercise
-        auto actual = hal::as_bytes(c_int_array);
-        // Verify
-        // Verify: this works because almost all compilers will find common
-        // strings and place them in the same location, therefor, the location
-        // of a string "Hello World" will always be the same.
-        expect(that % reinterpret_cast<const hal::byte*>(c_int_array) ==
-               actual.data());
-        expect(that % sizeof(c_int_array) == actual.size());
-      }
     };
   };
 };
