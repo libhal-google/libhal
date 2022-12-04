@@ -20,8 +20,8 @@ Python 3.10 is default installed.
 Install GCC and build essentials.
 
 ```
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt install -y build-essential g++-11
 ```
 
