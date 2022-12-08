@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+set(CMAKE_MACOSX_RPATH 1)
+
 project(unit_test VERSION 0.0.1 LANGUAGES CXX)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
