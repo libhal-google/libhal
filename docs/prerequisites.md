@@ -1,7 +1,7 @@
-# How to install prerequisites for libhal
+# Installing prerequisites
 
-NOTE: that these prerequisites aren't the only way one can use and install
-libhal, but these are most supported and recommended way of using libhal.
+This is the recommended way to setup your system for libhal and conan but this
+is not the only way to use libhal.
 
 ## Prerequisites
 
@@ -9,11 +9,13 @@ libhal, but these are most supported and recommended way of using libhal.
 - `cmake`: 3.15 or above
 - `python`: 3.10 or above
 - `conan`: 1.51.3 or above (conan 2.0.0+ not currently supported)
-- `gcc`: version 11.3.0 or above (for compiling tests and code in general)
+- Suitable Compiler for running host tests (can be either of these):
+    - `gcc`: 11.3.0 or above
+    - `clang`: 14 and above
 
 ## Installing on Ubuntu 22.04
 
-Python 3.10 is default installed.
+Python 3.10 is default installed, no need to install it.
 
 ### 1. Install GCC
 
@@ -25,16 +27,10 @@ sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt install -y build-essential g++-11
 ```
 
-### 2. Installing cmake
+### 2. Installing conan & cmake
 
 ```
-pip install cmake
-```
-
-### 3. Installing conan
-
-```
-pip install conan
+pip3 install conan cmake
 ```
 
 ## Installing on MacOS X
@@ -53,19 +49,13 @@ Install python (will default to the latest Python3 version).
 brew install python
 ```
 
-### 3. Install cmake
+### 3. Install conan & cmake
 
 ```
-pip install cmake
+pip install conan cmake
 ```
 
-### 4. Install conan
-
-```
-pip install conan
-```
-
-### 5. Install Rosetta
+### 4. Install Rosetta
 
 Rosetta necessary for the ARM compiler and others
 
@@ -110,27 +100,56 @@ essentials to your systems environment paths.
 After this, close powershell and reopen it to check if it worked. Run
 `g++ --version` and you should get a message with version information in it.
 
-### 5. Installing cmake
+### 5. Installing conan & cmake
 
 ```
-pip install cmake
+pip3 install conan cmake
 ```
 
-### 6. Installing conan
+# Setting up Conan
 
+Before you can use conan with libhal, you'll need to change the default conan
+profile settings to make your life a bit easier. The profile settings control
+which compiler is used for compiling and testing conan packages.
+
+If you've never run conan before run this to generate the default profile:
+
+```bash
+conan profile new default --detect
 ```
-pip install conan
+
+## Setting your compiler to GCC 11
+
+Recommended for Linux & Windows users
+
+```bash
+conan profile update settings.build_type=Debug default
+conan profile update settings.compiler.libcxx=libstdc++ default
+conan profile update settings.compiler=gcc default
+conan profile update settings.compiler.version=11 default
 ```
 
-## Troubleshooting
+## Setting your compiler to Clang 14
 
-### `settings.compiler` not found error
+Recommended for MacOSX users
 
-First check that `g++ --version` runs and that the compiler version is `11` or
-above. If not, please install the appropriate compiler. If g++ is found then
-run the following command to get conan to autodetect your default compiler on
-your system.
-
+```bash
+conan profile update settings.build_type=Debug default
+conan profile update settings.compiler.libcxx=libc++ default
+conan profile update settings.compiler=clang default
+conan profile update settings.compiler.version=14 default
 ```
-conan profile default --detect --force
+
+## Add libhal-trunk repository to conan remotes
+
+When conan is installed it only knows to look for packages in the conan center
+package index. The process and requirements for making an official release to
+the conan center takes time. Meaning that there are very few releases on the
+conan center for official libhal drivers. To get the latest updates to the libhal
+official libraries, add the `libhal-trunk` repository to your list of conan
+repos.
+
+```bash
+conan remote add libhal-trunk https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
+conan config set general.revisions_enabled=True
 ```
