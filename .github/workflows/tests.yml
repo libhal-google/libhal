@@ -15,149 +15,33 @@ on:
     - cron: '0 12 * * 0'
 
 jobs:
-  linux:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - toolchain: gcc
-            compiler_version: 11
-            compiler: g++-11
-            os: ubuntu-22.04
-            standard_library: libstdc++
-            install_name: g++-11
-
-          - toolchain: clang
-            compiler_version: 14
-            compiler: clang++
-            os: ubuntu-22.04
-            standard_library: libc++
-            install_name: clang-14
-
-    runs-on: ${{ matrix.os }}
+  tests:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
           fetch-depth: 0
 
-      - name: 📥 Update APT
-        run: sudo apt update
+      - name: 📥 Install g++-11
+        run: sudo apt install g++-11 build-essential
 
-      - name: 📥 Install ${{ matrix.install_name }}
-        run: sudo apt install ${{ matrix.install_name }} build-essential
+      - name: 📥 Install CMake
+        run: pip install cmake
 
-      - name: 📥 Install CMake + Conan + GCovr
-        run: pip3 install --upgrade cmake conan gcovr
+      - name: 📥 Install conan
+        run: pip install conan
+
+      - name: 📥 Install gcovr
+        run: pip install --upgrade gcovr
 
       - name: 📡 Add `libhal-trunk` conan remote
-        run: conan remote add libhal-trunk
+        run: |
+             conan remote add libhal-trunk \
              https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
 
       - name: 📡 Enable conan revision mode
         run: conan config set general.revisions_enabled=True
 
-      - name: 📡 Create and setup default profile
-        run: |
-            conan profile new default --detect
-            conan profile update settings.build_type=Debug default
-            conan profile update \
-              settings.compiler.libcxx=${{ matrix.standard_library }} default
-            conan profile update \
-              settings.compiler=${{ matrix.toolchain }} default
-            conan profile update \
-              settings.compiler.version=${{ matrix.compiler_version }} default
-
-      - name: 📦 Build and Install Package
-        run: conan create . -r=libhal-trunk --update -pr:b=default
-                -e CXX=${{ matrix.compiler }}
-
-      - name: 📂 Create build directory
-        working-directory: tests
-        run: mkdir -p build
-
-      - name: 📥 Install conan dependencies
-        working-directory: tests/build
-        run: conan install .. -r=libhal-trunk --update
-                -e CXX=${{ matrix.compiler }}
-
-      - name: 🏗️ Run CMake
-        working-directory: tests/build
-        run: cmake .. -D CMAKE_CXX_COMPILER=${{ matrix.compiler }}
-
-      - name: 🏗️ Run Make
-        working-directory: tests/build
-        run: make -j unit_test
-
       - name: 🔬 Build & Run Unit Tests
-        working-directory: tests/build
-        run: ./unit_test
-
-  mac:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - toolchain: clang
-            compiler_version: 14
-            compiler: clang++
-            os: macos-12
-            standard_library: libc++
-            install_name:
-
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: 📥 Install ${{ matrix.install_name }}
-        if: ${{ matrix.install_name }}
-        run: brew install ${{ matrix.install_name }}
-
-      - name: 📥 Install CMake + Conan + GCovr
-        run: pip3 install --upgrade cmake conan gcovr
-
-      - name: 📡 Add `libhal-trunk` conan remote
-        run: conan remote add libhal-trunk
-             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
-
-      - name: 📡 Enable conan revision mode
-        run: conan config set general.revisions_enabled=True
-
-      - name: 📡 Create and setup default profile
-        run: |
-            conan profile new default --detect
-            conan profile update settings.build_type=Debug default
-            conan profile update \
-              settings.compiler.libcxx=${{ matrix.standard_library }} default
-            conan profile update \
-              settings.compiler=${{ matrix.toolchain }} default
-            conan profile update \
-              settings.compiler.version=${{ matrix.compiler_version }} default
-
-      - name: 📦 Build and Install Package
-        run: conan create . -r=libhal-trunk --update -pr:b=default
-                -e CXX=${{ matrix.compiler }}
-
-      - name: 📂 Create build directory
-        working-directory: tests
-        run: mkdir -p build
-
-      - name: 📥 Install conan dependencies
-        working-directory: tests/build
-        run: conan install .. -r=libhal-trunk --update
-                -e CXX=${{ matrix.compiler }}
-
-      - name: 🏗️ Run CMake
-        working-directory: tests/build
-        run: cmake .. -D CMAKE_CXX_COMPILER=${{ matrix.compiler }}
-
-      - name: 🏗️ Run Make
-        working-directory: tests/build
-        run: make -j unit_test
-
-      - name: 🔬 Build & Run Unit Tests
-        working-directory: tests/build
-        run: ./unit_test
+        run: ./tests/run.sh

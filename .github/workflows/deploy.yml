@@ -23,8 +23,11 @@ jobs:
       - name: 📥 Install g++-11
         run: sudo apt install g++-11 build-essential
 
-      - name: 📥 Install CMake & Conan
-        run: pip install cmake conan
+      - name: 📥 Install CMake
+        run: pip install cmake
+
+      - name: 📥 Install conan
+        run: pip install conan
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: |
