@@ -28,62 +28,22 @@ find_package(ut REQUIRED CONFIG)
 find_package(boost-leaf REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
-  can/interface.test.cpp
-  pwm/interface.test.cpp
-  timer/interface.test.cpp
-  i2c/interface.test.cpp
-  spi/interface.test.cpp
-  adc/interface.test.cpp
-  dac/interface.test.cpp
-  input_pin/interface.test.cpp
-  interrupt_pin/interface.test.cpp
-  output_pin/interface.test.cpp
-  serial/interface.test.cpp
-  servo/interface.test.cpp
-  socket/interface.test.cpp
-  steady_clock/interface.test.cpp
-  motor/interface.test.cpp
-
-  i2c/util.test.cpp
-  spi/util.test.cpp
-  serial/util.test.cpp
-  steady_clock/util.test.cpp
-
-  serial/coroutine.test.cpp
-
-  motor/mock.test.cpp
-  pwm/mock.test.cpp
-  timer/mock.test.cpp
-  spi/mock.test.cpp
-  dac/mock.test.cpp
-  adc/mock.test.cpp
-  output_pin/mock.test.cpp
-  input_pin/mock.test.cpp
-  interrupt_pin/mock.test.cpp
-  servo/mock.test.cpp
-  steady_clock/mock.test.cpp
-  can/mock.test.cpp
-
-  servo/rc.test.cpp
-  i2c/minimum_speed.test.cpp
-  can/router.test.cpp
-
-  as_bytes.test.cpp
-  bit.test.cpp
-  enum.test.cpp
-  timeout.test.cpp
-  static_list.test.cpp
-  static_callable.test.cpp
-  testing.test.cpp
-  main.test.cpp
-  move_interceptor.test.cpp
-  overflow_counter.test.cpp
-  math.test.cpp
-  error.test.cpp
-  streams.test.cpp
-  map.test.cpp
-  units.test.cpp
-  callback_recorder.test.cpp)
+  can.test.cpp
+  pwm.test.cpp
+  timer.test.cpp
+  i2c.test.cpp
+  spi.test.cpp
+  adc.test.cpp
+  dac.test.cpp
+  input_pin.test.cpp
+  interrupt_pin.test.cpp
+  output_pin.test.cpp
+  serial.test.cpp
+  servo.test.cpp
+  socket.test.cpp
+  steady_clock.test.cpp
+  motor.test.cpp
+  main.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC . ../include)
 target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra
