@@ -11,7 +11,7 @@ required_conan_version = ">=1.50.0"
 
 class LibHALConan(ConanFile):
     name = "libhal"
-    version = "0.1.34"
+    version = "0.2.0"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://libhal.github.io/libhal"

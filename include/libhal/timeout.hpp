@@ -7,9 +7,7 @@
 #pragma once
 
 #include <functional>
-#include <system_error>
 
-#include "enum.hpp"
 #include "error.hpp"
 
 namespace hal {
@@ -17,6 +15,22 @@ namespace hal {
  * @addtogroup utility
  * @{
  */
+
+/**
+ * @brief Represents the state of a coroutine or resumable callable
+ *
+ */
+enum class work_state
+{
+  // Callable is in progress and has not yet finished performing its work.
+  in_progress,
+  // Callable was able to determine that it failed to do what it was tasked to
+  // do and has terminated.
+  failed,
+  // Callable finished the work it needed to perform and has terminated.
+  finished,
+};
+
 /**
  * @brief Timeout is a callable object or function that signals to a procedure
  * that the procedure has exceeded its time allotment and should return control
@@ -99,41 +113,5 @@ concept worker = std::convertible_to<T, std::function<work_function>>;
 {
   return []() -> status { return {}; };
 }
-
-/**
- * @brief Repeatedly call a worker function until it has reached a terminal
- * state or a timeout has been reached
- *
- * @param p_worker - worker function to repeatedly call
- * @param p_timeout - callable timeout object
- * @return result<work_state> - state of the worker function
- */
-inline result<work_state> try_until(worker auto& p_worker,
-                                    timeout auto p_timeout) noexcept
-{
-  while (true) {
-    auto state = HAL_CHECK(p_worker());
-    if (hal::terminated(state)) {
-      return state;
-    }
-    HAL_CHECK(p_timeout());
-  }
-  return new_error(std::errc::state_not_recoverable);
-};
-
-/**
- * @brief Repeatedly call a worker function until it has reached a terminal
- * state or a timeout has been reached
- *
- * @param p_worker - worker function to repeatedly call
- * @param p_timeout - callable timeout object
- * @return result<work_state> - state of the worker function
- */
-inline result<work_state> try_until(worker auto&& p_worker,
-                                    timeout auto p_timeout) noexcept
-{
-  worker auto& worker = p_worker;
-  return try_until(worker, p_timeout);
-};
 /** @} */
 }  // namespace hal

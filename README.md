@@ -304,8 +304,8 @@ The file organization follows these rules:
 2. Non-hardware related utilities are placed at the root of the directory.
 3. Each interface has a directory at the root of the libhal directory.
 4. Each interface directory will have an `interface.hpp` file.
-    - Example: `#include <libhal/adc/interface.hpp>`
-    - Example: `#include <libhal/dac/interface.hpp>`
+    - Example: `#include <libhal/adc.hpp>`
+    - Example: `#include <libhal/dac.hpp>`
 5. Any files associated/extending a particular interface will reside in that
    interface's directory such as soft drivers or utilities.
 6. Any hardware/interface files that extend to multiple interfaces will be
