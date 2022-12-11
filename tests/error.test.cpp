@@ -1,8 +1,12 @@
-#include <boost/ut.hpp>
 #include <libhal/error.hpp>
 
+#include <utility>
+
+#include <boost/ut.hpp>
+
 namespace hal {
-boost::ut::suite error_test = []() {
+void error_test()
+{
   using namespace boost::ut;
 
   "[success] hal::on_error calls callback"_test = []() {
@@ -46,7 +50,6 @@ boost::ut::suite error_test = []() {
     // Should call the `on_error_callback` defined in the tweaks file
 
     attempt_all([]() -> status { return new_error(); },
-                [](int) {},
                 [&value_to_be_change]() { value_to_be_change = expected; });
 
     // Verify

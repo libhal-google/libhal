@@ -26,6 +26,7 @@ jobs:
             os: ubuntu-22.04
             standard_library: libstdc++
             install_name: g++-11
+            enable_coverage: true
 
           - toolchain: clang
             compiler_version: 14
@@ -33,6 +34,7 @@ jobs:
             os: ubuntu-22.04
             standard_library: libc++
             install_name: clang-14
+            enable_coverage: false
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -92,6 +94,43 @@ jobs:
       - name: 🔬 Build & Run Unit Tests
         working-directory: tests/build
         run: ./unit_test
+
+      - name: 🔎 Generate Code Coverage
+        if: ${{ matrix.enable_coverage }}
+        working-directory: tests/build
+        run: mkdir coverage/ && python3 -m gcovr
+             --root ../../
+             --cobertura coverage/coverage.xml
+             --html coverage/coverage.html --html-details
+             --sort-percentage
+
+      - name: Coverage Summary
+        if: ${{ matrix.enable_coverage }}
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: tests/build/coverage/coverage.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '25 80'
+
+      - name: Add Coverage PR Comment
+        if: ${{ matrix.enable_coverage && github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          path: code-coverage-results.md
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ matrix.enable_coverage }}
+        with:
+          name: coverage
+          retention-days: 2
+          path: tests/build/coverage/
 
   mac:
     strategy:

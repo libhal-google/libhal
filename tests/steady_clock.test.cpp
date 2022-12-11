@@ -11,6 +11,10 @@ public:
   constexpr static std::uint64_t m_uptime{ 100 };
   bool m_return_error_status{ false };
 
+  ~test_steady_clock()
+  {
+  }
+
 private:
   hertz driver_frequency() noexcept override
   {
@@ -26,7 +30,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite steady_clock_test = []() {
+void steady_clock_test()
+{
   using namespace boost::ut;
   "steady_clock interface test"_test = []() {
     // Setup

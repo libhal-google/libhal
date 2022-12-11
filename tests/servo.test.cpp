@@ -12,6 +12,10 @@ public:
   float m_passed_position{};
   bool m_return_error_status{ false };
 
+  ~test_servo()
+  {
+  }
+
 private:
   status driver_position(float p_position) noexcept override
   {
@@ -24,7 +28,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite servo_test = []() {
+void servo_test()
+{
   using namespace boost::ut;
   "servo interface test"_test = []() {
     // Setup

@@ -11,6 +11,10 @@ public:
   constexpr static float m_returned_position{ 0.5f };
   bool m_return_error_status{ false };
 
+  ~test_adc()
+  {
+  }
+
 private:
   result<float> driver_read() noexcept override
   {
@@ -22,7 +26,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite adc_test = []() {
+void adc_test()
+{
   using namespace boost::ut;
   "adc interface test"_test = []() {
     // Setup
@@ -47,5 +52,5 @@ boost::ut::suite adc_test = []() {
     // Verify
     expect(!bool{ result });
   };
-};
+}
 }  // namespace hal

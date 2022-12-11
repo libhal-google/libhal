@@ -9,9 +9,9 @@ constexpr hal::can::settings expected_settings{
 int counter = 0;
 constexpr hal::can::message_t expected_message{ .id = 1, .length = 0 };
 const std::function<hal::can::handler> expected_handler =
-  [](hal::can::message_t expected_message) {
+  [](hal::can::message_t p_expected_message) {
     counter++;
-    return expected_message;
+    return p_expected_message;
   };
 class test_can : public hal::can
 {
@@ -51,7 +51,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite can_test = []() {
+void can_test()
+{
   using namespace boost::ut;
 
   "can interface test"_test = []() {

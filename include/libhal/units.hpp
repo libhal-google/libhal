@@ -161,13 +161,13 @@ namespace literals {
 
 [[nodiscard]] consteval celsius operator""_F(long double p_value) noexcept
 {
-  p_value = (p_value - 32.0) * (5.0 / 9.0);
+  p_value = (p_value - 32.0L) * (5.0L / 9.0L);
   return static_cast<float>(p_value);
 }
 
 [[nodiscard]] consteval celsius operator""_K(long double p_value) noexcept
 {
-  return static_cast<float>(p_value - 273.15);
+  return static_cast<float>(p_value - 273.15L);
 }
 
 // =============================================================================
@@ -181,7 +181,7 @@ namespace literals {
 
 [[nodiscard]] consteval rpm operator""_deg_per_sec(long double p_value) noexcept
 {
-  return static_cast<float>(p_value / 6.0);
+  return static_cast<float>(p_value / 6.0L);
 }
 
 // =============================================================================
@@ -219,19 +219,19 @@ namespace literals {
 
 [[nodiscard]] consteval meters operator""_inch(long double p_value) noexcept
 {
-  constexpr double inch_to_meter = 0.0254;
+  constexpr long double inch_to_meter = 0.0254L;
   return static_cast<float>(p_value * inch_to_meter);
 }
 
 [[nodiscard]] consteval meters operator""_yards(long double p_value) noexcept
 {
-  constexpr double yard_to_meter = 0.9144;
+  constexpr long double yard_to_meter = 0.9144L;
   return static_cast<float>(p_value * yard_to_meter);
 }
 
 [[nodiscard]] consteval meters operator""_miles(long double p_value) noexcept
 {
-  constexpr double miles_to_meter = 1609.344;
+  constexpr long double miles_to_meter = 1609.344L;
   return static_cast<float>(p_value * miles_to_meter);
 }
 }  // namespace literals

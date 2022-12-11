@@ -14,6 +14,10 @@ public:
   bool m_driver_level{};
   bool m_return_error_status{ false };
 
+  ~test_output_pin()
+  {
+  }
+
 private:
   status driver_configure(const settings& p_settings) noexcept override
   {
@@ -41,7 +45,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite output_pin_test = []() {
+void output_pin_test()
+{
   using namespace boost::ut;
   "output_pin interface test"_test = []() {
     // Setup

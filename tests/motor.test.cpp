@@ -11,6 +11,10 @@ public:
   float m_power{};
   bool m_return_error_status{ false };
 
+  ~test_motor()
+  {
+  }
+
 private:
   status driver_power(float p_power) noexcept override
   {
@@ -23,7 +27,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite motor_test = []() {
+void motor_test()
+{
   using namespace boost::ut;
   "motor interface test"_test = []() {
     // Setup

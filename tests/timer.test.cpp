@@ -41,7 +41,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite timer_test = []() {
+void timer_test()
+{
   using namespace boost::ut;
   "timer interface test"_test = []() {
     // Setup

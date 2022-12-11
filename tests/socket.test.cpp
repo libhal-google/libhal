@@ -39,15 +39,17 @@ private:
 };
 }  // namespace
 
-boost::ut::suite socket_test = []() {
+void socket_test()
+{
   using namespace boost::ut;
-  "socket::write() && socket::read() success"_test = []() {
+  std::function<timeout_function> always_succeed = []() -> hal::status {
+    return hal::success();
+  };
+
+  "socket::write() && socket::read() success"_test = [always_succeed]() {
     // Setup
     test_socket test;
     std::array<hal::byte, 4> buffer;
-    std::function<timeout_function> always_succeed = []() -> hal::status {
-      return hal::success();
-    };
 
     // Exercise
     auto write_result = test.write(buffer, always_succeed);
@@ -66,14 +68,11 @@ boost::ut::suite socket_test = []() {
     expect(that % read_result.value().data.size() == 2);
   };
 
-  "socket::write() && socket::read() failure"_test = []() {
+  "socket::write() && socket::read() failure"_test = [always_succeed]() {
     // Setup
     test_socket test;
     test.m_return_error_status = true;
     std::array<hal::byte, 4> buffer;
-    std::function<timeout_function> always_succeed = []() -> hal::status {
-      return hal::success();
-    };
 
     // Exercise
     auto write_result = test.write(buffer, always_succeed);

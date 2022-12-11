@@ -33,6 +33,8 @@ public:
     return driver_read();
   }
 
+  virtual ~adc() = default;
+
 private:
   virtual result<float> driver_read() noexcept = 0;
 };
