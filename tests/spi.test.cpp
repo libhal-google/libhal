@@ -17,6 +17,10 @@ public:
   hal::byte m_filler{};
   bool m_return_error_status{ false };
 
+  ~test_spi()
+  {
+  }
+
 private:
   status driver_configure(const settings& p_settings) noexcept override
   {
@@ -42,7 +46,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite spi_test = []() {
+void spi_test()
+{
   using namespace boost::ut;
   "spi interface test"_test = []() {
     // Setup

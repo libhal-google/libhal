@@ -10,6 +10,10 @@ public:
   float m_passed_value{};
   bool m_return_error_status{ false };
 
+  ~test_dac()
+  {
+  }
+
 private:
   status driver_write(float p_value) noexcept override
   {
@@ -22,8 +26,10 @@ private:
 };
 }  // namespace
 
-boost::ut::suite dac_test = []() {
+void dac_test()
+{
   using namespace boost::ut;
+
   "dac interface test"_test = []() {
     using namespace boost::ut;
     // Setup

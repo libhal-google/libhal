@@ -36,6 +36,7 @@ private:
     std::span<hal::byte> p_data_in,
     std::function<hal::timeout_function> p_timeout) noexcept override
   {
+    HAL_CHECK(p_timeout());
     m_address = p_address;
     m_data_out = p_data_out;
     m_data_in = p_data_in;
@@ -48,7 +49,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite i2c_test = []() {
+void i2c_test()
+{
   using namespace boost::ut;
   "i2c interface test"_test = []() {
     // Setup

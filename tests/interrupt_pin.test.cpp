@@ -31,7 +31,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite interrupt_pin_test = []() {
+void interrupt_pin_test()
+{
   using namespace boost::ut;
   "interrupt_pin interface test"_test = []() {
     // Setup

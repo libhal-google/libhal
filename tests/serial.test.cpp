@@ -1,5 +1,6 @@
-#include <boost/ut.hpp>
 #include <libhal/serial.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 namespace {
@@ -15,6 +16,10 @@ public:
   settings m_settings{};
   bool m_flush_called{ false };
   bool m_return_error_status{ false };
+
+  ~test_serial()
+  {
+  }
 
 private:
   status driver_configure(const settings& p_settings) noexcept override
@@ -58,7 +63,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite serial_test = []() {
+void serial_test()
+{
   using namespace boost::ut;
   "serial interface test"_test = []() {
     // Setup
@@ -77,7 +83,8 @@ boost::ut::suite serial_test = []() {
     expect(bool{ result2 });
     expect(bool{ result3 });
     expect(bool{ result4 });
-    expect(expected_settings.baud_rate == test.m_settings.baud_rate);
+    auto delta = expected_settings.baud_rate - test.m_settings.baud_rate;
+    expect(that % 0.001f > std::abs(delta));
     expect(expected_settings.stop == test.m_settings.stop);
     expect(expected_settings.parity == test.m_settings.parity);
     expect(that % expected_payload.data() == result2.value().data.data());

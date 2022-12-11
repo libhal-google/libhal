@@ -13,6 +13,10 @@ public:
   float m_duty_cycle{};
   bool m_return_error_status{ false };
 
+  ~test_pwm()
+  {
+  }
+
 private:
   status driver_frequency(hertz p_frequency) noexcept override
   {
@@ -33,7 +37,8 @@ private:
 };
 }  // namespace
 
-boost::ut::suite pwm_test = []() {
+void pwm_test()
+{
   using namespace boost::ut;
   "pwm interface test"_test = []() {
     // Setup
