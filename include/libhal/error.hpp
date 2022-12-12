@@ -6,7 +6,7 @@
 // they will be ignored.
 #include "config.hpp"
 
-#include <boost/leaf.hpp>
+#include "third_party/leaf.hpp"
 #include <system_error>
 
 #define HAL_CHECK BOOST_LEAF_CHECK

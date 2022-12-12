@@ -1,6 +1,24 @@
-#include "tests.hpp"
-
 #include <libhal/config.hpp>
+
+namespace hal {
+extern void adc_test();
+extern void can_test();
+extern void dac_test();
+extern void error_test();
+extern void i2c_test();
+extern void input_pin_test();
+extern void interrupt_pin_test();
+extern void motor_test();
+extern void output_pin_test();
+extern void pwm_test();
+extern void serial_test();
+extern void servo_test();
+extern void socket_test();
+extern void spi_test();
+extern void steady_clock_test();
+extern void timeout_test();
+extern void timer_test();
+}  // namespace hal
 
 int main()
 {
