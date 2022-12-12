@@ -100,6 +100,7 @@ jobs:
         working-directory: tests/build
         run: mkdir coverage/ && python3 -m gcovr
              --root ../../
+             --exclude ".*/third_party/.*"
              --cobertura coverage/coverage.xml
              --html coverage/coverage.html --html-details
              --sort-percentage

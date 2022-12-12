@@ -8,12 +8,12 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     message(FATAL_ERROR "GCC version must be at least 11!")
   endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # require at least clang 13
+  # require at least clang 14
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
     message(FATAL_ERROR "Clang version must be at least 14!")
   endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-  # require at least clang 13
+  # require at least clang 14
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
     message(FATAL_ERROR "Clang version must be at least 14!")
   endif()
@@ -25,7 +25,6 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_BUILD_TYPE "Debug")
 
 find_package(ut REQUIRED CONFIG)
-find_package(boost-leaf REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
   can.test.cpp
@@ -65,4 +64,4 @@ target_link_options(${PROJECT_NAME} PRIVATE
   --coverage
   -fprofile-arcs
   -ftest-coverage)
-target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut boost::leaf)
+target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut)
