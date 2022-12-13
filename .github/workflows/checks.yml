@@ -1,0 +1,66 @@
+name: ✅ checks
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      library:
+        required: true
+        type: string
+      coverage:
+        required: true
+        type: boolean
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+    with:
+      library: ${{ inputs.library }}
+    secrets: inherit
+
+  docs:
+    uses: ./.github/workflows/docs.yml
+    with:
+      library: ${{ inputs.library }}
+    secrets: inherit
+
+  tests:
+    uses: ./.github/workflows/tests.yml
+    with:
+      library: ${{ inputs.library }}
+      coverage: ${{ inputs.coverage }}
+    secrets: inherit
+
+  publish_artifacts:
+    needs: [ lint, docs, tests ]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@master
+        with:
+          name: docs
+          path: docs/
+
+      - uses: actions/download-artifact@master
+        with:
+          name: coverage
+          path: docs/
+
+      - name: 🚀 Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/
+          enable_jekyll: true
+
+  deploy_package:
+    needs: [ lint, docs, tests ]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      library: libhal
+    secrets: inherit

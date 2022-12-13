@@ -7,10 +7,6 @@ on:
       library:
         required: true
         type: string
-  pull_request:
-  push:
-    branches:
-      - main
 
 jobs:
   docs:
@@ -36,10 +32,7 @@ jobs:
         working-directory: docs
         run: cat doxygen_warn.log
 
-      - name: 🚀 Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
+      - uses: actions/upload-artifact@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/
-          enable_jekyll: true
+          name: docs
+          path: docs/
