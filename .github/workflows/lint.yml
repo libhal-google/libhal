@@ -7,10 +7,6 @@ on:
       library:
         required: true
         type: string
-  pull_request:
-  push:
-    branches:
-      - main
 
 jobs:
   lint:

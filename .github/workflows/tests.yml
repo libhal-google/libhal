@@ -7,12 +7,9 @@ on:
       library:
         required: true
         type: string
-  pull_request:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: '0 12 * * 0'
+      coverage:
+        required: true
+        type: boolean
 
 jobs:
   linux:
@@ -26,7 +23,7 @@ jobs:
             os: ubuntu-22.04
             standard_library: libstdc++
             install_name: g++-11
-            enable_coverage: true
+            enable_coverage: ${{ inputs.coverage }}
 
           - toolchain: clang
             compiler_version: 14
@@ -95,6 +92,8 @@ jobs:
         working-directory: tests/build
         run: ./unit_test
 
+      # Do code coverage work
+
       - name: 🔎 Generate Code Coverage
         if: ${{ matrix.enable_coverage }}
         working-directory: tests/build
@@ -130,7 +129,7 @@ jobs:
         if: ${{ matrix.enable_coverage }}
         with:
           name: coverage
-          retention-days: 2
+          retention-days: 1
           path: tests/build/coverage/
 
   mac:

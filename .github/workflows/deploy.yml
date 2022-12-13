@@ -7,9 +7,6 @@ on:
       library:
         required: true
         type: string
-  push:
-    branches:
-      - main
 
 jobs:
   deploy:
