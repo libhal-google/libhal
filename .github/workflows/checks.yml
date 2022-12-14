@@ -48,7 +48,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: coverage
-          path: docs/
+          path: docs/coverage
 
       - name: 🚀 Deploy
         uses: peaceiris/actions-gh-pages@v3

@@ -101,7 +101,7 @@ jobs:
              --root ../../
              --exclude ".*/third_party/.*"
              --cobertura coverage/coverage.xml
-             --html coverage/coverage.html --html-details
+             --html coverage/index.html --html-details
              --sort-percentage
 
       - name: Coverage Summary
