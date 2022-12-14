@@ -14,6 +14,7 @@
 [![docs](https://github.com/libhal/libhal/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/docs.yml)
 [![lint](https://github.com/libhal/libhal/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/lint.yml)
 [![tests](https://github.com/libhal/libhal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/libhal/libhal/actions/workflows/tests.yml)
+[![coverage](https://libhal.github.io/libhal/coverage/coverage.svg)](https://libhal.github.io/libhal/coverage/)
 [![GitHub stars](https://img.shields.io/github/stars/libhal/libhal.svg)](https://github.com/libhal/libhal/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/libhal/libhal.svg)](https://github.com/libhal/libhal/network)
 [![GitHub issues](https://img.shields.io/github/issues/libhal/libhal.svg)](https://github.com/libhal/libhal/issues)
