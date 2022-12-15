@@ -116,7 +116,7 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
-          thresholds: '25 80'
+          thresholds: '0 80'
 
       - name: Extract & Save Coverage SVG
         if: ${{ matrix.enable_coverage }}

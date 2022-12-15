@@ -23,6 +23,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+    with:
+      library: ${{ inputs.library }}
+      coverage: ${{ inputs.coverage }}
+    secrets: inherit
+
   lint:
     uses: ./.github/workflows/lint.yml
     with:
@@ -33,13 +40,6 @@ jobs:
     uses: ./.github/workflows/docs.yml
     with:
       library: ${{ inputs.library }}
-    secrets: inherit
-
-  tests:
-    uses: ./.github/workflows/tests.yml
-    with:
-      library: ${{ inputs.library }}
-      coverage: ${{ inputs.coverage }}
     secrets: inherit
 
   publish_artifacts:
