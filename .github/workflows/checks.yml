@@ -39,7 +39,6 @@ jobs:
       coverage: ${{ inputs.coverage }}
       fail_on_coverage: ${{ inputs.fail_on_coverage }}
       coverage_threshold: ${{ inputs.coverage_threshold }}
-      source_dir: ${{ inputs.source_dir }}
     secrets: inherit
 
   lint:
