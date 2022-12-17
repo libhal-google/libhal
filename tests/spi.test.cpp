@@ -1,5 +1,6 @@
-#include <boost/ut.hpp>
 #include <libhal/spi.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 namespace {

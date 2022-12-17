@@ -1,6 +1,6 @@
-#include <boost/ut.hpp>
-
 #include <libhal/servo.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 namespace {
