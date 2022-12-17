@@ -52,11 +52,8 @@ jobs:
       - name: 📥 Install ${{ matrix.install_name }}
         run: sudo apt install ${{ matrix.install_name }} build-essential
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+      - name: 📥 Install CMake + Conan + GCovr
+        run: pip3 install --upgrade cmake conan gcovr
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: conan remote add libhal-trunk
@@ -162,11 +159,8 @@ jobs:
         if: ${{ matrix.install_name }}
         run: brew install ${{ matrix.install_name }}
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+      - name: 📥 Install CMake + Conan + GCovr
+        run: pip3 install --upgrade cmake conan gcovr
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: conan remote add libhal-trunk
