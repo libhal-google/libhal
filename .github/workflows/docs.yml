@@ -7,6 +7,9 @@ on:
       library:
         required: true
         type: string
+      source_dir: # Not used currently
+        required: true
+        type: string
 
 jobs:
   docs:
