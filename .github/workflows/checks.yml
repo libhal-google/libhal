@@ -8,8 +8,14 @@ on:
         required: true
         type: string
       coverage:
-        required: true
+        default: true
         type: boolean
+      fail_on_coverage:
+        default: false
+        type: boolean
+      coverage_threshold:
+        default: '40 80'
+        type: string
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -28,6 +34,8 @@ jobs:
     with:
       library: ${{ inputs.library }}
       coverage: ${{ inputs.coverage }}
+      fail_on_coverage: ${{ inputs.fail_on_coverage }}
+      coverage_threshold: ${{ inputs.coverage_threshold }}
     secrets: inherit
 
   lint:

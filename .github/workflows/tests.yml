@@ -10,6 +10,12 @@ on:
       coverage:
         required: true
         type: boolean
+      fail_on_coverage:
+        required: true
+        type: boolean
+      coverage_threshold:
+        required: true
+        type: string
 
 jobs:
   linux:
@@ -95,8 +101,6 @@ jobs:
         working-directory: tests/build
         run: ./unit_test
 
-      # Do code coverage work
-
       - name: 🔎 Generate Code Coverage
         if: ${{ matrix.enable_coverage }}
         working-directory: tests/build
@@ -113,13 +117,13 @@ jobs:
         with:
           filename: tests/build/coverage/coverage.xml
           badge: true
-          fail_below_min: false
+          fail_below_min: ${{ inputs.fail_on_coverage }}
           format: markdown
           hide_branch_rate: false
           hide_complexity: true
           indicators: true
           output: both
-          thresholds: '40 80'
+          thresholds: ${{ inputs.coverage_threshold }}
 
       - name: Extract & Save Coverage SVG
         if: ${{ matrix.enable_coverage }}
