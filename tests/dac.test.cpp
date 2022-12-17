@@ -1,5 +1,6 @@
-#include <boost/ut.hpp>
 #include <libhal/dac.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 namespace {

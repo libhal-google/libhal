@@ -1,5 +1,6 @@
-#include <boost/ut.hpp>
 #include <libhal/timeout.hpp>
+
+#include <boost/ut.hpp>
 
 namespace hal {
 void timeout_test()
