@@ -73,10 +73,6 @@ jobs:
             conan profile update \
               settings.compiler.version=${{ matrix.compiler_version }} default
 
-      - name: 📦 Build and Install Package
-        run: conan create . -r=libhal-trunk --update -pr:b=default
-                -e CXX=${{ matrix.compiler }}
-
       - name: 📂 Create build directory
         working-directory: tests
         run: mkdir -p build
@@ -179,10 +175,6 @@ jobs:
               settings.compiler=${{ matrix.toolchain }} default
             conan profile update \
               settings.compiler.version=${{ matrix.compiler_version }} default
-
-      - name: 📦 Build and Install Package
-        run: conan create . -r=libhal-trunk --update -pr:b=default
-                -e CXX=${{ matrix.compiler }}
 
       - name: 📂 Create build directory
         working-directory: tests
