@@ -14,5 +14,4 @@ jobs:
     uses: ./.github/workflows/checks.yml
     with:
       library: libhal
-      coverage: true
     secrets: inherit
