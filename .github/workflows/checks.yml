@@ -16,6 +16,9 @@ on:
       coverage_threshold:
         default: '40 80'
         type: string
+      source_dir:
+        default: 'include/'
+        type: string
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -36,18 +39,21 @@ jobs:
       coverage: ${{ inputs.coverage }}
       fail_on_coverage: ${{ inputs.fail_on_coverage }}
       coverage_threshold: ${{ inputs.coverage_threshold }}
+      source_dir: ${{ inputs.source_dir }}
     secrets: inherit
 
   lint:
     uses: ./.github/workflows/lint.yml
     with:
       library: ${{ inputs.library }}
+      source_dir: ${{ inputs.source_dir }}
     secrets: inherit
 
   docs:
     uses: ./.github/workflows/docs.yml
     with:
       library: ${{ inputs.library }}
+      source_dir: ${{ inputs.source_dir }}
     secrets: inherit
 
   publish_artifacts:

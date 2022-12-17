@@ -7,6 +7,9 @@ on:
       library:
         required: true
         type: string
+      source_dir:
+        required: true
+        type: string
 
 jobs:
   lint:
@@ -37,7 +40,7 @@ jobs:
         if: always()
         run: |
               git clone https://github.com/nithinn/ncc.git ncc
-              ./ncc/ncc.py --recurse --path include \
+              ./ncc/ncc.py --recurse --path ${{ inputs.source_dir }} \
               --exclude */third_party/* \
               --style .naming.style | tee ncc.stderr
               [ ! -s ncc.stderr ]
@@ -49,7 +52,7 @@ jobs:
       - name: 🧹 Format Check
         uses: DoozyX/clang-format-lint-action@v0.15
         with:
-          source: 'include/'
+          source: ${{ inputs.source_dir }}
           exclude: './third_party/*'
           extensions: 'hpp,cpp'
           clangFormatVersion: 15
