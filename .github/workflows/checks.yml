@@ -19,6 +19,9 @@ on:
       source_dir:
         default: 'include/'
         type: string
+      skip_deploy:
+        default: false
+        type: boolean
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -92,6 +95,7 @@ jobs:
 
   deploy_package:
     needs: [ lint, docs, tests ]
+    if: ${{ !inputs.skip_deploy }}
     uses: ./.github/workflows/deploy.yml
     with:
       library: ${{ inputs.library }}
