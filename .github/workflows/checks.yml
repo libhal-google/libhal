@@ -94,5 +94,5 @@ jobs:
     needs: [ lint, docs, tests ]
     uses: ./.github/workflows/deploy.yml
     with:
-      library: libhal
+      library: ${{ inputs.library }}
     secrets: inherit
