@@ -31,21 +31,18 @@ jobs:
       - name: 📡 Enable conan revision mode
         run: conan config set general.revisions_enabled=True
 
+      - name: 📦 Create Conan Package & Verify Test Package
+        run: conan create . --test-folder test_package
+
       - name: 📡 Sign into JFrog Artifactory
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           API_KEY: ${{ secrets.JFROG_LIBHAL_TRUNK_API_KEY }}
           JFROG_USER: ${{ secrets.JFROG_LIBHAL_TRUNK_USER }}
         run: conan user -p $API_KEY -r libhal-trunk $JFROG_USER
 
-      - name: 📦 Create Conan Package & Verify Test Package
-        run: conan create . --test-folder test_package
-
       - name: 🆙 Upload package to `libhal-trunk` repo
-        if: ${{ inputs.library == '' && github.ref == 'refs/heads/main'}}
-        run: conan upload "libhal/*" --confirm --all -r=libhal-trunk
-
-      - name: 🆙 Upload package to `libhal-trunk` repo
-        if: ${{ inputs.library != '' && github.ref == 'refs/heads/main'}}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
              conan upload "${{ inputs.library }}/*" --confirm --all \
              -r=libhal-trunk
