@@ -6,11 +6,7 @@
 #include "error.hpp"
 
 namespace hal {
-/**
- * @addtogroup adc
- * Available Analog to Digital Converter (ADC) APIs
- * @{
- */
+
 /**
  * @brief Analog to Digital Converter (ADC) hardware abstraction interface.
  *
@@ -38,5 +34,4 @@ public:
 private:
   virtual result<float> driver_read() noexcept = 0;
 };
-/** @} */
 }  // namespace hal

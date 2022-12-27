@@ -7,11 +7,6 @@
 
 namespace hal {
 /**
- * @addtogroup interrupt_pin Interrupt Pin
- * Available digital interrupt pin APIs
- * @{
- */
-/**
  * @brief Digital interrupt pin hardware abstraction
  *
  * Use this to automatically call a function when a pin's state has
@@ -92,5 +87,4 @@ private:
   virtual void driver_on_trigger(
     std::function<handler> p_callback) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

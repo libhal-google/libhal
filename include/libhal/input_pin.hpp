@@ -5,11 +5,6 @@
 
 namespace hal {
 /**
- * @addtogroup input_pin Input Pin
- * Available digital input pin APIs
- * @{
- */
-/**
  * @brief Digital input pin hardware abstraction interface.
  *
  * Use this to read a pin and determine if the voltage on it is HIGH or LOW.
@@ -54,5 +49,4 @@ private:
   virtual status driver_configure(const settings& p_settings) noexcept = 0;
   virtual result<bool> driver_level() noexcept = 0;
 };
-/** @} */
 }  // namespace hal

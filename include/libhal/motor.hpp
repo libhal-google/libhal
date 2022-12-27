@@ -5,11 +5,6 @@
 
 namespace hal {
 /**
- * @addtogroup motor
- * Available motor APIs
- * @{
- */
-/**
  * @brief Open loop motorized actuator hardware abstraction
  *
  * The motor interface can represent a variety of things such as:
@@ -62,5 +57,4 @@ public:
 private:
   virtual status driver_power(float p_power) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

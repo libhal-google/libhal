@@ -8,11 +8,6 @@
 
 namespace hal {
 /**
- * @addtogroup pwm
- * Available pwm APIs
- * @{
- */
-/**
  * @brief Pulse Width Modulation (PWM) channel hardware abstraction.
  *
  * This driver controls the waveform generation of a square wave and its
@@ -75,5 +70,4 @@ private:
   virtual status driver_frequency(hertz p_frequency) noexcept = 0;
   virtual status driver_duty_cycle(float p_duty_cycle) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

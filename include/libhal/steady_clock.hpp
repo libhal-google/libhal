@@ -8,12 +8,6 @@
 
 namespace hal {
 /**
- * @addtogroup steady_clock
- * Available hardware steady_clock APIs
- * @{
- *
- */
-/**
  * @brief Hardware abstraction interface for a steady clock mechanism
  *
  * Implementations of this interface must follow the same requirements as a
@@ -57,5 +51,4 @@ private:
   virtual hertz driver_frequency() noexcept = 0;
   virtual result<std::uint64_t> driver_uptime() noexcept = 0;
 };
-/** @} */
 }  // namespace hal

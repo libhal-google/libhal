@@ -8,11 +8,6 @@
 
 namespace hal {
 /**
- * @addtogroup network
- * Available networking APIs
- * @{
- */
-/**
  * @brief An interface for generic network sockets
  *
  * This socket can represent a TCP or UDP socket for clients or servers.
@@ -111,5 +106,4 @@ private:
   virtual hal::result<read_t> driver_read(
     std::span<hal::byte> p_data) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

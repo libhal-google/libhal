@@ -9,11 +9,6 @@
 
 namespace hal {
 /**
- * @addtogroup i2c
- * Available Inter-integrated Circuit (I2C) APIs
- * @{
- */
-/**
  * @brief Inter-integrated Circuit (I2C) hardware abstract interface.
  *
  * Also known as Two Wire Interface (TWI) communication protocol. This is a very
@@ -115,5 +110,4 @@ private:
     std::span<hal::byte> p_data_in,
     std::function<hal::timeout_function> p_timeout) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

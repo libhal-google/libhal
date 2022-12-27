@@ -8,11 +8,6 @@
 
 namespace hal {
 /**
- * @addtogroup timer
- * Available timer APIs
- * @{
- */
-/**
  * @brief Timer hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that have timer like
@@ -105,5 +100,4 @@ private:
   virtual status driver_schedule(std::function<void(void)> p_callback,
                                  hal::time_duration p_delay) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

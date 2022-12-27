@@ -5,11 +5,6 @@
 
 namespace hal {
 /**
- * @addtogroup output_pin Output Pin
- * Available output pin APIs
- * @{
- */
-/**
  * @brief Digital output pin hardware abstraction.
  *
  * Use this to drive a pin HIGH or LOW in order to send a control signal or turn
@@ -79,5 +74,4 @@ private:
   virtual status driver_level(bool p_high) noexcept = 0;
   virtual result<bool> driver_level() noexcept = 0;
 };
-/** @} */
 }  // namespace hal
