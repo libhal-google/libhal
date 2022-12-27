@@ -12,11 +12,6 @@
 
 namespace hal {
 /**
- * @addtogroup utility
- * @{
- */
-
-/**
  * @brief Represents the state of a coroutine or resumable callable
  *
  */
@@ -113,5 +108,4 @@ concept worker = std::convertible_to<T, std::function<work_function>>;
 {
   return []() -> status { return {}; };
 }
-/** @} */
 }  // namespace hal

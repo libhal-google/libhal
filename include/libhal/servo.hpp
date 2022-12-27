@@ -5,11 +5,6 @@
 
 namespace hal {
 /**
- * @addtogroup servo
- * Available servo APIs
- * @{
- */
-/**
  * @brief Hardware abstraction for closed loop positional rotary and linear
  * actuators.
  *
@@ -98,5 +93,4 @@ public:
 private:
   virtual status driver_position(float p_position) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

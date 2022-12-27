@@ -10,11 +10,6 @@
 
 namespace hal {
 /**
- * @addtogroup serial
- * Available serial APIs
- * @{
- */
-/**
  * @brief Hardware abstract interface for the serial communication protocol
  *
  * Use this interface for hardware that implements a serial protocol like UART,
@@ -195,5 +190,4 @@ private:
   virtual result<read_t> driver_read(std::span<hal::byte> p_data) noexcept = 0;
   virtual status driver_flush() noexcept = 0;
 };
-/** @} */
 }  // namespace hal

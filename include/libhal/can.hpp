@@ -8,11 +8,7 @@
 #include "units.hpp"
 
 namespace hal {
-/**
- * @addtogroup can
- * Available Controller Area Network (CAN bus) APIs
- * @{
- */
+
 /**
  * @brief Controller Area Network (CAN bus) hardware abstraction interface.
  *
@@ -135,5 +131,4 @@ private:
   virtual status driver_on_receive(
     std::function<handler> p_handler) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

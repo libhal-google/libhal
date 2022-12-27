@@ -7,11 +7,6 @@
 
 namespace hal {
 /**
- * @addtogroup dac
- * Available Digital to Analog Converter (DAC) APIs
- * @{
- */
-/**
  * @brief Digital to Analog Converter (DAC) hardware abstraction interface.
  *
  * Use this interface for devices and peripherals that can create arbitrary
@@ -38,5 +33,4 @@ public:
 private:
   virtual status driver_write(float p_value) noexcept = 0;
 };
-/** @} */
 }  // namespace hal

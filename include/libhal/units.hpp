@@ -7,11 +7,6 @@
 #include "error.hpp"
 
 namespace hal {
-/**
- * @addtogroup utility
- * @{
- */
-
 /// The standard time durations in libhal std::chrono::nanoseconds
 using time_duration = std::chrono::nanoseconds;
 
@@ -239,5 +234,4 @@ namespace literals {
 // Make user defined namespaces available to any library within the hal
 // namespace
 using namespace literals;
-/** @} */
 }  // namespace hal
