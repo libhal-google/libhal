@@ -69,7 +69,7 @@ concept worker = std::convertible_to<T, std::function<work_function>>;
  * @param p_timeout - callable timeout object
  * @return status - success or failure
  */
-[[nodiscard]] inline status delay(timeout auto p_timeout) noexcept
+[[nodiscard]] inline status delay(timeout auto p_timeout)
 {
   bool waiting = true;
 
@@ -104,7 +104,7 @@ concept worker = std::convertible_to<T, std::function<work_function>>;
  *
  * @return auto - callable that will never return timeout
  */
-[[nodiscard]] inline auto never_timeout() noexcept
+[[nodiscard]] inline auto never_timeout()
 {
   return []() -> status { return {}; };
 }

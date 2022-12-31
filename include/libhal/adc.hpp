@@ -24,7 +24,7 @@ public:
    * or supply voltage for the ADC. For example with a Vss of 0V and Vcc of 4V,
    * a reading of 0.5 would represent 2V.
    */
-  [[nodiscard]] result<float> read() noexcept
+  [[nodiscard]] result<float> read()
   {
     return driver_read();
   }
@@ -32,6 +32,6 @@ public:
   virtual ~adc() = default;
 
 private:
-  virtual result<float> driver_read() noexcept = 0;
+  virtual result<float> driver_read() = 0;
 };
 }  // namespace hal

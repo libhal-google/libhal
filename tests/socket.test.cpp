@@ -19,7 +19,7 @@ public:
 private:
   hal::result<write_t> driver_write(
     std::span<const hal::byte> p_data,
-    std::function<hal::timeout_function> p_timeout) noexcept
+    std::function<hal::timeout_function> p_timeout)
   {
     if (m_return_error_status) {
       return new_error();
@@ -28,7 +28,7 @@ private:
     (void)p_timeout();
     return write_t{ p_data.first(2) };
   }
-  hal::result<read_t> driver_read(std::span<hal::byte> p_data) noexcept
+  hal::result<read_t> driver_read(std::span<hal::byte> p_data)
   {
     if (m_return_error_status) {
       return new_error();

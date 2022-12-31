@@ -48,7 +48,7 @@ public:
    * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
    * the pwm generator is capable of achieving.
    */
-  [[nodiscard]] status frequency(hertz p_frequency) noexcept
+  [[nodiscard]] status frequency(hertz p_frequency)
   {
     return driver_frequency(p_frequency);
   }
@@ -59,7 +59,7 @@ public:
    * @param p_duty_cycle - set the duty cycle of the pwm
    * @return status - success or failure
    */
-  [[nodiscard]] status duty_cycle(float p_duty_cycle) noexcept
+  [[nodiscard]] status duty_cycle(float p_duty_cycle)
   {
     return driver_duty_cycle(p_duty_cycle);
   }
@@ -67,7 +67,7 @@ public:
   virtual ~pwm() = default;
 
 private:
-  virtual status driver_frequency(hertz p_frequency) noexcept = 0;
-  virtual status driver_duty_cycle(float p_duty_cycle) noexcept = 0;
+  virtual status driver_frequency(hertz p_frequency) = 0;
+  virtual status driver_duty_cycle(float p_duty_cycle) = 0;
 };
 }  // namespace hal

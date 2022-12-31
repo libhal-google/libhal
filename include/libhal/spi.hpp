@@ -38,7 +38,7 @@ public:
    * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -61,7 +61,7 @@ public:
    */
   [[nodiscard]] status transfer(std::span<const hal::byte> p_data_out,
                                 std::span<hal::byte> p_data_in,
-                                hal::byte p_filler = default_filler) noexcept
+                                hal::byte p_filler = default_filler)
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
@@ -69,9 +69,9 @@ public:
   virtual ~spi() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) = 0;
   virtual status driver_transfer(std::span<const hal::byte> p_data_out,
                                  std::span<hal::byte> p_data_in,
-                                 hal::byte p_filler) noexcept = 0;
+                                 hal::byte p_filler) = 0;
 };
 }  // namespace hal

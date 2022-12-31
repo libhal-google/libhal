@@ -23,7 +23,7 @@ public:
   }
 
 private:
-  status driver_configure(const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
     if (m_return_error_status) {
@@ -34,7 +34,7 @@ private:
 
   status driver_transfer(std::span<const hal::byte> p_data_out,
                          std::span<hal::byte> p_data_in,
-                         hal::byte p_filler) noexcept override
+                         hal::byte p_filler) override
   {
     m_data_out = p_data_out;
     m_data_in = p_data_in;

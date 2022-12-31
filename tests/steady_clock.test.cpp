@@ -16,11 +16,11 @@ public:
   }
 
 private:
-  hertz driver_frequency() noexcept override
+  hertz driver_frequency() override
   {
     return m_frequency;
   };
-  result<std::uint64_t> driver_uptime() noexcept override
+  result<std::uint64_t> driver_uptime() override
   {
     if (m_return_error_status) {
       return hal::new_error();

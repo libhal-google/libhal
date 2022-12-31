@@ -36,7 +36,7 @@ public:
    * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -48,7 +48,7 @@ public:
    * false, the pin state is set to LOW voltage.
    * @return status - success or failure
    */
-  [[nodiscard]] status level(bool p_high) noexcept
+  [[nodiscard]] status level(bool p_high)
   {
     return driver_level(p_high);
   }
@@ -62,7 +62,7 @@ public:
    * @return result<bool> - true indicates HIGH voltage and false indicates LOW
    * voltage
    */
-  [[nodiscard]] result<bool> level() noexcept
+  [[nodiscard]] result<bool> level()
   {
     return driver_level();
   }
@@ -70,8 +70,8 @@ public:
   virtual ~output_pin() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual status driver_level(bool p_high) noexcept = 0;
-  virtual result<bool> driver_level() noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) = 0;
+  virtual status driver_level(bool p_high) = 0;
+  virtual result<bool> driver_level() = 0;
 };
 }  // namespace hal

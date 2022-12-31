@@ -44,7 +44,7 @@ public:
    * @return result<bool> - true if timer is currently running
    * @return result<bool> - driver specific error, if any.
    */
-  [[nodiscard]] result<bool> is_running() noexcept
+  [[nodiscard]] result<bool> is_running()
   {
     return driver_is_running();
   }
@@ -61,7 +61,7 @@ public:
    *
    * @return status - success or failure
    */
-  [[nodiscard]] status cancel() noexcept
+  [[nodiscard]] status cancel()
   {
     return driver_cancel();
   }
@@ -87,7 +87,7 @@ public:
    * achieved
    */
   [[nodiscard]] status schedule(std::function<void(void)> p_callback,
-                                hal::time_duration p_delay) noexcept
+                                hal::time_duration p_delay)
   {
     return driver_schedule(p_callback, p_delay);
   }
@@ -95,9 +95,9 @@ public:
   virtual ~timer() = default;
 
 private:
-  virtual result<bool> driver_is_running() noexcept = 0;
-  virtual status driver_cancel() noexcept = 0;
+  virtual result<bool> driver_is_running() = 0;
+  virtual status driver_cancel() = 0;
   virtual status driver_schedule(std::function<void(void)> p_callback,
-                                 hal::time_duration p_delay) noexcept = 0;
+                                 hal::time_duration p_delay) = 0;
 };
 }  // namespace hal

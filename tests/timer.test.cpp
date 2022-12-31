@@ -13,14 +13,14 @@ public:
   bool m_return_error_status{ false };
 
 private:
-  result<bool> driver_is_running() noexcept override
+  result<bool> driver_is_running() override
   {
     if (m_return_error_status) {
       return hal::new_error();
     }
     return m_is_running;
   };
-  status driver_cancel() noexcept override
+  status driver_cancel() override
   {
     m_is_running = false;
     if (m_return_error_status) {
@@ -29,7 +29,7 @@ private:
     return success();
   };
   status driver_schedule(std::function<void(void)> p_callback,
-                         hal::time_duration p_delay) noexcept override
+                         hal::time_duration p_delay) override
   {
     m_is_running = true;
     m_callback = p_callback;

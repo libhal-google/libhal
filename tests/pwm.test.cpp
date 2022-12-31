@@ -19,7 +19,7 @@ public:
   }
 
 private:
-  status driver_frequency(hertz p_frequency) noexcept override
+  status driver_frequency(hertz p_frequency) override
   {
     m_frequency = p_frequency;
     if (m_return_error_status) {
@@ -27,7 +27,7 @@ private:
     }
     return success();
   };
-  status driver_duty_cycle(float p_duty_cycle) noexcept override
+  status driver_duty_cycle(float p_duty_cycle) override
   {
     m_duty_cycle = p_duty_cycle;
     if (m_return_error_status) {

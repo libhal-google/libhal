@@ -93,7 +93,7 @@ public:
    * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -104,7 +104,7 @@ public:
    *
    * @return status - success or failure
    */
-  [[nodiscard]] status send(const message_t& p_message) noexcept
+  [[nodiscard]] status send(const message_t& p_message)
   {
     return driver_send(p_message);
   }
@@ -118,7 +118,7 @@ public:
    * received. Set to "nullptr" to disable receive interrupts.
    * @return status - success or failure
    */
-  [[nodiscard]] status on_receive(std::function<handler> p_handler) noexcept
+  [[nodiscard]] status on_receive(std::function<handler> p_handler)
   {
     return driver_on_receive(p_handler);
   }
@@ -126,9 +126,8 @@ public:
   virtual ~can() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual status driver_send(const message_t& p_message) noexcept = 0;
-  virtual status driver_on_receive(
-    std::function<handler> p_handler) noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) = 0;
+  virtual status driver_send(const message_t& p_message) = 0;
+  virtual status driver_on_receive(std::function<handler> p_handler) = 0;
 };
 }  // namespace hal

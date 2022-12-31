@@ -17,7 +17,7 @@ public:
   }
 
 private:
-  status driver_position(float p_position) noexcept override
+  status driver_position(float p_position) override
   {
     m_passed_position = p_position;
     if (m_return_error_status) {

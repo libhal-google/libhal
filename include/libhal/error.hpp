@@ -56,7 +56,7 @@ template<class TryBlock, class... H>
 }
 
 template<class... Item>
-inline auto new_error(Item&&... p_item) noexcept
+inline auto new_error(Item&&... p_item)
 {
   if constexpr (config::on_error_callback_enabled) {
     config::on_error_callback();

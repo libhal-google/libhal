@@ -17,7 +17,7 @@ public:
   }
 
 private:
-  result<float> driver_read() noexcept override
+  result<float> driver_read() override
   {
     if (m_return_error_status) {
       return hal::new_error();

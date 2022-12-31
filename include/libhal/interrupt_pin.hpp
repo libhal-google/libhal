@@ -62,7 +62,7 @@ public:
    * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -75,7 +75,7 @@ public:
    * @param p_callback function to execute when the trigger condition is met.
    * Set to nullptr to disable this interrupt.
    */
-  void on_trigger(std::function<handler> p_callback) noexcept
+  void on_trigger(std::function<handler> p_callback)
   {
     return driver_on_trigger(p_callback);
   }
@@ -83,8 +83,7 @@ public:
   virtual ~interrupt_pin() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual void driver_on_trigger(
-    std::function<handler> p_callback) noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) = 0;
+  virtual void driver_on_trigger(std::function<handler> p_callback) = 0;
 };
 }  // namespace hal

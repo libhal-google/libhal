@@ -31,7 +31,7 @@ public:
    * @return hertz - operating frequency of the steady clock. Will always return
    * a positive value.
    */
-  [[nodiscard]] hertz frequency() noexcept
+  [[nodiscard]] hertz frequency()
   {
     return driver_frequency();
   }
@@ -40,7 +40,7 @@ public:
    * @return result<std::uint64_t> - the number of ticks of the steady clock
    * since its creation.
    */
-  [[nodiscard]] result<std::uint64_t> uptime() noexcept
+  [[nodiscard]] result<std::uint64_t> uptime()
   {
     return driver_uptime();
   }
@@ -48,7 +48,7 @@ public:
   virtual ~steady_clock() = default;
 
 private:
-  virtual hertz driver_frequency() noexcept = 0;
-  virtual result<std::uint64_t> driver_uptime() noexcept = 0;
+  virtual hertz driver_frequency() = 0;
+  virtual result<std::uint64_t> driver_uptime() = 0;
 };
 }  // namespace hal

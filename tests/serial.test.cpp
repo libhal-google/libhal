@@ -22,7 +22,7 @@ public:
   }
 
 private:
-  status driver_configure(const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
     if (m_return_error_status) {
@@ -31,8 +31,7 @@ private:
     return success();
   };
 
-  result<write_t> driver_write(
-    std::span<const hal::byte> p_data) noexcept override
+  result<write_t> driver_write(std::span<const hal::byte> p_data) override
   {
     if (m_return_error_status) {
       return hal::new_error();
@@ -40,7 +39,7 @@ private:
     return write_t{ p_data };
   };
 
-  result<read_t> driver_read(std::span<hal::byte> p_data) noexcept override
+  result<read_t> driver_read(std::span<hal::byte> p_data) override
   {
     if (m_return_error_status) {
       return hal::new_error();
@@ -52,7 +51,7 @@ private:
     };
   };
 
-  status driver_flush() noexcept override
+  status driver_flush() override
   {
     m_flush_called = true;
     if (m_return_error_status) {

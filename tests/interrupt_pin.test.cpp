@@ -17,7 +17,7 @@ public:
   bool m_return_error_status{ false };
 
 private:
-  status driver_configure(const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
     if (m_return_error_status) {
@@ -25,7 +25,7 @@ private:
     }
     return success();
   };
-  void driver_on_trigger(std::function<handler> p_callback) noexcept override
+  void driver_on_trigger(std::function<handler> p_callback) override
   {
     m_callback = p_callback;
   };

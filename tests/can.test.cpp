@@ -23,7 +23,7 @@ public:
   bool m_return_error_status{ false };
 
 private:
-  status driver_configure(const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
     if (m_return_error_status) {
@@ -32,7 +32,7 @@ private:
     return success();
   };
 
-  status driver_send(const message_t& p_message) noexcept override
+  status driver_send(const message_t& p_message) override
   {
     m_message = p_message;
     if (m_return_error_status) {
@@ -41,7 +41,7 @@ private:
     return success();
   };
 
-  status driver_on_receive(std::function<handler> p_handler) noexcept override
+  status driver_on_receive(std::function<handler> p_handler) override
   {
     m_handler = p_handler;
     if (m_return_error_status) {

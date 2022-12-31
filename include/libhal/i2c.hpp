@@ -37,7 +37,7 @@ public:
    * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -95,7 +95,7 @@ public:
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
-    std::function<hal::timeout_function> p_timeout) noexcept
+    std::function<hal::timeout_function> p_timeout)
   {
     return driver_transaction(p_address, p_data_out, p_data_in, p_timeout);
   }
@@ -103,11 +103,11 @@ public:
   virtual ~i2c() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) = 0;
   virtual status driver_transaction(
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
-    std::function<hal::timeout_function> p_timeout) noexcept = 0;
+    std::function<hal::timeout_function> p_timeout) = 0;
 };
 }  // namespace hal

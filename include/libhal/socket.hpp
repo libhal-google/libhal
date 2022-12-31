@@ -67,7 +67,7 @@ public:
    */
   [[nodiscard]] hal::result<write_t> write(
     std::span<const hal::byte> p_data,
-    std::function<hal::timeout_function> p_timeout) noexcept
+    std::function<hal::timeout_function> p_timeout)
   {
     return driver_write(p_data, p_timeout);
   }
@@ -84,7 +84,7 @@ public:
    * @return hal::result<read_t> - read_t data or error
    * @throw std::errc::no_link if the connection to server has been severed
    */
-  [[nodiscard]] hal::result<read_t> read(std::span<hal::byte> p_data) noexcept
+  [[nodiscard]] hal::result<read_t> read(std::span<hal::byte> p_data)
   {
     return driver_read(p_data);
   }
@@ -102,8 +102,7 @@ public:
 private:
   virtual hal::result<write_t> driver_write(
     std::span<const hal::byte> p_data,
-    std::function<hal::timeout_function> p_timeout) noexcept = 0;
-  virtual hal::result<read_t> driver_read(
-    std::span<hal::byte> p_data) noexcept = 0;
+    std::function<hal::timeout_function> p_timeout) = 0;
+  virtual hal::result<read_t> driver_read(std::span<hal::byte> p_data) = 0;
 };
 }  // namespace hal
