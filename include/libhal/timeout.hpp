@@ -6,8 +6,7 @@
  */
 #pragma once
 
-#include <functional>
-
+#include "alias.hpp"
 #include "error.hpp"
 
 namespace hal {
@@ -38,7 +37,7 @@ enum class work_state
 using timeout_function = status(void);
 
 template<class T>
-concept timeout = std::convertible_to<T, std::function<timeout_function>>;
+concept timeout = std::convertible_to<T, hal::function_ref<timeout_function>>;
 
 /**
  * @brief A non-blocking callable that performs work with each call
@@ -59,7 +58,7 @@ concept timeout = std::convertible_to<T, std::function<timeout_function>>;
 using work_function = result<work_state>();
 
 template<class T>
-concept worker = std::convertible_to<T, std::function<work_function>>;
+concept worker = std::convertible_to<T, hal::function_ref<work_function>>;
 
 /**
  * @brief Delay the execution of the application or thread for a duration of

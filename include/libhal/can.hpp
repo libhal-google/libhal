@@ -2,13 +2,12 @@
 
 #include <array>
 #include <cstdint>
-#include <functional>
 
+#include "alias.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
-
 /**
  * @brief Controller Area Network (CAN bus) hardware abstraction interface.
  *
@@ -118,7 +117,7 @@ public:
    * received. Set to "nullptr" to disable receive interrupts.
    * @return status - success or failure
    */
-  [[nodiscard]] status on_receive(std::function<handler> p_handler)
+  [[nodiscard]] status on_receive(hal::function_ref<handler> p_handler)
   {
     return driver_on_receive(p_handler);
   }
@@ -128,6 +127,6 @@ public:
 private:
   virtual status driver_configure(const settings& p_settings) = 0;
   virtual status driver_send(const message_t& p_message) = 0;
-  virtual status driver_on_receive(std::function<handler> p_handler) = 0;
+  virtual status driver_on_receive(hal::function_ref<handler> p_handler) = 0;
 };
 }  // namespace hal

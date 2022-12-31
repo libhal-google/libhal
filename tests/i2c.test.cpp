@@ -1,5 +1,7 @@
 #include <libhal/i2c.hpp>
 
+#include <functional>
+
 #include <boost/ut.hpp>
 
 namespace hal {
@@ -8,7 +10,7 @@ constexpr hal::i2c::settings expected_settings{ .clock_rate = 1.0_Hz };
 constexpr hal::byte expected_address{ 100 };
 constexpr std::array<hal::byte, 4> expected_data_out{ 'a', 'b' };
 std::array<hal::byte, 4> expected_data_in{ '1', '2' };
-const std::function<hal::timeout_function> expected_timeout = []() {
+const hal::function_ref<hal::timeout_function> expected_timeout = []() {
   return success();
 };
 
@@ -19,7 +21,9 @@ public:
   hal::byte m_address{};
   std::span<const hal::byte> m_data_out{};
   std::span<hal::byte> m_data_in{};
-  std::function<hal::timeout_function> m_timeout{};
+  std::function<hal::timeout_function> m_timeout = []() -> hal::status {
+    return hal::success();
+  };
   bool m_return_error_status{ false };
 
 private:
@@ -35,7 +39,7 @@ private:
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
-    std::function<hal::timeout_function> p_timeout) override
+    hal::function_ref<hal::timeout_function> p_timeout) override
   {
     HAL_CHECK(p_timeout());
     m_address = p_address;

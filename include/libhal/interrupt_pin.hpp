@@ -1,7 +1,6 @@
 #pragma once
 
-#include <functional>
-
+#include "alias.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
@@ -75,7 +74,7 @@ public:
    * @param p_callback function to execute when the trigger condition is met.
    * Set to nullptr to disable this interrupt.
    */
-  void on_trigger(std::function<handler> p_callback)
+  void on_trigger(hal::function_ref<handler> p_callback)
   {
     return driver_on_trigger(p_callback);
   }
@@ -84,6 +83,6 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) = 0;
-  virtual void driver_on_trigger(std::function<handler> p_callback) = 0;
+  virtual void driver_on_trigger(hal::function_ref<handler> p_callback) = 0;
 };
 }  // namespace hal

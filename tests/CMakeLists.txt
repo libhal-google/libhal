@@ -25,6 +25,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_BUILD_TYPE "Debug")
 
 find_package(ut REQUIRED CONFIG)
+find_package(tl-function-ref REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
   can.test.cpp
@@ -64,4 +65,4 @@ target_link_options(${PROJECT_NAME} PRIVATE
   --coverage
   -fprofile-arcs
   -ftest-coverage)
-target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut)
+target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut tl::function-ref)

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <chrono>
-#include <functional>
 
+#include "alias.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
@@ -86,7 +86,7 @@ public:
    * @throws out_of_bounds - if p_interval is greater than what can be cannot be
    * achieved
    */
-  [[nodiscard]] status schedule(std::function<void(void)> p_callback,
+  [[nodiscard]] status schedule(hal::function_ref<void(void)> p_callback,
                                 hal::time_duration p_delay)
   {
     return driver_schedule(p_callback, p_delay);
@@ -97,7 +97,7 @@ public:
 private:
   virtual result<bool> driver_is_running() = 0;
   virtual status driver_cancel() = 0;
-  virtual status driver_schedule(std::function<void(void)> p_callback,
+  virtual status driver_schedule(hal::function_ref<void(void)> p_callback,
                                  hal::time_duration p_delay) = 0;
 };
 }  // namespace hal

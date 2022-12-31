@@ -19,7 +19,7 @@ public:
 private:
   hal::result<write_t> driver_write(
     std::span<const hal::byte> p_data,
-    std::function<hal::timeout_function> p_timeout)
+    hal::function_ref<hal::timeout_function> p_timeout)
   {
     if (m_return_error_status) {
       return new_error();
@@ -42,7 +42,7 @@ private:
 void socket_test()
 {
   using namespace boost::ut;
-  std::function<timeout_function> always_succeed = []() -> hal::status {
+  hal::function_ref<timeout_function> always_succeed = []() -> hal::status {
     return hal::success();
   };
 
