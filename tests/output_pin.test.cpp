@@ -20,7 +20,7 @@ public:
   }
 
 private:
-  status driver_configure(const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
     if (m_return_error_status) {
@@ -28,7 +28,7 @@ private:
     }
     return success();
   };
-  status driver_level(bool p_high) noexcept override
+  status driver_level(bool p_high) override
   {
     m_driver_level = p_high;
     if (m_return_error_status) {
@@ -36,7 +36,7 @@ private:
     }
     return success();
   };
-  result<bool> driver_level() noexcept override
+  result<bool> driver_level() override
   {
     if (m_return_error_status) {
       return hal::new_error();

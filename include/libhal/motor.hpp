@@ -47,7 +47,7 @@ public:
    * @param p_power - the amount of power to apply to the motor
    * @return status - success or failure
    */
-  [[nodiscard]] status power(float p_power) noexcept
+  [[nodiscard]] status power(float p_power)
   {
     return driver_power(p_power);
   }
@@ -55,6 +55,6 @@ public:
   virtual ~motor() = default;
 
 private:
-  virtual status driver_power(float p_power) noexcept = 0;
+  virtual status driver_power(float p_power) = 0;
 };
 }  // namespace hal

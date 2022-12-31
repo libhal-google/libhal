@@ -115,7 +115,7 @@ public:
    * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved
    */
-  [[nodiscard]] status configure(const settings& p_settings) noexcept
+  [[nodiscard]] status configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -126,8 +126,7 @@ public:
    * @param p_data - data to be transmitted over the serial port
    * @return result<write_t> - serial write response
    */
-  [[nodiscard]] result<write_t> write(
-    std::span<const hal::byte> p_data) noexcept
+  [[nodiscard]] result<write_t> write(std::span<const hal::byte> p_data)
   {
     return driver_write(p_data);
   }
@@ -160,7 +159,7 @@ public:
    * @throws std::errc::io_error - a frame error occurred at some point during
    * reception.
    */
-  [[nodiscard]] result<read_t> read(std::span<hal::byte> p_data) noexcept
+  [[nodiscard]] result<read_t> read(std::span<hal::byte> p_data)
   {
     return driver_read(p_data);
   }
@@ -176,7 +175,7 @@ public:
    *
    * @return status - success or failure
    */
-  [[nodiscard]] status flush() noexcept
+  [[nodiscard]] status flush()
   {
     return driver_flush();
   }
@@ -184,10 +183,9 @@ public:
   virtual ~serial() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) noexcept = 0;
-  virtual result<write_t> driver_write(
-    std::span<const hal::byte> p_data) noexcept = 0;
-  virtual result<read_t> driver_read(std::span<hal::byte> p_data) noexcept = 0;
-  virtual status driver_flush() noexcept = 0;
+  virtual status driver_configure(const settings& p_settings) = 0;
+  virtual result<write_t> driver_write(std::span<const hal::byte> p_data) = 0;
+  virtual result<read_t> driver_read(std::span<hal::byte> p_data) = 0;
+  virtual status driver_flush() = 0;
 };
 }  // namespace hal

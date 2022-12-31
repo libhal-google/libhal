@@ -17,7 +17,7 @@ public:
   }
 
 private:
-  status driver_power(float p_power) noexcept override
+  status driver_power(float p_power) override
   {
     m_power = p_power;
     if (m_return_error_status) {

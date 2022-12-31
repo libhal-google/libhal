@@ -16,7 +16,7 @@ public:
   }
 
 private:
-  status driver_write(float p_value) noexcept override
+  status driver_write(float p_value) override
   {
     m_passed_value = p_value;
     if (m_return_error_status) {

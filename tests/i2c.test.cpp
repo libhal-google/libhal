@@ -23,7 +23,7 @@ public:
   bool m_return_error_status{ false };
 
 private:
-  status driver_configure(const settings& p_settings) noexcept override
+  status driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
     if (m_return_error_status) {
@@ -35,7 +35,7 @@ private:
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
-    std::function<hal::timeout_function> p_timeout) noexcept override
+    std::function<hal::timeout_function> p_timeout) override
   {
     HAL_CHECK(p_timeout());
     m_address = p_address;

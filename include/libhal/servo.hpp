@@ -83,7 +83,7 @@ public:
    * @param p_position - position to move the servo to
    * @return status - success or failure
    */
-  [[nodiscard]] status position(float p_position) noexcept
+  [[nodiscard]] status position(float p_position)
   {
     return driver_position(p_position);
   }
@@ -91,6 +91,6 @@ public:
   virtual ~servo() = default;
 
 private:
-  virtual status driver_position(float p_position) noexcept = 0;
+  virtual status driver_position(float p_position) = 0;
 };
 }  // namespace hal
