@@ -11,7 +11,7 @@ required_conan_version = ">=1.50.0"
 
 class LibHALConan(ConanFile):
     name = "libhal"
-    version = "0.3.0"
+    version = "0.3.1"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://libhal.github.io/libhal"
@@ -57,6 +57,9 @@ class LibHALConan(ConanFile):
 
     def layout(self):
         basic_layout(self)
+
+    def requirements(self):
+        self.requires("tl-function-ref/1.0.0")
 
     def package(self):
         copy(self, "LICENSE", dst=os.path.join(

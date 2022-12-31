@@ -1,5 +1,7 @@
 #include <libhal/interrupt_pin.hpp>
 
+#include <functional>
+
 #include <boost/ut.hpp>
 
 namespace hal {
@@ -13,7 +15,7 @@ class test_interrupt_pin : public hal::interrupt_pin
 {
 public:
   settings m_settings{};
-  std::function<handler> m_callback{};
+  std::function<handler> m_callback = [](bool) {};
   bool m_return_error_status{ false };
 
 private:
@@ -25,7 +27,7 @@ private:
     }
     return success();
   };
-  void driver_on_trigger(std::function<handler> p_callback) override
+  void driver_on_trigger(hal::function_ref<handler> p_callback) override
   {
     m_callback = p_callback;
   };
@@ -39,7 +41,7 @@ void interrupt_pin_test()
     // Setup
     test_interrupt_pin test;
     int counter = 0;
-    const std::function<void(bool)> expected_callback = [&counter](bool) {
+    const hal::function_ref<void(bool)> expected_callback = [&counter](bool) {
       counter++;
     };
 

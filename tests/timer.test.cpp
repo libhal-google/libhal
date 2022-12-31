@@ -1,5 +1,7 @@
 #include <libhal/timer.hpp>
 
+#include <functional>
+
 #include <boost/ut.hpp>
 
 namespace hal {
@@ -8,7 +10,7 @@ class test_timer : public hal::timer
 {
 public:
   bool m_is_running{ false };
-  std::function<void(void)> m_callback{};
+  std::function<void(void)> m_callback = []() {};
   hal::time_duration m_delay;
   bool m_return_error_status{ false };
 
@@ -28,7 +30,7 @@ private:
     }
     return success();
   };
-  status driver_schedule(std::function<void(void)> p_callback,
+  status driver_schedule(hal::function_ref<void(void)> p_callback,
                          hal::time_duration p_delay) override
   {
     m_is_running = true;
@@ -48,7 +50,7 @@ void timer_test()
   "timer interface test"_test = []() {
     // Setup
     test_timer test;
-    const std::function<void(void)> expected_callback = []() {};
+    const hal::function_ref<void(void)> expected_callback = []() {};
     const std::chrono::nanoseconds expected_delay = {};
 
     // Exercise + Verify
@@ -61,7 +63,6 @@ void timer_test()
     expect(bool{ result1 });
     expect(bool{ result2 });
     expect(that % true == result1.value());
-    expect(bool{ test.m_callback });
     expect(expected_delay == test.m_delay);
 
     auto result3 = test.cancel();
@@ -73,7 +74,7 @@ void timer_test()
   "timer errors test"_test = []() {
     // Setup
     test_timer test;
-    const std::function<void(void)> expected_callback = []() {};
+    const hal::function_ref<void(void)> expected_callback = []() {};
     const std::chrono::nanoseconds expected_delay = {};
     test.m_return_error_status = true;
 

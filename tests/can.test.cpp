@@ -1,5 +1,7 @@
 #include <libhal/can.hpp>
 
+#include <functional>
+
 #include <boost/ut.hpp>
 
 namespace hal {
@@ -9,17 +11,15 @@ constexpr hal::can::settings expected_settings{
 };
 int counter = 0;
 constexpr hal::can::message_t expected_message{ .id = 1, .length = 0 };
-const std::function<hal::can::handler> expected_handler =
-  [](hal::can::message_t p_expected_message) {
-    counter++;
-    return p_expected_message;
-  };
+hal::function_ref<hal::can::handler> expected_handler =
+  [](const hal::can::message_t&) { counter++; };
+
 class test_can : public hal::can
 {
 public:
   settings m_settings{};
   message_t m_message{};
-  std::function<handler> m_handler{};
+  std::function<handler> m_handler = [](const message_t&) {};
   bool m_return_error_status{ false };
 
 private:
@@ -41,7 +41,7 @@ private:
     return success();
   };
 
-  status driver_on_receive(std::function<handler> p_handler) override
+  status driver_on_receive(hal::function_ref<handler> p_handler) override
   {
     m_handler = p_handler;
     if (m_return_error_status) {

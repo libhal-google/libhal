@@ -6,7 +6,6 @@
 #include "error.hpp"
 
 namespace hal {
-
 /**
  * @brief Analog to Digital Converter (ADC) hardware abstraction interface.
  *

@@ -2,6 +2,7 @@
 
 #include <span>
 
+#include "alias.hpp"
 #include "error.hpp"
 #include "timeout.hpp"
 #include "units.hpp"
@@ -67,7 +68,7 @@ public:
    */
   [[nodiscard]] hal::result<write_t> write(
     std::span<const hal::byte> p_data,
-    std::function<hal::timeout_function> p_timeout)
+    hal::function_ref<hal::timeout_function> p_timeout)
   {
     return driver_write(p_data, p_timeout);
   }
@@ -102,7 +103,7 @@ public:
 private:
   virtual hal::result<write_t> driver_write(
     std::span<const hal::byte> p_data,
-    std::function<hal::timeout_function> p_timeout) = 0;
+    hal::function_ref<hal::timeout_function> p_timeout) = 0;
   virtual hal::result<read_t> driver_read(std::span<hal::byte> p_data) = 0;
 };
 }  // namespace hal
