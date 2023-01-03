@@ -52,6 +52,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   --coverage
   -fprofile-arcs
   -ftest-coverage
+  -fsanitize=address
   -Werror
   -Wall
   -Wextra
@@ -64,5 +65,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 target_link_options(${PROJECT_NAME} PRIVATE
   --coverage
   -fprofile-arcs
-  -ftest-coverage)
+  -ftest-coverage
+  -fsanitize=address)
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::ut tl::function-ref)

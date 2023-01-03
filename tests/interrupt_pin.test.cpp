@@ -41,9 +41,7 @@ void interrupt_pin_test()
     // Setup
     test_interrupt_pin test;
     int counter = 0;
-    const hal::function_ref<void(bool)> expected_callback = [&counter](bool) {
-      counter++;
-    };
+    auto expected_callback = [&counter](bool) { counter++; };
 
     // Exercise
     auto result = test.configure(expected_settings);
