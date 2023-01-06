@@ -27,7 +27,7 @@ private:
     }
     return success();
   };
-  void driver_on_trigger(hal::function_ref<handler> p_callback) override
+  void driver_on_trigger(hal::callback<handler> p_callback) override
   {
     m_callback = p_callback;
   };

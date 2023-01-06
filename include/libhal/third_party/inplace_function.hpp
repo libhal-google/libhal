@@ -1,3 +1,15 @@
+/** [libhal] modified to do the following
+ *
+ *    1. Remove "throw" from empty vtable invoke function and replace it with a
+ *       function that returns uninitialized data, making call to the function
+ *       undefined behavior.
+ *    2. Remove `nullptr_t` constructors from inplace_function
+ *    3. Calling a "moved-from" inplace_function will NOT crash but the result
+ *       of the called function will NOT be valid.
+ *    4. Move SG14_INPLACE_FUNCTION_THROW is no longer needed and thus
+ *       this library no longer needs exceptions.
+ */
+
 /*
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,12 +39,9 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <type_traits>
 #include <utility>
-
-#ifndef SG14_INPLACE_FUNCTION_THROW
-#define SG14_INPLACE_FUNCTION_THROW(x) throw(x)
-#endif
 
 namespace stdext {
 
@@ -102,14 +111,19 @@ struct vtable
   using process_ptr_t = void (*)(storage_ptr_t, storage_ptr_t);
   using destructor_ptr_t = void (*)(storage_ptr_t);
 
-  const invoke_ptr_t invoke_ptr;
-  const process_ptr_t copy_ptr;
-  const process_ptr_t relocate_ptr;
-  const destructor_ptr_t destructor_ptr;
+  invoke_ptr_t invoke_ptr;
+  process_ptr_t copy_ptr;
+  process_ptr_t relocate_ptr;
+  destructor_ptr_t destructor_ptr;
 
   explicit constexpr vtable() noexcept
     : invoke_ptr{ [](storage_ptr_t, Args&&...) -> R {
-      SG14_INPLACE_FUNCTION_THROW(std::bad_function_call());
+      if constexpr (std::is_same_v<R, void>) {
+        return;
+      } else {
+        std::array<std::byte, sizeof(R)> memory;
+        return *reinterpret_cast<R*>(memory.data());
+      }
     } }
     , copy_ptr{ [](storage_ptr_t, storage_ptr_t) -> void {} }
     , relocate_ptr{ [](storage_ptr_t, storage_ptr_t) -> void {} }
@@ -247,12 +261,12 @@ public:
       "inplace_function cannot be constructed from non-copyable type");
 
     static_assert(sizeof(C) <= Capacity,
-                  "inplace_function cannot be constructed from object with "
-                  "this (large) size");
+                  "Function object is too large to be constructed with the "
+                  "type's Capacity");
 
     static_assert(Alignment % alignof(C) == 0,
-                  "inplace_function cannot be constructed from object with "
-                  "this (large) alignment");
+                  "Function object does not fit alignment specifications and "
+                  "thus cannot be constructed");
 
     static const vtable_t vt{ inplace_function_detail::wrapper<C>{} };
     vtable_ptr_ = std::addressof(vt);
@@ -287,12 +301,6 @@ public:
       std::addressof(inplace_function_detail::empty_vtable<R, Args...>);
   }
 
-  inplace_function(std::nullptr_t) noexcept
-    : vtable_ptr_{ std::addressof(
-        inplace_function_detail::empty_vtable<R, Args...>) }
-  {
-  }
-
   inplace_function(const inplace_function& other)
     : vtable_ptr_{ other.vtable_ptr_ }
   {
@@ -307,14 +315,6 @@ public:
   {
     vtable_ptr_->relocate_ptr(std::addressof(storage_),
                               std::addressof(other.storage_));
-  }
-
-  inplace_function& operator=(std::nullptr_t) noexcept
-  {
-    vtable_ptr_->destructor_ptr(std::addressof(storage_));
-    vtable_ptr_ =
-      std::addressof(inplace_function_detail::empty_vtable<R, Args...>);
-    return *this;
   }
 
   inplace_function& operator=(inplace_function other) noexcept
@@ -338,22 +338,6 @@ public:
   {
     return vtable_ptr_->invoke_ptr(std::addressof(storage_),
                                    std::forward<Args>(args)...);
-  }
-
-  constexpr bool operator==(std::nullptr_t) const noexcept
-  {
-    return !operator bool();
-  }
-
-  constexpr bool operator!=(std::nullptr_t) const noexcept
-  {
-    return operator bool();
-  }
-
-  explicit constexpr operator bool() const noexcept
-  {
-    return vtable_ptr_ !=
-           std::addressof(inplace_function_detail::empty_vtable<R, Args...>);
   }
 
   void swap(inplace_function& other) noexcept

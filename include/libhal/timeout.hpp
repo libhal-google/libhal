@@ -6,8 +6,8 @@
  */
 #pragma once
 
-#include "alias.hpp"
 #include "error.hpp"
+#include "functional.hpp"
 
 namespace hal {
 /**
