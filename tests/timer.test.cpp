@@ -10,7 +10,7 @@ class test_timer : public hal::timer
 {
 public:
   bool m_is_running{ false };
-  std::function<void(void)> m_callback = []() {};
+  hal::callback<void(void)> m_callback = []() {};
   hal::time_duration m_delay;
   bool m_return_error_status{ false };
 
@@ -30,7 +30,7 @@ private:
     }
     return success();
   };
-  status driver_schedule(hal::function_ref<void(void)> p_callback,
+  status driver_schedule(hal::callback<void(void)> p_callback,
                          hal::time_duration p_delay) override
   {
     m_is_running = true;
@@ -50,7 +50,11 @@ void timer_test()
   "timer interface test"_test = []() {
     // Setup
     test_timer test;
-    const hal::function_ref<void(void)> expected_callback = []() {};
+    bool callback_stored_successfully = false;
+    const hal::callback<void(void)> expected_callback =
+      [&callback_stored_successfully]() {
+        callback_stored_successfully = true;
+      };
     const std::chrono::nanoseconds expected_delay = {};
 
     // Exercise + Verify
@@ -64,6 +68,9 @@ void timer_test()
     expect(bool{ result2 });
     expect(that % true == result1.value());
     expect(expected_delay == test.m_delay);
+
+    test.m_callback();
+    expect(that % true == callback_stored_successfully);
 
     auto result3 = test.cancel();
     result1 = test.is_running();

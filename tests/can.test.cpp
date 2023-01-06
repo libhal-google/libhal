@@ -11,7 +11,7 @@ constexpr hal::can::settings expected_settings{
 };
 int counter = 0;
 constexpr hal::can::message_t expected_message{ .id = 1, .length = 0 };
-hal::function_ref<hal::can::handler> expected_handler =
+hal::callback<hal::can::handler> expected_handler =
   [](const hal::can::message_t&) { counter++; };
 
 class test_can : public hal::can
@@ -19,7 +19,7 @@ class test_can : public hal::can
 public:
   settings m_settings{};
   message_t m_message{};
-  std::function<handler> m_handler = [](const message_t&) {};
+  hal::callback<handler> m_handler = [](const message_t&) {};
   bool m_return_error_status{ false };
 
 private:
@@ -41,7 +41,7 @@ private:
     return success();
   };
 
-  status driver_on_receive(hal::function_ref<handler> p_handler) override
+  status driver_on_receive(hal::callback<handler> p_handler) override
   {
     m_handler = p_handler;
     if (m_return_error_status) {
