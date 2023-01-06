@@ -11,7 +11,7 @@ namespace hal {
 template<typename F>
 using function_ref = tl::function_ref<F>;
 template<typename F, size_t Capacity>
-using inline_function = stdext::inplace_function<F, Capacity>;
+using inplace_function = stdext::inplace_function<F, Capacity>;
 template<typename F>
-using callback = inline_function<F, sizeof(std::intptr_t) * 2>;
+using callback = inplace_function<F, sizeof(std::intptr_t) * 2>;
 }  // namespace hal
