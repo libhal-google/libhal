@@ -1,4 +1,5 @@
-/** [libhal] modified to do the following
+/**
+ *  [libhal] modifications to this file are as follows:
  *
  *    1. Remove "throw" from empty vtable invoke function and replace it with a
  *       function that returns uninitialized data, making call to the function
