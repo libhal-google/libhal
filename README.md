@@ -32,8 +32,7 @@ section:
 libhal/[x]
 ```
 
-Replace `[x]` with the appropriate version number, otherwise `[x]` will pick the
-latest available version of the library.
+Replace `[x]` with the appropriate version number.
 
 ## `conanfile.py`
 
@@ -43,8 +42,7 @@ Add the following to your `def requirements(self):` function.
 self.requires("libhal/[x]")
 ```
 
-Replace `[x]` with the appropriate version number, otherwise `[x]` will pick the
-latest available version of the library.
+Replace `[x]` with the appropriate version number.
 
 # :white_check_mark: Supported Interfaces
 
