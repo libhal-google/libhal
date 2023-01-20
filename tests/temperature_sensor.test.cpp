@@ -1,0 +1,1 @@
+#include <libhal/temperature_sensor.hpp>

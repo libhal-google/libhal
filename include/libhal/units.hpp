@@ -37,8 +37,11 @@ using rpm = float;
 /// Type for length represented in meters.
 using meters = float;
 
-/// Type for rotational velocity represented in degrees.
-using angle = float;
+/// Type for angle represented in degrees.
+using degrees = float;
+
+/// Type for magnetic field represented in gauss.
+using gauss = float;
 
 /**
  * @brief Set of possible pin mode resistor settings.
@@ -183,7 +186,7 @@ namespace literals {
 // Angle
 // =============================================================================
 
-[[nodiscard]] consteval angle operator""_deg(long double p_value) noexcept
+[[nodiscard]] consteval degrees operator""_deg(long double p_value) noexcept
 {
   return static_cast<float>(p_value);
 }
