@@ -45,6 +45,12 @@ add_executable(${PROJECT_NAME}
   motor.test.cpp
   timeout.test.cpp
   error.test.cpp
+  accelerometer.test.cpp
+  distance_sensor.test.cpp
+  gyroscope.test.cpp
+  magnetometer.test.cpp
+  rotation_sensor.test.cpp
+  temperature_sensor.test.cpp
   main.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC . ../include)
