@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "config.hpp"
 #include "error.hpp"
 
