@@ -30,6 +30,7 @@ jobs:
             standard_library: libstdc++
             install_name: g++-11
             enable_coverage: ${{ inputs.coverage }}
+            enable_latest_version_badge: true
 
           - toolchain: clang
             compiler_version: 14
@@ -38,6 +39,7 @@ jobs:
             standard_library: libc++
             install_name: clang-14
             enable_coverage: false
+            enable_latest_version_badge: false
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -124,6 +126,10 @@ jobs:
              $(cat code-coverage-results.md |
                grep -Eo 'https://img.shields.io/badge/[^)]*')
               -O tests/build/coverage/coverage.svg
+
+      - name: Generate Latest Version Badge
+        if: ${{ matrix.enable_latest_version_badge }}
+        run: wget "https://img.shields.io/badge/version-$(conan inspect . --attribute version | cut -c 10-)-green" -o docs/latest_version.svg
 
       - uses: actions/upload-artifact@v3
         if: ${{ matrix.enable_coverage }}
