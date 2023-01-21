@@ -17,7 +17,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/libhal/libhal.svg)](https://github.com/libhal/libhal/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/libhal/libhal.svg)](https://github.com/libhal/libhal/network)
 [![GitHub issues](https://img.shields.io/github/issues/libhal/libhal.svg)](https://github.com/libhal/libhal/issues)
-[![ConanCenter Package](https://repology.org/badge/version-for-repo/conancenter/libhal.svg)](https://conan.io/center/libhal)
+[![Latest Version](https://libhal.github.io/libhal/latest_version.svg)](https://github.com/libhal/libhal/blob/main/conanfile.py)
+[![ConanCenter Version](https://repology.org/badge/version-for-repo/conancenter/libhal.svg)](https://conan.io/center/libhal)
 
 </div>
 
