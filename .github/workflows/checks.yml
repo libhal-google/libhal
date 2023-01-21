@@ -85,7 +85,7 @@ jobs:
           path: docs/coverage
 
       - name: Generate Latest Version Badge
-        run: wget "https://img.shields.io/badge/version-$(conan inspect . --attribute version | cut -c 10-)-green" -O docs/latest_version.svg
+        run: wget "https://img.shields.io/badge/Latest%20Version-$(conan inspect . --attribute version | cut -c 10-)-green" -O docs/latest_version.svg
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
