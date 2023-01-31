@@ -115,9 +115,8 @@ public:
    *
    * @param p_handler - this handler will be called when a message has been
    * received.
-   * @return status - success or failure
    */
-  [[nodiscard]] status on_receive(hal::callback<handler> p_handler)
+  void on_receive(hal::callback<handler> p_handler)
   {
     return driver_on_receive(p_handler);
   }
@@ -127,6 +126,6 @@ public:
 private:
   virtual status driver_configure(const settings& p_settings) = 0;
   virtual status driver_send(const message_t& p_message) = 0;
-  virtual status driver_on_receive(hal::callback<handler> p_handler) = 0;
+  virtual void driver_on_receive(hal::callback<handler> p_handler) = 0;
 };
 }  // namespace hal

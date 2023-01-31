@@ -41,13 +41,9 @@ private:
     return success();
   };
 
-  status driver_on_receive(hal::callback<handler> p_handler) override
+  void driver_on_receive(hal::callback<handler> p_handler) override
   {
     m_handler = p_handler;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
-    return success();
   };
 };
 }  // namespace
@@ -63,13 +59,12 @@ void can_test()
     // Exercise
     auto result1 = test.configure(expected_settings);
     auto result2 = test.send(expected_message);
-    auto result3 = test.on_receive(expected_handler);
+    test.on_receive(expected_handler);
     test.m_handler(expected_message);
 
     // Verify
     expect(bool{ result1 });
     expect(bool{ result2 });
-    expect(bool{ result3 });
     expect(that % expected_settings.baud_rate == test.m_settings.baud_rate);
     expect(that % expected_message.id == test.m_message.id);
     expect(that % 1 == counter);
@@ -83,12 +78,10 @@ void can_test()
     // Exercise
     auto result1 = test.configure(expected_settings);
     auto result2 = test.send(expected_message);
-    auto result3 = test.on_receive(expected_handler);
 
     // Verify
     expect(!bool{ result1 });
     expect(!bool{ result2 });
-    expect(!bool{ result3 });
   };
 };
 }  // namespace hal
