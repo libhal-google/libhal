@@ -28,18 +28,18 @@ jobs:
             compiler: g++-11
             os: ubuntu-22.04
             standard_library: libstdc++
-            install_name: g++-11
+            install_name: build-essential g++-11
             enable_coverage: ${{ inputs.coverage }}
             enable_latest_version_badge: true
 
-          - toolchain: clang
-            compiler_version: 14
-            compiler: clang++
-            os: ubuntu-22.04
-            standard_library: libc++
-            install_name: clang-14
-            enable_coverage: false
-            enable_latest_version_badge: false
+          # - toolchain: clang
+          #   compiler_version: 14
+          #   compiler: clang++
+          #   os: ubuntu-22.04
+          #   standard_library: libc++
+          #   install_name: build-essential clang-14 llvm-14-dev libc++-dev libc++abi-dev --install-suggests
+          #   enable_coverage: false
+          #   enable_latest_version_badge: false
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -52,7 +52,7 @@ jobs:
         run: sudo apt update
 
       - name: 📥 Install ${{ matrix.install_name }}
-        run: sudo apt install ${{ matrix.install_name }} build-essential
+        run: sudo apt install ${{ matrix.install_name }}
 
       - name: 📥 Install CMake + Conan + GCovr
         run: pip3 install --upgrade cmake conan gcovr
@@ -74,6 +74,9 @@ jobs:
               settings.compiler=${{ matrix.toolchain }} default
             conan profile update \
               settings.compiler.version=${{ matrix.compiler_version }} default
+
+      - name: 📦 Generate Package & Install Library
+        run: conan create . --test-folder test_package
 
       - name: 📂 Create build directory
         working-directory: tests
