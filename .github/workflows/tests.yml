@@ -181,6 +181,9 @@ jobs:
             conan profile update \
               settings.compiler.version=${{ matrix.compiler_version }} default
 
+      - name: 📦 Generate Package & Install Library
+        run: conan create . --test-folder test_package
+
       - name: 📂 Create build directory
         working-directory: tests
         run: mkdir -p build
