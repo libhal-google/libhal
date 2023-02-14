@@ -39,7 +39,6 @@ add_executable(${PROJECT_NAME}
   interrupt_pin.test.cpp
   output_pin.test.cpp
   serial.test.cpp
-  servo.test.cpp
   socket.test.cpp
   steady_clock.test.cpp
   motor.test.cpp

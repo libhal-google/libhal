@@ -5,6 +5,7 @@
 #include <optional>
 #include <span>
 
+#include "config.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
@@ -37,72 +38,128 @@ namespace hal {
 class serial
 {
 public:
-  /// Generic settings for a standard serial device.
+  /**
+   * @brief Generic settings for a standard serial device.
+   *
+   */
   struct settings
   {
-    /// Set of available stop bits options
+    /**
+     * @brief Set of available stop bits options
+     *
+     */
     enum class stop_bits : uint8_t
     {
       one = 0,
       two,
     };
 
-    /// Set of parity bit options
+    /**
+     * @brief Set of parity bit options
+     *
+     */
     enum class parity : uint8_t
     {
-      /// Disable parity bit as part of the frame
+      /**
+       * @brief Disable parity bit as part of the frame
+       *
+       */
       none = 0,
-      /// Enable parity and set 1 (HIGH) when the number of bits is odd
+      /**
+       * @brief Enable parity and set 1 (HIGH) when the number of bits is odd
+       *
+       */
       odd,
-      /// Enable parity and set 1 (HIGH) when the number of bits is even
+      /**
+       * @brief Enable parity and set 1 (HIGH) when the number of bits is even
+       *
+       */
       even,
-      /// Enable parity bit and always return 1 (HIGH) for ever frame
+      /**
+       * @brief Enable parity bit and always return 1 (HIGH) for ever
+       * frame
+       *
+       */
       forced1,
-      /// Enable parity bit and always return 0 (LOW) for ever frame
+      /**
+       * @brief Enable parity bit and always return 0 (LOW) for ever
+       * frame
+       *
+       */
       forced0,
     };
 
-    /// The operating speed of the baud rate (in units of bits per second)
+    /**
+     * @brief The operating speed of the baud rate (in units of bits per second)
+     *
+     */
     hertz baud_rate = 115200.0f;
-    /// Number of stop bits for each frame
+
+    /**
+     * @brief Number of stop bits for each frame
+     *
+     */
     stop_bits stop = stop_bits::one;
-    /// Parity bit type for each frame
+
+    /**
+     * @brief Parity bit type for each frame
+     *
+     */
     parity parity = parity::none;
   };
-
-  /// @brief Return type for serial read operations
+  /**
+   * @brief Return type for serial read operations
+   *
+   */
   struct read_t
   {
-    /// @brief The filled portion of the input buffer from the serial port
-    ///
-    /// The size of this buffer indicates the number of bytes read
-    /// The address points to the start of the buffer passed into the read()
-    /// function.
+    /**
+     * @brief  The filled portion of the input buffer from the serial port
+     *
+     * The size of this buffer indicates the number of bytes read The address
+     * points to the start of the buffer passed into the read() function.
+     */
     std::span<hal::byte> data;
 
-    /// @brief Number of enqueued and available to be read out bytes
-    ///
-    /// This value can be equal to or exceed the value of capacity. In this
-    /// situation, the number of bytes above the capacity are bytes that have
-    /// been dropped. Not all drivers will indicate the number of bytes lost. It
-    /// is  up to the driver or application to decide what to do in this
-    /// situation.
+    /**
+     * @brief Number of enqueued and available to be read out bytes
+     *
+     * This value can be equal to or exceed the value of capacity. In this
+     * situation, the number of bytes above the capacity are bytes that have
+     * been dropped. Not all drivers will indicate the number of bytes lost. It
+     * is up to the driver or application to decide what to do in this
+     * situation.
+     */
     size_t available;
 
-    /// The maximum number of bytes that the serial port can queue up.
+    /**
+     * @brief The maximum number of bytes that the serial port can queue up.
+     *
+     */
     size_t capacity;
   };
 
-  /// @brief Return type for serial write operations
+  /**
+   * @brief Return type for serial write operations
+   *
+   */
   struct write_t
   {
-    /// @brief The portion of the buffer transmitted
-    ///
-    /// The size of this buffer indicates the number of bytes read
-    /// The address points to the start of the buffer passed into the read()
-    /// function.
+    /**
+     * @brief The portion of the buffer transmitted
+     *
+     */
     std::span<const hal::byte> data;
   };
+
+  /**
+   * @brief Feedback from performing a flush operation
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct flush_t
+  {};
 
   /**
    * @brief Configure serial to match the settings supplied
@@ -173,9 +230,9 @@ public:
    * - Use the fastest available option to perform these operations, meaning
    *   that the contents of the internal working buffer will not be zeroed out.
    *
-   * @return status - success or failure
+   * @return result<flush_t> - success or failure
    */
-  [[nodiscard]] status flush()
+  [[nodiscard]] result<flush_t> flush()
   {
     return driver_flush();
   }
@@ -186,6 +243,6 @@ private:
   virtual status driver_configure(const settings& p_settings) = 0;
   virtual result<write_t> driver_write(std::span<const hal::byte> p_data) = 0;
   virtual result<read_t> driver_read(std::span<hal::byte> p_data) = 0;
-  virtual status driver_flush() = 0;
+  virtual result<flush_t> driver_flush() = 0;
 };
 }  // namespace hal

@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#include "config.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
@@ -28,19 +29,50 @@ class steady_clock
 {
 public:
   /**
-   * @return hertz - operating frequency of the steady clock. Will always return
-   * a positive value.
+   * @brief Result from requesting the operating frequency of the steady clock
+   *
    */
-  [[nodiscard]] hertz frequency()
+  struct frequency_t
+  {
+    /**
+     * @brief the frequency of the steady clock.
+     *
+     * Guaranteed to be a positive value by the implementing driver.
+     */
+    hertz operating_frequency;
+  };
+
+  /**
+   * @brief Result from calling uptime
+   *
+   */
+  struct uptime_t
+  {
+    /**
+     * @brief Number of counts that the steady clock has counted since it
+     * started.
+     *
+     */
+    std::uint64_t ticks;
+  };
+
+  /**
+   * @brief Get the operating frequency of the steady clock
+   *
+   * @return result<frequency_t> - operating frequency of the steady clock.
+   * Guaranteed to be a positive value by the implementing driver.
+   */
+  [[nodiscard]] result<frequency_t> frequency()
   {
     return driver_frequency();
   }
 
   /**
-   * @return result<std::uint64_t> - the number of ticks of the steady clock
-   * since its creation.
+   * @brief Get the current value of the steady clock
+   *
+   * @return result<uptime_t> - uptime information
    */
-  [[nodiscard]] result<std::uint64_t> uptime()
+  [[nodiscard]] result<uptime_t> uptime()
   {
     return driver_uptime();
   }
@@ -48,7 +80,7 @@ public:
   virtual ~steady_clock() = default;
 
 private:
-  virtual hertz driver_frequency() = 0;
-  virtual result<std::uint64_t> driver_uptime() = 0;
+  virtual result<frequency_t> driver_frequency() = 0;
+  virtual result<uptime_t> driver_uptime() = 0;
 };
 }  // namespace hal

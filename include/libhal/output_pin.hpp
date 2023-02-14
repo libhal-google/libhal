@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
@@ -30,6 +31,22 @@ public:
   };
 
   /**
+   * @brief Feedback from setting the pin state
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct set_level_t
+  {};
+
+  /// Pin level reading structure
+  struct level_t
+  {
+    /// Current state of the pin
+    bool state;
+  };
+
+  /**
    * @brief Configure the output pin to match the settings supplied
    *
    * @param p_settings - settings to apply to output pin
@@ -46,9 +63,9 @@ public:
    *
    * @param p_high - if true then the pin state is set to HIGH voltage. If
    * false, the pin state is set to LOW voltage.
-   * @return status - success or failure
+   * @return result<set_level_t> - success or failure
    */
-  [[nodiscard]] status level(bool p_high)
+  [[nodiscard]] result<set_level_t> level(bool p_high)
   {
     return driver_level(p_high);
   }
@@ -59,10 +76,12 @@ public:
    * Implementations must read the pin state from hardware and will not simply
    * cache the results from the execution of `level(bool)`.
    *
-   * @return result<bool> - true indicates HIGH voltage and false indicates LOW
-   * voltage
+   * This pin may not equal the state set by `level(bool)` when the pin is
+   * configured as open-drain.
+   *
+   * @return result<level_t> - return the current level state of the output pin
    */
-  [[nodiscard]] result<bool> level()
+  [[nodiscard]] result<level_t> level()
   {
     return driver_level();
   }
@@ -71,7 +90,7 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) = 0;
-  virtual status driver_level(bool p_high) = 0;
-  virtual result<bool> driver_level() = 0;
+  virtual result<set_level_t> driver_level(bool p_high) = 0;
+  virtual result<level_t> driver_level() = 0;
 };
 }  // namespace hal

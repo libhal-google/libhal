@@ -42,14 +42,32 @@ class pwm
 {
 public:
   /**
+   * @brief Feedback setting the pwm duty cycle.
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct duty_cycle_t
+  {};
+
+  /**
+   * @brief Feedback setting the pwm frequency.
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct frequency_t
+  {};
+
+  /**
    * @brief Set the pwm waveform frequency
    *
    * @param p_frequency - settings to apply to pwm driver
-   * @return status - success or failure
+   * @return result<frequency_t> - success or failure
    * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
    * the pwm generator is capable of achieving.
    */
-  [[nodiscard]] status frequency(hertz p_frequency)
+  [[nodiscard]] result<frequency_t> frequency(hertz p_frequency)
   {
     return driver_frequency(p_frequency);
   }
@@ -61,7 +79,7 @@ public:
    * to 1.0f.
    *
    * The floating point value is directly proportional to the duty cycle
-   * percentage, such that 0.0 is 0%, 0.25 is 25%, 0.445 is 44.5% and 1.0 is
+   * percentage, such that 0.0f is 0%, 0.25f is 25%, 0.445f is 44.5% and 1.0f is
    * 100%.
    *
    * This function clamps the input value between 0.0f and 1.0f and thus  values
@@ -69,13 +87,13 @@ public:
    * Callers of this function do not need to clamp their values before passing
    * them into this function as it would be redundant. The rationale for doing
    * this at the interface layer is that it allows callers and driver
-   * implementors to omit redundant clamping code and thus reducing code bloat.
+   * implementors to omit redundant clamping code, reducing code bloat.
    *
-   * @param p_duty_cycle - a value from 0.0 to 1.0 representing the duty cycle
-   * percentage.
-   * @return status - success or failure
+   * @param p_duty_cycle - a value from 0.0f to +1.0f representing the duty
+   * cycle percentage.
+   * @return result<duty_cycle_t> - success or failure
    */
-  [[nodiscard]] status duty_cycle(float p_duty_cycle)
+  [[nodiscard]] result<duty_cycle_t> duty_cycle(float p_duty_cycle)
   {
     auto clamped_duty_cycle = std::clamp(p_duty_cycle, 0.0f, 1.0f);
     return driver_duty_cycle(clamped_duty_cycle);
@@ -84,7 +102,7 @@ public:
   virtual ~pwm() = default;
 
 private:
-  virtual status driver_frequency(hertz p_frequency) = 0;
-  virtual status driver_duty_cycle(float p_duty_cycle) = 0;
+  virtual result<frequency_t> driver_frequency(hertz p_frequency) = 0;
+  virtual result<duty_cycle_t> driver_duty_cycle(float p_duty_cycle) = 0;
 };
 }  // namespace hal

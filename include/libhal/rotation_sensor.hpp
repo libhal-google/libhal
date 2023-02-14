@@ -65,9 +65,16 @@ namespace hal {
 class rotation_sensor
 {
 public:
+  /**
+   * @brief Result from reading the rotation sensor.
+   *
+   */
   struct read_t
   {
-    /// Rotation angle measurement
+    /**
+     * @brief Rotation angle measurement
+     *
+     */
     degrees angle;
   };
 

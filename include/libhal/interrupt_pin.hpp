@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.hpp"
 #include "error.hpp"
 #include "functional.hpp"
 #include "units.hpp"
@@ -16,42 +17,64 @@ namespace hal {
  *   - falling edge: the pin reads a transitions from HIGH to LOW
  *   - rising edge: the pin reads a transitions from LOW to HIGH
  *   - both: the pin reads any state change
- *
  */
 class interrupt_pin
 {
 public:
-  /// The condition in which an interrupt is triggered.
+  /**
+   * @brief The condition in which an interrupt it's triggered.
+   *
+   */
   enum class trigger_edge
   {
-    /// Trigger and interrupt when a pin transitions from HIGH voltage to
-    /// LOW voltage.
+    /**
+     * @brief Trigger the interrupt when a pin transitions from HIGH voltage to
+     * LOW voltage.
+     *
+     */
     falling = 0,
-    /// Trigger and interrupt when a pin transitions from LOW voltage to
-    /// HIGH voltage.
+    /**
+     * @brief Trigger the interrupt when a pin transitions from LOW voltage to
+     * HIGH voltage.
+     *
+     */
     rising = 1,
-    /// Trigger and interrupt when a pin transitions it state
+    /**
+     * @brief Trigger the interrupt when a pin transitions it state
+     *
+     */
     both = 2,
   };
 
-  /// Generic settings for interrupt pins
+  /**
+   * @brief Generic settings for interrupt pins
+   *
+   */
   struct settings
   {
-    /// Pull resistor for an interrupt pin.
-    ///
-    /// In general, it is highly advised to either set the pull resistor to
-    /// something other than "none" or to attach an external pull up resistor to
-    /// the interrupt pin in order to prevent random interrupt from firing.
+    /**
+     * @brief Pull resistor for an interrupt pin.
+     *
+     * In general, it is highly advised to either set the pull resistor to
+     * something other than "none" or to attach an external pull up resistor to
+     * the interrupt pin in order to prevent random interrupt from firing.
+     */
     pin_resistor resistor = pin_resistor::pull_up;
 
-    /// The trigger condition that will signal the system to run the callback.
+    /**
+     * @brief The trigger condition that will signal the system to run the
+     * callback.
+     *
+     */
     trigger_edge trigger = trigger_edge::rising;
   };
 
-  /// Interrupt pin handler
-  ///
-  /// param p_state - if true state of the pin when the interrupt was triggered
-  /// was HIGH, otherwise LOW
+  /**
+   * @brief Interrupt pin handler
+   *
+   * param p_state - if true state of the pin when the interrupt was triggered
+   * was HIGH, otherwise LOW
+   */
   using handler = void(bool p_state);
 
   /**
@@ -71,7 +94,7 @@ public:
    *
    * Any state transitions before this function is called are lost.
    *
-   * @param p_callback function to execute when the trigger condition is met.
+   * @param p_callback - function to execute when the trigger condition occurs.
    */
   void on_trigger(hal::callback<handler> p_callback)
   {

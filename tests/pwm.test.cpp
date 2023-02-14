@@ -19,21 +19,21 @@ public:
   }
 
 private:
-  status driver_frequency(hertz p_frequency) override
+  result<frequency_t> driver_frequency(hertz p_frequency) override
   {
     m_frequency = p_frequency;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return frequency_t{};
   };
-  status driver_duty_cycle(float p_duty_cycle) override
+  result<duty_cycle_t> driver_duty_cycle(float p_duty_cycle) override
   {
     m_duty_cycle = p_duty_cycle;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return duty_cycle_t{};
   };
 };
 }  // namespace

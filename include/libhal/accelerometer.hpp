@@ -11,13 +11,29 @@ namespace hal {
 class accelerometer
 {
 public:
+  /**
+   * @brief Result from reading the accelerometer.
+   *
+   */
   struct read_t
   {
-    /// Acceleration in the X axis, relative to the device's reference frame.
+    /**
+     * @brief Acceleration in the X axis, relative to the device's reference
+     * frame.
+     *
+     */
     g_force x;
-    /// Acceleration in the Y axis, relative to the device's reference frame.
+    /**
+     * @brief Acceleration in the Y axis, relative to the device's reference
+     * frame.
+     *
+     */
     g_force y;
-    /// Acceleration in the Z axis, relative to the device's reference frame.
+    /**
+     * @brief Acceleration in the Z axis, relative to the device's reference
+     * frame.
+     *
+     */
     g_force z;
   };
 

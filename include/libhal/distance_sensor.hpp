@@ -67,9 +67,16 @@ namespace hal {
 class distance_sensor
 {
 public:
+  /**
+   * @brief Result from sampling the distance sensor
+   *
+   */
   struct read_t
   {
-    /// Encoder distance measurement
+    /**
+     * @brief Encoder distance measurement in meters
+     *
+     */
     meters distance;
   };
 

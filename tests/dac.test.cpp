@@ -16,13 +16,13 @@ public:
   }
 
 private:
-  status driver_write(float p_value) override
+  result<write_t> driver_write(float p_value) override
   {
     m_passed_value = p_value;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return write_t{};
   }
 };
 }  // namespace

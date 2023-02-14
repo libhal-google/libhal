@@ -32,9 +32,9 @@ private:
     return success();
   };
 
-  status driver_transfer(std::span<const hal::byte> p_data_out,
-                         std::span<hal::byte> p_data_in,
-                         hal::byte p_filler) override
+  result<transfer_t> driver_transfer(std::span<const hal::byte> p_data_out,
+                                     std::span<hal::byte> p_data_in,
+                                     hal::byte p_filler) override
   {
     m_data_out = p_data_out;
     m_data_in = p_data_in;
@@ -42,7 +42,7 @@ private:
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return transfer_t{};
   };
 };
 }  // namespace

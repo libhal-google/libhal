@@ -13,9 +13,16 @@ namespace hal {
 class temperature_sensor
 {
 public:
+  /**
+   * @brief Result from reading the temperature sensor.
+   *
+   */
   struct read_t
   {
-    /// Temperature measurement
+    /**
+     * @brief Measured temperature
+     *
+     */
     celsius temperature;
   };
 
