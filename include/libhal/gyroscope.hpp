@@ -11,16 +11,28 @@ namespace hal {
 class gyroscope
 {
 public:
+  /**
+   * @brief Result from reading the gyroscope.
+   *
+   */
   struct read_t
   {
-    /// Angular velocity in the X axis, relative to the device's reference
-    /// frame.
+    /**
+     * @brief Angular velocity in the X axis, relative to the device's reference
+     * frame
+     */
     rpm x;
-    /// Angular velocity in the Y axis, relative to the device's reference
-    /// frame.
+    /**
+     * @brief Angular velocity in the Y axis, relative to the device's reference
+     * frame.
+     *
+     */
     rpm y;
-    /// Angular velocity in the Z axis, relative to the device's reference
-    /// frame.
+    /**
+     * @brief Angular velocity in the Z axis, relative to the device's reference
+     * frame.
+     *
+     */
     rpm z;
   };
 

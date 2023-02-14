@@ -5,13 +5,13 @@
 class test_pwm : public hal::pwm
 {
 private:
-  virtual hal::status driver_frequency(hal::hertz p_frequency)
+  virtual hal::result<frequency_t> driver_frequency(hal::hertz p_frequency)
   {
     std::printf("frequency = %f Hz\n", p_frequency);
 
-    return hal::success();
+    return frequency_t{};
   }
-  virtual hal::status driver_duty_cycle(float p_position)
+  virtual hal::result<duty_cycle_t> driver_duty_cycle(float p_position)
   {
     error_count_down--;
     if (error_count_down == 0) {
@@ -20,7 +20,7 @@ private:
 
     std::printf("duty cycle = %f %%\n", p_position);
 
-    return hal::success();
+    return duty_cycle_t{};
   }
 
   int error_count_down = 2;

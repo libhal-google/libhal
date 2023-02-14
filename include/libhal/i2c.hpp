@@ -26,9 +26,21 @@ public:
    */
   struct settings
   {
-    /// @brief The serial clock rate in hertz.
+    /**
+     * @brief The serial clock rate in hertz.
+     *
+     */
     hertz clock_rate = 100.0_kHz;
   };
+
+  /**
+   * @brief Feedback from performing a transaction on the i2c bus
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct transaction_t
+  {};
 
   /**
    * @brief Configure i2c to match the settings supplied
@@ -80,7 +92,7 @@ public:
    * @param p_timeout callable which notifies the i2c driver that it has run out
    * of time to perform the transaction and must stop and return control to the
    * caller.
-   * @return status - success or failure
+   * @return result<transaction_t> - success or failure
    * @throws std::errc::io_error indicates that the i2c lines were put into an
    * invalid state during the transaction due to interference, misconfiguration
    * of the i2c peripheral or the addressed device or something else.
@@ -91,7 +103,7 @@ public:
    * @throws std::errc::timed_out if the transaction exceeded its time allotment
    * indicated by p_timeout.
    */
-  [[nodiscard]] status transaction(
+  [[nodiscard]] result<transaction_t> transaction(
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,
@@ -104,7 +116,7 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) = 0;
-  virtual status driver_transaction(
+  virtual result<transaction_t> driver_transaction(
     hal::byte p_address,
     std::span<const hal::byte> p_data_out,
     std::span<hal::byte> p_data_in,

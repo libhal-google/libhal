@@ -26,12 +26,12 @@ private:
     }
     return success();
   }
-  result<bool> driver_level() override
+  result<level_t> driver_level() override
   {
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return true;
+    return level_t{ .state = true };
   }
 };
 }  // namespace
@@ -51,7 +51,7 @@ void input_pin_test()
     expect(bool{ result1 });
     expect(bool{ result2 });
     expect(expected_settings.resistor == test.m_settings.resistor);
-    expect(that % true == result2.value());
+    expect(that % true == result2.value().state);
   };
 
   "input_pin errors test"_test = []() {

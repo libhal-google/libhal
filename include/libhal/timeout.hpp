@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include "config.hpp"
 #include "error.hpp"
 #include "functional.hpp"
 

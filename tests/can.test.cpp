@@ -21,6 +21,7 @@ public:
   message_t m_message{};
   hal::callback<handler> m_handler = [](const message_t&) {};
   bool m_return_error_status{ false };
+  bool m_bus_on_called{ false };
 
 private:
   status driver_configure(const settings& p_settings) override
@@ -32,13 +33,22 @@ private:
     return success();
   };
 
-  status driver_send(const message_t& p_message) override
+  status driver_bus_on() override
+  {
+    m_bus_on_called = true;
+    if (m_return_error_status) {
+      return hal::new_error();
+    }
+    return success();
+  }
+
+  result<send_t> driver_send(const message_t& p_message) override
   {
     m_message = p_message;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return send_t{};
   };
 
   void driver_on_receive(hal::callback<handler> p_handler) override

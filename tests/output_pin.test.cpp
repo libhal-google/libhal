@@ -28,20 +28,20 @@ private:
     }
     return success();
   };
-  status driver_level(bool p_high) override
+  result<set_level_t> driver_level(bool p_high) override
   {
     m_driver_level = p_high;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return set_level_t{};
   };
-  result<bool> driver_level() override
+  result<level_t> driver_level() override
   {
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return m_driver_level;
+    return level_t{ .state = m_driver_level };
   };
 };
 }  // namespace
@@ -65,7 +65,7 @@ void output_pin_test()
     expect(expected_settings.open_drain == test.m_settings.open_drain);
     expect(expected_settings.resistor == test.m_settings.resistor);
     expect(that % true == test.m_driver_level);
-    expect(that % true == result3.value());
+    expect(that % true == result3.value().state);
   };
 
   "output_pin errors test"_test = []() {

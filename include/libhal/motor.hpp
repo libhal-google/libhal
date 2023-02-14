@@ -19,6 +19,15 @@ class motor
 {
 public:
   /**
+   * @brief Feedback from setting the motor power
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct power_t
+  {};
+
+  /**
    * @brief Apply power to the motor
    *
    * Power is a percentage and thus cannot be used as a way to gauge how fast
@@ -44,17 +53,19 @@ public:
    *   only go in one direction, this function should clamp the power applied to
    *   0%.
    *
-   * @param p_power - the amount of power to apply to the motor
-   * @return status - success or failure
+   * @param p_power - Percentage of power to apply to the motor from -1.0f to
+   * +1.0f, -100% to 100%, respectively.
+   * @return result<power_t> - success or failure
    */
-  [[nodiscard]] status power(float p_power)
+  [[nodiscard]] result<power_t> power(float p_power)
   {
-    return driver_power(p_power);
+    auto clamped_power = std::clamp(p_power, -1.0f, +1.0f);
+    return driver_power(clamped_power);
   }
 
   virtual ~motor() = default;
 
 private:
-  virtual status driver_power(float p_power) = 0;
+  virtual result<power_t> driver_power(float p_power) = 0;
 };
 }  // namespace hal

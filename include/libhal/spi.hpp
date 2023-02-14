@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <span>
 
+#include "config.hpp"
 #include "error.hpp"
 #include "units.hpp"
 
@@ -16,16 +17,37 @@ namespace hal {
 class spi
 {
 public:
-  /// Generic settings for a standard SPI device.
+  /**
+   * @brief Generic settings for a standard SPI device.
+   *
+   */
   struct settings
   {
-    /// Serial clock frequency in hertz
+    /**
+     * @brief Serial clock frequency in hertz
+     *
+     */
     hertz clock_rate = 100.0_kHz;
-    /// The polarity of the pins when the signal is idle
+    /**
+     * @brief The polarity of the pins when the signal is idle
+     *
+     */
     bool clock_idles_high = false;
-    /// The phase of the clock signal when communicating
+    /**
+     * @brief The phase of the clock signal when communicating
+     *
+     */
     bool data_valid_on_trailing_edge = false;
   };
+
+  /**
+   * @brief Feedback from performing a transfer on the spi bus
+   *
+   * This structure is currently empty as no feedback has been determined for
+   * now. This structure may be expanded in the future.
+   */
+  struct transfer_t
+  {};
 
   /// Default filler data placed on the bus in place of actual write data when
   /// the write buffer has been exhausted.
@@ -57,11 +79,12 @@ public:
    * dropped.
    * @param p_filler - filler data placed on the bus in place of actual write
    * data when p_data_out has been exhausted.
-   * @return status - success or failure
+   * @return result<transfer_t> - success or failure
    */
-  [[nodiscard]] status transfer(std::span<const hal::byte> p_data_out,
-                                std::span<hal::byte> p_data_in,
-                                hal::byte p_filler = default_filler)
+  [[nodiscard]] result<transfer_t> transfer(
+    std::span<const hal::byte> p_data_out,
+    std::span<hal::byte> p_data_in,
+    hal::byte p_filler = default_filler)
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
@@ -70,8 +93,9 @@ public:
 
 private:
   virtual status driver_configure(const settings& p_settings) = 0;
-  virtual status driver_transfer(std::span<const hal::byte> p_data_out,
-                                 std::span<hal::byte> p_data_in,
-                                 hal::byte p_filler) = 0;
+  virtual result<transfer_t> driver_transfer(
+    std::span<const hal::byte> p_data_out,
+    std::span<hal::byte> p_data_in,
+    hal::byte p_filler) = 0;
 };
 }  // namespace hal

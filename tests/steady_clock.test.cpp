@@ -16,16 +16,17 @@ public:
   }
 
 private:
-  hertz driver_frequency() override
+  result<frequency_t> driver_frequency() override
   {
-    return m_frequency;
+    return frequency_t{ .operating_frequency = m_frequency };
   };
-  result<std::uint64_t> driver_uptime() override
+
+  result<uptime_t> driver_uptime() override
   {
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return m_uptime;
+    return uptime_t{ .ticks = m_uptime };
   };
 };
 }  // namespace
@@ -42,9 +43,9 @@ void steady_clock_test()
     auto result2 = test.uptime();
 
     // Verify
-    expect(that % test.m_frequency == result1);
+    expect(that % test.m_frequency == result1.value().operating_frequency);
     expect(bool{ result2 });
-    expect(that % test.m_uptime == result2.value());
+    expect(that % test.m_uptime == result2.value().ticks);
   };
 
   "steady_clock errors test"_test = []() {

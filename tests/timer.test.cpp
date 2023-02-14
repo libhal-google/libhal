@@ -15,23 +15,23 @@ public:
   bool m_return_error_status{ false };
 
 private:
-  result<bool> driver_is_running() override
+  result<is_running_t> driver_is_running() override
   {
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return m_is_running;
+    return is_running_t{ .is_running = m_is_running };
   };
-  status driver_cancel() override
+  result<cancel_t> driver_cancel() override
   {
     m_is_running = false;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return cancel_t{};
   };
-  status driver_schedule(hal::callback<void(void)> p_callback,
-                         hal::time_duration p_delay) override
+  result<schedule_t> driver_schedule(hal::callback<void(void)> p_callback,
+                                     hal::time_duration p_delay) override
   {
     m_is_running = true;
     m_callback = p_callback;
@@ -39,7 +39,7 @@ private:
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return schedule_t{};
   };
 };
 }  // namespace
@@ -55,18 +55,18 @@ void timer_test()
       [&callback_stored_successfully]() {
         callback_stored_successfully = true;
       };
-    const std::chrono::nanoseconds expected_delay = {};
+    const hal::time_duration expected_delay = {};
 
     // Exercise + Verify
     auto result1 = test.is_running();
     expect(bool{ result1 });
-    expect(that % false == result1.value());
+    expect(that % false == result1.value().is_running);
 
     auto result2 = test.schedule(expected_callback, expected_delay);
     result1 = test.is_running();
     expect(bool{ result1 });
     expect(bool{ result2 });
-    expect(that % true == result1.value());
+    expect(that % true == result1.value().is_running);
     expect(expected_delay == test.m_delay);
 
     test.m_callback();
@@ -76,13 +76,13 @@ void timer_test()
     result1 = test.is_running();
     expect(bool{ result1 });
     expect(bool{ result3 });
-    expect(that % false == result1.value());
+    expect(that % false == result1.value().is_running);
   };
   "timer errors test"_test = []() {
     // Setup
     test_timer test;
     const hal::function_ref<void(void)> expected_callback = []() {};
-    const std::chrono::nanoseconds expected_delay = {};
+    const hal::time_duration expected_delay = {};
     test.m_return_error_status = true;
 
     // Exercise

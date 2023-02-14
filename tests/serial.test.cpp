@@ -51,13 +51,13 @@ private:
     };
   };
 
-  status driver_flush() override
+  result<flush_t> driver_flush() override
   {
     m_flush_called = true;
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return success();
+    return flush_t{};
   };
 };
 }  // namespace

@@ -17,16 +17,31 @@ namespace hal {
 class magnetometer
 {
 public:
+  /**
+   * @brief Result from reading the accelerometer.
+   *
+   */
   struct read_t
   {
-    /// Magnetic field strength in the X axis, relative to the device's
-    /// reference frame.
+    /**
+     * @brief Magnetic field strength in the X axis, relative to the device's
+     * reference frame.
+     *
+     */
     gauss x;
-    /// Magnetic field strength in the X axis, relative to the device's
-    /// reference frame.
+
+    /**
+     * @brief Magnetic field strength in the Y axis, relative to the device's
+     * reference frame.
+     *
+     */
     gauss y;
-    /// Magnetic field strength in the X axis, relative to the device's
-    /// reference frame.
+
+    /**
+     * @brief Magnetic field strength in the Z axis, relative to the device's
+     * reference frame.
+     *
+     */
     gauss z;
   };
 

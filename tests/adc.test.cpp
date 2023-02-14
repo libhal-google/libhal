@@ -17,12 +17,12 @@ public:
   }
 
 private:
-  result<float> driver_read() override
+  result<read_t> driver_read() override
   {
     if (m_return_error_status) {
       return hal::new_error();
     }
-    return m_returned_position;
+    return read_t{ .sample = m_returned_position };
   }
 };
 }  // namespace
@@ -39,7 +39,7 @@ void adc_test()
 
     // Verify
     expect(bool{ result });
-    expect(that % expected_value == result.value());
+    expect(that % expected_value == result.value().sample);
   };
 
   "adc errors test"_test = []() {

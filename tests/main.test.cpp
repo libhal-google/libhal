@@ -12,7 +12,6 @@ extern void motor_test();
 extern void output_pin_test();
 extern void pwm_test();
 extern void serial_test();
-extern void servo_test();
 extern void socket_test();
 extern void spi_test();
 extern void steady_clock_test();
@@ -33,7 +32,6 @@ int main()
   hal::output_pin_test();
   hal::pwm_test();
   hal::serial_test();
-  hal::servo_test();
   hal::socket_test();
   hal::spi_test();
   hal::steady_clock_test();
