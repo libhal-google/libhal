@@ -62,6 +62,13 @@ public:
   /**
    * @brief Set the pwm waveform frequency
    *
+   * This function clamps the input value between 1.0_Hz and 1.0_GHz and thus
+   * values passed to driver implementations are guaranteed to be within this
+   * range. Callers of this function do not need to clamp their values before
+   * passing them into this function as it would be redundant. The rationale for
+   * doing this at the interface layer is that it allows callers and driver
+   * implementors to omit redundant clamping code, reducing code bloat.
+   *
    * @param p_frequency - settings to apply to pwm driver
    * @return result<frequency_t> - success or failure
    * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
@@ -69,7 +76,8 @@ public:
    */
   [[nodiscard]] result<frequency_t> frequency(hertz p_frequency)
   {
-    return driver_frequency(p_frequency);
+    auto clamped_frequency = std::clamp(p_frequency, 1.0_Hz, 1.0_GHz);
+    return driver_frequency(clamped_frequency);
   }
 
   /**
