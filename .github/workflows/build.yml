@@ -89,4 +89,4 @@ jobs:
 
       - name: 🏗️ Build Application
         working-directory: ${{ inputs.app_folder }}/build
-        run: cmake --build . --config Release
+        run: cmake --build . --config Release -j
