@@ -31,6 +31,7 @@ jobs:
         include:
           - os: ubuntu-22.04
           - os: macos-12
+          - os: windows-2022
     runs-on: ${{ matrix.os }}
     environment: Production
     steps:
@@ -57,6 +58,9 @@ jobs:
             conan profile update settings.compiler=gcc default
             conan profile update settings.compiler.version=11 default
 
+      - name: 👁️‍🗨️ Show conan profile
+        run: conan profile show default
+
       - name: 📦 Generate Package & Install Library (if possible)
         continue-on-error: true
         run: conan create .
@@ -65,14 +69,24 @@ jobs:
         working-directory: ${{ inputs.app_folder }}
         run: mkdir -p build
 
-      - name: 📥 Install conan dependencies
+      - name: 📝 Generate conan dependency files
         working-directory: ${{ inputs.app_folder }}/build
         run: conan install ..
 
-      - name: 🏗️ Run CMake
+      - name: 🏗️ Activate build environment
         working-directory: ${{ inputs.app_folder }}/build
-        run: cmake ..
+        if: matrix.os != 'windows-2022'
+        run: source conanbuild.sh
 
-      - name: 🏗️ Run Make
+      - name: 🏗️ Activate build environment
         working-directory: ${{ inputs.app_folder }}/build
-        run: make -j
+        if: matrix.os == 'windows-2022'
+        run: ./conanbuild.bat
+
+      - name: 🏗️ Generate Build Files
+        working-directory: ${{ inputs.app_folder }}/build
+        run: cmake ..  -G "Unix Makefiles"
+
+      - name: 🏗️ Build Application
+        working-directory: ${{ inputs.app_folder }}/build
+        run: cmake --build . --config Release
