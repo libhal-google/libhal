@@ -40,7 +40,7 @@ jobs:
           fetch-depth: 0
 
       - name: 📥 Install CMake + Conan + GCovr
-        run: pip3 install --upgrade cmake conan gcovr
+        run: pip3 install --upgrade cmake conan==1.57.0 gcovr
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: conan remote add libhal-trunk
