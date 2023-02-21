@@ -22,6 +22,10 @@ on:
       skip_deploy:
         default: false
         type: boolean
+      app_folder:
+        type: string
+        default: "demos"
+
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -44,6 +48,12 @@ jobs:
       coverage_threshold: ${{ inputs.coverage_threshold }}
     secrets: inherit
 
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      app_folder: ${{ inputs.app_folder }}
+    secrets: inherit
+
   lint:
     uses: ./.github/workflows/lint.yml
     with:
@@ -59,7 +69,7 @@ jobs:
     secrets: inherit
 
   publish_artifacts:
-    needs: [ lint, docs, tests ]
+    needs: [ lint, docs, tests, build ]
     if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
@@ -100,7 +110,7 @@ jobs:
         uses: actions/deploy-pages@v1
 
   deploy_package:
-    needs: [ lint, docs, tests ]
+    needs: [ lint, docs, tests, build ]
     if: ${{ !inputs.skip_deploy }}
     uses: ./.github/workflows/deploy.yml
     with:

@@ -42,6 +42,7 @@ jobs:
           #   enable_latest_version_badge: false
 
     runs-on: ${{ matrix.os }}
+    environment: Production
     steps:
       - uses: actions/checkout@v2
         with:
@@ -150,6 +151,7 @@ jobs:
             install_name:
 
     runs-on: ${{ matrix.os }}
+    environment: Production
     steps:
       - uses: actions/checkout@v2
         with:

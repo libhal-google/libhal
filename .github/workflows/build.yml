@@ -1,0 +1,78 @@
+name: 🏗️ Build
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      app_folder:
+        type: string
+        required: true
+
+jobs:
+  find_directory:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+      - id: check_directory
+        continue-on-error: true
+        run: ls ${{ inputs.app_folder }}
+    outputs:
+      found: ${{ steps.check_directory.outcome }}
+
+  build:
+    needs: find_directory
+    if: needs.find_directory.outputs.found == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+          - os: macos-12
+    runs-on: ${{ matrix.os }}
+    environment: Production
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: 📥 Install CMake + Conan + GCovr
+        run: pip3 install --upgrade cmake conan gcovr
+
+      - name: 📡 Add `libhal-trunk` conan remote
+        run: conan remote add libhal-trunk
+             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
+
+      - name: 📡 Enable conan revision mode
+        run: conan config set general.revisions_enabled=True
+
+      - name: 📡 Create and setup default profile
+        run: |
+            conan profile new default --detect
+            conan profile update settings.build_type=Debug default
+            conan profile update settings.compiler.libcxx=libstdc++ default
+            conan profile update settings.compiler=gcc default
+            conan profile update settings.compiler.version=11 default
+
+      - name: 📦 Generate Package & Install Library (if possible)
+        continue-on-error: true
+        run: conan create .
+
+      - name: 📂 Create build directory
+        working-directory: ${{ inputs.app_folder }}
+        run: mkdir -p build
+
+      - name: 📥 Install conan dependencies
+        working-directory: ${{ inputs.app_folder }}/build
+        run: conan install ..
+
+      - name: 🏗️ Run CMake
+        working-directory: ${{ inputs.app_folder }}/build
+        run: cmake ..
+
+      - name: 🏗️ Run Make
+        working-directory: ${{ inputs.app_folder }}/build
+        run: make -j
