@@ -28,6 +28,9 @@ jobs:
              conan remote add libhal-trunk \
              https://libhal.jfrog.io/artifactory/api/conan/trunk-conan
 
+      - name: 📡 Enable conan revision mode
+        run: conan config set general.revisions_enabled=True
+
       - name: 📡 Create and setup default profile
         run: |
             conan profile new default --detect
