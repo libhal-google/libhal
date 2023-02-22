@@ -42,7 +42,6 @@ jobs:
           #   enable_latest_version_badge: false
 
     runs-on: ${{ matrix.os }}
-    environment: Production
     steps:
       - uses: actions/checkout@v2
         with:
@@ -56,11 +55,11 @@ jobs:
         run: sudo apt install ${{ matrix.install_name }}
 
       - name: 📥 Install CMake + Conan + GCovr
-        run: pip3 install --upgrade cmake conan gcovr
+        run: pip3 install --upgrade cmake conan==1.57.0 gcovr
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: conan remote add libhal-trunk
-             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
+             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan
 
       - name: 📡 Enable conan revision mode
         run: conan config set general.revisions_enabled=True
@@ -151,7 +150,6 @@ jobs:
             install_name:
 
     runs-on: ${{ matrix.os }}
-    environment: Production
     steps:
       - uses: actions/checkout@v2
         with:
@@ -163,11 +161,11 @@ jobs:
         run: brew install ${{ matrix.install_name }}
 
       - name: 📥 Install CMake + Conan + GCovr
-        run: pip3 install --upgrade cmake conan gcovr
+        run: pip3 install --upgrade cmake conan==1.57.0 gcovr
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: conan remote add libhal-trunk
-             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
+             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan
 
       - name: 📡 Enable conan revision mode
         run: conan config set general.revisions_enabled=True
@@ -182,6 +180,9 @@ jobs:
               settings.compiler=${{ matrix.toolchain }} default
             conan profile update \
               settings.compiler.version=${{ matrix.compiler_version }} default
+
+      - name: 👁️‍🗨️ Show conan profile
+        run: conan profile show default
 
       - name: 📦 Generate Package & Install Library
         run: conan create . --test-folder test_package

@@ -33,7 +33,6 @@ jobs:
           - os: macos-12
           - os: windows-2022
     runs-on: ${{ matrix.os }}
-    environment: Production
     steps:
       - uses: actions/checkout@v2
         with:
@@ -45,10 +44,7 @@ jobs:
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: conan remote add libhal-trunk
-             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan --insert
-
-      - name: 📡 Enable conan revision mode
-        run: conan config set general.revisions_enabled=True
+             https://libhal.jfrog.io/artifactory/api/conan/trunk-conan
 
       - name: 📡 Create and setup default profile
         run: |
