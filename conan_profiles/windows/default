@@ -1,0 +1,7 @@
+[settings]
+build_type=Debug
+compiler=gcc
+compiler.cppstd=20
+compiler.libcxx=libstdc++
+compiler.version=11
+os=Windows

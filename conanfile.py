@@ -1,6 +1,6 @@
 from conan import ConanFile
+from conan.tools.cmake import CMake, cmake_layout
 from conan.tools.files import copy
-from conan.tools.layout import basic_layout
 from conan.tools.build import check_min_cppstd
 from conan.errors import ConanInvalidConfiguration
 import os
@@ -18,12 +18,10 @@ class LibHALConan(ConanFile):
     description = ("A collection of interfaces and abstractions for embedded "
                    "peripherals and devices using modern C++")
     topics = ("peripherals", "hardware", "abstraction", "devices", "hal")
-    settings = "compiler"
-    exports_sources = "include/*"
+    settings = "compiler", "build_type", "os", "arch"
+    exports_sources = "include/*", "tests/*", "LICENSE"
+    generators = "CMakeToolchain", "CMakeDeps"
     no_copy_source = True
-
-    def package_id(self):
-        self.info.clear()
 
     @property
     def _min_cppstd(self):
@@ -55,15 +53,27 @@ class LibHALConan(ConanFile):
             raise ConanInvalidConfiguration(
                 f"{self.name} {self.version} requires C++{self._min_cppstd}, which your compiler ({compiler}-{version}) does not support")
 
-    def layout(self):
-        basic_layout(self)
-
     def requirements(self):
         self.requires("tl-function-ref/1.0.0")
+        self.test_requires("boost-ext-ut/1.1.9")
+
+    def layout(self):
+        cmake_layout(self)
+
+    def build(self):
+        if not self.conf.get("tools.build:skip_test", default=False):
+            cmake = CMake(self)
+            if self.settings.os == "Windows":
+                cmake.configure(build_script_folder="tests")
+            else:
+                cmake.configure(build_script_folder="tests",
+                                variables={"ENABLE_ASAN": True})
+            cmake.build()
+            self.run(os.path.join(self.cpp.build.bindir, "unit_test"))
 
     def package(self):
         copy(self, "LICENSE", dst=os.path.join(
-            self.package_folder, "licenses"),  src=self.source_folder)
+            self.package_folder, "licenses"), src=self.source_folder)
         copy(self, "*.h", dst=os.path.join(self.package_folder, "include"),
              src=os.path.join(self.source_folder, "include"))
         copy(self, "*.hpp", dst=os.path.join(self.package_folder,
@@ -74,3 +84,6 @@ class LibHALConan(ConanFile):
         self.cpp_info.frameworkdirs = []
         self.cpp_info.libdirs = []
         self.cpp_info.resdirs = []
+
+    def package_id(self):
+        self.info.clear()
