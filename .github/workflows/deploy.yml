@@ -17,33 +17,22 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: 📥 Install g++-11
-        run: sudo apt install g++-11 build-essential
-
       - name: 📥 Install CMake & Conan
-        run: pip install cmake conan==1.57.0
+        run: pip install cmake conan==2.0.0
 
       - name: 📡 Add `libhal-trunk` conan remote
         run: |
              conan remote add libhal-trunk \
              https://libhal.jfrog.io/artifactory/api/conan/trunk-conan
 
-      - name: 📡 Enable conan revision mode
-        run: conan config set general.revisions_enabled=True
-
       - name: 📡 Create and setup default profile
-        run: |
-            conan profile new default --detect
-            conan profile update settings.build_type=Debug default
-            conan profile update settings.compiler.libcxx=libstdc++ default
-            conan profile update settings.compiler=gcc default
-            conan profile update settings.compiler.version=11 default
+        run: conan profile detect --force
 
       - name: 👁️‍🗨️ Show conan profile
-        run: conan profile show default
+        run: conan profile show
 
       - name: 📦 Create Conan Package & Verify Test Package
-        run: conan create . --test-folder test_package
+        run: conan create . --build=missing -s compiler.version=11 -s compiler.cppstd=20 -s compiler=gcc -s compiler.libcxx=libstdc++ -s:b compiler.cppstd=20 -s:b compiler=gcc -s:b compiler.version=11 -s:b compiler.libcxx=libstdc++
 
       - name: 📡 Sign into JFrog Artifactory
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -54,6 +43,4 @@ jobs:
 
       - name: 🆙 Upload package to `libhal-trunk` repo
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-             conan upload "${{ inputs.library }}/*" --confirm --all \
-             -r=libhal-trunk
+        run: conan upload "${{ inputs.library }}/*" --confirm -r=libhal-trunk

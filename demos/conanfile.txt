@@ -1,7 +1,0 @@
-[requires]
-libhal/1.0.1
-
-[generators]
-CMakeToolchain
-CMakeDeps
-VirtualBuildEnv
