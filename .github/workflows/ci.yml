@@ -10,8 +10,8 @@ on:
     - cron: '0 12 * * 0'
 
 jobs:
-  checks:
-    uses: ./.github/workflows/checks.yml
+  ci:
+    uses: libhal/ci/.github/workflows/library.yml@main
     with:
       library: libhal
     secrets: inherit
