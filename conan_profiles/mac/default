@@ -1,7 +1,0 @@
-[settings]
-build_type=Debug
-compiler=apple-clang
-compiler.cppstd=20
-compiler.libcxx=libc++
-compiler.version=14
-os=Macos
