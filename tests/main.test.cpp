@@ -17,6 +17,7 @@ extern void spi_test();
 extern void steady_clock_test();
 extern void timeout_test();
 extern void timer_test();
+extern void servo_test();
 }  // namespace hal
 
 int main()
@@ -35,6 +36,7 @@ int main()
   hal::socket_test();
   hal::spi_test();
   hal::steady_clock_test();
+  hal::servo_test();
   hal::timeout_test();
   hal::timer_test();
 
