@@ -51,6 +51,7 @@ add_executable(${PROJECT_NAME}
   magnetometer.test.cpp
   rotation_sensor.test.cpp
   temperature_sensor.test.cpp
+  servo.test.cpp
   main.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC . ../include)

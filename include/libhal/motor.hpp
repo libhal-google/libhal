@@ -5,7 +5,7 @@
 
 namespace hal {
 /**
- * @brief Open loop motorized actuator hardware abstraction
+ * @brief Hardware abstraction for an open loop rotational actuator
  *
  * The motor interface can represent a variety of things such as:
  *
