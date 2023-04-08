@@ -19,15 +19,18 @@ void g_force_test() {
         float earth_accelereation_rate = 9.81; // m/s^2
         g_force earth_g_force = 1.0_g;
         
-        // Excersise
-        g_force calculated_g_force = earth_accelereation_rate/9.81f;
+        // Test Multiplication and Division
+       // g_force 
+        g_force g_force_quotient = earth_accelereation_rate/9.81f;
+        g_force g_force_product = 1.5_g * 2;
 
-        // attempting to sum g_force together
+        // Attempting to sum g_force together
         g_force g_force_sum = 1.0_g + 1.5_g;
         g_force g_force_difference = 1.0_g - 1.5_g;
 
         // Verify
-        expect(calculated_g_force == earth_g_force);
+        expect(g_force_quotient == earth_g_force);
+        expect(g_force_product == 3.0_g);
         expect(g_force_sum == 2.5_g);
         expect(g_force_difference == -0.5_g);
     };
