@@ -1,5 +1,6 @@
 #include <libhal/units.hpp>
 #include <boost/ut.hpp>
+#include "helpers.hpp"
 
 namespace hal {
 
@@ -11,7 +12,7 @@ void g_force_test() {
         g_force test_g_force_value = 2.0_g;
         float control_value = 2.0;
         // Verify
-        expect(test_g_force_value == control_value);
+        expect(that % control_value == test_g_force_value);
     };
 
     "g_force_type calculation test"_test = []() {
@@ -20,19 +21,18 @@ void g_force_test() {
         g_force earth_g_force = 1.0_g;
         
         // Test Multiplication and Division
-       // g_force 
         g_force g_force_quotient = earth_accelereation_rate/9.81f;
         g_force g_force_product = 1.5_g * 2;
 
-        // Attempting to sum g_force together
+        // // Attempting to sum g_force together
         g_force g_force_sum = 1.0_g + 1.5_g;
         g_force g_force_difference = 1.0_g - 1.5_g;
 
         // Verify
-        expect(g_force_quotient == earth_g_force);
-        expect(g_force_product == 3.0_g);
-        expect(g_force_sum == 2.5_g);
-        expect(g_force_difference == -0.5_g);
+        expect(that % compare_floats(earth_g_force, g_force_quotient));
+        expect(that % compare_floats(static_cast<float>(3.0_g), g_force_product));
+        expect(that % compare_floats(2.5_g, g_force_sum));
+        expect(that % compare_floats(-0.5_g, g_force_difference));
     };
 
     "g_force_type boundry test"_test = []() {
@@ -45,10 +45,9 @@ void g_force_test() {
         float float_min = std::numeric_limits<float>::min();
 
         // Verify
-        expect(g_force_max == float_max);
-        expect(g_force_min == float_min);
+        expect(that % compare_floats(float_max, static_cast<float>(g_force_max)));
+        expect(that % compare_floats(float_min, static_cast<float>(g_force_min)));
     };
 }
-
 
 } // namespace hal
