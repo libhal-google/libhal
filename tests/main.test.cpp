@@ -18,6 +18,7 @@ extern void steady_clock_test();
 extern void timeout_test();
 extern void timer_test();
 extern void servo_test();
+extern void g_force_test();
 }  // namespace hal
 
 int main()
@@ -39,6 +40,7 @@ int main()
   hal::servo_test();
   hal::timeout_test();
   hal::timer_test();
+  hal::g_force_test();
 
   static_assert(
     hal::is_a_test(),
