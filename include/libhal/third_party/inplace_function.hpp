@@ -1,16 +1,3 @@
-/**
- *  [libhal] modifications to this file are as follows:
- *
- *    1. Remove "throw" from empty vtable invoke function and replace it with a
- *       function that returns uninitialized data, making call to the function
- *       undefined behavior.
- *    2. Remove `nullptr_t` constructors from inplace_function
- *    3. Calling a "moved-from" inplace_function will NOT crash but the result
- *       of the called function will NOT be valid.
- *    4. Move SG14_INPLACE_FUNCTION_THROW is no longer needed and thus
- *       this library no longer needs exceptions.
- */
-
 /*
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,6 +22,19 @@
  * FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+ *  [libhal] modifications to this file are as follows:
+ *
+ *    1. Remove "throw" from empty vtable invoke function and replace it with a
+ *       function that returns uninitialized data, making call to the function
+ *       undefined behavior.
+ *    2. Remove `nullptr_t` constructors from inplace_function
+ *    3. Calling a "moved-from" inplace_function will NOT crash but the result
+ *       of the called function will NOT be valid.
+ *    4. Move SG14_INPLACE_FUNCTION_THROW is no longer needed and thus
+ *       this library no longer needs exceptions.
  */
 
 #pragma once

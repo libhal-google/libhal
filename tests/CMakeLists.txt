@@ -26,6 +26,7 @@ else()
 endif()
 
 find_package(ut REQUIRED CONFIG)
+find_package(boost-leaf REQUIRED CONFIG)
 find_package(tl-function-ref REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
@@ -74,7 +75,10 @@ target_link_options(${PROJECT_NAME} PRIVATE
   -fprofile-arcs
   -ftest-coverage
   ${ASAN_FLAG})
-target_link_libraries(${PROJECT_NAME} PRIVATE boost-ext-ut::ut tl::function-ref)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  boost-ext-ut::ut
+  tl::function-ref
+  boost::leaf)
 
 add_custom_command(TARGET ${PROJECT_NAME}
   POST_BUILD
