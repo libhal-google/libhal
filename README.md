@@ -22,11 +22,11 @@
 
 </div>
 
-# [:books: Interface APIs](https://libhal.github.io/libhal/api)
+## [:books: Interface APIs](https://libhal.github.io/libhal/api)
 
-# :inbox_tray: Install
+## :inbox_tray: Install
 
-## `conanfile.txt`
+### `conanfile.txt`
 Add the following line to your `conanfile.txt` file under the `[requires]`
 section:
 
@@ -36,7 +36,7 @@ libhal/[x]
 
 Replace `[x]` with the appropriate version number.
 
-## `conanfile.py`
+### `conanfile.py`
 
 Add the following to your `def requirements(self):` function.
 
@@ -46,23 +46,16 @@ self.requires("libhal/[x]")
 
 Replace `[x]` with the appropriate version number.
 
-# :white_check_mark: Supported Interfaces
+## :busts_in_silhouette: Contributing
 
-# :busts_in_silhouette: Contributing
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
 
-## :raised_hand: Self Assigning to an Issue
+## License
 
-If you find an issue you'd like to work on, simply type and submit a comment
-with the phrase `.take` in it to get assigned by our github actions.
+Apache 2.0; see [`LICENSE`](LICENSE) for details.
 
-## :pencil2: Pull Request Guidelines
+## Disclaimer
 
-1. Code must finish continuous integration steps before it will be reviewed.
-2. Commit messages should follow these guidelines here
-   https://cbea.ms/git-commit/.
-3. Pull requests should contain a single commit
-4. Pull requests should be small and implement a single feature where possible.
-   If it can be broken up into separate parts it most likely should be.
-5. Each PR should have an associated issue with it. Exceptions are made for very
-   small PRs such as fixing typos, fixing up documentation or removing
-   unnecessary headers.
+This project is not an official Google project. It is not supported by
+Google and Google specifically disclaims all warranties as to its quality,
+merchantability, or fitness for a particular purpose.
