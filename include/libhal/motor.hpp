@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "config.hpp"
 #include "error.hpp"
 
 namespace hal {

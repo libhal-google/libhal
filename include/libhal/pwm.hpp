@@ -17,7 +17,6 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "config.hpp"
 #include "error.hpp"
 #include "units.hpp"
 

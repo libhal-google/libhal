@@ -19,7 +19,6 @@
 #include <optional>
 #include <span>
 
-#include "config.hpp"
 #include "error.hpp"
 #include "units.hpp"
 

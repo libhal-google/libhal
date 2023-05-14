@@ -17,7 +17,6 @@
 #include <chrono>
 #include <cstdint>
 
-#include "config.hpp"
 #include "error.hpp"
 
 namespace hal {

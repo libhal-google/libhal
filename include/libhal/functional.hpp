@@ -16,8 +16,6 @@
 
 #include <cstdint>
 
-#include "config.hpp"
-
 #include "third_party/inplace_function.hpp"
 #include <tl/function_ref.hpp>
 
