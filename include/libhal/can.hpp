@@ -17,7 +17,6 @@
 #include <array>
 #include <cstdint>
 
-#include "config.hpp"
 #include "error.hpp"
 #include "functional.hpp"
 #include "units.hpp"

@@ -14,12 +14,6 @@
 
 #pragma once
 
-// "config.hpp" MUST be included before <boost/leaf.hpp> is included to ensure
-// that the libahl.tweaks.hpp file is evaluated first and that any macro
-// definitions for boost leaf are defined before including boost, otherwise,
-// they will be ignored.
-#include "config.hpp"
-
 #include <boost/leaf.hpp>
 #include <system_error>
 
@@ -32,6 +26,9 @@ using match = boost::leaf::match<T, value>;
 template<class T>
 using result = boost::leaf::result<T>;
 using status = result<void>;
+using error_handler = void(void);
+
+inline error_handler* on_error_callback = nullptr;
 
 /**
  * @brief a readability function for returning successful results;
@@ -72,8 +69,8 @@ template<class TryBlock, class... H>
 template<class... Item>
 [[nodiscard]] inline auto new_error(Item&&... p_item)
 {
-  if constexpr (config::on_error_callback_enabled) {
-    config::on_error_callback();
+  if (on_error_callback) {
+    on_error_callback();
   }
 
   return boost::leaf::new_error(std::forward<Item>(p_item)...);

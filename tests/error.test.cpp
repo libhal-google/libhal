@@ -19,21 +19,26 @@
 #include <boost/ut.hpp>
 
 namespace hal {
+namespace {
+int callback_call_count = 0;
+}
 void error_test()
 {
   using namespace boost::ut;
 
+  on_error_callback = []() { callback_call_count++; };
+
   "[success] hal::on_error calls callback"_test = []() {
     // Setup
-    auto current_call_count = config::callback_call_count;
-    expect(that % current_call_count == config::callback_call_count);
+    auto current_call_count = callback_call_count;
+    expect(that % current_call_count == callback_call_count);
 
     // Exercise
     // Should call the `on_error_callback` defined in the tweaks file
     (void)new_error();
 
     // Verify
-    expect(that % current_call_count < config::callback_call_count);
+    expect(that % current_call_count < callback_call_count);
   };
 
   "[success] hal::attempt calls handler"_test = []() {

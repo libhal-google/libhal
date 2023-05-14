@@ -25,9 +25,9 @@ import os
 required_conan_version = ">=1.50.0"
 
 
-class LibHALConan(ConanFile):
+class libhal_conan(ConanFile):
     name = "libhal"
-    version = "1.1.1"
+    version = "2.0.0"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://libhal.github.io/libhal"
@@ -50,6 +50,10 @@ class LibHALConan(ConanFile):
             "clang": "14",
             "apple-clang": "14.0.0"
         }
+
+    @property
+    def _bare_metal(self):
+        return self.settings.os == "baremetal"
 
     def validate(self):
         if self.settings.get_safe("compiler.cppstd"):
@@ -101,6 +105,12 @@ class LibHALConan(ConanFile):
         self.cpp_info.frameworkdirs = []
         self.cpp_info.libdirs = []
         self.cpp_info.resdirs = []
+
+        if self._bare_metal:
+            self.cpp_info.defines = [
+                "BOOST_LEAF_EMBEDDED",
+                "BOOST_LEAF_NO_THREADS"
+            ]
 
     def package_id(self):
         self.info.clear()
