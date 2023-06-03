@@ -44,6 +44,7 @@ find_package(boost-leaf REQUIRED CONFIG)
 find_package(tl-function-ref REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
+  helpers.cpp
   can.test.cpp
   pwm.test.cpp
   timer.test.cpp
@@ -68,6 +69,7 @@ add_executable(${PROJECT_NAME}
   temperature_sensor.test.cpp
   servo.test.cpp
   g_force.test.cpp
+  lengths.test.cpp
   main.test.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC . ../include)
