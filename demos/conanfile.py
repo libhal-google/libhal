@@ -23,9 +23,7 @@ class HalTestDemos(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps", "VirtualBuildEnv"
 
     def requirements(self):
-        self.requires("libhal/1.0.1")
-        self.tool_requires("gnu-arm-embedded-toolchain/11.3.0")
-        self.tool_requires("cmake-arm-embedded/0.1.1")
+        self.requires("libhal/2.0.0")
 
     def layout(self):
         cmake_layout(self)
