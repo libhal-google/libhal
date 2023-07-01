@@ -85,6 +85,6 @@ public:
   virtual ~servo() = default;
 
 private:
-  virtual result<position_t> driver_position(hal::degrees p_power) = 0;
+  virtual result<position_t> driver_position(hal::degrees p_position) = 0;
 };
 }  // namespace hal
