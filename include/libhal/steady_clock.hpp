@@ -24,7 +24,12 @@ namespace hal {
  * @brief Hardware abstraction interface for a steady clock mechanism
  *
  * Implementations of this interface must follow the same requirements as a
- * std::chrono::steady_clock, in that the clock is monotonic & steady.
+ * std::chrono::steady_clock, in that the clock is monotonic & steady. An
+ * additional requirement is added to ensure that the clock is reliable. Meaning
+ * calls to the interface functions do not return errors because this clock
+ * should be infallible. To ensure this, this clock should be driven by the
+ * platform's peripheral drivers or some other mechanism that is unlikely to go
+ * offline while the platform is in a normal operating state.
  *
  * This clock is steady meaning that subsequent calls to get the uptime of this
  * clock cannot decrease as physical time moves forward and the time between
@@ -34,8 +39,7 @@ namespace hal {
  * the time when the steady clock object is created. This clock is most suitable
  * for measuring time intervals.
  *
- * After creation of the clock, the operating frequency will not change.
- *
+ * After creation of this clock, the operating frequency shall not change.
  */
 class steady_clock
 {
@@ -74,7 +78,7 @@ public:
    * @return result<frequency_t> - operating frequency of the steady clock.
    * Guaranteed to be a positive value by the implementing driver.
    */
-  [[nodiscard]] result<frequency_t> frequency()
+  [[nodiscard]] frequency_t frequency()
   {
     return driver_frequency();
   }
@@ -82,9 +86,9 @@ public:
   /**
    * @brief Get the current value of the steady clock
    *
-   * @return result<uptime_t> - uptime information
+   * @return uptime_t - uptime information
    */
-  [[nodiscard]] result<uptime_t> uptime()
+  [[nodiscard]] uptime_t uptime()
   {
     return driver_uptime();
   }
@@ -92,7 +96,7 @@ public:
   virtual ~steady_clock() = default;
 
 private:
-  virtual result<frequency_t> driver_frequency() = 0;
-  virtual result<uptime_t> driver_uptime() = 0;
+  virtual frequency_t driver_frequency() = 0;
+  virtual uptime_t driver_uptime() = 0;
 };
 }  // namespace hal
