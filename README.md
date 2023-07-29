@@ -1,22 +1,10 @@
-<div align="center">
-<img height="250" src="https://raw.githubusercontent.com/libhal/.github/main/profile/logo.png">
-<br />
-<br />
-```
-🚚 portable 🦾 flexible 📦 accessible 🍰 easy to use
-```
-<br />
-</div>
-
-<div align="center">
+# libhal 
 
 [![✅CI](https://github.com/libhal/libhal/actions/workflows/ci.yml/badge.svg)](https://github.com/libhal/libhal/actions/workflows/ci.yml)
 [![coverage](https://libhal.github.io/libhal/coverage/coverage.svg)](https://libhal.github.io/libhal/coverage/)
 [![GitHub stars](https://img.shields.io/github/stars/libhal/libhal.svg)](https://github.com/libhal/libhal/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/libhal/libhal.svg)](https://github.com/libhal/libhal/network)
 [![GitHub issues](https://img.shields.io/github/issues/libhal/libhal.svg)](https://github.com/libhal/libhal/issues)
-
-</div>
 
 The foundation of the libhal ecosystem, containing the core hardware interfaces
 used to make the whole ecosystem work.
