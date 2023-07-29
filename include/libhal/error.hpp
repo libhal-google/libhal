@@ -83,6 +83,10 @@ template<class... Item>
   }
 }
 
+/**
+ * @brief Error objects, templates, and constants.
+ *
+ */
 namespace error {
 /**
  * @brief Used for defining static_asserts that should always fail, but only if

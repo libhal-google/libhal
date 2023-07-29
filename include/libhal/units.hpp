@@ -19,6 +19,11 @@
 
 #include "error.hpp"
 
+/**
+ * @brief The foundation of libhal containing, interfaces, utilities and soft
+ * drivers.
+ *
+ */
 namespace hal {
 /// The standard time durations in libhal std::chrono::nanoseconds
 using time_duration = std::chrono::nanoseconds;
@@ -77,7 +82,10 @@ enum class pin_resistor
   pull_up,
 };
 
-// Namespace containing user defined literals for the hal standard units
+/**
+ * @brief Namespace containing user defined literals for the hal standard units
+ *
+ */
 namespace literals {
 
 // =============================================================================
