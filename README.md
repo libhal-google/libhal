@@ -2,7 +2,6 @@
 <img height="250" src="https://raw.githubusercontent.com/libhal/.github/main/profile/logo.png">
 <br />
 <br />
-
 ```
 🚚 portable 🦾 flexible 📦 accessible 🍰 easy to use
 ```
@@ -13,38 +12,48 @@
 
 [![✅CI](https://github.com/libhal/libhal/actions/workflows/ci.yml/badge.svg)](https://github.com/libhal/libhal/actions/workflows/ci.yml)
 [![coverage](https://libhal.github.io/libhal/coverage/coverage.svg)](https://libhal.github.io/libhal/coverage/)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b084e6d5962d49a9afcb275d62cd6586)](https://www.codacy.com/gh/libhal/libhal/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=libhal/libhal&amp;utm_campaign=Badge_Grade)
 [![GitHub stars](https://img.shields.io/github/stars/libhal/libhal.svg)](https://github.com/libhal/libhal/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/libhal/libhal.svg)](https://github.com/libhal/libhal/network)
 [![GitHub issues](https://img.shields.io/github/issues/libhal/libhal.svg)](https://github.com/libhal/libhal/issues)
-[![Latest Version](https://libhal.github.io/libhal/latest_version.svg)](https://github.com/libhal/libhal/blob/main/conanfile.py)
-[![ConanCenter Version](https://repology.org/badge/version-for-repo/conancenter/libhal.svg)](https://conan.io/center/libhal)
 
 </div>
 
-## [:books: Interface APIs](https://libhal.github.io/libhal/api)
+The foundation of the libhal ecosystem, containing the core hardware interfaces
+used to make the whole ecosystem work.
 
-## :inbox_tray: Install
+## 📚 Software APIs & Usage
 
-### `conanfile.txt`
-Add the following line to your `conanfile.txt` file under the `[requires]`
-section:
+To learn about the available drivers and APIs see the
+[API Reference](https://libhal.github.io/2.2/api/namespacehal/)
+documentation page or look at the
+[`include/libhal`](https://github.com/libhal/libhal/tree/main/include/libhal)
+directory.
 
-```
-libhal/[x]
-```
+## 🧰 Setup
 
-Replace `[x]` with the appropriate version number.
+Following the
+[🚀 Getting Started](https://libhal.github.io/2.2/getting_started/)
+instructions.
 
-### `conanfile.py`
+## 📦 Adding `libhal` to your project
 
-Add the following to your `def requirements(self):` function.
+This section assumes you are using the
+[`libhal-starter`](https://github.com/libhal/libhal-starter)
+project.
+
+Add the following to your `requirements()` method to the `ConanFile` class:
 
 ```python
-self.requires("libhal/[x]")
+    def requirements(self):
+          self.requires("libhal/[^2.0.0]")
 ```
 
-Replace `[x]` with the appropriate version number.
+The version number can be changed to whatever is appropriate for your
+application. If you don't know, using the latest is usually a good choice.
+
+Normally, this is not done, as usually libhal is into the code base via
+implementation libraries such `libhal-lpc40` and `libhal-stm32f1` for
+peripheral drivers, or, `libhal-esp8266` and `libhal-mpu` for device drivers.
 
 ## :busts_in_silhouette: Contributing
 
