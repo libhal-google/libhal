@@ -35,6 +35,10 @@
  *       of the called function will NOT be valid.
  *    4. Move SG14_INPLACE_FUNCTION_THROW is no longer needed and thus
  *       this library no longer needs exceptions.
+ *    5. After removing the `nullptr_t` constructors, there is a new edge case
+ *       where the vtable_ptr_ is now nullptr and not an empty_vtable, which
+ *       means that access to that vtable_ptr_ results in a null pointer
+ *       dereference. A check must be put in the copy ctor and dtor.
  */
 
 #pragma once
@@ -320,7 +324,9 @@ public:
 
   inplace_function& operator=(inplace_function other) noexcept
   {
-    vtable_ptr_->destructor_ptr(std::addressof(storage_));
+    if (vtable_ptr_) {
+      vtable_ptr_->destructor_ptr(std::addressof(storage_));
+    }
 
     vtable_ptr_ = std::exchange(
       other.vtable_ptr_,
@@ -332,7 +338,9 @@ public:
 
   ~inplace_function()
   {
-    vtable_ptr_->destructor_ptr(std::addressof(storage_));
+    if (vtable_ptr_) {
+      vtable_ptr_->destructor_ptr(std::addressof(storage_));
+    }
   }
 
   R operator()(Args... args) const

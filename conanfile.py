@@ -18,7 +18,6 @@ from conan import ConanFile
 from conan.tools.cmake import CMake, cmake_layout
 from conan.tools.files import copy
 from conan.tools.build import check_min_cppstd
-from conan.errors import ConanInvalidConfiguration
 import os
 
 
@@ -27,7 +26,7 @@ required_conan_version = ">=2.0.6"
 
 class libhal_conan(ConanFile):
     name = "libhal"
-    version = "2.0.0"
+    version = "2.0.1"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://libhal.github.io/libhal"
@@ -59,19 +58,8 @@ class libhal_conan(ConanFile):
         if self.settings.get_safe("compiler.cppstd"):
             check_min_cppstd(self, self._min_cppstd)
 
-        def lazy_lt_semver(v1, v2):
-            lv1 = [int(v) for v in v1.split(".")]
-            lv2 = [int(v) for v in v2.split(".")]
-            min_length = min(len(lv1), len(lv2))
-            return lv1[:min_length] < lv2[:min_length]
-
-        compiler = str(self.settings.compiler)
-        version = str(self.settings.compiler.version)
-        minimum_version = self._compilers_minimum_version.get(compiler, False)
-
-        if minimum_version and lazy_lt_semver(version, minimum_version):
-            raise ConanInvalidConfiguration(
-                f"{self.name} {self.version} requires C++{self._min_cppstd}, which your compiler ({compiler}-{version}) does not support")
+    def build_requirements(self):
+        self.tool_requires("cmake/3.27.1")
 
     def requirements(self):
         self.requires("tl-function-ref/1.0.0")
@@ -109,6 +97,8 @@ class libhal_conan(ConanFile):
         if self._bare_metal:
             self.cpp_info.defines = [
                 "BOOST_LEAF_EMBEDDED",
+                # TODO(#694): Remove this or have it be configurable. Users
+                # should not be forced to operate without thread support
                 "BOOST_LEAF_NO_THREADS"
             ]
 
