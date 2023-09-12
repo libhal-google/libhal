@@ -7,23 +7,12 @@
 #include "../units.hpp"
 
 namespace hal {
-
-constexpr std::uint64_t user_domain(std::uint64_t p_unique_id)
+constexpr std::uint64_t application_domain(std::uint64_t p_storage_key)
 {
-  return p_unique_id + (0ULL << 32ULL);
+  return p_storage_key + (1ULL << 32ULL);
 }
 
-constexpr std::uint64_t test_domain(std::uint64_t p_unique_id)
-{
-  return p_unique_id + (1ULL << 32ULL);
-}
-
-constexpr std::uint64_t application_domain(std::uint64_t p_unique_id)
-{
-  return p_unique_id + (2ULL << 32ULL);
-}
-
-template<std::uint64_t id, class T, class... U>
+template<class storage_key_t, class T, auto... U>
 class entity
 {
 public:
@@ -71,30 +60,12 @@ private:
   inline static T* m_pointer = nullptr;
 };
 
-template<std::uint64_t... identifier>
-struct resource_t
-{
-  // static constexpr auto value = identifier;
-
-  static constexpr std::array<uint64_t, sizeof...(identifier)> value{
-    identifier...
-  };
-
-  constexpr auto operator()()
-  {
-    return value;
-  }
-};
-
-template<std::uint64_t identifier>
-inline constexpr auto resource = resource_t<identifier>{};
-
 template<class T>
 class static_initializer
 {
 public:
-  template<std::uint64_t id, typename... Args>
-  static result<entity<id, T>> initialize(Args... args)
+  template<typename... Args, auto storage_key = [] {}>
+  static result<entity<decltype(storage_key), T>> initialize(Args... args)
   {
     // Create a status variable to check if the constructor was successful with
     // setup
@@ -102,7 +73,9 @@ public:
 
     // Acquire the statically allocated buffer equal to the size of the object,
     // instance memory, based on the initializer ID and the T.
-    auto& instance_memory = get_static_instance_memory<id, T>();
+    // decltype(storage_key)
+    auto& instance_memory =
+      get_static_instance_memory<decltype(storage_key), T>();
 
     // In place construct the object at the instance memory location.
     //
@@ -121,8 +94,14 @@ public:
     return reinterpret_cast<T*>(instance_memory.data());
   }
 
+  static_initializer() = default;
+  static_initializer(static_initializer&) = delete;
+  static_initializer(static_initializer&&) = delete;
+  static_initializer& operator=(static_initializer&) = delete;
+  static_initializer& operator=(static_initializer&&) = delete;
+
 private:
-  template<std::uint64_t id, class U>
+  template<class storage_key_t, class U>
   static std::array<hal::byte, sizeof(U)>& get_static_instance_memory()
   {
     static std::array<hal::byte, sizeof(U)> instance_memory{};
@@ -130,15 +109,15 @@ private:
   }
 };
 
-template<std::uint64_t id, class U>
-static std::array<hal::byte, sizeof(U)>& get_static_instance_memory()
+template<typename storage_key_t, class U>
+static std::array<std::uint8_t, sizeof(U)>& get_static_instance_memory()
 {
-  static std::array<hal::byte, sizeof(U)> instance_memory{};
+  static std::array<std::uint8_t, sizeof(U)> instance_memory{};
   return instance_memory;
 }
 
-template<class T, std::uint64_t id, typename... Args>
-result<entity<id, T>> initialize(Args... args)
+template<class T, auto storage_key = [] {}, typename... Args>
+result<entity<decltype(storage_key), T>> initialize(Args... args)
 {
   // Create a status variable to check if the constructor was successful with
   // setup
@@ -146,7 +125,8 @@ result<entity<id, T>> initialize(Args... args)
 
   // Acquire the statically allocated buffer equal to the size of the object,
   // instance memory, based on the initializer ID and the T.
-  auto& instance_memory = get_static_instance_memory<id, T>();
+  auto& instance_memory =
+    get_static_instance_memory<decltype(storage_key), T>();
 
   // In place construct the object at the instance memory location.
   //
@@ -165,17 +145,3 @@ result<entity<id, T>> initialize(Args... args)
   return reinterpret_cast<T*>(instance_memory.data());
 }
 }  // namespace hal
-
-#define HAL_INIT_CHECK(__status_pointer, __expression)                         \
-  ({                                                                           \
-    auto&& BOOST_LEAF_TMP = (__expression);                                    \
-    if (!BOOST_LEAF_TMP) {                                                     \
-      __status_pointer = BOOST_LEAF_TMP;                                       \
-      return;                                                                  \
-    }                                                                          \
-    std::move(BOOST_LEAF_TMP);                                                 \
-  }).value()
-
-#define HAL_ENABLE_INITIALIZE                                                  \
-  template<class T, std::uint64_t id, typename... Args>                        \
-  friend hal::result<hal::entity<id, T>> hal::initialize(Args... args)
