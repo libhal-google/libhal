@@ -32,7 +32,7 @@ using error_handler = void(void);
 inline error_handler* on_error_callback = nullptr;
 
 /**
- * @brief a readability function for returning successful results;
+ * @brief a function to improve the readability of returning successful results
  *
  * For functions that return `status`, rather than returning `{}` to default
  * initialize the status object as "success", use this function to make it more
@@ -84,6 +84,18 @@ template<class... Item>
   }
 }
 
+template<typename T>
+void copy_status(hal::status* p_status, hal::result<T>& p_result)
+{
+  new (p_status) hal::status(p_result.error());
+}
+
+template<typename T>
+void copy_status(hal::status& p_status, hal::result<T>& p_result)
+{
+  new (&p_status) hal::status(p_result.error());
+}
+
 /**
  * @brief Error objects, templates, and constants.
  *
@@ -110,3 +122,15 @@ template<auto... options>
 inline constexpr bool invalid_option = invalid_option_t<options...>::value;
 }  // namespace error
 }  // namespace hal
+
+#define HAL_CHECK BOOST_LEAF_CHECK
+
+#define HAL_REDIRECT_CHECK(__status_pointer, __expression)                     \
+  ({                                                                           \
+    auto&& BOOST_LEAF_TMP = (__expression);                                    \
+    if (!BOOST_LEAF_TMP) {                                                     \
+      ::hal::copy_status(__status_pointer, BOOST_LEAF_TMP);                    \
+      return;                                                                  \
+    }                                                                          \
+    std::move(BOOST_LEAF_TMP);                                                 \
+  }).value()

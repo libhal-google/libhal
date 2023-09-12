@@ -31,6 +31,7 @@ extern void timer_test();
 extern void servo_test();
 extern void g_force_test();
 extern void lengths_test();
+extern void entity_test();
 }  // namespace hal
 
 int main()
@@ -53,4 +54,5 @@ int main()
   hal::timer_test();
   hal::g_force_test();
   hal::lengths_test();
+  hal::entity_test();
 }
