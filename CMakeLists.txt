@@ -18,7 +18,8 @@ cmake_minimum_required(VERSION 3.15)
 # executes the unit tests
 project(libhal LANGUAGES CXX)
 
-libhal_unit_test(SOURCES
+libhal_unit_test(
+  SOURCES
   tests/helpers.cpp
   tests/can.test.cpp
   tests/pwm.test.cpp
@@ -44,6 +45,7 @@ libhal_unit_test(SOURCES
   tests/servo.test.cpp
   tests/g_force.test.cpp
   tests/lengths.test.cpp
+  tests/entity.test.cpp
   tests/main.test.cpp
 
   PACKAGES

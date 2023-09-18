@@ -126,7 +126,7 @@ inline constexpr bool invalid_option = invalid_option_t<options...>::value;
 #define HAL_CHECK BOOST_LEAF_CHECK
 
 #define HAL_REDIRECT_CHECK(__status_pointer, __expression)                     \
-  ({                                                                           \
+  __extension__({                                                              \
     auto&& BOOST_LEAF_TMP = (__expression);                                    \
     if (!BOOST_LEAF_TMP) {                                                     \
       ::hal::copy_status(__status_pointer, BOOST_LEAF_TMP);                    \

@@ -13,13 +13,15 @@
 // limitations under the License.
 
 #include <libhal/dac.hpp>
-#include <libhal/experimental/entity.hpp>
+#include <libhal/entity.hpp>
 
 #include <boost/ut.hpp>
 
 namespace {
 constexpr auto expected_value = float(0.5);
 bool return_error_status = false;
+bool destructor_called = false;
+constexpr int error_int_value = 5;
 
 template<std::uint64_t... identifier>
 struct resource_t
@@ -39,14 +41,16 @@ struct resource_t
 template<std::uint64_t identifier>
 inline constexpr auto resource = resource_t<identifier>{};
 
-class test_driver
-  : public hal::dac
-  , public hal::static_initializer<test_driver>
+struct test_driver : public hal::dac
 {
-public:
   float m_passed_value{};
   float m_gain{};
-  bool template_called = false;
+  bool m_template_called = false;
+
+  ~test_driver() override
+  {
+    destructor_called = true;
+  }
 
 private:
   test_driver(hal::status& p_status, float p_gain)
@@ -66,13 +70,12 @@ private:
   }
 
   template<std::uint64_t channel>
-  test_driver(hal::status& p_status, resource_t<channel> p_resource_id)
+  test_driver(hal::status& p_status,
+              [[maybe_unused]] resource_t<channel> p_resource_id)
     : m_gain(1.0f)
   {
-    printf(
-      "template<%llu> p_resource_id() = %llu\n", channel, p_resource_id()[0]);
     static_assert(channel < 2, "Entity test only supports channels 0 and 1.");
-    template_called = true;
+    m_template_called = true;
     HAL_REDIRECT_CHECK(p_status, infallible_call());
     HAL_REDIRECT_CHECK(p_status, fallible_call());
     HAL_REDIRECT_CHECK(p_status, infallible_call());
@@ -86,7 +89,7 @@ private:
   hal::result<int> fallible_call()
   {
     if (return_error_status) {
-      return hal::new_error(5);
+      return hal::new_error(error_int_value);
     }
     return 7;
   }
@@ -97,7 +100,8 @@ private:
     return write_t{};
   }
 
-  friend class hal::static_initializer<test_driver>;
+  HAL_ENABLE_INITIALIZER;
+  HAL_ENABLE_REINITIALIZER;
 };
 }  // namespace
 
@@ -106,11 +110,25 @@ void entity_test()
 {
   using namespace boost::ut;
 
-  "[initializer] test_driver::initialize() successfully"_test = []() {
+  "hal::initialize<test_driver>() creates driver successfully"_test = []() {
+    // Setup
+    return_error_status = false;
+    auto test_subject = initialize<test_driver>().value();
+
+    // Exercise
+    auto result = test_subject->write(expected_value);
+
+    // Verify
+    expect(bool{ result });
+    expect(that % expected_value == test_subject->m_passed_value);
+    expect(that % !test_subject.ref().m_template_called);
+  };
+
+  "hal::initialize<test_driver>(): call constructor w/ gain"_test = []() {
     // Setup
     return_error_status = false;
     constexpr float gain = 0.5f;
-    auto test_subject = test_driver::initialize(gain).value();
+    auto test_subject = initialize<test_driver>(gain).value();
 
     // Exercise
     auto result = test_subject->write(expected_value);
@@ -118,86 +136,84 @@ void entity_test()
     // Verify
     expect(bool{ result });
     expect(that % (expected_value * gain) == test_subject->m_passed_value);
+    expect(that % !test_subject.ref().m_template_called);
   };
 
-  "[initializer] Statically evaluate constructor template"_test = []() {
+  "hal::initialize<test_driver>(): call template constructor"_test = []() {
     // Setup
     return_error_status = false;
-    auto test_subject = test_driver::initialize(resource<1>);
+    auto test_subject = initialize<test_driver>(resource<1>).value();
 
     // Verify
-    expect(bool{ test_subject });
-    expect(that % true == test_subject.value().ref().template_called);
+    expect(that % test_subject.ref().m_template_called);
   };
 
-  "[initializer] test_driver::initialize() reinitialize 0"_test = []() {
-    // Setup
-    return_error_status = false;
-    constexpr float gain = 0.75f;
-    auto test_subject = test_driver::initialize(gain).value();
+  "hal::initialize: each call generates new statically allocated objects"_test =
+    []() {
+      // Setup
+      return_error_status = false;
+      auto test0 = initialize<test_driver>(0.75f);
+      auto test1 = initialize<test_driver>(0.45f);
 
-    // Exercise
-    auto result = test_subject->write(expected_value);
+      // Verify
+      expect(that % test0.value().ptr() != test1.value().ptr());
+      expect(that % test0.value()->m_gain != test1.value()->m_gain);
+    };
 
-    // Verify
-    expect(bool{ result });
-    expect(that % (expected_value * gain) == test_subject->m_passed_value);
-  };
-
-  "[initializer] test_driver::initialize() failure"_test = []() {
+  "initialize<test_driver>(): report constructor failure"_test = []() {
     // Setup
     return_error_status = true;
-    auto test_subject = test_driver::initialize(0.75f);
+    hal::attempt_all(
+      []() -> hal::status {
+        [[maybe_unused]] auto test_subject =
+          HAL_CHECK(initialize<test_driver>(0.75f));
 
-    // Verify
-    expect(test_subject.has_error());
+        return hal::success();
+      },
+      // Verify
+      [](int p_error_number) {
+        expect(that % error_int_value == p_error_number);
+      },
+      []() { expect(false) << "(int) handler not handled!"; });
   };
 
-  "[initializer] test_driver::initialize() successfully"_test = []() {
+  "reinitialize(test_subject) updates gain"_test = []() {
     // Setup
     return_error_status = false;
-    constexpr float gain = 0.5f;
-    auto test_subject = test_driver::initialize(gain).value();
+    constexpr float original_gain = 0.75f;
+    constexpr float new_gain = 0.32f;
+    auto test_subject = initialize<test_driver>(original_gain).value();
+    expect(that % original_gain == test_subject->m_gain);
 
     // Exercise
-    auto result = test_subject->write(expected_value);
+    auto reinit_status = reinitialize(test_subject, new_gain);
 
     // Verify
-    expect(bool{ result });
-    expect(that % (expected_value * gain) == test_subject->m_passed_value);
+    expect(that % bool{ reinit_status });
+    expect(that % new_gain == test_subject->m_gain);
   };
 
-  "[initializer] test_driver::initialize() reinitialize 0"_test = []() {
+  "reinitialize(test_subject) reinitialize fails"_test = []() {
     // Setup
     return_error_status = false;
-    constexpr float gain = 0.75f;
-    auto test_subject = test_driver::initialize(gain).value();
+    destructor_called = false;
+    constexpr float original_gain = 0.01f;
+    constexpr float new_gain = 0.97f;
+    auto test_subject = initialize<test_driver>(original_gain).value();
+    expect(that % original_gain == test_subject->m_gain);
 
     // Exercise
-    auto result = test_subject->write(expected_value);
-
-    // Verify
-    expect(bool{ result });
-    expect(that % (expected_value * gain) == test_subject->m_passed_value);
-  };
-
-  "[initializer] test_driver::initialize() failure"_test = []() {
-    // Setup
     return_error_status = true;
-    auto test_subject = test_driver::initialize(0.75f);
-
-    // Verify
-    expect(test_subject.has_error());
-  };
-
-  "[initializer] &initialize != &initialize"_test = []() {
-    // Setup
-    return_error_status = false;
-    auto test0 = test_driver::initialize(0.75f);
-    auto test1 = test_driver::initialize(0.45f);
-
-    // Verify
-    expect(that % test0.value().ptr() != test1.value().ptr());
+    hal::attempt_all(
+      [&test_subject]() -> hal::status {
+        return reinitialize(test_subject, new_gain);
+      },
+      // Verify
+      [](int p_error_number) {
+        expect(that % error_int_value == p_error_number);
+      },
+      []() { expect(false) << "(int) handler not handled!"; });
+    expect(that % destructor_called) << "destructor was not called!";
   };
 };
 }  // namespace hal
