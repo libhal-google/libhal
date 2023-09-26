@@ -34,7 +34,7 @@ class libhal_conan(ConanFile):
                    "peripherals and devices using modern C++")
     topics = ("peripherals", "hardware", "abstraction", "devices", "hal")
     settings = "compiler", "build_type", "os", "arch"
-    exports_sources = "include/*", "tests/*", "LICENSE"
+    exports_sources = "include/*", "tests/*", "CMakeLists.txt", "LICENSE"
     generators = "CMakeToolchain", "CMakeDeps"
     no_copy_source = True
 
@@ -60,25 +60,20 @@ class libhal_conan(ConanFile):
 
     def build_requirements(self):
         self.tool_requires("cmake/3.27.1")
+        self.tool_requires("libhal-cmake-util/1.2.0")
+        self.test_requires("boost-ext-ut/1.1.9")
 
     def requirements(self):
         self.requires("tl-function-ref/1.0.0")
         self.requires("boost-leaf/1.81.0")
-        self.test_requires("boost-ext-ut/1.1.9")
 
     def layout(self):
         cmake_layout(self)
 
     def build(self):
-        if not self.conf.get("tools.build:skip_test", default=False):
-            cmake = CMake(self)
-            if self.settings.os == "Windows":
-                cmake.configure(build_script_folder="tests")
-            else:
-                cmake.configure(build_script_folder="tests",
-                                variables={"ENABLE_ASAN": True})
-            cmake.build()
-            self.run(os.path.join(self.cpp.build.bindir, "unit_test"))
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
 
     def package(self):
         copy(self, "LICENSE", dst=os.path.join(

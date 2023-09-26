@@ -24,9 +24,7 @@ public:
   constexpr static hertz m_frequency{ 1.0_Hz };
   constexpr static std::uint64_t m_uptime{ 100 };
 
-  ~test_steady_clock()
-  {
-  }
+  ~test_steady_clock() override = default;
 
 private:
   frequency_t driver_frequency() override

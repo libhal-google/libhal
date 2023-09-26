@@ -28,9 +28,7 @@ public:
   float m_duty_cycle{};
   bool m_return_error_status{ false };
 
-  ~test_pwm()
-  {
-  }
+  ~test_pwm() override = default;
 
 private:
   result<frequency_t> driver_frequency(hertz p_frequency) override

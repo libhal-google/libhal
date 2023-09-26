@@ -35,10 +35,12 @@ public:
   hal::byte m_address{};
   std::span<const hal::byte> m_data_out{};
   std::span<hal::byte> m_data_in{};
+  bool m_return_error_status{ false };
   std::function<hal::timeout_function> m_timeout = []() -> hal::status {
     return hal::success();
   };
-  bool m_return_error_status{ false };
+
+  ~test_i2c() override = default;
 
 private:
   status driver_configure(const settings& p_settings) override

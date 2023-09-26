@@ -36,6 +36,7 @@ public:
   hal::callback<handler> m_handler = [](const message_t&) {};
   bool m_return_error_status{ false };
   bool m_bus_on_called{ false };
+  ~test_can() override = default;
 
 private:
   status driver_configure(const settings& p_settings) override

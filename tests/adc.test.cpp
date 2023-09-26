@@ -26,9 +26,7 @@ public:
   constexpr static float m_returned_position{ 0.5f };
   bool m_return_error_status{ false };
 
-  ~test_adc()
-  {
-  }
+  ~test_adc() override = default;
 
 private:
   result<read_t> driver_read() override
