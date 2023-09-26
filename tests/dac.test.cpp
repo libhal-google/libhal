@@ -25,9 +25,7 @@ public:
   float m_passed_value{};
   bool m_return_error_status{ false };
 
-  ~test_dac()
-  {
-  }
+  ~test_dac() override = default;
 
 private:
   result<write_t> driver_write(float p_value) override

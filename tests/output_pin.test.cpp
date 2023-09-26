@@ -29,9 +29,7 @@ public:
   bool m_driver_level{};
   bool m_return_error_status{ false };
 
-  ~test_output_pin()
-  {
-  }
+  ~test_output_pin() override = default;
 
 private:
   status driver_configure(const settings& p_settings) override

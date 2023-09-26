@@ -27,9 +27,7 @@ class test_servo : public hal::servo
 public:
   hal::degrees m_position = 0.0f;
 
-  ~test_servo()
-  {
-  }
+  ~test_servo() override = default;
 
 private:
   result<position_t> driver_position(hal::degrees p_position) override

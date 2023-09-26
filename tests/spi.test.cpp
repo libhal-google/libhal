@@ -31,10 +31,7 @@ public:
   std::span<hal::byte> m_data_in{};
   hal::byte m_filler{};
   bool m_return_error_status{ false };
-
-  ~test_spi()
-  {
-  }
+  ~test_spi() override = default;
 
 private:
   status driver_configure(const settings& p_settings) override

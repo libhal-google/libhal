@@ -43,17 +43,16 @@ void error_test()
 
   "[success] hal::attempt calls handler"_test = []() {
     // Setup
-    constexpr int expected = 123456789;
+    static const int expected = 123456789;
     int value_to_be_change = 0;
 
     // Exercise
     // Should call the `on_error_callback` defined in the tweaks file
-    auto result =
-      attempt([expected]() -> status { return new_error(expected); },
-              [&value_to_be_change](int p_handler_value) -> status {
-                value_to_be_change = p_handler_value;
-                return {};
-              });
+    auto result = attempt([]() -> status { return new_error(expected); },
+                          [&value_to_be_change](int p_handler_value) -> status {
+                            value_to_be_change = p_handler_value;
+                            return {};
+                          });
 
     // Verify
     expect(that % value_to_be_change == expected);

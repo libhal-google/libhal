@@ -26,14 +26,12 @@ public:
   float m_power{};
   bool m_return_error_status{ false };
 
-  ~test_motor()
-  {
-  }
+  ~test_motor() override = default;
 
 private:
-  result<power_t> driver_power(float p_power) override
+  result<power_t> driver_power(float power) override
   {
-    m_power = p_power;
+    m_power = power;
     if (m_return_error_status) {
       return hal::new_error();
     }

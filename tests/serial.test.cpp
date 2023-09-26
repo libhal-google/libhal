@@ -31,9 +31,7 @@ public:
   bool m_flush_called{ false };
   bool m_return_error_status{ false };
 
-  ~test_serial()
-  {
-  }
+  ~test_serial() override = default;
 
 private:
   status driver_configure(const settings& p_settings) override
