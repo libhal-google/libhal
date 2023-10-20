@@ -45,7 +45,7 @@ libhal_unit_test(
   tests/servo.test.cpp
   tests/g_force.test.cpp
   tests/lengths.test.cpp
-  tests/entity.test.cpp
+  tests/initializer.test.cpp
   tests/main.test.cpp
 
   PACKAGES
@@ -54,4 +54,5 @@ libhal_unit_test(
 
   LINK_LIBRARIES
   boost::leaf
-  tl::function-ref)
+  tl::function-ref
+)

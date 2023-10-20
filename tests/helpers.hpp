@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include <cmath>
-
 /**
  * @brief Compares two single floating point values, with in a given error
  * margin.
