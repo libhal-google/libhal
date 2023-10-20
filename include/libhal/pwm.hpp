@@ -17,7 +17,6 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -83,11 +82,11 @@ public:
    * implementors to omit redundant clamping code, reducing code bloat.
    *
    * @param p_frequency - settings to apply to pwm driver
-   * @return result<frequency_t> - success or failure
+   * @return frequency_t - success or failure
    * @throws std::errc::argument_out_of_domain - if the frequency is beyond what
    * the pwm generator is capable of achieving.
    */
-  [[nodiscard]] result<frequency_t> frequency(hertz p_frequency)
+  frequency_t frequency(hertz p_frequency)
   {
     auto clamped_frequency = std::clamp(p_frequency, 1.0_Hz, 1.0_GHz);
     return driver_frequency(clamped_frequency);
@@ -112,9 +111,9 @@ public:
    *
    * @param p_duty_cycle - a value from 0.0f to +1.0f representing the duty
    * cycle percentage.
-   * @return result<duty_cycle_t> - success or failure
+   * @return duty_cycle_t - success or failure
    */
-  [[nodiscard]] result<duty_cycle_t> duty_cycle(float p_duty_cycle)
+  duty_cycle_t duty_cycle(float p_duty_cycle)
   {
     auto clamped_duty_cycle = std::clamp(p_duty_cycle, 0.0f, 1.0f);
     return driver_duty_cycle(clamped_duty_cycle);
@@ -123,7 +122,7 @@ public:
   virtual ~pwm() = default;
 
 private:
-  virtual result<frequency_t> driver_frequency(hertz p_frequency) = 0;
-  virtual result<duty_cycle_t> driver_duty_cycle(float p_duty_cycle) = 0;
+  virtual frequency_t driver_frequency(hertz p_frequency) = 0;
+  virtual duty_cycle_t driver_duty_cycle(float p_duty_cycle) = 0;
 };
 }  // namespace hal

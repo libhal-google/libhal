@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <libhal/error.hpp>
 #include <libhal/interrupt_pin.hpp>
 
 #include <functional>
@@ -30,16 +31,11 @@ class test_interrupt_pin : public hal::interrupt_pin
 public:
   settings m_settings{};
   std::function<handler> m_callback = [](bool) {};
-  bool m_return_error_status{ false };
 
 private:
-  status driver_configure(const settings& p_settings) override
+  void driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
-    return success();
   };
   void driver_on_trigger(hal::callback<handler> p_callback) override
   {
@@ -58,27 +54,14 @@ void interrupt_pin_test()
     auto expected_callback = [&counter](bool) { counter++; };
 
     // Exercise
-    auto result = test.configure(expected_settings);
+    test.configure(expected_settings);
     test.on_trigger(expected_callback);
     test.m_callback(false);
 
     // Verify
-    expect(bool{ result });
     expect(expected_settings.resistor == test.m_settings.resistor);
     expect(expected_settings.trigger == test.m_settings.trigger);
     expect(that % 1 == counter);
-  };
-
-  "interrupt_pin errors test"_test = []() {
-    // Setup
-    test_interrupt_pin test;
-    test.m_return_error_status = true;
-
-    // Exercise
-    auto result = test.configure(expected_settings);
-
-    // Verify
-    expect(!bool{ result });
   };
 };
 }  // namespace hal

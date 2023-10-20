@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <libhal/error.hpp>
 #include <libhal/output_pin.hpp>
 
 #include <boost/ut.hpp>
@@ -27,34 +28,23 @@ class test_output_pin : public hal::output_pin
 public:
   settings m_settings{};
   bool m_driver_level{};
-  bool m_return_error_status{ false };
 
   ~test_output_pin() override = default;
 
 private:
-  status driver_configure(const settings& p_settings) override
+  void driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
-    return success();
-  };
-  result<set_level_t> driver_level(bool p_high) override
+  }
+  set_level_t driver_level(bool p_high) override
   {
     m_driver_level = p_high;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return set_level_t{};
-  };
-  result<level_t> driver_level() override
+  }
+  level_t driver_level() override
   {
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return level_t{ .state = m_driver_level };
-  };
+  }
 };
 }  // namespace
 
@@ -66,34 +56,15 @@ void output_pin_test()
     test_output_pin test;
 
     // Exercise
-    auto result1 = test.configure(expected_settings);
-    auto result2 = test.level(true);
-    auto result3 = test.level();
+    test.configure(expected_settings);
+    test.level(true);
+    auto level = test.level();
 
     // Verify
-    expect(bool{ result1 });
-    expect(bool{ result2 });
-    expect(bool{ result3 });
     expect(expected_settings.open_drain == test.m_settings.open_drain);
     expect(expected_settings.resistor == test.m_settings.resistor);
     expect(that % true == test.m_driver_level);
-    expect(that % true == result3.value().state);
-  };
-
-  "output_pin errors test"_test = []() {
-    // Setup
-    test_output_pin test;
-    test.m_return_error_status = true;
-
-    // Exercise
-    auto result1 = test.configure(expected_settings);
-    auto result2 = test.level(true);
-    auto result3 = test.level();
-
-    // Verify
-    expect(!bool{ result1 });
-    expect(!bool{ result2 });
-    expect(!bool{ result3 });
+    expect(that % true == level.state);
   };
 };
 }  // namespace hal

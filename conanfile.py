@@ -26,9 +26,8 @@ required_conan_version = ">=2.0.6"
 
 class libhal_conan(ConanFile):
     name = "libhal"
-    version = "2.0.3"
     license = "Apache-2.0"
-    url = "https://github.com/conan-io/conan-center-index"
+    url = "https://github.com/libhal/libhal"
     homepage = "https://libhal.github.io/libhal"
     description = ("A collection of interfaces and abstractions for embedded "
                    "peripherals and devices using modern C++")
@@ -51,10 +50,6 @@ class libhal_conan(ConanFile):
             "apple-clang": "14.0.0"
         }
 
-    @property
-    def _bare_metal(self):
-        return self.settings.os == "baremetal"
-
     def validate(self):
         if self.settings.get_safe("compiler.cppstd"):
             check_min_cppstd(self, self._min_cppstd)
@@ -66,7 +61,6 @@ class libhal_conan(ConanFile):
 
     def requirements(self):
         self.requires("tl-function-ref/1.0.0")
-        self.requires("boost-leaf/1.83.0")
 
     def layout(self):
         cmake_layout(self)
@@ -89,14 +83,6 @@ class libhal_conan(ConanFile):
         self.cpp_info.frameworkdirs = []
         self.cpp_info.libdirs = []
         self.cpp_info.resdirs = []
-
-        if self._bare_metal:
-            self.cpp_info.defines = [
-                "BOOST_LEAF_EMBEDDED",
-                # TODO(#694): Remove this or have it be configurable. Users
-                # should not be forced to operate without thread support
-                "BOOST_LEAF_NO_THREADS"
-            ]
 
     def package_id(self):
         self.info.clear()

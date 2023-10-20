@@ -1,9 +1,9 @@
+#include <cmath>
+
 #include "helpers.hpp"
 
-bool compare_floats(float p_first,         // NOLINT
-                    float p_second,        // NOLINT
-                    float p_error_margin)  // NOLINT
+bool compare_floats(compare_float_t p_compare)
 {
-  float difference = std::abs(p_first - p_second);
-  return difference < p_error_margin;
+  float difference = std::abs(p_compare.a - p_compare.b);
+  return difference < p_compare.margin;
 }

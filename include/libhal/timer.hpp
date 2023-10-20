@@ -16,7 +16,6 @@
 
 #include <chrono>
 
-#include "error.hpp"
 #include "functional.hpp"
 #include "units.hpp"
 
@@ -90,9 +89,9 @@ public:
   /**
    * @brief Determine if the timer is currently running
    *
-   * @return result<is_running_t> - information about the timer
+   * @return is_running_t - information about the timer
    */
-  [[nodiscard]] result<is_running_t> is_running()
+  [[nodiscard]] is_running_t is_running()
   {
     return driver_is_running();
   }
@@ -107,9 +106,9 @@ public:
    * schedule event expires, this function may not complete before the hardware
    * calls the callback.
    *
-   * @return result<cancel_t> - success or failure
+   * @return cancel_t - success or failure
    */
-  [[nodiscard]] result<cancel_t> cancel()
+  cancel_t cancel()
   {
     return driver_cancel();
   }
@@ -130,13 +129,12 @@ public:
    *
    * @param p_callback - callback function to be called when the timer expires
    * @param p_delay - the amount of time until the timer expires
-   * @return result<schedule_t> - success or failure
+   * @return schedule_t - success or failure
    * @throws out_of_bounds_error - if p_interval is greater than what can be
    * cannot be achieved
    */
-  [[nodiscard]] result<schedule_t> schedule(
-    hal::callback<void(void)> p_callback,
-    hal::time_duration p_delay)
+  schedule_t schedule(hal::callback<void(void)> p_callback,
+                      hal::time_duration p_delay)
   {
     return driver_schedule(p_callback, p_delay);
   }
@@ -144,10 +142,9 @@ public:
   virtual ~timer() = default;
 
 private:
-  virtual result<is_running_t> driver_is_running() = 0;
-  virtual result<cancel_t> driver_cancel() = 0;
-  virtual result<schedule_t> driver_schedule(
-    hal::callback<void(void)> p_callback,
-    hal::time_duration p_delay) = 0;
+  virtual is_running_t driver_is_running() = 0;
+  virtual cancel_t driver_cancel() = 0;
+  virtual schedule_t driver_schedule(hal::callback<void(void)> p_callback,
+                                     hal::time_duration p_delay) = 0;
 };
 }  // namespace hal

@@ -18,7 +18,6 @@
 #include <cstdint>
 #include <span>
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -53,15 +52,6 @@ public:
     bool data_valid_on_trailing_edge = false;
   };
 
-  /**
-   * @brief Feedback from performing a transfer on the spi bus
-   *
-   * This structure is currently empty as no feedback has been determined for
-   * now. This structure may be expanded in the future.
-   */
-  struct transfer_t
-  {};
-
   /// Default filler data placed on the bus in place of actual write data when
   /// the write buffer has been exhausted.
   static constexpr hal::byte default_filler = hal::byte{ 0xFF };
@@ -70,13 +60,14 @@ public:
    * @brief Configure spi to match the settings supplied
    *
    * @param p_settings - settings to apply to spi
-   * @return status - success or failure
-   * @throws std::errc::invalid_argument if the settings could not be achieved.
+   * @throws std::errc::invalid_argument if the settings could not be
+   * achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings)
+  void configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
+
   /**
    * @brief Send and receive data between a selected device on the spi bus.
    * This function will block until the entire transfer is finished.
@@ -92,12 +83,10 @@ public:
    * dropped.
    * @param p_filler - filler data placed on the bus in place of actual write
    * data when p_data_out has been exhausted.
-   * @return result<transfer_t> - success or failure
    */
-  [[nodiscard]] result<transfer_t> transfer(
-    std::span<const hal::byte> p_data_out,
-    std::span<hal::byte> p_data_in,
-    hal::byte p_filler = default_filler)
+  void transfer(std::span<const hal::byte> p_data_out,
+                std::span<hal::byte> p_data_in,
+                hal::byte p_filler = default_filler)
   {
     return driver_transfer(p_data_out, p_data_in, p_filler);
   }
@@ -105,10 +94,9 @@ public:
   virtual ~spi() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) = 0;
-  virtual result<transfer_t> driver_transfer(
-    std::span<const hal::byte> p_data_out,
-    std::span<hal::byte> p_data_in,
-    hal::byte p_filler) = 0;
+  virtual void driver_configure(const settings& p_settings) = 0;
+  virtual void driver_transfer(std::span<const hal::byte> p_data_out,
+                               std::span<hal::byte> p_data_in,
+                               hal::byte p_filler) = 0;
 };
 }  // namespace hal

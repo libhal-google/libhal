@@ -47,9 +47,7 @@ libhal_unit_test(SOURCES
   tests/main.test.cpp
 
   PACKAGES
-  boost-leaf
   tl-function-ref
 
   LINK_LIBRARIES
-  boost::leaf
   tl::function-ref)

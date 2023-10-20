@@ -17,8 +17,6 @@
 #include <chrono>
 #include <cstdint>
 
-#include "error.hpp"
-
 /**
  * @brief The foundation of libhal containing, interfaces, utilities and soft
  * drivers.

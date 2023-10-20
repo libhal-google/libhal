@@ -1,0 +1,12 @@
+name: 🚀 Deploy exceptions v1
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: libhal/ci/.github/workflows/deploy.yml@5.x.y
+    with:
+      version: exceptions
+      arch: "x86_64"
+    secrets: inherit

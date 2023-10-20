@@ -14,9 +14,8 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
-
-#include "error.hpp"
 
 namespace hal {
 /**
@@ -58,9 +57,9 @@ public:
    *
    * @param p_percentage - value from 0.0f to +1.0f representing the proportion
    * of the output voltage from the Vss to Vcc.
-   * @return result<write_t> - success or failure
+   * @return write_t - success or failure
    */
-  [[nodiscard]] result<write_t> write(float p_percentage)
+  write_t write(float p_percentage)
   {
     auto clamped_percentage = std::clamp(p_percentage, 0.0f, 1.0f);
     return driver_write(clamped_percentage);
@@ -69,6 +68,6 @@ public:
   virtual ~dac() = default;
 
 private:
-  virtual result<write_t> driver_write(float p_percentage) = 0;
+  virtual write_t driver_write(float p_percentage) = 0;
 };
 }  // namespace hal

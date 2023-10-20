@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <libhal/error.hpp>
 #include <libhal/steady_clock.hpp>
 
 #include <boost/ut.hpp>
@@ -47,12 +48,12 @@ void steady_clock_test()
     test_steady_clock test;
 
     // Exercise
-    auto result1 = test.frequency();
-    auto result2 = test.uptime();
+    auto frequency = test.frequency();
+    auto uptime = test.uptime();
 
     // Verify
-    expect(that % test.m_frequency == result1.operating_frequency);
-    expect(that % test.m_uptime == result2.ticks);
+    expect(that % test.m_frequency == frequency.operating_frequency);
+    expect(that % test.m_uptime == uptime.ticks);
   };
 };
 }  // namespace hal

@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
 #include "functional.hpp"
 #include "units.hpp"
 
@@ -94,10 +93,9 @@ public:
    * @brief Configure the interrupt pin to match the settings supplied
    *
    * @param p_settings - settings to apply to interrupt pin
-   * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings)
+  void configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -117,7 +115,7 @@ public:
   virtual ~interrupt_pin() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) = 0;
+  virtual void driver_configure(const settings& p_settings) = 0;
   virtual void driver_on_trigger(hal::callback<handler> p_callback) = 0;
 };
 }  // namespace hal

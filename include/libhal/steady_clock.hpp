@@ -16,7 +16,6 @@
 
 #include <cstdint>
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -75,7 +74,7 @@ public:
   /**
    * @brief Get the operating frequency of the steady clock
    *
-   * @return result<frequency_t> - operating frequency of the steady clock.
+   * @return frequency_t - operating frequency of the steady clock.
    * Guaranteed to be a positive value by the implementing driver.
    */
   [[nodiscard]] frequency_t frequency()
