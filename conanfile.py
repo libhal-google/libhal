@@ -65,7 +65,10 @@ class libhal_conan(ConanFile):
 
     def requirements(self):
         self.requires("tl-function-ref/1.0.0")
-        self.requires("boost-leaf/1.81.0")
+        self.requires("boost/1.83.0", transitive_headers=True,
+                      options={
+                          "header_only": True,
+                        })
 
     def layout(self):
         cmake_layout(self)
