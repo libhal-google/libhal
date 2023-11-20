@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include <boost/leaf.hpp>
 #include <system_error>
+
+#include <boost/leaf/detail/all.hpp>
 
 #define HAL_CHECK BOOST_LEAF_CHECK
 
