@@ -23,7 +23,7 @@ class HalTestDemos(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps", "VirtualBuildEnv"
 
     def requirements(self):
-        self.requires("libhal/2.0.0")
+        self.requires("libhal/2.0.3")
 
     def layout(self):
         cmake_layout(self)

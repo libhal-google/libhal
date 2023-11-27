@@ -1,4 +1,4 @@
-# libhal 
+# libhal
 
 [![✅CI](https://github.com/libhal/libhal/actions/workflows/ci.yml/badge.svg)](https://github.com/libhal/libhal/actions/workflows/ci.yml)
 [![coverage](https://libhal.github.io/libhal/coverage/coverage.svg)](https://libhal.github.io/libhal/coverage/)
@@ -33,7 +33,7 @@ Add the following to your `requirements()` method to the `ConanFile` class:
 
 ```python
     def requirements(self):
-          self.requires("libhal/[^2.0.0]")
+          self.requires("libhal/[^2.0.3]", transitive_headers=True)
 ```
 
 The version number can be changed to whatever is appropriate for your
