@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <libhal/error.hpp>
 #include <libhal/motor.hpp>
 
 #include <boost/ut.hpp>
@@ -24,18 +25,13 @@ class test_motor : public hal::motor
 {
 public:
   float m_power{};
-  bool m_return_error_status{ false };
-
   ~test_motor() override = default;
 
 private:
-  result<power_t> driver_power(float power) override
+  power_t driver_power(float power) override
   {
     m_power = power;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
-    return power_t{};
+    return {};
   };
 };
 }  // namespace
@@ -48,23 +44,10 @@ void motor_test()
     test_motor test;
 
     // Exercise
-    auto result = test.power(expected_value);
+    test.power(expected_value);
 
     // Verify
-    expect(bool{ result });
     expect(that % expected_value == test.m_power);
-  };
-
-  "motor errors test"_test = []() {
-    // Setup
-    test_motor test;
-    test.m_return_error_status = true;
-
-    // Exercise
-    auto result = test.power(expected_value);
-
-    // Verify
-    expect(!bool{ result });
   };
 };
 }  // namespace hal

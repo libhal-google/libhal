@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <libhal/can.hpp>
+#include <libhal/error.hpp>
 
 #include <functional>
 
@@ -34,35 +35,23 @@ public:
   settings m_settings{};
   message_t m_message{};
   hal::callback<handler> m_handler = [](const message_t&) {};
-  bool m_return_error_status{ false };
   bool m_bus_on_called{ false };
   ~test_can() override = default;
 
 private:
-  status driver_configure(const settings& p_settings) override
+  void driver_configure(const settings& p_settings) override
   {
     m_settings = p_settings;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
-    return success();
   };
 
-  status driver_bus_on() override
+  void driver_bus_on() override
   {
     m_bus_on_called = true;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
-    return success();
   }
 
-  result<send_t> driver_send(const message_t& p_message) override
+  send_t driver_send(const message_t& p_message) override
   {
     m_message = p_message;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return send_t{};
   };
 
@@ -82,31 +71,15 @@ void can_test()
     test_can test;
 
     // Exercise
-    auto result1 = test.configure(expected_settings);
-    auto result2 = test.send(expected_message);
+    test.configure(expected_settings);
+    test.send(expected_message);
     test.on_receive(expected_handler);
     test.m_handler(expected_message);
 
     // Verify
-    expect(bool{ result1 });
-    expect(bool{ result2 });
     expect(that % expected_settings.baud_rate == test.m_settings.baud_rate);
     expect(that % expected_message.id == test.m_message.id);
     expect(that % 1 == counter);
-  };
-
-  "can errors test"_test = []() {
-    // Setup
-    test_can test;
-    test.m_return_error_status = true;
-
-    // Exercise
-    auto result1 = test.configure(expected_settings);
-    auto result2 = test.send(expected_message);
-
-    // Verify
-    expect(!bool{ result1 });
-    expect(!bool{ result2 });
   };
 };
 }  // namespace hal

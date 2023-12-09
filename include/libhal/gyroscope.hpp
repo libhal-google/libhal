@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -52,9 +51,9 @@ public:
   /**
    * @brief Read the latest angular velocity sensed by the device
    *
-   * @return result<read_t> - angular velocity data
+   * @return read_t - angular velocity data
    */
-  [[nodiscard]] result<read_t> read()
+  [[nodiscard]] read_t read()
   {
     return driver_read();
   }
@@ -62,6 +61,6 @@ public:
   virtual ~gyroscope() = default;
 
 private:
-  virtual result<read_t> driver_read() = 0;
+  virtual read_t driver_read() = 0;
 };
 }  // namespace hal

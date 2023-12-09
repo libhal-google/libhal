@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <libhal/adc.hpp>
+#include <libhal/error.hpp>
 
 #include <boost/ut.hpp>
 
@@ -24,16 +25,11 @@ class test_adc : public hal::adc
 {
 public:
   constexpr static float m_returned_position{ 0.5f };
-  bool m_return_error_status{ false };
-
   ~test_adc() override = default;
 
 private:
-  result<read_t> driver_read() override
+  read_t driver_read() override
   {
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return read_t{ .sample = m_returned_position };
   }
 };
@@ -50,20 +46,7 @@ void adc_test()
     auto result = test.read();
 
     // Verify
-    expect(bool{ result });
-    expect(that % expected_value == result.value().sample);
-  };
-
-  "adc errors test"_test = []() {
-    // Setup
-    test_adc test;
-    test.m_return_error_status = true;
-
-    // Exercise
-    auto result = test.read();
-
-    // Verify
-    expect(!bool{ result });
+    expect(that % expected_value == result.sample);
   };
 }
 }  // namespace hal

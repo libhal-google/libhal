@@ -15,66 +15,26 @@
 #pragma once
 
 #include <system_error>
-
-#include <boost/leaf/detail/all.hpp>
-
-#define HAL_CHECK BOOST_LEAF_CHECK
+#include <type_traits>
 
 namespace hal {
 
-template<typename T, T... value>
-using match = boost::leaf::match<T, value...>;
-template<class T>
-using result = boost::leaf::result<T>;
-using status = result<void>;
 using error_handler = void(void);
 
 inline error_handler* on_error_callback = nullptr;
 
-/**
- * @brief a readability function for returning successful results;
- *
- * For functions that return `status`, rather than returning `{}` to default
- * initialize the status object as "success", use this function to make it more
- * clear to the reader.
- *
- * EXAMPLE:
- *
- *     hal::status some_function() {
- *        return hal::success();
- *     }
- *
- * @return status - that is always successful
- */
-inline status success()
+template<class thrown_t>
+void safe_throw(thrown_t&& p_thrown_object)
 {
-  // Default initialize the status object using the brace initialization, which
-  // will set the status to the default "success" state.
-  status successful_status{};
-  return successful_status;
-}
+  static_assert(
+    std::is_trivially_destructible_v<thrown_t>,
+    "safe_throw() only works with trivially destructible thrown types");
 
-template<class TryBlock, class... H>
-[[nodiscard]] constexpr auto attempt(TryBlock&& p_try_block, H&&... p_handlers)
-{
-  return boost::leaf::try_handle_some(p_try_block, p_handlers...);
-}
-
-template<class TryBlock, class... H>
-[[nodiscard]] constexpr auto attempt_all(TryBlock&& p_try_block,
-                                         H&&... p_handlers)
-{
-  return boost::leaf::try_handle_all(p_try_block, p_handlers...);
-}
-
-template<class... Item>
-[[nodiscard]] inline auto new_error(Item&&... p_item)
-{
   if (on_error_callback) {
     on_error_callback();
   }
 
-  return boost::leaf::new_error(std::forward<Item>(p_item)...);
+  throw p_thrown_object;
 }
 
 [[noreturn]] inline void halt()

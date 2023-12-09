@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -63,10 +62,10 @@ public:
    * @brief Configure the output pin to match the settings supplied
    *
    * @param p_settings - settings to apply to output pin
-   * @return status - success or failure
-   * @throws std::errc::invalid_argument if the settings could not be achieved.
+   * @throws std::errc::invalid_argument if the settings could not be
+   * achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings)
+  void configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -76,9 +75,9 @@ public:
    *
    * @param p_high - if true then the pin state is set to HIGH voltage. If
    * false, the pin state is set to LOW voltage.
-   * @return result<set_level_t> - success or failure
+   * @return set_level_t - success or failure
    */
-  [[nodiscard]] result<set_level_t> level(bool p_high)
+  set_level_t level(bool p_high)
   {
     return driver_level(p_high);
   }
@@ -92,9 +91,9 @@ public:
    * This pin may not equal the state set by `level(bool)` when the pin is
    * configured as open-drain.
    *
-   * @return result<level_t> - return the current level state of the output pin
+   * @return level_t - return the current level state of the output pin
    */
-  [[nodiscard]] result<level_t> level()
+  [[nodiscard]] level_t level()
   {
     return driver_level();
   }
@@ -102,8 +101,8 @@ public:
   virtual ~output_pin() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) = 0;
-  virtual result<set_level_t> driver_level(bool p_high) = 0;
-  virtual result<level_t> driver_level() = 0;
+  virtual void driver_configure(const settings& p_settings) = 0;
+  virtual set_level_t driver_level(bool p_high) = 0;
+  virtual level_t driver_level() = 0;
 };
 }  // namespace hal

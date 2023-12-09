@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -61,9 +60,9 @@ public:
   /**
    * @brief Read the latest magnetic field strength sensed by the device
    *
-   * @return result<read_t> - magnetic field strength data
+   * @return read_t - magnetic field strength data
    */
-  [[nodiscard]] result<read_t> read()
+  [[nodiscard]] read_t read()
   {
     return driver_read();
   }
@@ -71,6 +70,6 @@ public:
   virtual ~magnetometer() = default;
 
 private:
-  virtual result<read_t> driver_read() = 0;
+  virtual read_t driver_read() = 0;
 };
 }  // namespace hal

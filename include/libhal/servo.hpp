@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -68,7 +67,7 @@ public:
    * but is either intrinsic to the servo or a configuration of the servo.
    *
    * @param p_position - the position to move the servo shaft in degrees.
-   * @return result<position_t> - success or failure
+   * @return position_t - success or failure
    * @throws std::errc::invalid_argument - when position exceeds the range of
    * the servo. When this error occurs, the guaranteed behavior is that the
    * servo keeps its last set position.
@@ -77,7 +76,7 @@ public:
    * this error occurs, the guaranteed behavior is that the servo keeps its last
    * set position.
    */
-  [[nodiscard]] result<position_t> position(hal::degrees p_position)
+  position_t position(hal::degrees p_position)
   {
     return driver_position(p_position);
   }
@@ -85,6 +84,6 @@ public:
   virtual ~servo() = default;
 
 private:
-  virtual result<position_t> driver_position(hal::degrees p_position) = 0;
+  virtual position_t driver_position(hal::degrees p_position) = 0;
 };
 }  // namespace hal

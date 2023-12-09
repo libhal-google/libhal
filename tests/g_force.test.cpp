@@ -14,6 +14,7 @@
 
 #include "helpers.hpp"
 
+#include <libhal/error.hpp>
 #include <libhal/units.hpp>
 
 #include <boost/ut.hpp>
@@ -46,10 +47,11 @@ void g_force_test()
     g_force g_force_difference = 1.0_g - 1.5_g;
 
     // Verify
-    expect(that % compare_floats(earth_g_force, g_force_quotient));
-    expect(that % compare_floats(static_cast<float>(3.0_g), g_force_product));
-    expect(that % compare_floats(2.5_g, g_force_sum));
-    expect(that % compare_floats(-0.5_g, g_force_difference));
+    expect(that %
+           compare_floats({ .a = earth_g_force, .b = g_force_quotient }));
+    expect(that % compare_floats({ .a = 3.0_g, .b = g_force_product }));
+    expect(that % compare_floats({ .a = 2.5_g, .b = g_force_sum }));
+    expect(that % compare_floats({ .a = -0.5_g, .b = g_force_difference }));
   };
 
   "g_force_type boundry test"_test = []() {
@@ -62,8 +64,10 @@ void g_force_test()
     float float_min = std::numeric_limits<float>::min();
 
     // Verify
-    expect(that % compare_floats(float_max, static_cast<float>(g_force_max)));
-    expect(that % compare_floats(float_min, static_cast<float>(g_force_min)));
+    expect(that % compare_floats(
+                    { .a = float_max, .b = static_cast<float>(g_force_max) }));
+    expect(that % compare_floats(
+                    { .a = float_min, .b = static_cast<float>(g_force_min) }));
   };
 }
 

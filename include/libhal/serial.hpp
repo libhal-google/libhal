@@ -19,7 +19,6 @@
 #include <optional>
 #include <span>
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -182,10 +181,10 @@ public:
    * fails, the state of the serial device has not changed.
    *
    * @param p_settings - settings to apply to serial driver
-   * @return status - success or failure
-   * @throws std::errc::invalid_argument if the settings could not be achieved
+   * @throws std::errc::invalid_argument if the settings could not be
+   * achieved
    */
-  [[nodiscard]] status configure(const settings& p_settings)
+  void configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -194,9 +193,9 @@ public:
    * @brief Write data to the transmitter line of the serial port
    *
    * @param p_data - data to be transmitted over the serial port
-   * @return result<write_t> - serial write response
+   * @return write_t - serial write response
    */
-  [[nodiscard]] result<write_t> write(std::span<const hal::byte> p_data)
+  write_t write(std::span<const hal::byte> p_data)
   {
     return driver_write(p_data);
   }
@@ -225,11 +224,11 @@ public:
    * parse it as needed. The choice of operation is application/driver specific.
    *
    * @param p_data - Buffer to read bytes in to
-   * @return result<read_t> - serial read response data
+   * @return read_t - serial read response data
    * @throws std::errc::io_error - a frame error occurred at some point during
    * reception.
    */
-  [[nodiscard]] result<read_t> read(std::span<hal::byte> p_data)
+  [[nodiscard]] read_t read(std::span<hal::byte> p_data)
   {
     return driver_read(p_data);
   }
@@ -243,9 +242,9 @@ public:
    * - Use the fastest available option to perform these operations, meaning
    *   that the contents of the internal working buffer will not be zeroed out.
    *
-   * @return result<flush_t> - success or failure
+   * @return flush_t - success or failure
    */
-  [[nodiscard]] result<flush_t> flush()
+  flush_t flush()
   {
     return driver_flush();
   }
@@ -253,9 +252,9 @@ public:
   virtual ~serial() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) = 0;
-  virtual result<write_t> driver_write(std::span<const hal::byte> p_data) = 0;
-  virtual result<read_t> driver_read(std::span<hal::byte> p_data) = 0;
-  virtual result<flush_t> driver_flush() = 0;
+  virtual void driver_configure(const settings& p_settings) = 0;
+  virtual write_t driver_write(std::span<const hal::byte> p_data) = 0;
+  virtual read_t driver_read(std::span<hal::byte> p_data) = 0;
+  virtual flush_t driver_flush() = 0;
 };
 }  // namespace hal

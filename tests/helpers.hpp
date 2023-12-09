@@ -16,6 +16,13 @@
 
 #include <cmath>
 
+struct compare_float_t
+{
+  float a;
+  float b;
+  float margin = 0.0001f;
+};
+
 /**
  * @brief Compares two single floating point values, with in a given error
  * margin.
@@ -25,6 +32,4 @@
  * @param p_error_margin How precise the error of an error should be checked.
  * @return true if the two floats are equal within a margin of error
  */
-bool compare_floats(float p_first,
-                    float p_second,
-                    float p_error_margin = 0.0001f);
+bool compare_floats(compare_float_t p_compare);

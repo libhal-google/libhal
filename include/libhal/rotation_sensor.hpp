@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
 #include "units.hpp"
 
 namespace hal {
@@ -94,9 +93,9 @@ public:
   /**
    * @brief Read the current angle measured by the device
    *
-   * @return result<read_t> - rotation data
+   * @return read_t - rotation data
    */
-  [[nodiscard]] result<read_t> read()
+  [[nodiscard]] read_t read()
   {
     return driver_read();
   }
@@ -104,6 +103,6 @@ public:
   virtual ~rotation_sensor() = default;
 
 private:
-  virtual result<read_t> driver_read() = 0;
+  virtual read_t driver_read() = 0;
 };
 }  // namespace hal

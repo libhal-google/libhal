@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <libhal/error.hpp>
 #include <libhal/timer.hpp>
 
 #include <functional>
@@ -26,33 +27,25 @@ public:
   bool m_is_running{ false };
   hal::callback<void(void)> m_callback = []() {};
   hal::time_duration m_delay;
-  bool m_return_error_status{ false };
 
 private:
-  result<is_running_t> driver_is_running() override
+  is_running_t driver_is_running() override
   {
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return is_running_t{ .is_running = m_is_running };
   };
-  result<cancel_t> driver_cancel() override
+  cancel_t driver_cancel() override
   {
     m_is_running = false;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return cancel_t{};
   };
-  result<schedule_t> driver_schedule(hal::callback<void(void)> p_callback,
-                                     hal::time_duration p_delay) override
+
+  // NOLINTNEXTLINE
+  schedule_t driver_schedule(hal::callback<void(void)> p_callback,
+                             hal::time_duration p_delay) override
   {
     m_is_running = true;
     m_callback = p_callback;
     m_delay = p_delay;
-    if (m_return_error_status) {
-      return hal::new_error();
-    }
     return schedule_t{};
   };
 };
@@ -73,41 +66,19 @@ void timer_test()
 
     // Exercise + Verify
     auto result1 = test.is_running();
-    expect(bool{ result1 });
-    expect(that % false == result1.value().is_running);
+    expect(that % false == result1.is_running);
 
-    auto result2 = test.schedule(expected_callback, expected_delay);
+    test.schedule(expected_callback, expected_delay);
     result1 = test.is_running();
-    expect(bool{ result1 });
-    expect(bool{ result2 });
-    expect(that % true == result1.value().is_running);
+    expect(that % true == result1.is_running);
     expect(expected_delay == test.m_delay);
 
     test.m_callback();
     expect(that % true == callback_stored_successfully);
 
-    auto result3 = test.cancel();
+    test.cancel();
     result1 = test.is_running();
-    expect(bool{ result1 });
-    expect(bool{ result3 });
-    expect(that % false == result1.value().is_running);
-  };
-  "timer errors test"_test = []() {
-    // Setup
-    test_timer test;
-    const hal::function_ref<void(void)> expected_callback = []() {};
-    const hal::time_duration expected_delay = {};
-    test.m_return_error_status = true;
-
-    // Exercise
-    auto result1 = test.is_running();
-    auto result2 = test.schedule(expected_callback, expected_delay);
-    auto result3 = test.cancel();
-
-    // Verify
-    expect(!bool{ result1 });
-    expect(!bool{ result2 });
-    expect(!bool{ result3 });
+    expect(that % false == result1.is_running);
   };
 };
 }  // namespace hal

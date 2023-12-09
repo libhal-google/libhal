@@ -20,7 +20,6 @@
  */
 #pragma once
 
-#include "error.hpp"
 #include "functional.hpp"
 
 namespace hal {
@@ -40,15 +39,16 @@ enum class work_state
 };
 
 /**
- * @brief Timeout is a callable object or function that signals to a procedure
- * that the procedure has exceeded its time allotment and should return control
- * to the calling function.
+ * @brief Signature of a function that throws std::errc::timed_out
  *
- * @throws hal::timeout - when the timeout condition has been met.
- * @returns status - sets error flag set when timeout
- * condition has been met, otherwise returns success.
+ * A function that expires after a certain amount of time or after a certain
+ * amount of events, or after a specific event occurs. When called, this
+ * function checks if the expiration event has occurred and if so, throws the
+ * exception std::errc::timed_out.
+ *
+ * @throws std::errc::timed_out - to indicate that it has expired
  */
-using timeout_function = status(void);
+using timeout_function = void(void);
 
 template<class T>
 concept timeout = std::convertible_to<T, hal::function_ref<timeout_function>>;
@@ -66,10 +66,9 @@ concept timeout = std::convertible_to<T, hal::function_ref<timeout_function>>;
  * This function can be repeatedly tried until it has reached a terminal state
  * with the try_until() function.
  *
- * @returns result<work_state> - sets error flag set when an error occurs,
- * otherwise returns work_state enum.
+ * @returns work_state - indicates what the state of the worker function is.
  */
-using work_function = result<work_state>();
+using work_function = work_state();
 
 template<class T>
 concept worker = std::convertible_to<T, hal::function_ref<work_function>>;
@@ -78,47 +77,35 @@ concept worker = std::convertible_to<T, hal::function_ref<work_function>>;
  * @brief Delay the execution of the application or thread for a duration of
  * time.
  *
- * @tparam Timeout - timeout type
- * @param p_timeout - callable timeout object
- * @return status - success or failure
+ * @param p_timeout - callable timeout object/function
  */
-[[nodiscard]] inline status delay(timeout auto p_timeout)
+inline void delay(timeout auto p_timeout)
 {
-  bool waiting = true;
+  try {
+    while (true) {
+      p_timeout();
+    }
+  } catch (const std::errc& p_error) {
+    if (p_error != std::errc::timed_out) {
+      throw;
+    }
+  }
 
-  // This lambda catches a `std::errc::timed_out` handle them by changing
-  // `waiting` from true to false in order to break the while loop below.
-  auto timeout_catcher =
-    [&waiting](hal::match<std::errc, std::errc::timed_out> p_errc) -> status {
-    (void)p_errc;
-    // Simply change the waiting bool
-    waiting = false;
-    // return successful
-    return {};
-  };
-
-  HAL_CHECK(hal::attempt(
-    [&p_timeout]() -> status {
-      // Continuously call p_callback until it either returns
-      // `std::errc::timeout_out`
-      while (true) {
-        HAL_CHECK(p_timeout());
-      }
-      // Unreachable!
-      return {};
-    },
-    timeout_catcher));
-
-  return {};
+  while (true) {
+    // Does stuff ...
+    if (!p_timeout()) {
+      throw std::errc::timed_out;
+    }
+  }
 }
 
 /**
  * @brief Create a timeout that will never time out
  *
- * @return auto - callable that will never return timeout
+ * @return auto - callable that will never timeout
  */
-[[nodiscard]] inline auto never_timeout()
+inline auto never_timeout()
 {
-  return []() -> status { return {}; };
+  return []() {};
 }
 }  // namespace hal

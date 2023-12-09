@@ -17,7 +17,6 @@
 #include <array>
 #include <cstdint>
 
-#include "error.hpp"
 #include "functional.hpp"
 #include "units.hpp"
 
@@ -149,10 +148,9 @@ public:
    * @brief Configure this can bus port to match the settings supplied
    *
    * @param p_settings - settings to apply to can driver
-   * @return status - success or failure
    * @throws std::errc::invalid_argument if the settings could not be achieved.
    */
-  [[nodiscard]] status configure(const settings& p_settings)
+  void configure(const settings& p_settings)
   {
     return driver_configure(p_settings);
   }
@@ -176,11 +174,9 @@ public:
    * If this occurs, this function must be called to re-enable bus
    * communication.
    *
-   * @return status - success or failure. In the case this function fails
-   * repeatedly, it is advised to simply not use the bus anymore as something is
-   * critical wrong and may not be recoverable.
+   * @return throw - TBD
    */
-  [[nodiscard]] status bus_on()
+  void bus_on()
   {
     return driver_bus_on();
   }
@@ -189,13 +185,13 @@ public:
    * @brief Send a can message
    *
    * @param p_message - the message to be sent
-   * @return result<send_t> - success or failure
+   * @return send_t - Nothing currently
    * @throws std::errc::network_down - if the can device is in the "bus-off"
    * state. This can happen if a critical fault in the bus has occurred. A call
    * to `bus_on()` will need to be issued to attempt to talk on the bus again.
    * See `bus_on()` for more details.
    */
-  [[nodiscard]] result<send_t> send(const message_t& p_message)
+  send_t send(const message_t& p_message)
   {
     return driver_send(p_message);
   }
@@ -216,9 +212,9 @@ public:
   virtual ~can() = default;
 
 private:
-  virtual status driver_configure(const settings& p_settings) = 0;
-  virtual status driver_bus_on() = 0;
-  virtual result<send_t> driver_send(const message_t& p_message) = 0;
+  virtual void driver_configure(const settings& p_settings) = 0;
+  virtual void driver_bus_on() = 0;
+  virtual send_t driver_send(const message_t& p_message) = 0;
   virtual void driver_on_receive(hal::callback<handler> p_handler) = 0;
 };
 }  // namespace hal

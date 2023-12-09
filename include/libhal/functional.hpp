@@ -16,8 +16,9 @@
 
 #include <cstdint>
 
-#include "third_party/inplace_function.hpp"
 #include <tl/function_ref.hpp>
+
+#include "third_party/inplace_function.hpp"
 
 namespace hal {
 /**

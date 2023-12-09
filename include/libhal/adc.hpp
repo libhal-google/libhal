@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include "error.hpp"
-
 namespace hal {
 /**
  * @brief Analog to Digital Converter (ADC) hardware abstraction interface.
@@ -50,9 +48,9 @@ public:
   /**
    * @brief Sample the analog to digital converter and return the result
    *
-   * @return result<read_t> - the sampled adc value
+   * @return read_t - the sampled adc value
    */
-  [[nodiscard]] result<read_t> read()
+  [[nodiscard]] read_t read()
   {
     return driver_read();
   }
@@ -60,6 +58,6 @@ public:
   virtual ~adc() = default;
 
 private:
-  virtual result<read_t> driver_read() = 0;
+  virtual read_t driver_read() = 0;
 };
 }  // namespace hal
