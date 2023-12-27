@@ -15,5 +15,5 @@ on:
 
 jobs:
   ci:
-    uses: libhal/ci/.github/workflows/library.yml@4.x.y
+    uses: libhal/ci/.github/workflows/library.yml@fixup-download-artifacts
     secrets: inherit
