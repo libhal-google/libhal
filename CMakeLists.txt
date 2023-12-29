@@ -44,6 +44,7 @@ libhal_unit_test(SOURCES
   tests/servo.test.cpp
   tests/g_force.test.cpp
   tests/lengths.test.cpp
+  tests/angular_velocity_sensor.test.cpp
   tests/main.test.cpp
 
   PACKAGES
