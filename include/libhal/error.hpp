@@ -32,17 +32,27 @@ using error_handler = void(void);
 inline error_handler* on_error_callback = nullptr;
 
 /**
+ * @defgroup Error Error
+ *
+ */
+
+/**
+ * @ingroup Error
  * @brief a readability function for returning successful results;
  *
  * For functions that return `status`, rather than returning `{}` to default
  * initialize the status object as "success", use this function to make it more
  * clear to the reader.
  *
- * EXAMPLE:
+ * An Example:
+ @verbatim embed:rst
+ ```{code-block} cpp
+  hal::status some_function() {
+    return hal::success();
+}
+ ```
+ @endverbatim
  *
- *     hal::status some_function() {
- *        return hal::success();
- *     }
  *
  * @return status - that is always successful
  */

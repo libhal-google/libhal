@@ -31,6 +31,11 @@ public:
    */
   struct read_t
   {
+    /**
+     * @brief The angular velocity in rotations per minute. (Underlying type is
+     * an std::float)
+     *
+     */
     hal::rpm angular_velocity = 0;
   };
   /**
