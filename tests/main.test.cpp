@@ -31,6 +31,8 @@ extern void timer_test();
 extern void servo_test();
 extern void g_force_test();
 extern void lengths_test();
+extern void angular_velocity_sensor_test();
+extern void current_sensor_test();
 }  // namespace hal
 
 int main()
@@ -53,4 +55,6 @@ int main()
   hal::timer_test();
   hal::g_force_test();
   hal::lengths_test();
+  hal::angular_velocity_sensor_test();
+  hal::current_sensor_test();
 }
