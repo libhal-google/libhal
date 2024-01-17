@@ -13,6 +13,7 @@
 // limitations under the License.
 
 /**
+ * @defgroup TimeoutCore Timeout Core
  * @file timeout.hpp
  * @brief Provides the hal::timeout type and utility functions that use that
  * type.
@@ -25,6 +26,7 @@
 
 namespace hal {
 /**
+ * @ingroup TimeoutCore
  * @brief Represents the state of a coroutine or resumable callable
  *
  */
@@ -40,6 +42,7 @@ enum class work_state
 };
 
 /**
+ * @ingroup TimeoutCore
  * @brief Timeout is a callable object or function that signals to a procedure
  * that the procedure has exceeded its time allotment and should return control
  * to the calling function.
@@ -54,6 +57,7 @@ template<class T>
 concept timeout = std::convertible_to<T, hal::function_ref<timeout_function>>;
 
 /**
+ * @ingroup TimeoutCore
  * @brief A non-blocking callable that performs work with each call
  *
  * Each call to a work_function will perform a set of work. The worker will
@@ -75,6 +79,7 @@ template<class T>
 concept worker = std::convertible_to<T, hal::function_ref<work_function>>;
 
 /**
+ * @ingroup TimeoutCore
  * @brief Delay the execution of the application or thread for a duration of
  * time.
  *
@@ -113,6 +118,7 @@ concept worker = std::convertible_to<T, hal::function_ref<work_function>>;
 }
 
 /**
+ * @ingroup TimeoutCore
  * @brief Create a timeout that will never time out
  *
  * @return auto - callable that will never return timeout

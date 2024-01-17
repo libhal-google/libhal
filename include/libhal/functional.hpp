@@ -19,8 +19,13 @@
 #include "third_party/inplace_function.hpp"
 #include <tl/function_ref.hpp>
 
+/**
+ * @defgroup Functional Functional
+ *
+ */
 namespace hal {
 /**
+ * @ingroup Functional
  * @brief Definition of a non-owning callable object
  *
  * Use this for passing a callable object to a function that the function does
@@ -37,6 +42,7 @@ template<typename F>
 using function_ref = tl::function_ref<F>;
 
 /**
+ * @ingroup Functional
  * @brief Definition of a owning callable object
  *
  * Use this instead of function_ref when a callable object needs to be stored.
@@ -50,6 +56,7 @@ template<typename F, size_t Capacity>
 using inplace_function = stdext::inplace_function<F, Capacity>;
 
 /**
+ * @ingroup Functional
  * @brief Definition of a standard libhal owning callback object
  *
  * This is an inplace_function with its capacity set to two pointers. Callable

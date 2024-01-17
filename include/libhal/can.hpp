@@ -159,10 +159,13 @@ public:
 
   /**
    * @brief Transition the CAN device from "bus-off" to "bus-on"
-   *
-   * WARNING: Calling this function when the device is already in "bus-on" will
-   * have no effect. This function is not necessary to call after creating the
-   * CAN driver as the driver should already be "bus-on" on creation.
+  @verbatim embed:rst
+  ```{warning}
+  Calling this function when the device is already in "bus-on" will
+  have no effect. This function is not necessary to call after creating the
+  CAN driver as the driver should already be "bus-on" on creation.
+  ```
+  @endverbatim
    *
    * Can devices have two counters to determine system health. These two
    * counters are the "transmit error counter" and the "receive error counter".
